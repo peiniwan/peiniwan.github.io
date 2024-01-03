@@ -1,0 +1,868 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="六月的雨">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="依赖注入框架什么是依赖注入？如果类a里有个类b的实例，则b是a的依赖，如果B 的赋值不是写死在了类或构造函数中，而是通过构造函数或其他函数的参数传入，这种赋值方式我们称之为依赖注入。依赖注入的实现有多种途径，而在 Java 中，使用注解是最常用的。通过在字段的声明前添加 @Inject 注解进行标记，来实现依赖对象的自动注入。如果只是写了一个 @Inject 注解，Father 并不会被自动注入。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="依赖注入内联函数">
+<meta property="og:url" content="http://peiniwan.github.io/2020/07/f32c77a36a69.html">
+<meta property="og:site_name" content="六月的雨的博客">
+<meta property="og:description" content="依赖注入框架什么是依赖注入？如果类a里有个类b的实例，则b是a的依赖，如果B 的赋值不是写死在了类或构造函数中，而是通过构造函数或其他函数的参数传入，这种赋值方式我们称之为依赖注入。依赖注入的实现有多种途径，而在 Java 中，使用注解是最常用的。通过在字段的声明前添加 @Inject 注解进行标记，来实现依赖对象的自动注入。如果只是写了一个 @Inject 注解，Father 并不会被自动注入。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5koin_hilt.resources/2023/09/15/18-51-47-87c18c149faf42578d9ef0b8bd127c2e-unknown_filename.2-55c906.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5koin_hilt.resources/2023/09/15/18-51-47-e8036b7da53085f062f74f6d922c00b9-unknown_filename.3-e89592.png">
+<meta property="og:image" content="https://s1.ax1x.com/2020/07/20/UhlZpF.png">
+<meta property="og:image" content="https://s1.ax1x.com/2020/07/20/UhlM01.png">
+<meta property="article:published_time" content="2020-07-13T06:12:15.000Z">
+<meta property="article:modified_time" content="2023-12-26T02:56:17.230Z">
+<meta property="article:author" content="六月的雨">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5koin_hilt.resources/2023/09/15/18-51-47-87c18c149faf42578d9ef0b8bd127c2e-unknown_filename.2-55c906.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>依赖注入内联函数 - 六月的雨的博客</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"peiniwan.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>六月的雨的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="依赖注入内联函数"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2020-07-13 14:12" pubdate>
+          2020年7月13日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.6k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          22 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">依赖注入内联函数</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="依赖注入框架"><a href="#依赖注入框架" class="headerlink" title="依赖注入框架"></a>依赖注入框架</h1><p><strong>什么是依赖注入？</strong><br>如果类a里有个类b的实例，则b是a的依赖，如果B 的赋值不是写死在了类或构造函数中，而是通过构造函数或其他函数的参数传入，这种赋值方式我们称之为依赖注入。依赖注入的实现有多种途径，而在 Java 中，使用注解是最常用的。通过在字段的声明前添加 @Inject 注解进行标记，来实现依赖对象的自动注入。如果只是写了一个 @Inject 注解，Father 并不会被自动注入。你还需要使用一个依赖注入框架，并进行简单的配置。在 Android 上比较流行的有RoboGuice、Dagger 、Butter Knife等。</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5koin_hilt.resources/2023/09/15/18-51-47-87c18c149faf42578d9ef0b8bd127c2e-unknown_filename.2-55c906.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.2"></p>
+<h2 id="Hilt"><a href="#Hilt" class="headerlink" title="Hilt"></a>Hilt</h2><p>相比于Dagger2，Hilt最明显的特征就是：1. 简单。2. 提供了Android专属的API。</p>
+<ul>
+<li>@Module注解，表示这一个用于提供依赖注入实例的模块，接口或第三方用</li>
+<li>@Binds：接口，需要在方法参数里面明确指明接口的实现类。还要再定义个注解Qualifier</li>
+<li>@Provides：不需要在方法参数里面明确指明接口的实现类，由第三方框架实现，通常用于和第三方框架进行绑定(Retrofit、Room 等等)</li>
+</ul>
+<p>首先lateinit是Kotlin中的关键字，和Hilt无关。这个关键字用于对变量延迟初始化，因为Kotlin默认在声明一个变量时就要对其进行初始化，而这里我们并不想手动初始化，所以要加上lateinit。如果你是用Java开发的话，那么可以无视这个关键字。<br>Hilt注入的字段是不可以声明成private的</p>
+<p>关于预置Qualifier其实还有一个隐藏的小技巧，就是对于Application和Activity这两个类型，Hilt也是给它们预置好了注入功能。也就是说，如果你的某个类依赖于Application或者Activity，不需要想办法为这两个类提供依赖注入的实例，Hilt自动就能识别它们<br>————————————————<br>原文链接：<a target="_blank" rel="noopener" href="https://blog.csdn.net/guolin_blog/article/details/109787732">https://blog.csdn.net/guolin_blog/article/details/109787732</a></p>
+<p>使用场景</p>
+<ol>
+<li>我们程序里有些对象是全局共享的，比如线程池，或者 Retrofit 对象，这种东西我们通常会把它放在 Application 对象里，或者做成单例的</li>
+<li>还有些对象是局部共享的，比如某个 Activity 会把一些显示用的数据共享给它内部的一些 View 和 Fragment。这一类情况我们的做法通常是获取外部 Activity 对象然后强转，再去拿它内部的对象</li>
+<li>除了共享的对象，不共享的也可以用依赖注入的方式来进行初始化，因为依赖注入的作用除了对共享对象提供一致性支持，也可以让我们在创建任何对象的时候省一些思考和力气</li>
+</ol>
+<p>总之，如果一个组件可能会被被共享，或者不会被共享但可能会在多处使用，你都可以使用 Hilt 来把它配置成依赖注入的加载方式。</p>
+<h2 id="Koin"><a href="#Koin" class="headerlink" title="Koin"></a>Koin</h2><p>Koin 是为 Kotlin 开发者提供的一个实用型轻量级依赖注入框架，采用纯 Kotlin 语言编写而成，仅使用功能解析，无代理、无代码生成、无反射。</p>
+<p><a target="_blank" rel="noopener" href="https://insert-koin.io/">官网地址</a></p>
+<h3 id="优势"><a href="#优势" class="headerlink" title="优势"></a>优势</h3><p><strong>依赖注入好处</strong><br>如果一个组件可能被共享，或者可能在多处被使用，你可以使用依赖注入来初始化它。<br>我们程序里有些对象是全局共享的，比如线程池，或者 Retrofit 对象，这种东西我们通常会把它放在 Application 对象里，或者做成单例的。<br>工具：Retrofit、Gson、OkHttp、Parser、ExecutorServic</p>
+<ul>
+<li>增加开发效率、省去重复的简单体力劳动<br>  首先new一个实例的过程是一个重复的简单体力劳动，依赖注入可以把new一个实例的工作做了，因此我们把主要精力集中在关键业务上、同时也能增加开发效率上。</li>
+<li>代码更具可读性</li>
+<li>省去写单例的方法</li>
+<li><strong>解耦</strong>*(最关键)<br>  假如不用依赖注入的话，一个类的new代码是非常可能充斥在app的多个类中的，假如该类的构造函数发生变化，那这些涉及到的类都得进行修改。</li>
+</ul>
+<p><strong>和dagger相比</strong></p>
+<ol>
+<li>编译生成的代码少</li>
+<li>编译时间少</li>
+<li>上手简单</li>
+</ol>
+<h3 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h3><p><strong>1.添加依赖</strong></p>
+<pre><code class="hljs">// Add Jcenter to your repositories if needed
+repositories &#123;
+    jcenter()    
+&#125;
+dependencies &#123;
+    // Koin for Android
+    compile &quot;org.koin:koin-android:$koin_version&quot;&#125;
+</code></pre>
+<p><strong>2.比如创建一个HelloRepository来提供一些数据：</strong></p>
+<pre><code class="hljs">interface HelloRepository &#123;
+    fun giveHello(): String
+&#125;
+
+class HelloRepositoryImpl() : HelloRepository &#123;
+    override fun giveHello() = &quot;Hello Koin&quot;&#125;
+</code></pre>
+<p><strong>3.创建一个presenter类，用来使用这些数据：</strong></p>
+<pre><code class="hljs">class MySimplePresenter(val repo: HelloRepository) &#123;
+
+    fun sayHello() = &quot;$&#123;repo.giveHello()&#125; from $this&quot;&#125;
+</code></pre>
+<p><strong>4.编写Koin模块，使用该module函数声明模块。</strong></p>
+<pre><code class="hljs">val appModule = module &#123;
+
+    // single instance of HelloRepository
+    single&lt;HelloRepository&gt; &#123; HelloRepositoryImpl() &#125;
+
+    // Simple Presenter Factory
+    factory &#123; MySimplePresenter(get()) &#125;&#125;
+</code></pre>
+<blockquote>
+<p>factory每次Activity需要一个实例时都会创建一个新实例。<br>single 区别在于其提供的实例是单例的<br>get()这里的功能是直接检索实例（非延迟）</p>
+</blockquote>
+<p><strong>5.启动koin</strong><br>现在有了一个模块，只需要在Application里调用startKoin()函数：</p>
+<pre><code class="hljs">class MyApplication : Application()&#123;
+    override fun onCreate() &#123;
+        super.onCreate()
+        // Start Koin
+        startKoin&#123;
+            androidLogger()
+            androidContext(this@MyApplication)
+            modules(appModule)
+        &#125;
+    &#125;&#125;
+</code></pre>
+<p><strong>6.注入依赖</strong><br>该MySimplePresenter组件将使用HelloRepository实例创建。用by inject()委托注入器注入它：</p>
+<pre><code class="hljs">class MySimpleActivity : AppCompatActivity() &#123;
+
+    // Lazy injected MySimplePresenter
+    val firstPresenter: MySimplePresenter by inject()
+
+    override fun onCreate(savedInstanceState: Bundle?) &#123;
+        super.onCreate(savedInstanceState)
+
+        //...
+    &#125;&#125;
+</code></pre>
+<blockquote>
+<p>该by inject()功能使我们能够在Android组件运行时（活动，片段，服务…）中检索Koin实例。</p>
+</blockquote>
+<h3 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h3><h4 id="内联函数"><a href="#内联函数" class="headerlink" title="内联函数"></a>内联函数</h4><p><strong>函数类型 其实是生成了一个对象</strong><br>使用 inline 能避免函数的 lambda 形参额外创建 Function 对象<br>高阶函数实现的原理</p>
+<ul>
+<li><p>Koin使用了很多的内联函数，它的作用简单来说就是方便进行类型推导，能具体化类型参数。</p>
+</li>
+<li><p>被inline标记的函数就是内联函数,其原理就是:在编译时期,把调用这个函数的地方用这个函数的方法体进行替换</p>
+<p>  inline fun <T> method(lock: Lock, body: () -&gt; T): T {<br>      lock.lock()<br>      try {<br>          return body()<br>      } finally {<br>          lock.unlock()<br>      }<br>  }<br>  method(lock, {“我是body方法体”})&#x2F;&#x2F;lock是一个Lock对象</p>
+</li>
+</ul>
+<p>其实上面调用的方法,在编译时期就会把下面的内容替换到调用该方法的地方,这样就会减少方法压栈,出栈,进而减少资源消耗;</p>
+<pre><code class="hljs">        lock.lock()
+        try &#123;
+            return &quot;我是body方法体&quot;
+        &#125; finally &#123;
+            lock.unlock()
+        &#125;
+</code></pre>
+<p>也就是说inline关键字实际上增加了代码量，但是提升了性能，而且增加的代码量是在编译期执行的，对程序可读性不会造成影响。<br><strong>inline 的坏处</strong>：</p>
+<ol>
+<li><p>对于一个 public 的 inline 方法，他不可以引用类的私有变量。</p>
+</li>
+<li><p>inline 关键字对于 lambda 的处理有的时候不是我们想要的</p>
+<p>  fun main(args: Array<String>) {<br> println(“Start of main”)<br> multiplyByTwo(5) {<br>     println(“Result is: $it”)<br>     return<br> }<br> println(“End of main”)}   &#x2F;&#x2F;不会执行，有问题</p>
+</li>
+</ol>
+<p><strong>总结</strong></p>
+<ul>
+<li>使用 inline，内联函数到调用的地方，能减少函数调用造成的额外开销，在循环中尤其有效</li>
+<li>使用 inline 能避免函数的 lambda 形参额外创建 Function 对象</li>
+<li>使用 noinline 可以拒绝形参 lambda 内联</li>
+<li>使用 crossinline 显示声明 inline 函数的形参 lambda 不能有 return 语句，避免lambda 中的 return 影响外部程序流程</li>
+</ul>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5koin_hilt.resources/2023/09/15/18-51-47-e8036b7da53085f062f74f6d922c00b9-unknown_filename.3-e89592.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.3"></p>
+<p>Lambda表达式不允许使用return，除非这个Lambda表达式是内联函数的参数。</p>
+<p>作者：我们都很努力着<br>链接：<a target="_blank" rel="noopener" href="https://www.jianshu.com/p/1d7374349a00">https://www.jianshu.com/p/1d7374349a00</a><br>来源：简书<br>著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。</p>
+<p>(Function1）null.INSTANCE，是由于反编译器工具在找不到等效的 Java 类时的显示的结果。</p>
+<p><a target="_blank" rel="noopener" href="https://juejin.cn/post/6844903838269308941#comment">https://juejin.cn/post/6844903838269308941#comment</a></p>
+<h4 id="Reified"><a href="#Reified" class="headerlink" title="Reified"></a>Reified</h4><ul>
+<li>由于 Java 中的泛型存在类型擦除的情况，任何在运行时需要知道泛型确切类型信息的操作都没法用了。比如你不能检查一个对象是否为泛型类型 T 的实例，所以需要反射。</li>
+<li>而reified，字面意思：具体化,，其实就是具体化泛型。</li>
+<li>主要还是有内联函数inline,才使得kotlin能够直接通过泛型就能拿到泛型的类型，只有内联函数的类型参数可以具体化。</li>
+</ul>
+<p><strong>例子</strong><br>定义实现一个扩展函数启动 Activity，一般都需要传 Class<T> 参数：</p>
+<pre><code class="hljs">// Function
+private fun &lt;T : Activity&gt; Activity.startActivity(context: Context, clazz: Class&lt;T&gt;) &#123;
+    startActivity(Intent(context, clazz))
+&#125;
+
+// Caller
+startActivity(context, NewActivity::class.java)
+</code></pre>
+<p>使用 reified，通过添加类型传递简化泛型参数</p>
+<pre><code class="hljs">// Function
+inline fun &lt;reified T : Activity&gt; Activity.startActivity(context: Context) &#123;
+    startActivity(Intent(context, T::class.java))
+&#125;
+
+// Caller
+startActivity&lt;NewActivity&gt;(context)
+</code></pre>
+<h4 id="注入流程"><a href="#注入流程" class="headerlink" title="注入流程"></a>注入流程</h4><ul>
+<li><p>内联函数支持具体化的类型参数，使用 reified 修饰符来限定类型参数，可以在函数内部访问它，由于函数是内联的，所以不需要反射。</p>
+</li>
+<li><p>koin里有一个全局的容器，提供了应用所有所需实例的构造方式，那么当我们需要新建实例的时候，就可以直接从这个容器里面获取到它的构造方式然后拿到所需的依赖，构造出所需的实例就可以了。</p>
+<p>  startKoin(this, appModule, logger &#x3D; AndroidLogger(showDebug &#x3D; BuildConfig.DEBUG))</p>
+</li>
+<li><p>Koin提供一个全局容器，将所有的依赖构造方式转换成 BeanDefinition 进行注册，这是一个HashSet，名字是 definitions。<br>  <img src="https://s1.ax1x.com/2020/07/20/UhlZpF.png" srcset="/img/loading.gif" lazyload></p>
+</li>
+</ul>
+<p>BeanDefinition<br><img src="https://s1.ax1x.com/2020/07/20/UhlM01.png" srcset="/img/loading.gif" lazyload></p>
+<ul>
+<li><p>name以及primaryType，这两个是get()关键字依赖检索所需的key。</p>
+</li>
+<li><p>definition: Definition<T>，它的值代表了其构造方式来源于那个module，对应前文的appModule，通过它可以反向推导该实例需要哪些依赖。</p>
+<pre><code class="hljs">override fun &lt;T&gt; get(parameters: ParameterDefinition): Instance&lt;T&gt; &#123;
+      val needCreation = instance == null
+      if (needCreation) &#123;
+          instance = create(parameters)
+      &#125;
+      return Instance(instance as T, needCreation)
+  &#125;
+  
+  
+      fun &lt;T&gt; create(parameters: ParameterDefinition): T &#123;
+      try &#123;
+          val parameterList = parameters()
+          val instance = bean.definition.invoke(parameterList) as Any
+          instance as T  //创建参数的实例
+          return instance
+      &#125; catch (e: Throwable) &#123;
+            // ....
+      &#125;
+  &#125;
+</code></pre>
+</li>
+</ul>
+<p><strong>总结</strong></p>
+<ul>
+<li>现在需要一个 MainViewModel 的实例，那么通过clazz为Class<MainViewModel>的key在definitions中进行查找。</li>
+<li>查到有一个 MainViewModel 的 BeanDefinition，通过注册过的 definition: Definition<T>找到其构造方式的位置（module）。</li>
+<li>当通过 MainViewModel(get() 的构造方式去构造 MainViewModel 实例的时候，发现又有一个get<Repository>()，然后就是再重复前面的逻辑，一直到生成ViewModel实例为止。</li>
+</ul>
+<p><a target="_blank" rel="noopener" href="https://github.com/peiniwan/mvvm">示例代码</a></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%85%B6%E4%BB%96%E8%AF%AD%E8%A8%80/" class="category-chain-item">其他语言</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E5%85%B6%E4%BB%96%E8%AF%AD%E8%A8%80/kotlin/" class="category-chain-item">kotlin</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>依赖注入内联函数</div>
+      <div>http://peiniwan.github.io/2020/07/f32c77a36a69.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>六月的雨</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2020年7月13日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2020/11/0fb422826e9e.html" title="Flutter学习">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Flutter学习</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2020/07/086f19d96ee8.html" title="数据结构">
+                        <span class="hidden-mobile">数据结构</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

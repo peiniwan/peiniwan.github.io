@@ -1,0 +1,839 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="六月的雨">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="内存优化在实践操作当中，可以从三个方面着手减小内存使用，首先是减小对象的内存占用，其次是内存对象的重复利用，最后是避免对象的内存泄露 减小对象的内存占用 图片压缩 Serializable全部改成 Parcelable（&#x2F;ˈpɑːrsl&#x2F;） arraymap，sarparray代替hashmap  内存对象的重复利用 使用线程池（对象池） 避免创建不必要的对象，单例 合理的使用">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android内存优化">
+<meta property="og:url" content="http://peiniwan.github.io/2019/12/871a6f949ea1.html">
+<meta property="og:site_name" content="六月的雨的博客">
+<meta property="og:description" content="内存优化在实践操作当中，可以从三个方面着手减小内存使用，首先是减小对象的内存占用，其次是内存对象的重复利用，最后是避免对象的内存泄露 减小对象的内存占用 图片压缩 Serializable全部改成 Parcelable（&#x2F;ˈpɑːrsl&#x2F;） arraymap，sarparray代替hashmap  内存对象的重复利用 使用线程池（对象池） 避免创建不必要的对象，单例 合理的使用">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android%E5%86%85%E5%AD%98%E4%BC%98%E5%8C%96.resources/2023/09/15/18-49-43-5ca856f049f02ca079d234b7f3e38801-unknown_filename.3-177ce4.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android%E5%86%85%E5%AD%98%E4%BC%98%E5%8C%96.resources/2023/09/15/18-49-43-dd496c41d503d49dec142e2022f176a2-unknown_filename.1-35efb0.jpeg">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android%E5%86%85%E5%AD%98%E4%BC%98%E5%8C%96.resources/2023/09/15/18-49-43-92a4462c3b07dfc7942c3fcc6d160dc4-unknown_filename-5b6b3f.jpeg">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android%E5%86%85%E5%AD%98%E4%BC%98%E5%8C%96.resources/2023/09/15/18-49-43-7a03ecb64c07e5a1600c55194e5cf24c-unknown_filename.2-63fa83.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android%E5%86%85%E5%AD%98%E4%BC%98%E5%8C%96.resources/2023/09/15/18-49-43-6e545eceaa68471eee7bff2fa842671e-unknown_filename.4-75676e.png">
+<meta property="article:published_time" content="2019-12-18T15:40:13.000Z">
+<meta property="article:modified_time" content="2023-12-29T08:06:32.649Z">
+<meta property="article:author" content="六月的雨">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android%E5%86%85%E5%AD%98%E4%BC%98%E5%8C%96.resources/2023/09/15/18-49-43-5ca856f049f02ca079d234b7f3e38801-unknown_filename.3-177ce4.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>Android内存优化 - 六月的雨的博客</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"peiniwan.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>六月的雨的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Android内存优化"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2019-12-18 23:40" pubdate>
+          2019年12月18日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.7k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          31 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Android内存优化</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="内存优化"><a href="#内存优化" class="headerlink" title="内存优化"></a>内存优化</h2><p>在实践操作当中，可以从三个方面着手减小内存使用，首先是减小对象的内存占用，其次是内存对象的重复利用，最后是避免对象的内存泄露</p>
+<h4 id="减小对象的内存占用"><a href="#减小对象的内存占用" class="headerlink" title="减小对象的内存占用"></a>减小对象的内存占用</h4><ol>
+<li>图片压缩</li>
+<li>Serializable全部改成 Parcelable（&#x2F;ˈpɑːrsl&#x2F;）</li>
+<li>arraymap，sarparray代替hashmap</li>
+</ol>
+<h4 id="内存对象的重复利用"><a href="#内存对象的重复利用" class="headerlink" title="内存对象的重复利用"></a>内存对象的重复利用</h4><ol>
+<li>使用线程池（对象池）</li>
+<li>避免创建不必要的对象，单例</li>
+<li>合理的使用缓存，比如图片是很耗内存的，使用lrucache</li>
+<li>内存抖动</li>
+</ol>
+<blockquote>
+<p>内存抖动是指在短时间内有大量的对象被创建或者被回收的现象，内存抖动出现原因主要是频繁（在循环里）创建对象（短时间内产生大量对象，需要大量内存，就可能会需要回收内存以用于产生对象，垃圾回收机制就自然会频繁运行了）。频繁内存抖动会导致垃圾回收频繁运行。解决的方法：</p>
+</blockquote>
+<ol>
+<li>尽量避免在循环体内创建对象，应该把对象创建移到循环体外。</li>
+<li>注意自定义View的onDraw()方法会被频繁调用，所以在这里面不应该频繁的创建对象。</li>
+<li>当需要大量使用Bitmap的时候，试着把它们缓存在数组中实现复用。</li>
+<li>对于能够复用的对象，同理可以使用对象池将它们缓存起来。</li>
+<li>允许复用的情况下，使用对象池进行缓存，如：Handler的Message单链表(obtain);</li>
+</ol>
+<p>使用intentservice，普通服务后台任务运行完，即使它不执行任何操作，服务也会一直运行，这些是十分消耗内存的。<br>IntentService子线程分担部分初始化工作。开启 IntentSerVice 线程，将部分逻辑和耗时的初始化操作放到这里处理，可以减少application初始化时间</p>
+<p>mat oom,linkecany程序死了检测不出来<br>blockcanary</p>
+<h4 id="内存泄漏"><a href="#内存泄漏" class="headerlink" title="内存泄漏"></a>内存泄漏</h4><pre><code class="hljs">    Android系统中GC内存泄漏的原因
+主动回收内存System.gc();、getruntime.runtime.gc
+导致内存泄漏主要的原因是，申请了内存空间而忘记了释放。如果程序中存在对象的引用，这个对象就被定义为&quot;有效的活动（引用可达）&quot;，无法让垃圾回收器GC验证这些对象是否不再需要，这些对象就会驻留内存，消耗内存。典型的做法就是把对象数据成员设为null或者从集合中移除该对象。但当局部变量不需要时，不需明显的设为null，因为一个方法执行完毕时，这些引用会自动被清理。
+
+    什么是GC
+GC垃圾收集器，它让创建的对象不需要像c/c++那样delete、free掉，GC的时间系统自身决定，时间不可预测。 对超出作用域的对象或引用置为空的对象进行清理，删除不使用的对象，腾出内存空间。
+
+    内存溢出和内存泄漏
+内存泄露 memory leak，是指程序在申请内存后，忘了释放，就出现了内存泄漏，一次内存泄露危害可以忽略，但内存泄露堆积后果很严重，无论多少内存,迟早会被占光。memory leak会最终会导致out of memory！
+内存溢出是要求分配的内存超出了系统能给的，系统不能满足需求，于是产生溢出。
+
+    Java带垃圾回收的机制,为什么还会内存泄露呢?
+举个例子 当你堆里某个对象没有被引用时，然后再过一段时间，垃圾回收机制才会回收，那么
+
+
+while（true）&#123;String str=new String(&quot;ni hao ni hao &quot;);&#125;
+</code></pre>
+<p>一直循环创建 String对象。。。你觉得堆不会溢出嘛。。。</p>
+<p><strong>内存泄露的根本原因就是保存了不可能再被访问的变量类型的引用和回收的不确定性</strong></p>
+<p>GC Roots算法判定一个对象需要被回收，GC Roots一般在JVM的栈区域里产生。<br>GC Root 的分类中:</p>
+<ol>
+<li><p>运行中的线程，thread就是一种gcroot,gcroot-&gt;asyntask-&gt;activity(泄露)</p>
+</li>
+<li><p>静态变量、静态对象也是一种gcroot,例如单例 （长生命周期）</p>
+<p> Utils.leakviews.add(view);<br> public class Utils {<br> public static LinkedList<View> leakviews &#x3D;new LinkedList&lt;&gt;( );<br> }</p>
+</li>
+<li><p>来自本地代码的引用.JNI的引用是指那些本地代码执行JNI调用过程中所创建出来的Java对象</p>
+</li>
+</ol>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android%E5%86%85%E5%AD%98%E4%BC%98%E5%8C%96.resources/2023/09/15/18-49-43-5ca856f049f02ca079d234b7f3e38801-unknown_filename.3-177ce4.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.3"></p>
+<p><strong>静态+弱引用</strong><br>内部类Handler对象会隐式地持有一个外部类对象（通常是一个Activity）的引用（不然你怎么可能通过Handler来操作Activity中的View？）</p>
+<p>PS:在Java 中，非静态的内部类和匿名内部类都会隐式地持有其外部类的引用，静态的内部类不会持有外部类的引用。静态类不持有外部类的对象，所以你的Activity可以随意被回收。</p>
+<p>由于Handler不再持有外部类对象的引用，导致程序不允许你在Handler中操作Activity中的对象了。所以你需要在Handler中增加一个对Activity的弱引用（WeakReference）。</p>
+<p>尽量不要用一个生命周期长于Activity的对象来持有Activity的引用</p>
+<p><strong>实例</strong><br>局部变量内存泄漏</p>
+<pre><code class="hljs">MethodStack.startwithTarget(view);
+public class MethodStack implements Runnable&#123;
+    private Object ref;
+    MethodStack(Object ref)&#123;
+        this.ref=ref;
+    &#125;
+    public static void startwithTarget(Object ref) &#123;
+        //暂时让成员变量引用到泄漏的目标
+        new Thread(new MethodStack(ref)).start();
+    &#125;
+
+    @Override
+    public void run() &#123;
+        //把成员变量赋值给局部变量，然后让成员变量不在为null
+        Object reg=this.ref;
+        this.ref=ref;
+
+        while (true)&#123;
+            SystemClock.sleep(1000);
+            Log.d(&quot;Leak&quot;,ref+&quot;&quot;);
+        &#125;
+    &#125;
+&#125;
+</code></pre>
+<p>Applicatlion内存泄漏<br>((App) getApplication()).leakviews.add(view);</p>
+<pre><code class="hljs">public class App extends Application &#123;
+    public ArrayList&lt;Object&gt; leakviews = new ArrayList&lt;&gt;();
+&#125;
+</code></pre>
+<p>返回键是会finish的，静态会导致内存泄漏</p>
+<pre><code class="hljs">   companion object &#123;
+        @JvmStatic
+        fun start(context: Context) &#123;
+            context.startActivity(Intent(context, SplashActivity::class.java))
+        &#125;
+    &#125;
+</code></pre>
+<p><strong>AsyncTask 的内存泄露</strong><br>里面有线程</p>
+<ul>
+<li>AsyncTask 的内存泄露，其他类型的线程方案（Thread、Executor、HandlerThread）一样都有泄漏，所以不要忽略它们，或者认为 AsyncTask 比别的方案更危险。并没有。</li>
+<li>就算是使用 AsyncTask，只要任务的时间不长（例如 10 秒之内），那就完全没必要做防止内存泄露的处理。</li>
+</ul>
+<p><strong>所有从类外部传来的对象</strong></p>
+<ol>
+<li><p>在Activity中使用非静态的内部类，并开启一个长时间运行的线程，因为内部类持有Activity的引用，会导致Activity长期得不到回收，例如handler（使用静态内部类加上弱引用的方式实现），或者mHandler.removeCallbacksAndMessages(null);</p>
+</li>
+<li><p>单例：由于单例的静态特性使得其生命周期和应用的生命周期一样长，如果一个对象已经不再需要使用了，而单例对象还持有该对象的引用，就会使得该对象不能被正常回收，从而导致了内存泄漏。（使用Application 的context）</p>
+</li>
+<li><p>AsyncTask和Runnable都使用了匿名内部类，那么它们将持有其所在Activity的隐式引用。如果任务在Activity销毁之前还未完成，那么将导致Activity的内存资源无法被回收，从而造成内存泄漏。（将AsyncTask和Runnable类独立出来或者使用静态内部类）</p>
+</li>
+<li><p>listener也要置为null（getViewTreeObserver），在ondestory里ref1没问题，ref2就内存泄漏<br> <img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android%E5%86%85%E5%AD%98%E4%BC%98%E5%8C%96.resources/2023/09/15/18-49-43-dd496c41d503d49dec142e2022f176a2-unknown_filename.1-35efb0.jpeg" srcset="/img/loading.gif" lazyload alt="unknown_filename.1"></p>
+<p> &#x2F;&#x2F;标准的handler写法，静态内部类<br> private static class MyHandler extends Handler {<br>     private WeakReference<Context> reference;<br>     public MyHandler(Context context) {<br>         reference &#x3D; new WeakReference&lt;&gt;(context);<br>     }<br>     @Override<br>     public void handleMessage(Message msg) {<br>         MainActivity activity &#x3D; (MainActivity) reference.get();<br>         if(activity !&#x3D; null){<br> &#x2F;&#x2F;                activity.mTextView.setText(“”);<br>         }<br>     }<br> }<br> &#x2F;&#x2F;标准的单例<br> private static AppManager instance;<br> private Context context;<br> private AppManager(Context context) {<br>     this.context &#x3D; context.getApplicationContext();&#x2F;&#x2F; 使用Application 的context<br> }<br> public static AppManager getInstance(Context context) {<br>     if (instance &#x3D;&#x3D; null) {<br>         instance &#x3D; new AppManager(context);<br>     }<br>     return instance;<br> }</p>
+</li>
+</ol>
+<ul>
+<li>getApplication()用来获取Application实例的，但是这个方法只有在Activity和Service中才能调用的到。比如BroadcastReceiver中也想获得Application的实例，这时就可以借助getApplicationContext()方法，getApplicationContext()比getApplication()方法的作用域会更广一些，任何一个Context的实例，只要调用getApplicationContext()方法都可以拿到我们的Application对象。</li>
+</ul>
+<p>（特别对于Context,View,Fragmet,Activity对象），如果要将其放进类内部的容器对象或者静态类中引用，请一直用WeakReference包装！比如在TabLayout的源码中，在TabLayoutOnPageChangeListener中，就为TabLayout做了WeakReference wrap。<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android%E5%86%85%E5%AD%98%E4%BC%98%E5%8C%96.resources/2023/09/15/18-49-43-92a4462c3b07dfc7942c3fcc6d160dc4-unknown_filename-5b6b3f.jpeg" srcset="/img/loading.gif" lazyload alt="unknown_filename"></p>
+<h4 id="常见的内存泄漏（括号是解决方法）"><a href="#常见的内存泄漏（括号是解决方法）" class="headerlink" title="常见的内存泄漏（括号是解决方法）"></a>常见的内存泄漏（括号是解决方法）</h4><ol>
+<li>资源未关闭造成，BraodcastReceiver，ContentObserver，Cursor，IO，Bitmap（close或取消注册）、线程池shutdown、handlerThread quick.</li>
+<li>使用Handler处理工作线程结果，而不是使用Thread.wait()或者Thread.sleep()来阻塞主线程。</li>
+<li>WebView造成的泄露（当我们不要使用WebView对象时，应该调用它的destory()函数来销毁它，并释放其占用的内存，否则其长期占用的内存也不能被回收，从而造成内存泄露）。在客户端刚启动时，就初始化一个全局的WebView待用，并隐藏；当用户访问了WebView时，直接使用这个WebView加载对应网页，并展示。这种方法可以比较有效的减少初始化WebView的时间。</li>
+<li>属性动画当设置成无限循环时，需要cancel</li>
+<li><strong>不要多余的成员变量或临时变量</strong>。成员变量（全局变量）。activity持有成员变量的引用，比如说arraylist，集合容器中的内存泄露（在退出程序之前，将集合里的东西clear，然后置为null，再退出程序。或者创建成局部变量(短内存泄漏)在堆上，多了也占内存</li>
+</ol>
+<p>view中使用的Context就是当前的Activity，而这个runnable一旦被post，就会一直存在于队列里面，直到时间到了，被执行。<br>MessageQueue -&gt; Message -&gt; Handler -&gt;view -&gt; Activity</p>
+<p><strong>主线程肯定是不会被回收的，只要是运行中的线程都不会被JVM回收，跟静态变量一样被JVM特殊照顾</strong>。<br>Handler都不能算是罪魁祸首，罪魁祸首（根本原因）都是他们的头头——线程。内部类引用就引用吧，无所谓，但是这个内部类是长期存在的就不行<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android%E5%86%85%E5%AD%98%E4%BC%98%E5%8C%96.resources/2023/09/15/18-49-43-7a03ecb64c07e5a1600c55194e5cf24c-unknown_filename.2-63fa83.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.2"></p>
+<p><strong>外部类handler解决方法</strong><br>我们写这个Handler是因为我们要使用它。怎么可以通过这种弱引用的办法去处理这类问题呢？让JVM想回收就回收？！如果这样，那我们还需要在使用Bitmap的时候，recycle()干嘛，还不如直接弄成软引用得了。<br>handler.removeCallbacksAndMessages(null);<br>removeCallbacks(Runnable r)和removeMessages(int what)<br><strong>activity持有handler的引用，handler不是内部类，而handler去做了耗时操作</strong></p>
+<pre><code class="hljs">//不是HandlerThread的用法
+HandlerThread thread = new HandlerThread(&quot;xxx&quot;);
+thread.start();
+Handler handler = new Handler(thread.getLooper());
+handler.postDelayed(new Runnable() &#123;
+    @Override
+    public void run() &#123;
+ view.setVisibility(View.GONE);
+    &#125;
+&#125;, 10000);
+
+thread.quit();
+</code></pre>
+<p><strong>创建Toast和对话框不可以用Application 的context，只能用Activity的context。</strong><br>一个Toast和AlertDialog对应的应该是一个activity，如果activity销毁了，那么这个 Toast或者AlertDialog就应该销毁了，如果传入的是全局的上下文，那么它的生命周期就变成了全局了，这样显然不恰当。</p>
+<p>对象的引用分为四种级别，从而使程序更加灵活的控制对象的生命周期。这四种级别由高到低依次为：强引用、软引用、弱引用和虚引用。</p>
+<p><strong>引用</strong></p>
+<ol>
+<li>强引用是Java的默认引用实现, 它会尽可能长时间的存活于 JVM（虚拟机） 内， 当没有任何对象指向它时（显式地将引用赋值为nul）才会在合适的时间，进行垃圾回收。</li>
+<li>软引用 如果内存空间不足了，就会回收这些对象的内存。</li>
+<li>弱引用 WeakReference  弱引用的对象拥有更短的生命周期，只要垃圾回收器扫描到它，不管内存空间充足与否，都会回收它的内存。</li>
+<li>虚引用 PhantomReference  虚引用和前面的软引用、弱引用不同，它并不影响对象的生命周期。如果一个对象与虚引用关联，则跟没有引用与之关联一样，在任何时候都可能被垃圾回收器回收。<br> <img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android%E5%86%85%E5%AD%98%E4%BC%98%E5%8C%96.resources/2023/09/15/18-49-43-6e545eceaa68471eee7bff2fa842671e-unknown_filename.4-75676e.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.4"></li>
+</ol>
+<p><strong>线程间的可见性的内存泄漏</strong></p>
+<ul>
+<li>java的每个线程有独立的工作内存，他们的工作方式是从主内存将变量读取到自己的工作内存，然后在工作内存中进行逻辑或者自述运算再把变量写回到主内存中。正常情况下各线程的工作内存之间是相互隔离的、不可见的。</li>
+<li>主线程和子线程都有一份这个变量，主线程调用置null，而子线程中的变量没有从主内存中更新，所以对于子线程而言，依然不为null，解决办法就是对这个变量加上volatile 关键字，当更新后，使得子线程立即从主内存中更新。</li>
+</ul>
+<h4 id="三种静态"><a href="#三种静态" class="headerlink" title="三种静态"></a>三种静态</h4><ol>
+<li>静态内部类：尽量不要用一个生命周期长于Activity的对象来持有Activity的引用。声明handler为static，这样内部类就不再持有外部类的引用了，就不会阻塞Activity的释放。在<strong>Activity中尽量避免使用生命周期不受控制的非静态类型的内部类</strong>，可以使用<strong>静态内部类</strong>加上弱引用的方式实现。</li>
+<li>静态变量：不要直接或者间接引用Activity、Service等。这会使用Activity以及它所引用的所有对象无法释放，然后，用户操作时间一长，内存就会狂升。</li>
+<li>静态引用：应该避免 static 成员变量引用资源耗费过多的实例，比如 Context。尽量使用 getApplicationContext，因为 Application 的 Context 的生命周期比较长，引用它不会出现内存泄露的问题，而不是用activity的context。可以通过调用 Context.getApplicationContext() or Activity.getApplication()来获得</li>
+</ol>
+<h4 id="静态方法"><a href="#静态方法" class="headerlink" title="静态方法"></a>静态方法</h4><p><strong>静态对象实例存在于堆中。静态方法在stack，运行完就出栈了<br>静态属性在方法区，局部变量是不能静态的</strong><br>跟普通的一样<br>静态方法不需要new对象，只要class文件被ClassLoader   load进入<strong>JVM的stack</strong>，该静态方法即可被调用。当然此时静态方法是存取不到heap中的对象属性的。  <br>非静态方法执行前，要先new对象，在heap中分配数据，并把stack中的地址指针交给非静态方法，这样程序技术器依次执行指令，而指令代码此时能够访问到heap数据区了。</p>
+<p>每个方法在执行的同时都会创建一个栈帧（Stack Frame）用于存储局部变量表、操作数栈、动态链接、方法出口等信息。每一个方法从调用直至执行完成的过程，就对应着一个栈帧在虚拟机栈中入栈到出栈的过程。</p>
+<p><strong>和静态方法没关系，主要是静态变量持有activity的引用</strong></p>
+<pre><code class="hljs">    public static Fragment newInstance(ArrayList&lt;SpeakKey&gt; data, int parentIndex) &#123;
+        LearnSpeakScoreFragment fragment = new LearnSpeakScoreFragment();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(&quot;data&quot;, data);
+        bundle.putInt(&quot;parentIndex&quot;, parentIndex);
+        fragment.setArguments(bundle);
+        return fragment;
+    &#125;
+</code></pre>
+<p>不会内存泄漏，因为LearnSpeakScoreFragment又没持有activity的引用。方法运行完了就出栈了</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Android/" class="category-chain-item">Android</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Android内存优化</div>
+      <div>http://peiniwan.github.io/2019/12/871a6f949ea1.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>六月的雨</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2019年12月18日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2019/12/64936ff4eee8.html" title="热修复、插件化、组件化">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">热修复、插件化、组件化</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2019/12/22224b8475cc.html" title="Android 构建流程">
+                        <span class="hidden-mobile">Android 构建流程</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

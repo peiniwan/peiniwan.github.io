@@ -1,0 +1,732 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="六月的雨">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="WindowManagerService 简称Wms，WindowManagerService管理窗口的创建、更新和删除，显示顺序等，是WindowManager这个管理接品的真正的实现类。它运行在System_server进程 WindowManager和WMS通过binder进行通讯，真正对Window添加，更新，删除等操作的执行者。 Window(phoneWindow)只控制视图 一个Ac">
+<meta property="og:type" content="article">
+<meta property="og:title" content="WMS">
+<meta property="og:url" content="http://peiniwan.github.io/2023/09/1a8354e30938.html">
+<meta property="og:site_name" content="六月的雨的博客">
+<meta property="og:description" content="WindowManagerService 简称Wms，WindowManagerService管理窗口的创建、更新和删除，显示顺序等，是WindowManager这个管理接品的真正的实现类。它运行在System_server进程 WindowManager和WMS通过binder进行通讯，真正对Window添加，更新，删除等操作的执行者。 Window(phoneWindow)只控制视图 一个Ac">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/picgo/picgo-clipboard-images/2023/09/18/15-27-17-7b8ce2ba48faf7df2be0706ff232c1cc-20230918152716-7c43ff.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%B3%BB%E7%BB%9F%E6%BA%90%E7%A0%81.resources/2023/09/15/18-23-14-56b7a56c9359fd5ba35c627cbbebab1d-unknown_filename.15-c05d02.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/picgo/picgo-clipboard-images/2023-09-19-10-21-6431e8ccbff114ae76ef1b6149cf4eb4-20230919102112-934b78.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/picgo/picgo-clipboard-images/2023/09/19/09-41-33-59c840a8db2599bf274d36fcaf2c37ec-20230919094132-f97565.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/picgo/picgo-clipboard-images/2023-09-19-10-14-4346405659237d9a54803fedd29aba99-20230919101417-d2075f.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/picgo/picgo-clipboard-images/2023-09-19-10-16-fc013925201ce0608a7ccc073247bc91-20230919101628-b0a5f5.png">
+<meta property="article:published_time" content="2023-09-18T07:23:12.000Z">
+<meta property="article:modified_time" content="2023-12-22T06:50:49.645Z">
+<meta property="article:author" content="六月的雨">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/picgo/picgo-clipboard-images/2023/09/18/15-27-17-7b8ce2ba48faf7df2be0706ff232c1cc-20230918152716-7c43ff.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>WMS - 六月的雨的博客</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"peiniwan.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>六月的雨的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="WMS"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-09-18 15:23" pubdate>
+          2023年9月18日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          12 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">WMS</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="WindowManagerService"><a href="#WindowManagerService" class="headerlink" title="WindowManagerService"></a>WindowManagerService</h1><ul>
+<li>简称Wms，WindowManagerService管理窗口的创建、更新和删除，显示顺序等，是WindowManager这个管理接品的真正的实现类。它运行在System_server进程</li>
+<li>WindowManager和WMS通过binder进行通讯，<strong>真正对Window添加，更新，删除等操作的执行者</strong>。</li>
+<li>Window(phoneWindow)只控制视图<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/picgo/picgo-clipboard-images/2023/09/18/15-27-17-7b8ce2ba48faf7df2be0706ff232c1cc-20230918152716-7c43ff.png" srcset="/img/loading.gif" lazyload alt="image.png"></li>
+<li>一个Activity包含一个Window，如果Activity没有Window，那就相当于Service</li>
+<li>Activity只负责生命周期和事件处理</li>
+<li>WindowManager addView方法调 viewRoot，和wms交互，display显示</li>
+</ul>
+<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><h3 id="Window和Activity以及WindowManager什么时候建立的关系？"><a href="#Window和Activity以及WindowManager什么时候建立的关系？" class="headerlink" title="Window和Activity以及WindowManager什么时候建立的关系？"></a>Window和Activity以及WindowManager什么时候建立的关系？</h3><p> 在<em>setContentView</em>里</p>
+<ol>
+<li>new一个PhoneWindow对象并传入当前Activity引用，建立Window和Activity的一一对应关系。此Window是Window类的子类PhoneWindow的实例。Activity在Window中是以mContext属性存在。[[系统源码#[Window WindowManager Activity 之间联系](https &#x2F;&#x2F;github.com&#x2F;maoqitian&#x2F;Nice-Knowledge-System&#x2F;blob&#x2F;master&#x2F;AndroidFramework%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90&#x2F;Android%20%E8%A7%86%E5%9B%BE%E5%B1%82&#x2F;Window%20WindowManager%20Activity%20%E4%B9%8B%E9%97%B4%E8%81%94%E7%B3%BB.md)|具体实现]]</li>
+<li>调用PhoneWindow的setWindowManager方法，在这个方法中让Window和WindowManager建立了一一关系。此WindowManager是<em>WindowManagerImpl</em>的实例</li>
+</ol>
+<h3 id="Window什么时候和View进行关联？"><a href="#Window什么时候和View进行关联？" class="headerlink" title="Window什么时候和View进行关联？"></a>Window什么时候和View进行关联？</h3><p>在<em>setContentView</em>中</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs Java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">setContentView</span><span class="hljs-params">(<span class="hljs-type">int</span> layoutResID)</span> &#123;<br>	...<br>	<span class="hljs-keyword">if</span> (mContentParent == <span class="hljs-literal">null</span>) &#123;<br>		installDecor();<span class="hljs-comment">//注释1</span><br>	&#125; <br>	mLayoutInflater.inflate(layoutResID, mContentParent);<span class="hljs-comment">//注释2</span><br>	...<br>&#125;<br><br><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">installDecor</span><span class="hljs-params">()</span> &#123;<br>	...<br>	<span class="hljs-keyword">if</span> (mDecor == <span class="hljs-literal">null</span>) &#123;<br>		mDecor = generateDecor(-<span class="hljs-number">1</span>);<br>	&#125; <span class="hljs-keyword">else</span> &#123;<br>		mDecor.setWindow(<span class="hljs-built_in">this</span>);<br>	&#125;<br>&#125;<br><br><span class="hljs-keyword">protected</span> DecorView <span class="hljs-title function_">generateDecor</span><span class="hljs-params">(<span class="hljs-type">int</span> featureId)</span> &#123;<br>	...<br>	<span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">DecorView</span>(context, featureId, <span class="hljs-built_in">this</span>, getAttributes());<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+<h3 id="Window有哪些属性？类型？层级关系？z-order？Window标志？"><a href="#Window有哪些属性？类型？层级关系？z-order？Window标志？" class="headerlink" title="Window有哪些属性？类型？层级关系？z-order？Window标志？"></a>Window有哪些属性？类型？层级关系？z-order？Window标志？</h3><ul>
+<li><p>子窗口看名字就知道其是一个窗口的子窗口，所以<strong>不能独立存在，需要依附于父窗口存在</strong>，比如PopupWindow，Dialog等就属于子窗口</p>
+</li>
+<li><p>z-order：在Z轴上处于最高位置</p>
+</li>
+<li><p><strong>类型值越大，越靠近用户</strong>。通过上面分析可知：<strong>系统窗口&gt;子窗口&gt;应用程序窗口</strong>。 这也就是系统窗口会覆盖应用窗口最直接的原因。</p>
+</li>
+<li><p><strong>那么如果多个窗口都是应用程序窗口如何显示呢？</strong> WMS会结合实际情况，去显示窗口合适的层级。<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%B3%BB%E7%BB%9F%E6%BA%90%E7%A0%81.resources/2023/09/15/18-23-14-56b7a56c9359fd5ba35c627cbbebab1d-unknown_filename.15-c05d02.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.15"></p>
+</li>
+</ul>
+<h4 id="Window-软键盘模式（SoftInputModel）"><a href="#Window-软键盘模式（SoftInputModel）" class="headerlink" title="Window 软键盘模式（SoftInputModel）"></a>Window 软键盘模式（SoftInputModel）</h4><p><strong>软键盘也是窗口的一种，属于系统窗口，层级较高，所以在一些场景下会覆盖层级较低的应用窗口</strong>。</p>
+<h3 id="View是如何一步一步添加到屏幕上的？更新？删除呢？"><a href="#View是如何一步一步添加到屏幕上的？更新？删除呢？" class="headerlink" title="View是如何一步一步添加到屏幕上的？更新？删除呢？"></a>View是如何一步一步添加到屏幕上的？更新？删除呢？</h3><p>屏幕中所有的View首先需要经过WindowManager的处理，最后提交给WMS来处理。<br><em>WindowManagerImpl</em></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">WindowManagerImpl</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">WindowManager</span>&#123;<br>	<span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-type">WindowManagerGlobal</span> <span class="hljs-variable">mGlobal</span> <span class="hljs-operator">=</span> WindowManagerGlobal.getInstance();<br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">addView</span><span class="hljs-params">(<span class="hljs-meta">@NonNull</span> View view, <span class="hljs-meta">@NonNull</span> ViewGroup.LayoutParams params)</span> &#123;<br>        applyDefaultToken(params);<br>        mGlobal.addView(view, params, mContext.getDisplay(), mParentWindow);<br>    &#125;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">updateViewLayout</span><span class="hljs-params">(<span class="hljs-meta">@NonNull</span> View view, <span class="hljs-meta">@NonNull</span> ViewGroup.LayoutParams params)</span> &#123;<br>        applyDefaultToken(params);<br>        mGlobal.updateViewLayout(view, params);<br>    &#125;	<br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">removeView</span><span class="hljs-params">(View view)</span> &#123;<br>        mGlobal.removeView(view, <span class="hljs-literal">false</span>);<br>    &#125;<br>	...<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<p>可以看到这三个方法都是委托给了 WindowManagerGlobal 进行处理，这是设计模式中的<strong>桥接模式</strong>[[设计模式2（结构型模式）#桥接模式]]。</p>
+<h4 id="addView"><a href="#addView" class="headerlink" title="addView"></a>addView</h4><p>在onRemuse调用[[系统源码#整个流程]]</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">addView</span><span class="hljs-params">(View view, ViewGroup.LayoutParams params,</span><br><span class="hljs-params">		Display display, Window parentWindow)</span> &#123;<br>	...<br>	ViewRootImpl root;<br>	<span class="hljs-comment">//将params强转为WindowManager.LayoutParams类型</span><br>	<span class="hljs-keyword">final</span> WindowManager.<span class="hljs-type">LayoutParams</span> <span class="hljs-variable">wparams</span> <span class="hljs-operator">=</span> (WindowManager.LayoutParams) params;<br>	<span class="hljs-keyword">synchronized</span> (mLock) &#123;<br>		<br>		<span class="hljs-comment">//创建一个ViewRootImpl对象</span><br>		root = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ViewRootImpl</span>(view.getContext(), display);<br>		<span class="hljs-comment">//给View设置LayoutParams参数</span><br>		view.setLayoutParams(wparams);<br>		mViews.add(view);<br>		<span class="hljs-comment">//存储root到mRoots列表</span><br>		mRoots.add(root);<br>		<span class="hljs-comment">//存储wparams到mParams列表</span><br>		mParams.add(wparams);<br><br>		<span class="hljs-keyword">try</span> &#123;<br>			root.setView(view, wparams, panelParentView);<br>		&#125; <span class="hljs-keyword">catch</span> (RuntimeException e) &#123;<br>			<span class="hljs-comment">// BadTokenException or InvalidDisplayException, clean up.</span><br>			<span class="hljs-keyword">if</span> (index &gt;= <span class="hljs-number">0</span>) &#123;<br>				removeViewLocked(index, <span class="hljs-literal">true</span>);<br>			&#125;<br>			<span class="hljs-keyword">throw</span> e;<br>		&#125;<br>	&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>最后调用了ViewRootImpl的 setView方法</p>
+<p>ViewRootImpl 身负了很多职责：[[系统源码#ViewRootImpl]]</p>
+<ol>
+<li><strong>管理View树，且其是View的根</strong></li>
+<li><strong>触发三大绘制流程：测量，布局，绘制</strong></li>
+<li><strong>输入事件中转站</strong></li>
+<li><strong>管理Surface</strong></li>
+<li><strong>负责与WMS通讯</strong></li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">setView</span><span class="hljs-params">(View view, WindowManager.LayoutParams attrs, View panelParentView)</span> &#123;<br>	...<br>	requestLayout();<span class="hljs-comment">//注释1</span><br>	...<br>	res = mWindowSession.addToDisplay(mWindow, mSeq, mWindowAttributes,<br>                            getHostVisibility(), mDisplay.getDisplayId(),<br>                            mAttachInfo.mContentInsets, mAttachInfo.mStableInsets,<br>                            mAttachInfo.mOutsets, mInputChannel);<span class="hljs-comment">//注释2</span><br>	...<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<p>requestLayout：三大流程[[系统源码#requestLayout 调用 scheduleTraversals]]</p>
+<h4 id="addToDisplay"><a href="#addToDisplay" class="headerlink" title="addToDisplay"></a>addToDisplay</h4><p>将Window添加到屏幕上</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs java">mWindowSession = WindowManagerGlobal.getWindowSession();<br><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> IWindowSession <span class="hljs-title function_">getWindowSession</span><span class="hljs-params">()</span> &#123;<br>    <span class="hljs-keyword">synchronized</span> (WindowManagerGlobal.class) &#123;<br>        <span class="hljs-keyword">if</span> (sWindowSession == <span class="hljs-literal">null</span>) &#123;<br>            <span class="hljs-keyword">try</span> &#123;<br>                <span class="hljs-type">InputMethodManager</span> <span class="hljs-variable">imm</span> <span class="hljs-operator">=</span> InputMethodManager.getInstance();<br>                <span class="hljs-type">IWindowManager</span> <span class="hljs-variable">windowManager</span> <span class="hljs-operator">=</span> getWindowManagerService();<span class="hljs-comment">//1</span><br>                sWindowSession = windowManager.openSession(<span class="hljs-comment">//2</span><br>                        <span class="hljs-keyword">new</span> <span class="hljs-title class_">IWindowSessionCallback</span>.Stub() &#123;<br>                                <span class="hljs-meta">@Override</span><br>                                <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">onAnimatorScaleChanged</span><span class="hljs-params">(<span class="hljs-type">float</span> scale)</span> &#123;<br>                                        ValueAnimator.setDurationScale(scale);<br>                                &#125;<br>                        &#125;,<br>                        imm.getClient(), imm.getInputContext());<br>            &#125; <span class="hljs-keyword">catch</span> (RemoteException e) &#123;<br>                <span class="hljs-keyword">throw</span> e.rethrowFromSystemServer();<br>            &#125;<br>        &#125;<br>        <span class="hljs-keyword">return</span> sWindowSession;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>mWindowSession是IWindowSession（<strong>看到i就是代理</strong>）类型的，它是一个binder对象，用于进程间通讯，IWindowSession是C端代理，在S端使用的是Session类实现。addToDisplay运行在<em>WMS进程</em>中。</p>
+<p>&#x3D;&#x3D;调用WMS的addWindow方法添加Window，在WMS眼里，一切View都是以Window形式存在的， 剩下的工作就交由WMS进行处理了&#x3D;&#x3D;</p>
+<blockquote>
+<p> 在WMS中会为这个Window分配Surface，并确定显示层级， 可见负责显示界面的是画布Surface，而不是窗口本身，WMS将他管理的Surface交由SurfaceFlinger处理，SurfaceFlinger将这些Surface合并后放入到buffer中，屏幕会定时从buffer中获取显示数据，显示到屏幕上。removeView也是WMS处理的</p>
+</blockquote>
+<h2 id="WMS中窗口容器树的概念"><a href="#WMS中窗口容器树的概念" class="headerlink" title="WMS中窗口容器树的概念"></a>WMS中窗口容器树的概念</h2><p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/picgo/picgo-clipboard-images/2023-09-19-10-21-6431e8ccbff114ae76ef1b6149cf4eb4-20230919102112-934b78.png" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<p><strong>容器</strong>：这个大家都熟悉，在WMS中通过继承WindowContainer类来实现容器机制：</p>
+<p>而<strong>树</strong>就是说每个容器在作为父容器的时候，同时也可能是其他容器的子容器。<br><em>树结构</em><br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/picgo/picgo-clipboard-images/2023/09/19/09-41-33-59c840a8db2599bf274d36fcaf2c37ec-20230919094132-f97565.png" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<h3 id="WindowToken"><a href="#WindowToken" class="headerlink" title="WindowToken"></a>WindowToken</h3><p>WindowToken在窗口体系中有<strong>两个作用</strong>：</p>
+<ul>
+<li>1.<strong>应用组件标识</strong>：将属于同一个应用组件的窗口组织在一起，这里的应用组件可以是：Activity、InputMethod、Wallpaper以及Dream。 WMS在对窗口的管理过程中：用WindowToken来指代一个应用组件。例如在进行窗口的Z-Order排序时，属于同一个WindowToken的窗口会被安排在一起。</li>
+<li>2.<strong>令牌作用</strong>：WindowToken由应用组件或其管理者负责向WMS声明并持有，应用组件在需要更新窗口时，需要向WMS提供令牌表明自己的身份， 并且窗口的类型必须与所持有的WindowToken的类型一致。</li>
+</ul>
+<p><strong>但是系统窗口是个例外，并不需要提供token，WMS会隐式声明一个WindowToken</strong>。<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/picgo/picgo-clipboard-images/2023-09-19-10-14-4346405659237d9a54803fedd29aba99-20230919101417-d2075f.png" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<h2 id="输入事件处理"><a href="#输入事件处理" class="headerlink" title="输入事件处理"></a>输入事件处理</h2><p>[[触摸反馈、input#INPUT]]<br>通过<strong>sockets</strong>通信<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/picgo/picgo-clipboard-images/2023-09-19-10-16-fc013925201ce0608a7ccc073247bc91-20230919101628-b0a5f5.png" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<h2 id="Surface管理"><a href="#Surface管理" class="headerlink" title="Surface管理"></a>Surface管理</h2><p>WMS负责创建Surface以及对Surface的摆放工作，之后将Surface提交给SurfaceFlinger进行合并。 <strong>在App层也创建了一个Surface对象，但是那个是空对象，用于WMS的填充</strong>。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%BA%90%E7%A0%81/" class="category-chain-item">源码</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>WMS</div>
+      <div>http://peiniwan.github.io/2023/09/1a8354e30938.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>六月的雨</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年9月18日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/09/64c26323c36e.html" title="UML类图基本图示法">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">UML类图基本图示法</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/09/b88b925fb07e.html" title="内存泄漏简单问，你能答对吗">
+                        <span class="hidden-mobile">内存泄漏简单问，你能答对吗</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

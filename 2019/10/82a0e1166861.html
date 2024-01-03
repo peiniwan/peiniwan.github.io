@@ -1,0 +1,912 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="六月的雨">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Handler、AsyncTask好文章：温故而知新 | 打破Handler问到底Choreographer 是 Android 4.1 新增的机制，用于配合系统的 VSYNC 中断信号。它本质是一个 Java 类，如果直译的话为舞蹈指导，Choreographer 可以接收系统的 VSYNC 信号，统一管理应用的输入、动画和绘制等任务的执行时机。业界一般通过它来监控应用的帧率。 作者：godli">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Handler、AsyncTask">
+<meta property="og:url" content="http://peiniwan.github.io/2019/10/82a0e1166861.html">
+<meta property="og:site_name" content="六月的雨的博客">
+<meta property="og:description" content="Handler、AsyncTask好文章：温故而知新 | 打破Handler问到底Choreographer 是 Android 4.1 新增的机制，用于配合系统的 VSYNC 中断信号。它本质是一个 Java 类，如果直译的话为舞蹈指导，Choreographer 可以接收系统的 VSYNC 信号，统一管理应用的输入、动画和绘制等任务的执行时机。业界一般通过它来监控应用的帧率。 作者：godli">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Handler%E3%80%81AsyncTask.resources/2023/09/18/09-57-37-0836bfe65e021000ce85edcc00a4ba45-unknown_filename.3-ad1dc1.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Handler%E3%80%81AsyncTask.resources/2023/09/18/09-57-37-07df94d5805778519106c874b9bea70f-unknown_filename.2-444aa1.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Handler%E3%80%81AsyncTask.resources/2023/09/18/09-57-37-565116f8521b84be2c0d9d78e7e10e90-unknown_filename.4-4bd720.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Handler%E3%80%81AsyncTask.resources/2023/09/18/09-57-37-e1ed557b52118050a4949f22a5936405-unknown_filename.5-84dd59.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Handler%E3%80%81AsyncTask.resources/2023/09/18/09-57-37-f457ff1fd65a0c78c2b0f964d4cafb27-unknown_filename.1-96b6f1.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Handler%E3%80%81AsyncTask.resources/2023/09/18/09-57-37-c20ab3939e02e0cc66175e64f3ccca83-Image-f61a65.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Handler%E3%80%81AsyncTask.resources/2023/09/18/09-57-37-5e55467d4b93015ab0bebebdd9f8966d-unknown_filename-d497af.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Handler%E3%80%81AsyncTask.resources/2023/09/18/09-57-37-316c10eb3157921780472e15034a081f-unknown_filename.6-268a33.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Handler%E3%80%81AsyncTask.resources/2023/09/18/09-57-37-9e542271605db928663ee3bf29a5bec6-unknown_filename.7-2d3b79.png">
+<meta property="article:published_time" content="2019-10-29T14:59:25.000Z">
+<meta property="article:modified_time" content="2023-12-29T08:07:18.133Z">
+<meta property="article:author" content="六月的雨">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Handler%E3%80%81AsyncTask.resources/2023/09/18/09-57-37-0836bfe65e021000ce85edcc00a4ba45-unknown_filename.3-ad1dc1.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>Handler、AsyncTask - 六月的雨的博客</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"peiniwan.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>六月的雨的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Handler、AsyncTask"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2019-10-29 22:59" pubdate>
+          2019年10月29日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          4.2k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          35 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Handler、AsyncTask</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="Handler、AsyncTask"><a href="#Handler、AsyncTask" class="headerlink" title="Handler、AsyncTask"></a>Handler、AsyncTask</h1><p><a target="_blank" rel="noopener" href="https://juejin.cn/post/6943048240291905549?utm_source=gold_browser_extension#heading-16">好文章：温故而知新 | 打破Handler问到底</a><br>Choreographer 是 Android 4.1 新增的机制，用于配合系统的 VSYNC 中断信号。它本质是一个 Java 类，如果直译的话为舞蹈指导，Choreographer 可以接收系统的 VSYNC 信号，统一管理应用的输入、动画和绘制等任务的执行时机。业界一般通过它来监控应用的帧率。</p>
+<p>作者：godliness<br>链接：<a target="_blank" rel="noopener" href="https://www.jianshu.com/p/86d00bbdaf60">https://www.jianshu.com/p/86d00bbdaf60</a><br>来源：简书<br>著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。</p>
+<h3 id="为什么要使用Handler"><a href="#为什么要使用Handler" class="headerlink" title="为什么要使用Handler"></a>为什么要使用Handler</h3><p>Android在主线程是不能加载网络数据或图片、数据库查询、复杂业务逻辑处理以及费时任务操作，因为Android的UI操作并不是线程安全的，并且所有涉及UI的操作必须在UI线程中完成。Android应用在5s内无响应的话会导致ANR(Application Not Response)</p>
+<p>Java指定某个线程执行？不行。必须写循环</p>
+<h3 id="为什么不能在子线程里刷新UI"><a href="#为什么不能在子线程里刷新UI" class="headerlink" title="为什么不能在子线程里刷新UI"></a>为什么不能在子线程里刷新UI</h3><p>setText()、setImageView()、setVisibility()等等等等，不管你调用的什么方法，它都会去调用 ViewRootImpl 中的 checkThread()，所以关键在于checkThread()这个方法<br>checkThread只是强制在主线程里运行，防止不同线程都刷新UI，产生错误的问题。<strong>如果自己在子线程创建handle的话就没有问题</strong></p>
+<p>UI控件非线程安全，在多线程中并发访问可能会导致UI控件处于不可预期的状态。而不对UI控件的访问加上锁机制的原因有：上锁会让UI控件变得复杂和低效。上锁后会阻塞某些进程的执行</p>
+<h3 id="在子线程中更新-UI-不报错的几种⽅式"><a href="#在子线程中更新-UI-不报错的几种⽅式" class="headerlink" title="在子线程中更新 UI 不报错的几种⽅式"></a>在子线程中更新 UI 不报错的几种⽅式</h3><ol>
+<li>主线程申请成功后⼦线程申请<br> <img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Handler%E3%80%81AsyncTask.resources/2023/09/18/09-57-37-0836bfe65e021000ce85edcc00a4ba45-unknown_filename.3-ad1dc1.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.3"></li>
+<li>在⼦线程中创建 ViewRootImpl，自己创建，最好不要这么做<br> <img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Handler%E3%80%81AsyncTask.resources/2023/09/18/09-57-37-07df94d5805778519106c874b9bea70f-unknown_filename.2-444aa1.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.2"><br> <img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Handler%E3%80%81AsyncTask.resources/2023/09/18/09-57-37-565116f8521b84be2c0d9d78e7e10e90-unknown_filename.4-4bd720.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.4"></li>
+<li>利⽤硬件加速<br> 在硬件加速的⽀持下，如果控件只是经常了 invalidate() ，⽽没有触发 <strong>requestLayout() 是不会<br> 触发 ViewRootImpl#checkThread() 的。</strong></li>
+<li>SurfaceView<br> Android 中有⼀个控件 SurfaceView ，它可以通过 holder 获得 canvas 对象，可以直接在⼦线程中更新 UI。<br> <img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Handler%E3%80%81AsyncTask.resources/2023/09/18/09-57-37-e1ed557b52118050a4949f22a5936405-unknown_filename.5-84dd59.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.5"></li>
+</ol>
+<h3 id="Android-的-Handler-机制"><a href="#Android-的-Handler-机制" class="headerlink" title="Android 的 Handler 机制"></a>Android 的 Handler 机制</h3><p>本质：在某个指定的运行中的线程上执行代码<br>思路：在接受任务的线程上执行循环判断<br>Looper：负责循环、条件判断和任务执行<br>Handler：负责任务的定制和线程间传递</p>
+<p><strong>Service 和 IntentService</strong><br>管理多个后台任务用服务，它里面有context用起来方便<br>Service：后台任务的活动空间。适用场景：音乐播放器等。<br>IntentService：执⾏行单个任务后自动关闭的 Service。<br>IntentService：首先，它是一个 Service；另外，它在处理线程本身，没有比Executor 有任何优势</p>
+<p><strong>Executor、AsyncTask、HandlerThead、IntentService 的选择</strong><br>原则：哪个简单用哪个</p>
+<ul>
+<li>能用 Executor 就用 Executor</li>
+<li>需要用到「后台线程推送任务到 UI 线程」时，再考虑 AsyncTask 或者 Handler</li>
+<li>HandlerThread 的使用场景：原本它设计的使用场景是「在已经运行的指定线程上执行代码」，但现实开发中，除了主线程之外，几乎没有这种需求，因为HandlerThread 和 Executor 相比在实际应用中并没什么优势，反而用起来会麻烦一点。不过，这二者喜欢用谁就用谁吧。</li>
+</ul>
+<p><strong>关于 Executor 和 HandlerThread 的关闭</strong><br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Handler%E3%80%81AsyncTask.resources/2023/09/18/09-57-37-f457ff1fd65a0c78c2b0f964d4cafb27-unknown_filename.1-96b6f1.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.1"></p>
+<h3 id="Handler流程"><a href="#Handler流程" class="headerlink" title="Handler流程"></a>Handler流程</h3><p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Handler%E3%80%81AsyncTask.resources/2023/09/18/09-57-37-c20ab3939e02e0cc66175e64f3ccca83-Image-f61a65.png" srcset="/img/loading.gif" lazyload alt="Image"></p>
+<ul>
+<li>一般会在子线程中创建message对象，通过handler的sendmessage方法把消息发送到messageQueue队列（单链表）里，队列是先进先出的</li>
+<li>在队列里通过enqueueMessage方法对所有的message按时间为顺序从小到大排列(通过msg.next)，如果发现刚才发送的message排在队列的最前头，就唤醒主线程，让主线程去取(looper)</li>
+<li>在主线程的activityThraead类默认已经创建looper对象，在new looper的时候构造方法里创建了messagequeue对象。</li>
+<li>looper调用ooper.loop方法（一直是主线程里），里面又不停的调用queue.next方法，从messagequeue里取消息（for (;;) ），这是个阻塞式方法（死循环）</li>
+<li>取到消息后通过msg.tagre（也就是Handler）.dispatchMessage方法分发消息，（handler的引用被lopper持有，handle的方法也在主线程，看下面）里面又调用了handlermessage方法将消息交给handler处理，刷新ui</li>
+</ul>
+<p>MessageQueue.enqueueMessage 代码</p>
+<p><strong>如何从子线程切换到主线程的？</strong><br>线程间是共享资源的</p>
+<ul>
+<li>handler将自己的引用间接被Looper持有，handler的构造函数里有looper，是主线程的looper。</li>
+<li>所以handler.sendMessage()，这里handler在主线程。</li>
+<li>当Looper在主线程调用loop()方法时，该方法会取出handler并调用其handleMessage()方法，这样就切换到了主线程。</li>
+<li>handler 的创建的时候采用的是当前线程的 Looper 来构造消息系统，Looper 在哪个线程创建,就在哪个线程绑定,并且handler是在他关联的消息系统来处理的。</li>
+</ul>
+<h3 id="handler与looper"><a href="#handler与looper" class="headerlink" title="handler与looper"></a>handler与looper</h3><p>handler与looper是多对一的关系，把Message的target置为当前发送的Handler，以便Looper取到message后根据target把message分发给正确的Handler （ msg.target &#x3D; this）</p>
+<ol>
+<li>一个线程有几个 Handler？<br> 答：一个线程可以用有多 Handler，因为 Handler 最终是被 Message 持用的（post 里面的 Runnable 最终也会被包装成一个 Message），以便 Looper 在拿到 Message 后调用 Handler 的 dispatchMessage 完成回调，而且项目中仔细去看也确实如此，我们可以每个 Activity 中都创建一个 Handler 来处理回调到主线程的任务。</li>
+<li>一个线程有几个 Looper？如何保证？<br> 答：<strong>一个线程</strong>只能拥有一个 Looper，这里从源码中就可以看到，sThreadLocal.set 只调用了一次，如果再次调用 prepare 会判断 sThreadLocal.get 是否为空，如果不为空就直接抛出异常了，也就是同一线程多次调用 prepare 方法会直接崩溃，这里也是避免了程序去修改某个线程已经设置好的 Looper 值。</li>
+</ol>
+<h3 id="在子线程使用"><a href="#在子线程使用" class="headerlink" title="在子线程使用"></a>在子线程使用</h3><p>为何主线程可以使用 Handler？<br>先来看下面的源码，Handler 的构造中（无论调用哪个最终都会走到这里），是需要判断当前线程是否存在 Looper 的，如果不存在会直接抛出异常，主线程之所以可以使用 Handler 是因为系统帮在 ActivityThread 中已经帮我们创建了 Looper 并且已经让它运行了起来。</p>
+<ul>
+<li><p>loop()方法是在Looper.prepare()之后，作用是不断从MessageQueue中去取消息，在Activity的启动代码中，已经在当前UI线程调用了Looper.prepare()和Looper.loop()方法，如果是在子线程需要创建handler必须在前面 Looper.prepare() ，后面加上 Looper.loop();</p>
+</li>
+<li><p>只有调用了Looper.prepare()方法，才会构造一个Looper对象并在 ThreadLocal 存储当前线的 Looper 对象。</p>
+<p>  new Thread(new Runnable() {<br>              @Override<br>              public void run() {<br>                  Looper.prepare();&#x2F;&#x2F;Looper初始化<br>                  &#x2F;&#x2F;Handler初始化 需要注意, Handler初始化传入Looper对象是子线程中缓存的Looper对象<br>                  mHandler &#x3D; new Handler(Looper.myLooper());<br>                  Looper.loop();&#x2F;&#x2F;死循环<br>                  &#x2F;&#x2F;注意: Looper.loop()之后的位置代码在Looper退出之前不会执行,(并非永远不执行)<br>              }<br>          }).start();</p>
+</li>
+</ul>
+<h4 id="HandlerThread"><a href="#HandlerThread" class="headerlink" title="HandlerThread"></a>HandlerThread</h4><p>为了让我们在子线程里面更方便的使用Handler</p>
+<p>HandlerThread就是一个单线程，和new singinthreadExecutor效果一样。<br>IntentService就是用的HandlerThread<br>HandlerThread 自己做了prepare和loop</p>
+<pre><code class="hljs">// 步骤1：创建HandlerThread实例对象
+// 传入参数 = 线程名字，作用 = 标记该线程
+HandlerThread thread = new HandlerThread(&quot;xxx&quot;);
+// 步骤2：启动线程
+thread.start();
+
+class ChildCallback implements Handler.Callback &#123;
+        @Override
+        public boolean handleMessage(Message msg) &#123;
+            //在子线程中进行相应的网络请求，这在子线程
+            //然后通知主线程的handler去更新UI
+            mUIHandler.sendMessage(msg1);
+            return false;
+        &#125;
+    &#125;
+ 
+ // 步骤3：创建子线程Handler &amp; 复写handleMessage（）
+Handler childHandler = new Handler(handlerThread.getLooper(),new ChildCallback());
+
+// 步骤4：使用子线程Handler向子线程的消息队列发送消息
+  Message msg = Message.obtain();
+  msg.what = 2; //消息的标识
+  msg.obj = &quot;B&quot;; // 消息的存放
+  childHandler.sendMessage(msg);
+  
+  
+  // 步骤5：结束线程，即停止线程的消息循环
+  mHandlerThread.quit();
+</code></pre>
+<p><strong>HandlerThread使用场景</strong><br>例如请求网络，每次 new Thread。然后start()。handlerthread不需要重新创建，一直进行操作。 处理任务是串行执行，按消息发送顺序进行处理。</p>
+<h3 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h3><h4 id="postdelay"><a href="#postdelay" class="headerlink" title="postdelay"></a>postdelay</h4><p>同步屏障：玩安卓</p>
+<ul>
+<li><p>postDelay本质还是交给 MessageQueue 去处理的,然后在 next 方法里面,调用 nativePollOnce 进行阻塞,nativePollOnce 类似 Object 的 wait 方法,只不过用了 native 方法对线程精确时间的唤醒。</p>
+</li>
+<li><p>如果是异步消息起作用，就得开启同步障碍，同步障碍会阻碍同步消息，只允许通过异步消息,具体可以参考postSyncBarrier源码</p>
+</li>
+<li><p>把消息放到过5秒再放到消息队列里，遍历循环链表找到最后一个时间比当前要插入的消息的时间小的消息。</p>
+<p>  Message prev &#x3D; null;<br>  Message p &#x3D; mMessages;<br>  if (when !&#x3D; 0) {   <br>  while (p !&#x3D; null &amp;&amp; p.when &lt;&#x3D; when) {       <br>  prev &#x3D; p;      <br>  p &#x3D; p.next;   <br>  }}<br>  if (prev !&#x3D; null) {<br>  p &#x3D;&#x3D; prev.next   <br>  msg.next &#x3D; p;   <br>  prev.next &#x3D; msg;<br>  } else {   <br>  msg.next &#x3D; p;   <br>  mMessages &#x3D; msg;<br>  }</p>
+</li>
+</ul>
+<p><strong>你 post 一个 Runnable ，在下一帧就可以拿到了</strong><br>这个说不准，如果上一条Message在callback中sleep了5秒，那就在5秒之后才会取出咯。。。<br>说到屏幕刷新（也就是这个“下一帧”），在View中倒是有个方法可以让Runnable在下一次屏幕刷新时执行，它就是：postOnAnimation(Runnable action)！<br>相信很多同学在看View类源码的时候都会看到过它的身影，比如RecyclerView在处理惯性滚动时就会反复调用这个方法（在每一次屏幕刷新时才计算滚动后的坐标值，而不是开子线程去不停计算，以节省资源）</p>
+<p><strong>activity的runOnUiThread方法一样</strong></p>
+<pre><code class="hljs">   public final void runOnUiThread(Runnable action) &#123;
+        if (Thread.currentThread() != mUiThread) &#123;
+            mHandler.post(action);
+        &#125; else &#123;
+            action.run();
+        &#125;
+    &#125;
+</code></pre>
+<ul>
+<li>View.post(Runnable r)、runOnUiThread调用了Handler的post方法，而handler就是处理这个的。<br>  子线程是无法toast、dialog的，应该用handler切换会主线程处理</li>
+</ul>
+<p><strong>关于new Handler()与new Handler(Looper.getMainLooper())区别</strong><br>要刷新UI，handler要用到主线程的Looper对象。那么在主线程Handler handler&#x3D;new Handler() 如果在其他非主线程也要满足这个功能的话，要Handler handler&#x3D;new Handler(Looper.getMainLooper());</p>
+<h4 id="IdleHandler-（别主动说了）"><a href="#IdleHandler-（别主动说了）" class="headerlink" title="IdleHandler （别主动说了）"></a>IdleHandler （别主动说了）</h4><ul>
+<li><p>当MessageQueue没有消息的时候，就会阻塞在next方法中，其实在阻塞之前，MessageQueue还会做一件事，就是检查是否存在IdleHandler，如果有，就会去执行它的queueIdle方法。</p>
+</li>
+<li><p>Android本身提供的 Activity 框架和 Fragment 框架并没有提供绘制完成的回调,onResume是用户可交互，不一定绘制完成。所以如果我们想在界面绘制出来后做点什么，那么在<strong>onResume里面显然是不合适的，它先于measure等流程了</strong>。</p>
+</li>
+<li><p>Idle就是队列为空的意思，那么我们的onResume和measure, layout, draw都是一个个message的话，这个IdleHandler就提供了一个它们都执行完毕的回调了<br>  <img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Handler%E3%80%81AsyncTask.resources/2023/09/18/09-57-37-5e55467d4b93015ab0bebebdd9f8966d-unknown_filename-d497af.png" srcset="/img/loading.gif" lazyload alt="unknown_filename"></p>
+</li>
+<li><p>IdleHandler 可以用来提升性能，主要用在我们希望能够在当前线程消息队列空闲时做些事情（譬如 UI 线程在显示完成后，如果线程空闲我们就可以提前准备其他内容）的情况下，不过最好不要做耗时操作。具体用法如下。</p>
+<p>  &#x2F;&#x2F;getMainLooper().myQueue()或者Looper.myQueue()<br>  Looper.myQueue().addIdleHandler(new IdleHandler() {<br>  @Override<br>  public boolean queueIdle() {<br>      &#x2F;&#x2F;你要处理的事情<br>      return false;<br>  }<br>  });</p>
+</li>
+</ul>
+<p>常见的使用场景有：启动优化。<br>我们一般会把一些事件（比如界面view的绘制、赋值）放到onCreate方法或者onResume方法中。 但是这两个方法其实都是在界面绘制之前调用的，也就是说一定程度上这两个方法的耗时会影响到启动时间。<br>所以我们可以把一些操作放到IdleHandler中，也就是界面绘制完成之后才去调用，这样就能减少启动时间了。<br>但是，这里需要注意下可能会有坑。一直绘制啥的，可能不执行</p>
+<p><strong>既然可以存在多个 Handler 往 MessageQueue 中添加数据（发消息时各个 Handler 可能处于不同线程），那它内部是如何确保线程安全的？</strong><br>这里主要关注 MessageQueue 的消息存取即可，看源码内部的话，在往消息队列里面存储消息时，会拿当前的 MessageQueue 对象作为锁对象，这样通过加锁就可以确保操作的原子性和可见性了。<br>消息的读取也是同理，也会拿当前的 MessageQueue 对象作为锁对象，来保证多线程读写的一个安全性。<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Handler%E3%80%81AsyncTask.resources/2023/09/18/09-57-37-316c10eb3157921780472e15034a081f-unknown_filename.6-268a33.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.6"></p>
+<p><strong>主线程 Looper 与子线程 Looper 有什么不同？</strong><br>主要的区别还在在于 Looper 的 loop 循环是否能够退出，主线程创建时传入的 quitAllowed 是 false（不能退出）。而子线程是paper(true)，这是是指自己调MessageQueue的quit()方法能否退出，跟死循环没关系<br>主线程中，一般情况下肯定不能退出，因为退出后主线程就停止了。所以是当APP需要退出的时候，就会调用quit方法<br>子线程中，如果消息都处理完了，就需要调用quit方法停止消息循环。</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Handler%E3%80%81AsyncTask.resources/2023/09/18/09-57-37-9e542271605db928663ee3bf29a5bec6-unknown_filename.7-2d3b79.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.7"></p>
+<h4 id="自定义简单Handler"><a href="#自定义简单Handler" class="headerlink" title="自定义简单Handler"></a>自定义简单Handler</h4><pre><code class="hljs">public class CustomizableThreadDemo implements TestDemo &#123;
+    private CustomizableThread thread = new CustomizableThread();
+
+    @Override
+    public void runTest() &#123;
+        thread.start();
+        try &#123;
+            Thread.sleep(2000);
+        &#125; catch (InterruptedException e) &#123;
+            e.printStackTrace();
+        &#125;
+
+    &#125;
+
+    class CustomizableThread extends Thread &#123;
+        Looper looper = new Looper();
+
+        @Override
+        public void run() &#123;
+            looper.loop();
+        &#125;
+    &#125;
+
+    class Looper &#123;
+        private volatile boolean quit;
+        private Runnable task;
+
+        synchronized void setTask(Runnable task) &#123;
+            this.task = task;
+        &#125;
+
+        void quit() &#123;
+            quit = true;
+        &#125;
+
+        void loop() &#123;
+            while (!quit) &#123;
+                synchronized (this) &#123;
+                    if (task != null) &#123;
+                        task.run();
+                        task = null;
+                    &#125;
+                &#125;
+            &#125;
+        &#125;
+    &#125;
+&#125;
+</code></pre>
+<h3 id="AsyncTask"><a href="#AsyncTask" class="headerlink" title="AsyncTask"></a>AsyncTask</h3><h4 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h4><ul>
+<li><p>AsyncTask的特点是任务在主线程之外运行，而回调方法是在主线程中执行，AsyncTask其实使用handler来实现异步任务的，它是一个抽象类，AsyncTask的execute在主线程中首先调用了onPreExecute做预备工作，在子线程中调用了doInBackground方法去做耗时操作，返回的数据通过Message.obtain(handler, ON_POST_MSG, result).sendToTarget()发送在主线程里</p>
+</li>
+<li><p>handle的handleMessage方法调用了onPostExecute，更新ui</p>
+</li>
+<li><p>AsyncTask定义了三种泛型类型 Params，Progress和Result。 Params 启动任务执行的输入参数，比如HTTP请求的URL。 Progress 后台任务执行的百分比。 Result 后台执行任务最终返回的结果，比如String。 子类必须实现抽象方法doInBackground(Params… p) ，在此方法中实现任务的执行工作，比如连接网络获取数据等。通常还应 该实现onPostExecute(Result r)方法，因为应用程序关心的结果在此方法中返回。需要注意的是AsyncTask一定要在主线程中创 建实例。</p>
+<p>  public abstract class MyAsynTask {<br>      protected static final int ON_POST_MSG &#x3D; 0;<br>      private MyHandler handler;</p>
+<p>      &#x2F;&#x2F; 运行在主线程中，做准备工作<br>      protected abstract void onPreExecute();</p>
+<p>      &#x2F;&#x2F; 运行在子线程中，做耗时操作<br>      protected abstract String doInBackground(String s);</p>
+<p>      &#x2F;&#x2F; 运行在主线程中，耗时操作完成，更新ui<br>      protected abstract void onPostExecute(String s);</p>
+<p>      public MyAsynTask() {<br>          handler &#x3D; new MyHandler();<br>      }</p>
+<p>      public void execute(final String… strs) {<br>          onPreExecute();<br>          new Thread(new Runnable() {<br>              @Override<br>              public void run() {<br>                  String result &#x3D; doInBackground(strs[0]);<br>                  Message.obtain(handler, ON_POST_MSG, result).sendToTarget();<br>              }<br>          }).start();<br>      }</p>
+<p>      class MyHandler extends Handler {<br>          @Override<br>          public void handleMessage(Message msg) {<br>              switch (msg.what) {<br>              case ON_POST_MSG:<br>                  String result &#x3D; (String) msg.obj;<br>                  onPostExecute(result);<br>                  break;<br>              default:<br>                  break;<br>              }<br>              super.handleMessage(msg);<br>          }<br>      }<br>  }</p>
+</li>
+</ul>
+<p>MainActivity</p>
+<pre><code class="hljs">public class MainActivity extends Activity &#123;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) &#123;
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+    &#125;
+
+    public void click(View v) &#123;
+        new MyAsynTask() &#123;
+            @Override
+            protected void onPreExecute() &#123;
+                printLog(&quot;我在做准备操作&quot;);
+                Toast.makeText(getApplication(), &quot;我在做准备操作&quot;, 0).show();
+            &#125;
+
+
+            @Override
+            protected void onPostExecute(String s) &#123;
+                printLog(&quot;我接收到了结果：&quot; + s);
+                Toast.makeText(getApplication(), &quot;我接收到了结果&quot;, 0).show();
+            &#125;
+
+
+            @Override
+            protected String doInBackground(String s) &#123;
+                try &#123;
+                    Thread.sleep(5000);
+                &#125; catch (InterruptedException e) &#123;
+                    e.printStackTrace();
+                &#125;
+                printLog(&quot;我在访问网络,参数是：&quot; + s);
+                return s + &quot;返回&quot;;
+            &#125;
+        &#125;.execute(new String[] &#123; &quot;param1&quot;, &quot;param2&quot; &#125;);
+    &#125;
+
+    public void printLog(String log) &#123;
+        System.out.println(Thread.currentThread().getName() + &quot;:说:&quot; + log);
+    &#125;
+
+&#125;
+</code></pre>
+<h4 id="AsyncTask的优缺点"><a href="#AsyncTask的优缺点" class="headerlink" title="AsyncTask的优缺点"></a>AsyncTask的优缺点</h4><p>使用的优点:简单、快捷、过程可控      <br>使用的缺点:</p>
+<ul>
+<li><p>AsyncTask的缺陷:可以分为两个部分说，在3.0以前，最大支持128个线程的并发，每次开启10个，5个同时运行，当开第129就会奔溃。在3.0以后，无论有多少任务，都会在其内部单线程执行。在执行多个异步操作时，一个运行其他的就得等待，需要自己开启线程池，比较麻烦，</p>
+</li>
+<li><p>每次当一个任务执行完毕后，下一个任务才会得到执行，SerialExecutor模仿的是单一线程池的效果，如果我们快速地启动了很多任务，同一时刻只会有一个线程正在执行，其余的均处于等待状态。</p>
+</li>
+<li><p>在使用多个异步操作和并需要进行Ui变更时,就变得复杂起来.</p>
+</li>
+<li><p>AsynTask为什么要设计为只能够一次任务？最核心的还是线程安全问题，多个子线程同时运行，会产生状态不一致的问题。所以要务必保证只能够执行一次<br>  <strong>新版不对</strong></p>
+<p>  private static final int CORE_POOL_SIZE &#x3D; Math.max(2,<br>  Math.min(CPU_COUNT - 1, 4));&#x2F;&#x2F;最大2</p>
+<p>  static {<br>      ThreadPoolExecutor threadPoolExecutor &#x3D; new ThreadPoolExecutor(<br>              CORE_POOL_SIZE, MAXIMUM_POOL_SIZE, KEEP_ALIVE_SECONDS, TimeUnit.SECONDS,<br>              sPoolWorkQueue, sThreadFactory);<br>      threadPoolExecutor.allowCoreThreadTimeOut(true);<br>      THREAD_POOL_EXECUTOR &#x3D; threadPoolExecutor;<br>  }</p>
+</li>
+</ul>
+<p>Handler的优缺点<br>使用的优点：<br>结构清晰，功能定义明确<br>对于多个后台任务时，简单，清晰<br>使用的缺点：<br>在单个后台异步处理时，显得代码过多，结构过于复杂（相对性）</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%BA%90%E7%A0%81/" class="category-chain-item">源码</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Handler、AsyncTask</div>
+      <div>http://peiniwan.github.io/2019/10/82a0e1166861.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>六月的雨</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2019年10月29日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2019/11/34c0411649f7.html" title="触摸反馈、input">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">触摸反馈、input</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2019/10/c7cbc247409f.html" title="Android动画">
+                        <span class="hidden-mobile">Android动画</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

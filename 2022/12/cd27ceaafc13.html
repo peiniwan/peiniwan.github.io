@@ -1,0 +1,871 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="六月的雨">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Flutter分享Flutter简介Flutter 是 Google 推出并开源的移动应用开发框架，帮助开发者通过一套代码库高效构建多平台应用，支持 iOS、Android、Web、Windows、macOS、Linux、Fuchsia 优点 跨平台：增加代码复用，降低开发成本 性能：Flutter直接将Dart代码编译为本地代码运行，再调用skia绘图引擎代码，和原生一样，这就少了像reactn">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Flutter分享">
+<meta property="og:url" content="http://peiniwan.github.io/2022/12/cd27ceaafc13.html">
+<meta property="og:site_name" content="六月的雨的博客">
+<meta property="og:description" content="Flutter分享Flutter简介Flutter 是 Google 推出并开源的移动应用开发框架，帮助开发者通过一套代码库高效构建多平台应用，支持 iOS、Android、Web、Windows、macOS、Linux、Fuchsia 优点 跨平台：增加代码复用，降低开发成本 性能：Flutter直接将Dart代码编译为本地代码运行，再调用skia绘图引擎代码，和原生一样，这就少了像reactn">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Flutter%E5%88%86%E4%BA%AB.resources/2023/09/18/16-04-29-e8d2e77f520506b752d8a9130e7640d7-unknown_filename.3-1a3545.jpeg">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Flutter%E5%88%86%E4%BA%AB.resources/2023/09/18/16-04-29-c7f897332af05e9f9fa1136e521e8bc1-unknown_filename.4-6722b6.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Flutter%E5%88%86%E4%BA%AB.resources/2023/09/18/16-04-29-8fe31970ce55e497a9a4087c2b09bb7c-unknown_filename.5-40a021.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Flutter%E5%88%86%E4%BA%AB.resources/2023/09/18/16-04-29-725fd7b1edf17b0af4da1c2abb2c2729-unknown_filename.6-d3375e.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Flutter%E5%88%86%E4%BA%AB.resources/2023/09/18/16-04-29-cf4f336024517a44ecb86357136209e5-unknown_filename.9-bc25d6.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Flutter%E5%88%86%E4%BA%AB.resources/2023/09/18/16-04-29-982887bf79e874c365e0e976d9b65cfb-unknown_filename-cd3c15.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Flutter%E5%88%86%E4%BA%AB.resources/2023/09/18/16-04-29-70dcdae8bb2ab83b9caf4a479903142d-unknown_filename.1-7c4e32.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Flutter%E5%88%86%E4%BA%AB.resources/2023/09/18/16-04-29-33a45fb9c21b02a3c3d426222e90433c-unknown_filename.2-f5e831.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Flutter%E5%88%86%E4%BA%AB.resources/2023/09/18/16-04-29-603dea0f15cbf2b8f4276c93a057db06-unknown_filename.8-395c38.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Flutter%E5%88%86%E4%BA%AB.resources/2023/09/18/16-04-29-ee8e403c6ab9790340a9eba9a168b4c9-unknown_filename.7-4c0965.png">
+<meta property="article:published_time" content="2022-12-24T08:50:52.000Z">
+<meta property="article:modified_time" content="2023-12-22T06:50:49.646Z">
+<meta property="article:author" content="六月的雨">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Flutter%E5%88%86%E4%BA%AB.resources/2023/09/18/16-04-29-e8d2e77f520506b752d8a9130e7640d7-unknown_filename.3-1a3545.jpeg">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>Flutter分享 - 六月的雨的博客</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"peiniwan.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>六月的雨的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Flutter分享"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-12-24 16:50" pubdate>
+          2022年12月24日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          13k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          109 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Flutter分享</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="Flutter分享"><a href="#Flutter分享" class="headerlink" title="Flutter分享"></a>Flutter分享</h1><h2 id="Flutter简介"><a href="#Flutter简介" class="headerlink" title="Flutter简介"></a>Flutter简介</h2><p>Flutter 是 Google 推出并开源的移动应用开发框架，帮助开发者通过一套代码库高效构建多平台应用，支持 iOS、Android、Web、Windows、macOS、Linux、Fuchsia</p>
+<h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ol>
+<li>跨平台：增加代码复用，降低开发成本</li>
+<li>性能：Flutter直接将Dart代码编译为本地代码运行，再调用skia绘图引擎代码，和原生一样，这就少了像reactnative和weex等先转为原生控件，再系统渲染的步骤</li>
+<li>热重载：修改完代码后 Ctrl+S 就能实时展现在真机界面上，不需要重新安装 apk 包，提高开发效率<br> <img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Flutter%E5%88%86%E4%BA%AB.resources/2023/09/18/16-04-29-e8d2e77f520506b752d8a9130e7640d7-unknown_filename.3-1a3545.jpeg" srcset="/img/loading.gif" lazyload alt="unknown_filename.3"><br> <img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Flutter%E5%88%86%E4%BA%AB.resources/2023/09/18/16-04-29-c7f897332af05e9f9fa1136e521e8bc1-unknown_filename.4-6722b6.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.4"><br> <img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Flutter%E5%88%86%E4%BA%AB.resources/2023/09/18/16-04-29-8fe31970ce55e497a9a4087c2b09bb7c-unknown_filename.5-40a021.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.5"></li>
+</ol>
+<h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><p>1.脱离不开原生，一些功能不支持，需要原生开发<br>2.适配问题，可能会有各种各样的适配问题<br>3.基础库不完善，需要自己写</p>
+<p>在现阶段，开始尝试探索和积累沉淀 Flutter 技术能力，逐步的完善，flutter还是值得尝试一下的，毕竟研发效率就是竞争力。</p>
+<h2 id="常用网址"><a href="#常用网址" class="headerlink" title="常用网址"></a>常用网址</h2><p><a target="_blank" rel="noopener" href="https://flutter.cn/docs">Flutter 开发文档</a></p>
+<p><a target="_blank" rel="noopener" href="https://book.flutterchina.club/">Flutter实战</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.dartcn.com/guides/language/language-tour">Dart 编程语言概览</a></p>
+<p><a target="_blank" rel="noopener" href="https://pub.flutter-io.cn/">pub仓库</a></p>
+<h2 id="Widget"><a href="#Widget" class="headerlink" title="Widget"></a>Widget</h2><p>Activity、Fragment、view 在Flutter中等价于Widget</p>
+<p><strong>与Android view区别</strong></p>
+<ul>
+<li>Android中View是可变的，当用户交互或数据更新时，可直接调用View的invalidate方法重绘，达到更新UI的目的。</li>
+<li>Flutter的widget是不可改变的因此不能直接更新，而必须使用Widget的状态。Flutter的widget分为有状态和无状态两种。</li>
+</ul>
+<p>Stateless widgets 是不可变的, 这意味着它们的属性不能改变 ，所有的值都是最终的。<br>Stateful widgets（有状态的部件） 持有的状态可能在widget生命周期中发生变化. 实现一个 stateful widget 至少需要两个类:</p>
+<ol>
+<li>一个 StatefulWidget类。</li>
+<li>一个 State 类。<br> stateful widget将自身的构建委托给State对象，State对象的build函数负责构建该Widget，当用户交互或数据发生变化时，Widget状态发生改变，调用State的 <code>setState</code> 方法通知它，而后State根据当前的状态信息，重新构建Widget tree</li>
+</ol>
+<ul>
+<li>在Flutter中，一个自定义widget通常是通过组合其它widget来实现的，而不是继承。</li>
+<li>某些widget属性需要单个widget（child），而其它一些属性，如action，需要一组widgets(children），用方括号[]表示。</li>
+</ul>
+<h3 id="常用Widget和属性"><a href="#常用Widget和属性" class="headerlink" title="常用Widget和属性"></a>常用Widget和属性</h3><ul>
+<li><p>Container：父view，宽高、背景色、圆角、margin</p>
+</li>
+<li><p>Padding：EdgeInsets.fromLTRB</p>
+</li>
+<li><p>Center：居中</p>
+</li>
+<li><p>TextField：输入框（TextEditingController）</p>
+</li>
+<li><p>Expanded：填充剩余布局，组件有个参数flex,可以实现比例分配。</p>
+</li>
+<li><p>BoxDecoration:圆角，需要放在Container里，实现边框、圆角、阴影、形状、渐变、背景图像</p>
+</li>
+<li><p>EdgeInsets.only symmetric({vertical, horizontal})：用于设置对称方向的填充，vertical指top和bottom，horizontal指left和right。</p>
+</li>
+<li><p>MediaQuery.removePadding 可以移除组件的边距，有些组件自带有边距</p>
+</li>
+<li><p>expenand 必须和colum或row一起用，否则debug能运行，release报错。</p>
+</li>
+<li><p>Text.rich(TextSpan 一个textviwe不同颜色大小</p>
+<p>  RichText(text: TextSpan(<br>              children: [<br>                 TextSpan(<br>                   text:”*”,<br>                   style: TextStyle(color: Color.colorAuxRedColor, fontSize: 15)<br>                 ),<br>                TextSpan(<br>                    text:”你好”,<br>                    style: TextStyle(color: Color.colorText222Color, fontSize: 15)<br>                )<br>              ]<br>          )),<br><br>   Visibility(<br> visible: true,<br> &#x2F;&#x2F;是否保持占位<br> maintainState: false,<br> child: Text(“显示”),<br>   ),</p>
+</li>
+</ul>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Flutter%E5%88%86%E4%BA%AB.resources/2023/09/18/16-04-29-725fd7b1edf17b0af4da1c2abb2c2729-unknown_filename.6-d3375e.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.6"></p>
+<h4 id="点击"><a href="#点击" class="headerlink" title="点击"></a>点击</h4><ul>
+<li>如果Widget不支持事件监听，则可以将该Widget包装到GestureDetector中，并将处理函数传递给onTap参数。</li>
+<li>InkWell：点击</li>
+</ul>
+<h4 id="MaterialApp"><a href="#MaterialApp" class="headerlink" title="MaterialApp"></a>MaterialApp</h4><p>MaterialApp 是我们使用 Flutter开发中最常用的符合Material Design设计理念的入口Widget。你可以将它类比成为网页中的<html></html>，且它自带路由、主题色，<title>等功能。</p>
+<h4 id="Scaffold"><a href="#Scaffold" class="headerlink" title="Scaffold"></a>Scaffold</h4><p>Scaffold通常被用作MaterialApp的子Widget，它会填充可用空间，占据整个窗口或设备屏幕。Scaffold提供了大多数应用程序都应该具备的功能，例如顶部的appBar，底部的bottomNavigationBar，隐藏的侧边栏drawer等。</p>
+<pre><code class="hljs">const Scaffold(&#123;
+  Key key,
+  this.appBar, // 标题栏
+  this.body,  // 用于显示当前界面主要内容的Widget
+  this.floatingActionButton, // 一个悬浮在body上的按钮，默认显示在右下角
+  this.floatingActionButtonLocation, // 用于设置floatingActionButton显示的位置
+  this.floatingActionButtonAnimator, // floatingActionButton移动到一个新的位置时的动画
+  this.persistentFooterButtons, // 多状态按钮
+  this.drawer, // 左侧的抽屉菜单
+  this.endDrawer, //  右&#39;侧的抽屉菜单
+  this.bottomNavigationBar,// 底部导航栏。
+  this.bottomSheet, // 显示在底部的工具栏
+  this.backgroundColor,// 内容的背景颜色
+  this.resizeToAvoidBottomPadding = true, // 控制界面内容 body 是否重新布局来避免底部被覆盖，比如当键盘显示的时候，重新布局避免被键盘盖住内容。
+  this.primary = true,// Scaffold是否显示在页面的顶部
+&#125;) 
+</code></pre>
+<h4 id="SizedBox"><a href="#SizedBox" class="headerlink" title="SizedBox"></a>SizedBox</h4><ul>
+<li>一般是用来限制孩子控件的大小。</li>
+<li>还有这么一种场景也可以使用SizeBox，就是可以代替padding和container，然后 用来设置两个控件之间的间距，比如在行或列中就可以设置两个控件之间的间距 主要是可以比使用一个padding或者container简单方便 （在Flutter中可能用不同的控件可以实现到相同的目的，尽量使用越简单的widget来实现）</li>
+</ul>
+<h3 id="布局"><a href="#布局" class="headerlink" title="布局"></a>布局</h3><p>Flutter中通过Row和Column来实现线性布局，类似于Android中的LinearLayout控件<br><strong>row水平，Column竖直</strong></p>
+<ul>
+<li><p>对于线性布局，有主轴和纵轴之分，如果布局是沿水平方向，那么主轴就是指水平方向，而纵轴即垂直方向；如果布局沿垂直方向，那么主轴就是指垂直方向，而纵轴就是水平方向。在线性布局中，有两个定义对齐方式的枚举类MainAxisAlignment和CrossAxisAlignment，分别代表主轴对齐和纵轴对齐。</p>
+</li>
+<li><p>mainAxisSize：表示Row在主轴(水平)方向占用的空间，默认是MainAxisSize.max，表示尽可能多的占用水平方向的空间，此时无论子widgets实际占用多少水平空间，Row的宽度始终等于水平方向的最大宽度；</p>
+</li>
+<li><p>而MainAxisSize.min表示尽可能少的占用水平空间，当子组件没有占满水平剩余空间，则Row的实际宽度等于所有子组件占用的的水平空间</p>
+</li>
+<li><p>Row和Column都只会在主轴方向占用尽可能大的空间，而纵轴的长度则取决于他们最大子元素的长度</p>
+</li>
+<li><p>alignment: Alignment.centerLeft, 左对齐</p>
+<p>  enum MainAxisAlignment {<br>   &#x2F;&#x2F;将子控件放在主轴的开始位置<br>start,<br> &#x2F;&#x2F;将子控件放在主轴的结束位置<br>end,<br>&#x2F;&#x2F;将子控件放在主轴的中间位置<br>center,<br>&#x2F;&#x2F;将主轴空白位置进行均分，排列子元素，手尾没有空隙<br>spaceBetween,<br>&#x2F;&#x2F;将主轴空白区域均分，使中间各个子控件间距相等，首尾子控件间距为中间子控件间距的一半<br>spaceAround,<br>&#x2F;&#x2F;将主轴空白区域均分，使各个子控件间距相等<br>spaceEvenly,<br>  }</p>
+</li>
+</ul>
+<h2 id="Dart语法"><a href="#Dart语法" class="headerlink" title="Dart语法"></a>Dart语法</h2><p>main函数使用了(&#x3D;&gt;)符号, 这是Dart中单行函数或方法的简写。</p>
+<pre><code class="hljs">// =&gt;是return语句的简写
+add3(a, b) =&gt; a + b; 
+</code></pre>
+<p>变量以下划线（_）开头，在Dart语言中使用下划线前缀标识符，会强制其变成私有的。</p>
+<h3 id="异步"><a href="#异步" class="headerlink" title="异步"></a>异步</h3><ul>
+<li>flutter没有UI线程，也没有子线程。也就是说，无论是网络请求，数据处理，页面渲染，都是在同一个线程里面，那怎么保障页面渲染不会anr呢？</li>
+<li>Dart是一个单线程的语言，遇到有延迟的运算（比如IO操作、延时执行）时，线程中按顺序执行的运算就会阻塞，用户就会感觉到卡顿，于是通常用异步处理来解决这个问题。当遇到有需要延迟的运算（async）时，将其放入到延迟运算的队列（await）中去，把不需要延迟运算的部分先执行掉，最后再来处理延迟运算的部分。( <code>延迟队列</code>)</li>
+</ul>
+<p><a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000014396421">异步async、await和Future的使用技巧</a></p>
+<p>用 async，await，Future 三兄弟来进行处理异步。<br>async ，它是一个延迟计算的标志，标志了把这个任务放到了延迟运算的队列（await）中，通过Future进行返回。</p>
+<p>在Dart中，有await标记的运算，其结果值都是一个Future对象，Future不是String类型<br>Dart规定有async标记的函数，只能由await来调用，比如这样：<br>String data &#x3D; await getData();</p>
+<pre><code class="hljs"> //get请求，请求返回值为Future&lt;String&gt;类型，即其返回值未来是一个String类型的值
+  getData() async &#123;    
+     //async关键字声明该函数内部有代码需要延迟执行
+    return await http.get(Uri.encodeFull(url), headers: &#123;&quot;Accept&quot;: &quot;application/json&quot;&#125;); //await关键字声明运算为延迟执行，然后return运算结果
+  &#125;
+</code></pre>
+<p>async用于标明函数是一个异步函数，其返回值类型是Future类型<br>await用来等待耗时操作的返回结果，这个操作会阻塞到后面的代码</p>
+<p><strong>await关键字必须在async函数内部使用<br>调用async函数必须使用await关键字</strong></p>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><h3 id="咱们项目如何使用"><a href="#咱们项目如何使用" class="headerlink" title="咱们项目如何使用"></a>咱们项目如何使用</h3><p>flutter仓库地址：<a target="_blank" rel="noopener" href="https://git.100tal.com/publication/app/_ta/_flutter">https://git.100tal.com/publication/app\_ta\_flutter</a><br>代码clone到与Android工程同级目录</p>
+<p>Android目前有两种依赖方式：<br>本地依赖（适用于开发调试阶段）<br>配置文件repo_projects.xml中，打开下面这行<br><project name="publication/app\_ta\_flutter.git" path="/app\_ta\_flutter" /></p>
+<p>远程依赖（适用打包或flutter功能稳定阶段）<br>配置repo_projects.xml中，注释下面这行<br><project name="publication/app\_ta\_flutter.git" path="/app\_ta\_flutter" /></p>
+<h3 id="打包"><a href="#打包" class="headerlink" title="打包"></a>打包</h3><p>开发完后，提测或者上线，需要将flutter代码打包。目前已经支持了jenkins上自动打包flutter，上传maven，然后修改配置仓库，增加版本号，接着push代码，自动化打包。<br>jenkins打包地址：<a target="_blank" rel="noopener" href="http://10.14.200.4:8880/jenkins_app/view/%E5%9B%BE%E4%B9%A6%E5%87%BA%E7%89%88/job/android/job/lib/job/app_ta_flutter/build?delay=0sec">http://10.14.200.4:8880/jenkins_app&#x2F;view&#x2F;图书出版&#x2F;job&#x2F;android&#x2F;job&#x2F;lib&#x2F;job&#x2F;app_ta_flutter&#x2F;build?delay&#x3D;0sec</a></p>
+<p>红框必选，其他不用写，选择完后点build<br>BUSINESS_BRANCH：选自己的开发的flutter功能对应的分支<br>PROPERTIES_BRANCH：要更新到哪个配置仓库的分支<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Flutter%E5%88%86%E4%BA%AB.resources/2023/09/18/16-04-29-cf4f336024517a44ecb86357136209e5-unknown_filename.9-bc25d6.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.9"></p>
+<h3 id="调试"><a href="#调试" class="headerlink" title="调试"></a>调试</h3><p>先把APP杀死，在启动过程中attach，可以先点这个<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Flutter%E5%88%86%E4%BA%AB.resources/2023/09/18/16-04-29-982887bf79e874c365e0e976d9b65cfb-unknown_filename-cd3c15.png" srcset="/img/loading.gif" lazyload alt="unknown_filename"><br>出现下面这个就可以调试了<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Flutter%E5%88%86%E4%BA%AB.resources/2023/09/18/16-04-29-70dcdae8bb2ab83b9caf4a479903142d-unknown_filename.1-7c4e32.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.1"></p>
+<h3 id="使用‘尾随逗号’"><a href="#使用‘尾随逗号’" class="headerlink" title="使用‘尾随逗号’"></a>使用‘尾随逗号’</h3><p>Flutter代码通常涉及构建相当深的树状数据结构，例如在一个build方法中。 为了获得良好的自动格式化，我们建议您采用可选的尾部逗号。添加尾随逗号很简单：始终在函数、方法和构造函数的参数列表末尾添加尾随逗号，以便保留您的编码格式。 这将有助于自动格式化程序为Flutter样式代码插入适当的换行符。<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Flutter%E5%88%86%E4%BA%AB.resources/2023/09/18/16-04-29-33a45fb9c21b02a3c3d426222e90433c-unknown_filename.2-f5e831.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.2"></p>
+<h3 id="两个好用的图片插件"><a href="#两个好用的图片插件" class="headerlink" title="两个好用的图片插件"></a>两个好用的图片插件</h3><p>FlutterQuickLocateAsset<br>FlutterAssetAutoCompletion</p>
+<h3 id="使用自定义模板"><a href="#使用自定义模板" class="headerlink" title="使用自定义模板"></a>使用自定义模板</h3><p>提高开发效率<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Flutter%E5%88%86%E4%BA%AB.resources/2023/09/18/16-04-29-603dea0f15cbf2b8f4276c93a057db06-unknown_filename.8-395c38.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.8"><br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Flutter%E5%88%86%E4%BA%AB.resources/2023/09/18/16-04-29-ee8e403c6ab9790340a9eba9a168b4c9-unknown_filename.7-4c0965.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.7"></p>
+<h2 id="Flutter与原生通信"><a href="#Flutter与原生通信" class="headerlink" title="Flutter与原生通信"></a>Flutter与原生通信</h2><p><a target="_blank" rel="noopener" href="https://flutter.cn/docs/development/add-to-app">将 Flutter 集成到现有应用</a></p>
+<p><a target="_blank" rel="noopener" href="https://learnku.com/articles/32448">Flutter 与 Android 的相互通信</a></p>
+<p>可以从Native层调用flutter层的dart代码，也可以在flutter层调用Native的代码，而作为通讯桥梁就是MethodChannel，这个类在初始化的时候需要注册一个渠道值。这个值必须是唯一的，并且在使用到的Native层和Flutter层互相对应。</p>
+<p><strong>flutter调用Android</strong><br>注册</p>
+<pre><code class="hljs">static const nativeChannel =
+      const MethodChannel(&#39;com.example.flutter/native&#39;);
+</code></pre>
+<p>flutter</p>
+<pre><code class="hljs">      Map&lt;String, dynamic&gt; result = &#123;&#39;message&#39;: &#39;我从Flutter页面回来了&#39;&#125;;
+                    nativeChannel.invokeMethod(&#39;goBackWithResult&#39;, result);
+</code></pre>
+<p>Android</p>
+<pre><code class="hljs"> MethodChannel nativeChannel = new MethodChannel(flutterEngine.getDartExecutor(), CHANNEL_NATIVE);
+        nativeChannel.setMethodCallHandler((methodCall, result) -&gt; &#123;
+            switch (methodCall.method) &#123;
+                //回调
+            case &quot;goBackWithResult&quot;:
+                    // 返回上一页，携带数据
+                    ActivityManager.getInstance().finishActivity(FlutterActivity.class);
+                    Toast.makeText(this, (String) methodCall.argument(&quot;message&quot;), Toast.LENGTH_SHORT).show();
+                    break;
+                case &quot;getSendParams&quot;:
+                    result.success(getSendParams());
+                    break;
+                default:
+                    result.notImplemented();
+                    break;
+            &#125;
+        &#125;);
+</code></pre>
+<p>异步</p>
+<pre><code class="hljs"> Future getSendParams() async &#123;
+    String params = await _SendFeedBackState.nativeChannel
+        .invokeMethod(&#39;getSendParams&#39;, &quot;&quot;);
+    print(&quot;getSendParams：&quot; + params);
+  &#125;
+</code></pre>
+<p><strong>Android调用flutter</strong><br>Android</p>
+<pre><code class="hljs">        Map&lt;String, Object&gt; result = new HashMap&lt;&gt;();
+        result.put(&quot;message&quot;, message);
+        // 创建MethodChannel
+        MethodChannel flutterChannel = new MethodChannel(flutterEngine.getDartExecutor(), CHANNEL_FLUTTER);
+        flutterChannel.invokeMethod(&quot;onActivityResult&quot;, result);
+</code></pre>
+<p>flutter</p>
+<pre><code class="hljs">  @override
+  void initState() &#123;
+    super.initState();
+    Future&lt;dynamic&gt; handler(MethodCall call) async &#123;
+      switch (call.method) &#123;
+        case &#39;onActivityResult&#39;:
+          Fluttertoast.showToast(
+            msg: call.arguments[&#39;message&#39;],
+            toastLength: Toast.LENGTH_SHORT,
+          );
+          break;
+        case &#39;goBack&#39;:
+          // 返回上一页
+          if (Navigator.canPop(context)) &#123;
+            Navigator.of(context).pop();
+          &#125; else &#123;
+            nativeChannel.invokeMethod(&#39;goBack&#39;);
+          &#125;
+          break;
+      &#125;
+    &#125;
+
+    flutterChannel.setMethodCallHandler(handler);
+  &#125;
+</code></pre>
+<p>%5BTOC%5D%0A%0A%23%23%20Flutter%E7%AE%80%E4%BB%8B%0AFlutter%20%E6%98%AF%20Google%20%E6%8E%A8%E5%87%BA%E5%B9%B6%E5%BC%80%E6%BA%90%E7%9A%84%E7%A7%BB%E5%8A%A8%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91%E6%A1%86%E6%9E%B6%EF%BC%8C%E5%B8%AE%E5%8A%A9%E5%BC%80%E5%8F%91%E8%80%85%E9%80%9A%E8%BF%87%E4%B8%80%E5%A5%97%E4%BB%A3%E7%A0%81%E5%BA%93%E9%AB%98%E6%95%88%E6%9E%84%E5%BB%BA%E5%A4%9A%E5%B9%B3%E5%8F%B0%E5%BA%94%E7%94%A8%EF%BC%8C%E6%94%AF%E6%8C%81%20iOS%E3%80%81Android%E3%80%81Web%E3%80%81Windows%E3%80%81macOS%E3%80%81Linux%E3%80%81Fuchsia%0A%0A%23%23%23%20%E4%BC%98%E7%82%B9%0A1.%20%E8%B7%A8%E5%B9%B3%E5%8F%B0%EF%BC%9A%E5%A2%9E%E5%8A%A0%E4%BB%A3%E7%A0%81%E5%A4%8D%E7%94%A8%EF%BC%8C%E9%99%8D%E4%BD%8E%E5%BC%80%E5%8F%91%E6%88%90%E6%9C%AC%0A2.%20%E6%80%A7%E8%83%BD%EF%BC%9AFlutter%E7%9B%B4%E6%8E%A5%E5%B0%86Dart%E4%BB%A3%E7%A0%81%E7%BC%96%E8%AF%91%E4%B8%BA%E6%9C%AC%E5%9C%B0%E4%BB%A3%E7%A0%81%E8%BF%90%E8%A1%8C%EF%BC%8C%E5%86%8D%E8%B0%83%E7%94%A8skia%E7%BB%98%E5%9B%BE%E5%BC%95%E6%93%8E%E4%BB%A3%E7%A0%81%EF%BC%8C%E5%92%8C%E5%8E%9F%E7%94%9F%E4%B8%80%E6%A0%B7%EF%BC%8C%E8%BF%99%E5%B0%B1%E5%B0%91%E4%BA%86%E5%83%8Freactnative%E5%92%8Cweex%E7%AD%89%E5%85%88%E8%BD%AC%E4%B8%BA%E5%8E%9F%E7%94%9F%E6%8E%A7%E4%BB%B6%EF%BC%8C%E5%86%8D%E7%B3%BB%E7%BB%9F%E6%B8%B2%E6%9F%93%E7%9A%84%E6%AD%A5%E9%AA%A4%0A3.%20%E7%83%AD%E9%87%8D%E8%BD%BD%EF%BC%9A%E4%BF%AE%E6%94%B9%E5%AE%8C%E4%BB%A3%E7%A0%81%E5%90%8E%20Ctrl%2BS%20%E5%B0%B1%E8%83%BD%E5%AE%9E%E6%97%B6%E5%B1%95%E7%8E%B0%E5%9C%A8%E7%9C%9F%E6%9C%BA%E7%95%8C%E9%9D%A2%E4%B8%8A%EF%BC%8C%E4%B8%8D%E9%9C%80%E8%A6%81%E9%87%8D%E6%96%B0%E5%AE%89%E8%A3%85%20apk%20%E5%8C%85%EF%BC%8C%E6%8F%90%E9%AB%98%E5%BC%80%E5%8F%91%E6%95%88%E7%8E%87%0A!%5Be8d2e77f520506b752d8a9130e7640d7.jpeg%5D(evernotecid%3A%2F%2FA511C64A-F456-4B32-91F8-405613EEF607%2Fappyinxiangcom%2F10438895%2FENResource%2Fp13647)%0A!%5Bc7f897332af05e9f9fa1136e521e8bc1.png%5D(evernotecid%3A%2F%2FA511C64A-F456-4B32-91F8-405613EEF607%2Fappyinxiangcom%2F10438895%2FENResource%2Fp13648)%0A!%5B8fe31970ce55e497a9a4087c2b09bb7c.png%5D(evernotecid%3A%2F%2FA511C64A-F456-4B32-91F8-405613EEF607%2Fappyinxiangcom%2F10438895%2FENResource%2Fp13649)%0A%0A%0A%23%23%23%20%E7%BC%BA%E7%82%B9%0A1.%E8%84%B1%E7%A6%BB%E4%B8%8D%E5%BC%80%E5%8E%9F%E7%94%9F%EF%BC%8C%E4%B8%80%E4%BA%9B%E5%8A%9F%E8%83%BD%E4%B8%8D%E6%94%AF%E6%8C%81%EF%BC%8C%E9%9C%80%E8%A6%81%E5%8E%9F%E7%94%9F%E5%BC%80%E5%8F%91%0A2.%E9%80%82%E9%85%8D%E9%97%AE%E9%A2%98%EF%BC%8C%E5%8F%AF%E8%83%BD%E4%BC%9A%E6%9C%89%E5%90%84%E7%A7%8D%E5%90%84%E6%A0%B7%E7%9A%84%E9%80%82%E9%85%8D%E9%97%AE%E9%A2%98%0A3.%E5%9F%BA%E7%A1%80%E5%BA%93%E4%B8%8D%E5%AE%8C%E5%96%84%EF%BC%8C%E9%9C%80%E8%A6%81%E8%87%AA%E5%B7%B1%E5%86%99%0A%0A%E5%9C%A8%E7%8E%B0%E9%98%B6%E6%AE%B5%EF%BC%8C%E5%BC%80%E5%A7%8B%E5%B0%9D%E8%AF%95%E6%8E%A2%E7%B4%A2%E5%92%8C%E7%A7%AF%E7%B4%AF%E6%B2%89%E6%B7%80%20Flutter%20%E6%8A%80%E6%9C%AF%E8%83%BD%E5%8A%9B%EF%BC%8C%E9%80%90%E6%AD%A5%E7%9A%84%E5%AE%8C%E5%96%84%EF%BC%8Cflutter%E8%BF%98%E6%98%AF%E5%80%BC%E5%BE%97%E5%B0%9D%E8%AF%95%E4%B8%80%E4%B8%8B%E7%9A%84%EF%BC%8C%E6%AF%95%E7%AB%9F%E7%A0%94%E5%8F%91%E6%95%88%E7%8E%87%E5%B0%B1%E6%98%AF%E7%AB%9E%E4%BA%89%E5%8A%9B%E3%80%82%0A%0A%23%23%20%E5%B8%B8%E7%94%A8%E7%BD%91%E5%9D%80%0A%5BFlutter%20%E5%BC%80%E5%8F%91%E6%96%87%E6%A1%A3%5D(https%3A%2F%2Fflutter.cn%2Fdocs)%0A%5BFlutter%E5%AE%9E%E6%88%98%5D(https%3A%2F%2Fbook.flutterchina.club%2F)%0A%5BDart%20%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80%E6%A6%82%E8%A7%88%5D(https%3A%2F%2F<a href="http://www.dartcn.com%2Fguides%2Flanguage%2Flanguage-tour)%0A%5Bpub%E4%BB%93%E5%BA%93%5D(https%3A%2F%2Fpub.flutter-io.cn%2F)%0A%0A%0A%0A%23%23%20Widget%0AActivity%E3%80%81Fragment%E3%80%81view%20%E5%9C%A8Flutter%E4%B8%AD%E7%AD%89%E4%BB%B7%E4%BA%8EWidget%0A%0A\*\*%E4%B8%8EAndroid%20view%E5%8C%BA%E5%88%AB\*\*%0A\*%20Android%E4%B8%ADView%E6%98%AF%E5%8F%AF%E5%8F%98%E7%9A%84%EF%BC%8C%E5%BD%93%E7%94%A8%E6%88%B7%E4%BA%A4%E4%BA%92%E6%88%96%E6%95%B0%E6%8D%AE%E6%9B%B4%E6%96%B0%E6%97%B6%EF%BC%8C%E5%8F%AF%E7%9B%B4%E6%8E%A5%E8%B0%83%E7%94%A8View%E7%9A%84invalidate%E6%96%B9%E6%B3%95%E9%87%8D%E7%BB%98%EF%BC%8C%E8%BE%BE%E5%88%B0%E6%9B%B4%E6%96%B0UI%E7%9A%84%E7%9B%AE%E7%9A%84%E3%80%82%0A\*%20Flutter%E7%9A%84widget%E6%98%AF%E4%B8%8D%E5%8F%AF%E6%94%B9%E5%8F%98%E7%9A%84%E5%9B%A0%E6%AD%A4%E4%B8%8D%E8%83%BD%E7%9B%B4%E6%8E%A5%E6%9B%B4%E6%96%B0%EF%BC%8C%E8%80%8C%E5%BF%85%E9%A1%BB%E4%BD%BF%E7%94%A8Widget%E7%9A%84%E7%8A%B6%E6%80%81%E3%80%82Flutter%E7%9A%84widget%E5%88%86%E4%B8%BA%E6%9C%89%E7%8A%B6%E6%80%81%E5%92%8C%E6%97%A0%E7%8A%B6%E6%80%81%E4%B8%A4%E7%A7%8D%E3%80%82%0A%0AStateless%C2%A0widgets%20%E6%98%AF%E4%B8%8D%E5%8F%AF%E5%8F%98%E7%9A%84%2C%20%E8%BF%99%E6%84%8F%E5%91%B3%E7%9D%80%E5%AE%83%E4%BB%AC%E7%9A%84%E5%B1%9E%E6%80%A7%E4%B8%8D%E8%83%BD%E6%94%B9%E5%8F%98%20%EF%BC%8C%E6%89%80%E6%9C%89%E7%9A%84%E5%80%BC%E9%83%BD%E6%98%AF%E6%9C%80%E7%BB%88%E7%9A%84%E3%80%82%0AStateful%C2%A0widgets%EF%BC%88%E6%9C%89%E7%8A%B6%E6%80%81%E7%9A%84%E9%83%A8%E4%BB%B6%EF%BC%89%20%E6%8C%81%E6%9C%89%E7%9A%84%E7%8A%B6%E6%80%81%E5%8F%AF%E8%83%BD%E5%9C%A8widget%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E4%B8%AD%E5%8F%91%E7%94%9F%E5%8F%98%E5%8C%96.%20%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AA%20stateful%20widget%20%E8%87%B3%E5%B0%91%E9%9C%80%E8%A6%81%E4%B8%A4%E4%B8%AA%E7%B1%BB%3A%0A1.%20%E4%B8%80%E4%B8%AA%20StatefulWidget%E7%B1%BB%E3%80%82%0A2.%20%E4%B8%80%E4%B8%AA%20State%20%E7%B1%BB%E3%80%82%20%0Astateful%20widget%E5%B0%86%E8%87%AA%E8%BA%AB%E7%9A%84%E6%9E%84%E5%BB%BA%E5%A7%94%E6%89%98%E7%BB%99State%E5%AF%B9%E8%B1%A1%EF%BC%8CState%E5%AF%B9%E8%B1%A1%E7%9A%84build%E5%87%BD%E6%95%B0%E8%B4%9F%E8%B4%A3%E6%9E%84%E5%BB%BA%E8%AF%A5Widget%EF%BC%8C%E5%BD%93%E7%94%A8%E6%88%B7%E4%BA%A4%E4%BA%92%E6%88%96%E6%95%B0%E6%8D%AE%E5%8F%91%E7%94%9F%E5%8F%98%E5%8C%96%E6%97%B6%EF%BC%8CWidget%E7%8A%B6%E6%80%81%E5%8F%91%E7%94%9F%E6%94%B9%E5%8F%98%EF%BC%8C%E8%B0%83%E7%94%A8State%E7%9A%84%20%60setState%60%20%E6%96%B9%E6%B3%95%E9%80%9A%E7%9F%A5%E5%AE%83%EF%BC%8C%E8%80%8C%E5%90%8EState%E6%A0%B9%E6%8D%AE%E5%BD%93%E5%89%8D%E7%9A%84%E7%8A%B6%E6%80%81%E4%BF%A1%E6%81%AF%EF%BC%8C%E9%87%8D%E6%96%B0%E6%9E%84%E5%BB%BAWidget%20tree%0A%0A\*%20%E5%9C%A8Flutter%E4%B8%AD%EF%BC%8C%E4%B8%80%E4%B8%AA%E8%87%AA%E5%AE%9A%E4%B9%89widget%E9%80%9A%E5%B8%B8%E6%98%AF%E9%80%9A%E8%BF%87%E7%BB%84%E5%90%88%E5%85%B6%E5%AE%83widget%E6%9D%A5%E5%AE%9E%E7%8E%B0%E7%9A%84%EF%BC%8C%E8%80%8C%E4%B8%8D%E6%98%AF%E7%BB%A7%E6%89%BF%E3%80%82%0A\*%20%E6%9F%90%E4%BA%9Bwidget%E5%B1%9E%E6%80%A7%E9%9C%80%E8%A6%81%E5%8D%95%E4%B8%AAwidget%EF%BC%88child%EF%BC%89%EF%BC%8C%E8%80%8C%E5%85%B6%E5%AE%83%E4%B8%80%E4%BA%9B%E5%B1%9E%E6%80%A7%EF%BC%8C%E5%A6%82action%EF%BC%8C%E9%9C%80%E8%A6%81%E4%B8%80%E7%BB%84widgets(children%EF%BC%89%EF%BC%8C%E7%94%A8%E6%96%B9%E6%8B%AC%E5%8F%B7%5B%5D%E8%A1%A8%E7%A4%BA%E3%80%82%20%0A%0A%0A%23%23%23%20%E5%B8%B8%E7%94%A8Widget%E5%92%8C%E5%B1%9E%E6%80%A7%0A\*%20Container%EF%BC%9A%E7%88%B6view%EF%BC%8C%E5%AE%BD%E9%AB%98%E3%80%81%E8%83%8C%E6%99%AF%E8%89%B2%E3%80%81%E5%9C%86%E8%A7%92%E3%80%81margin%0A\*%20Padding%EF%BC%9AEdgeInsets.fromLTRB%0A\*%20Center%EF%BC%9A%E5%B1%85%E4%B8%AD%0A\*%20TextField%EF%BC%9A%E8%BE%93%E5%85%A5%E6%A1%86%EF%BC%88TextEditingController%EF%BC%89%0A\*%20Expanded%EF%BC%9A%E5%A1%AB%E5%85%85%E5%89%A9%E4%BD%99%E5%B8%83%E5%B1%80%EF%BC%8C%E7%BB%84%E4%BB%B6%E6%9C%89%E4%B8%AA%E5%8F%82%E6%95%B0flex%2C%E5%8F%AF%E4%BB%A5%E5%AE%9E%E7%8E%B0%E6%AF%94%E4%BE%8B%E5%88%86%E9%85%8D%E3%80%82%0A\*%20BoxDecoration%3A%E5%9C%86%E8%A7%92%EF%BC%8C%E9%9C%80%E8%A6%81%E6%94%BE%E5%9C%A8Container%E9%87%8C%EF%BC%8C%E5%AE%9E%E7%8E%B0%E8%BE%B9%E6%A1%86%E3%80%81%E5%9C%86%E8%A7%92%E3%80%81%E9%98%B4%E5%BD%B1%E3%80%81%E5%BD%A2%E7%8A%B6%E3%80%81%E6%B8%90%E5%8F%98%E3%80%81%E8%83%8C%E6%99%AF%E5%9B%BE%E5%83%8F%0A\*%20EdgeInsets.only%20symmetric(%7Bvertical%2C%20horizontal%7D)%EF%BC%9A%E7%94%A8%E4%BA%8E%E8%AE%BE%E7%BD%AE%E5%AF%B9%E7%A7%B0%E6%96%B9%E5%90%91%E7%9A%84%E5%A1%AB%E5%85%85%EF%BC%8Cvertical%E6%8C%87top%E5%92%8Cbottom%EF%BC%8Chorizontal%E6%8C%87left%E5%92%8Cright%E3%80%82%0A\*%20MediaQuery.removePadding%20%E5%8F%AF%E4%BB%A5%E7%A7%BB%E9%99%A4%E7%BB%84%E4%BB%B6%E7%9A%84%E8%BE%B9%E8%B7%9D%EF%BC%8C%E6%9C%89%E4%BA%9B%E7%BB%84%E4%BB%B6%E8%87%AA%E5%B8%A6%E6%9C%89%E8%BE%B9%E8%B7%9D%0A\*%20expenand%20%E5%BF%85%E9%A1%BB%E5%92%8Ccolum%E6%88%96row%E4%B8%80%E8%B5%B7%E7%94%A8%EF%BC%8C%E5%90%A6%E5%88%99debug%E8%83%BD%E8%BF%90%E8%A1%8C%EF%BC%8Crelease%E6%8A%A5%E9%94%99%E3%80%82%0A\*%20Text.rich(TextSpan%20%20%20%E4%B8%80%E4%B8%AAtextviwe%E4%B8%8D%E5%90%8C%E9%A2%9C%E8%89%B2%E5%A4%A7%E5%B0%8F%20%20%20%0A%60%60%60java%0ARichText(text%3A%20TextSpan(%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20children%3A%20%5B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20TextSpan(%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20text%3A%22\*%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20style%3A%20TextStyle(color%3A%20Color.colorAuxRedColor%2C%20fontSize%3A%2015)%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20)%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20TextSpan(%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20text%3A%22%E4%BD%A0%E5%A5%BD%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20style%3A%20TextStyle(color%3A%20Color.colorText222Color%2C%20fontSize%3A%2015)%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20)%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%5D%0A%20%20%20%20%20%20%20%20%20%20%20%20))%2C%0A%20%20%20%20%20%20%20%20%20%20%20%0A%60%60%60%0A%60%60%60java%0A%20Visibility(%0A%20%20%20visible%3A%20true%2C%0A%20%20%20%2F%2F%E6%98%AF%E5%90%A6%E4%BF%9D%E6%8C%81%E5%8D%A0%E4%BD%8D%0A%20%20%20maintainState%3A%20false%2C%0A%20%20%20child%3A%20Text(%22%E6%98%BE%E7%A4%BA%22)%2C%0A%20)%2C%0A%60%60%60%0A!%5B725fd7b1edf17b0af4da1c2abb2c2729.png%5D(evernotecid%3A%2F%2FA511C64A-F456-4B32-91F8-405613EEF607%2Fappyinxiangcom%2F10438895%2FENResource%2Fp13651)%0A%0A%0A%23%23%23%23%20%E7%82%B9%E5%87%BB%0A\*%20%E5%A6%82%E6%9E%9CWidget%E4%B8%8D%E6%94%AF%E6%8C%81%E4%BA%8B%E4%BB%B6%E7%9B%91%E5%90%AC%EF%BC%8C%E5%88%99%E5%8F%AF%E4%BB%A5%E5%B0%86%E8%AF%A5Widget%E5%8C%85%E8%A3%85%E5%88%B0GestureDetector%E4%B8%AD%EF%BC%8C%E5%B9%B6%E5%B0%86%E5%A4%84%E7%90%86%E5%87%BD%E6%95%B0%E4%BC%A0%E9%80%92%E7%BB%99onTap%E5%8F%82%E6%95%B0%E3%80%82%0A\*%20InkWell%EF%BC%9A%E7%82%B9%E5%87%BB%0A%0A%0A%23%23%23%23%20MaterialApp%0AMaterialApp%20%E6%98%AF%E6%88%91%E4%BB%AC%E4%BD%BF%E7%94%A8%20Flutter%E5%BC%80%E5%8F%91%E4%B8%AD%E6%9C%80%E5%B8%B8%E7%94%A8%E7%9A%84%E7%AC%A6%E5%90%88Material%20Design%E8%AE%BE%E8%AE%A1%E7%90%86%E5%BF%B5%E7%9A%84%E5%85%A5%E5%8F%A3Widget%E3%80%82%E4%BD%A0%E5%8F%AF%E4%BB%A5%E5%B0%86%E5%AE%83%E7%B1%BB%E6%AF%94%E6%88%90%E4%B8%BA%E7%BD%91%E9%A1%B5%E4%B8%AD%E7%9A%84%3Chtml%3E%3C%2Fhtml%3E%EF%BC%8C%E4%B8%94%E5%AE%83%E8%87%AA%E5%B8%A6%E8%B7%AF%E7%94%B1%E3%80%81%E4%B8%BB%E9%A2%98%E8%89%B2%EF%BC%8C%3Ctitle%3E%E7%AD%89%E5%8A%9F%E8%83%BD%E3%80%82%0A%0A%23%23%23%23%20Scaffold%0AScaffold%E9%80%9A%E5%B8%B8%E8%A2%AB%E7%94%A8%E4%BD%9CMaterialApp%E7%9A%84%E5%AD%90Widget%EF%BC%8C%E5%AE%83%E4%BC%9A%E5%A1%AB%E5%85%85%E5%8F%AF%E7%94%A8%E7%A9%BA%E9%97%B4%EF%BC%8C%E5%8D%A0%E6%8D%AE%E6%95%B4%E4%B8%AA%E7%AA%97%E5%8F%A3%E6%88%96%E8%AE%BE%E5%A4%87%E5%B1%8F%E5%B9%95%E3%80%82Scaffold%E6%8F%90%E4%BE%9B%E4%BA%86%E5%A4%A7%E5%A4%9A%E6%95%B0%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F%E9%83%BD%E5%BA%94%E8%AF%A5%E5%85%B7%E5%A4%87%E7%9A%84%E5%8A%9F%E8%83%BD%EF%BC%8C%E4%BE%8B%E5%A6%82%E9%A1%B6%E9%83%A8%E7%9A%84appBar%EF%BC%8C%E5%BA%95%E9%83%A8%E7%9A%84bottomNavigationBar%EF%BC%8C%E9%9A%90%E8%97%8F%E7%9A%84%E4%BE%A7%E8%BE%B9%E6%A0%8Fdrawer%E7%AD%89%E3%80%82%0A%60%60%60java%0Aconst%20Scaffold(%7B%0A%20%20Key%20key%2C%0A%20%20this.appBar%2C%20%2F%2F%20%E6%A0%87%E9%A2%98%E6%A0%8F%0A%20%20this.body%2C%20%20%2F%2F%20%E7%94%A8%E4%BA%8E%E6%98%BE%E7%A4%BA%E5%BD%93%E5%89%8D%E7%95%8C%E9%9D%A2%E4%B8%BB%E8%A6%81%E5%86%85%E5%AE%B9%E7%9A%84Widget%0A%20%20this.floatingActionButton%2C%20%2F%2F%20%E4%B8%80%E4%B8%AA%E6%82%AC%E6%B5%AE%E5%9C%A8body%E4%B8%8A%E7%9A%84%E6%8C%89%E9%92%AE%EF%BC%8C%E9%BB%98%E8%AE%A4%E6%98%BE%E7%A4%BA%E5%9C%A8%E5%8F%B3%E4%B8%8B%E8%A7%92%0A%20%20this.floatingActionButtonLocation%2C%20%2F%2F%20%E7%94%A8%E4%BA%8E%E8%AE%BE%E7%BD%AEfloatingActionButton%E6%98%BE%E7%A4%BA%E7%9A%84%E4%BD%8D%E7%BD%AE%0A%20%20this.floatingActionButtonAnimator%2C%20%2F%2F%20floatingActionButton%E7%A7%BB%E5%8A%A8%E5%88%B0%E4%B8%80%E4%B8%AA%E6%96%B0%E7%9A%84%E4%BD%8D%E7%BD%AE%E6%97%B6%E7%9A%84%E5%8A%A8%E7%94%BB%0A%20%20this.persistentFooterButtons%2C%20%2F%2F%20%E5%A4%9A%E7%8A%B6%E6%80%81%E6%8C%89%E9%92%AE%0A%20%20this.drawer%2C%20%2F%2F%20%E5%B7%A6%E4%BE%A7%E7%9A%84%E6%8A%BD%E5%B1%89%E8%8F%9C%E5%8D%95%0A%20%20this.endDrawer%2C%20%2F%2F%20%20%E5%8F%B3'%E4%BE%A7%E7%9A%84%E6%8A%BD%E5%B1%89%E8%8F%9C%E5%8D%95%0A%20%20this.bottomNavigationBar%2C%2F%2F%20%E5%BA%95%E9%83%A8%E5%AF%BC%E8%88%AA%E6%A0%8F%E3%80%82%0A%20%20this.bottomSheet%2C%20%2F%2F%20%E6%98%BE%E7%A4%BA%E5%9C%A8%E5%BA%95%E9%83%A8%E7%9A%84%E5%B7%A5%E5%85%B7%E6%A0%8F%0A%20%20this.backgroundColor%2C%2F%2F%20%E5%86%85%E5%AE%B9%E7%9A%84%E8%83%8C%E6%99%AF%E9%A2%9C%E8%89%B2%0A%20%20this.resizeToAvoidBottomPadding%20%3D%20true%2C%20%2F%2F%20%E6%8E%A7%E5%88%B6%E7%95%8C%E9%9D%A2%E5%86%85%E5%AE%B9%20body%20%E6%98%AF%E5%90%A6%E9%87%8D%E6%96%B0%E5%B8%83%E5%B1%80%E6%9D%A5%E9%81%BF%E5%85%8D%E5%BA%95%E9%83%A8%E8%A2%AB%E8%A6%86%E7%9B%96%EF%BC%8C%E6%AF%94%E5%A6%82%E5%BD%93%E9%94%AE%E7%9B%98%E6%98%BE%E7%A4%BA%E7%9A%84%E6%97%B6%E5%80%99%EF%BC%8C%E9%87%8D%E6%96%B0%E5%B8%83%E5%B1%80%E9%81%BF%E5%85%8D%E8%A2%AB%E9%94%AE%E7%9B%98%E7%9B%96%E4%BD%8F%E5%86%85%E5%AE%B9%E3%80%82%0A%20%20this.primary%20%3D%20true%2C%2F%2F%20Scaffold%E6%98%AF%E5%90%A6%E6%98%BE%E7%A4%BA%E5%9C%A8%E9%A1%B5%E9%9D%A2%E7%9A%84%E9%A1%B6%E9%83%A8%0A%7D)%20%0A%60%60%60%0A%0A%0A%23%23%23%23%20SizedBox%0A\*%20%E4%B8%80%E8%88%AC%E6%98%AF%E7%94%A8%E6%9D%A5%E9%99%90%E5%88%B6%E5%AD%A9%E5%AD%90%E6%8E%A7%E4%BB%B6%E7%9A%84%E5%A4%A7%E5%B0%8F%E3%80%82%0A\*%20%E8%BF%98%E6%9C%89%E8%BF%99%E4%B9%88%E4%B8%80%E7%A7%8D%E5%9C%BA%E6%99%AF%E4%B9%9F%E5%8F%AF%E4%BB%A5%E4%BD%BF%E7%94%A8SizeBox%EF%BC%8C%E5%B0%B1%E6%98%AF%E5%8F%AF%E4%BB%A5%E4%BB%A3%E6%9B%BFpadding%E5%92%8Ccontainer%EF%BC%8C%E7%84%B6%E5%90%8E%20%E7%94%A8%E6%9D%A5%E8%AE%BE%E7%BD%AE%E4%B8%A4%E4%B8%AA%E6%8E%A7%E4%BB%B6%E4%B9%8B%E9%97%B4%E7%9A%84%E9%97%B4%E8%B7%9D%EF%BC%8C%E6%AF%94%E5%A6%82%E5%9C%A8%E8%A1%8C%E6%88%96%E5%88%97%E4%B8%AD%E5%B0%B1%E5%8F%AF%E4%BB%A5%E8%AE%BE%E7%BD%AE%E4%B8%A4%E4%B8%AA%E6%8E%A7%E4%BB%B6%E4%B9%8B%E9%97%B4%E7%9A%84%E9%97%B4%E8%B7%9D%20%E4%B8%BB%E8%A6%81%E6%98%AF%E5%8F%AF%E4%BB%A5%E6%AF%94%E4%BD%BF%E7%94%A8%E4%B8%80%E4%B8%AApadding%E6%88%96%E8%80%85container%E7%AE%80%E5%8D%95%E6%96%B9%E4%BE%BF%20%EF%BC%88%E5%9C%A8Flutter%E4%B8%AD%E5%8F%AF%E8%83%BD%E7%94%A8%E4%B8%8D%E5%90%8C%E7%9A%84%E6%8E%A7%E4%BB%B6%E5%8F%AF%E4%BB%A5%E5%AE%9E%E7%8E%B0%E5%88%B0%E7%9B%B8%E5%90%8C%E7%9A%84%E7%9B%AE%E7%9A%84%EF%BC%8C%E5%B0%BD%E9%87%8F%E4%BD%BF%E7%94%A8%E8%B6%8A%E7%AE%80%E5%8D%95%E7%9A%84widget%E6%9D%A5%E5%AE%9E%E7%8E%B0%EF%BC%89%0A%0A%23%23%23%20%E5%B8%83%E5%B1%80%0AFlutter%E4%B8%AD%E9%80%9A%E8%BF%87Row%E5%92%8CColumn%E6%9D%A5%E5%AE%9E%E7%8E%B0%E7%BA%BF%E6%80%A7%E5%B8%83%E5%B1%80%EF%BC%8C%E7%B1%BB%E4%BC%BC%E4%BA%8EAndroid%E4%B8%AD%E7%9A%84LinearLayout%E6%8E%A7%E4%BB%B6%0A\*\*row%E6%B0%B4%E5%B9%B3%EF%BC%8CColumn%E7%AB%96%E7%9B%B4\*\*%0A%0A\*%20%E5%AF%B9%E4%BA%8E%E7%BA%BF%E6%80%A7%E5%B8%83%E5%B1%80%EF%BC%8C%E6%9C%89%E4%B8%BB%E8%BD%B4%E5%92%8C%E7%BA%B5%E8%BD%B4%E4%B9%8B%E5%88%86%EF%BC%8C%E5%A6%82%E6%9E%9C%E5%B8%83%E5%B1%80%E6%98%AF%E6%B2%BF%E6%B0%B4%E5%B9%B3%E6%96%B9%E5%90%91%EF%BC%8C%E9%82%A3%E4%B9%88%E4%B8%BB%E8%BD%B4%E5%B0%B1%E6%98%AF%E6%8C%87%E6%B0%B4%E5%B9%B3%E6%96%B9%E5%90%91%EF%BC%8C%E8%80%8C%E7%BA%B5%E8%BD%B4%E5%8D%B3%E5%9E%82%E7%9B%B4%E6%96%B9%E5%90%91%EF%BC%9B%E5%A6%82%E6%9E%9C%E5%B8%83%E5%B1%80%E6%B2%BF%E5%9E%82%E7%9B%B4%E6%96%B9%E5%90%91%EF%BC%8C%E9%82%A3%E4%B9%88%E4%B8%BB%E8%BD%B4%E5%B0%B1%E6%98%AF%E6%8C%87%E5%9E%82%E7%9B%B4%E6%96%B9%E5%90%91%EF%BC%8C%E8%80%8C%E7%BA%B5%E8%BD%B4%E5%B0%B1%E6%98%AF%E6%B0%B4%E5%B9%B3%E6%96%B9%E5%90%91%E3%80%82%E5%9C%A8%E7%BA%BF%E6%80%A7%E5%B8%83%E5%B1%80%E4%B8%AD%EF%BC%8C%E6%9C%89%E4%B8%A4%E4%B8%AA%E5%AE%9A%E4%B9%89%E5%AF%B9%E9%BD%90%E6%96%B9%E5%BC%8F%E7%9A%84%E6%9E%9A%E4%B8%BE%E7%B1%BBMainAxisAlignment%E5%92%8CCrossAxisAlignment%EF%BC%8C%E5%88%86%E5%88%AB%E4%BB%A3%E8%A1%A8%E4%B8%BB%E8%BD%B4%E5%AF%B9%E9%BD%90%E5%92%8C%E7%BA%B5%E8%BD%B4%E5%AF%B9%E9%BD%90%E3%80%82%0A\*%20mainAxisSize%EF%BC%9A%E8%A1%A8%E7%A4%BARow%E5%9C%A8%E4%B8%BB%E8%BD%B4(%E6%B0%B4%E5%B9%B3)%E6%96%B9%E5%90%91%E5%8D%A0%E7%94%A8%E7%9A%84%E7%A9%BA%E9%97%B4%EF%BC%8C%E9%BB%98%E8%AE%A4%E6%98%AFMainAxisSize.max%EF%BC%8C%E8%A1%A8%E7%A4%BA%E5%B0%BD%E5%8F%AF%E8%83%BD%E5%A4%9A%E7%9A%84%E5%8D%A0%E7%94%A8%E6%B0%B4%E5%B9%B3%E6%96%B9%E5%90%91%E7%9A%84%E7%A9%BA%E9%97%B4%EF%BC%8C%E6%AD%A4%E6%97%B6%E6%97%A0%E8%AE%BA%E5%AD%90widgets%E5%AE%9E%E9%99%85%E5%8D%A0%E7%94%A8%E5%A4%9A%E5%B0%91%E6%B0%B4%E5%B9%B3%E7%A9%BA%E9%97%B4%EF%BC%8CRow%E7%9A%84%E5%AE%BD%E5%BA%A6%E5%A7%8B%E7%BB%88%E7%AD%89%E4%BA%8E%E6%B0%B4%E5%B9%B3%E6%96%B9%E5%90%91%E7%9A%84%E6%9C%80%E5%A4%A7%E5%AE%BD%E5%BA%A6%EF%BC%9B%0A\*%20%E8%80%8CMainAxisSize.min%E8%A1%A8%E7%A4%BA%E5%B0%BD%E5%8F%AF%E8%83%BD%E5%B0%91%E7%9A%84%E5%8D%A0%E7%94%A8%E6%B0%B4%E5%B9%B3%E7%A9%BA%E9%97%B4%EF%BC%8C%E5%BD%93%E5%AD%90%E7%BB%84%E4%BB%B6%E6%B2%A1%E6%9C%89%E5%8D%A0%E6%BB%A1%E6%B0%B4%E5%B9%B3%E5%89%A9%E4%BD%99%E7%A9%BA%E9%97%B4%EF%BC%8C%E5%88%99Row%E7%9A%84%E5%AE%9E%E9%99%85%E5%AE%BD%E5%BA%A6%E7%AD%89%E4%BA%8E%E6%89%80%E6%9C%89%E5%AD%90%E7%BB%84%E4%BB%B6%E5%8D%A0%E7%94%A8%E7%9A%84%E7%9A%84%E6%B0%B4%E5%B9%B3%E7%A9%BA%E9%97%B4%0A\*%20Row%E5%92%8CColumn%E9%83%BD%E5%8F%AA%E4%BC%9A%E5%9C%A8%E4%B8%BB%E8%BD%B4%E6%96%B9%E5%90%91%E5%8D%A0%E7%94%A8%E5%B0%BD%E5%8F%AF%E8%83%BD%E5%A4%A7%E7%9A%84%E7%A9%BA%E9%97%B4%EF%BC%8C%E8%80%8C%E7%BA%B5%E8%BD%B4%E7%9A%84%E9%95%BF%E5%BA%A6%E5%88%99%E5%8F%96%E5%86%B3%E4%BA%8E%E4%BB%96%E4%BB%AC%E6%9C%80%E5%A4%A7%E5%AD%90%E5%85%83%E7%B4%A0%E7%9A%84%E9%95%BF%E5%BA%A6%0A\*%20alignment%3A%20Alignment.centerLeft%2C%20%20%E5%B7%A6%E5%AF%B9%E9%BD%90%20%20%0A%60%60%60java%0Aenum%20MainAxisAlignment%20%7B%0A%20%2F%2F%E5%B0%86%E5%AD%90%E6%8E%A7%E4%BB%B6%E6%94%BE%E5%9C%A8%E4%B8%BB%E8%BD%B4%E7%9A%84%E5%BC%80%E5%A7%8B%E4%BD%8D%E7%BD%AE%0A%20%20start%2C%20%20%0A%20%20%20%2F%2F%E5%B0%86%E5%AD%90%E6%8E%A7%E4%BB%B6%E6%94%BE%E5%9C%A8%E4%B8%BB%E8%BD%B4%E7%9A%84%E7%BB%93%E6%9D%9F%E4%BD%8D%E7%BD%AE%0A%20%20end%2C%0A%20%20%2F%2F%E5%B0%86%E5%AD%90%E6%8E%A7%E4%BB%B6%E6%94%BE%E5%9C%A8%E4%B8%BB%E8%BD%B4%E7%9A%84%E4%B8%AD%E9%97%B4%E4%BD%8D%E7%BD%AE%0A%20%20center%2C%0A%20%20%2F%2F%E5%B0%86%E4%B8%BB%E8%BD%B4%E7%A9%BA%E7%99%BD%E4%BD%8D%E7%BD%AE%E8%BF%9B%E8%A1%8C%E5%9D%87%E5%88%86%EF%BC%8C%E6%8E%92%E5%88%97%E5%AD%90%E5%85%83%E7%B4%A0%EF%BC%8C%E6%89%8B%E5%B0%BE%E6%B2%A1%E6%9C%89%E7%A9%BA%E9%9A%99%0A%20%20spaceBetween%2C%0A%20%20%2F%2F%E5%B0%86%E4%B8%BB%E8%BD%B4%E7%A9%BA%E7%99%BD%E5%8C%BA%E5%9F%9F%E5%9D%87%E5%88%86%EF%BC%8C%E4%BD%BF%E4%B8%AD%E9%97%B4%E5%90%84%E4%B8%AA%E5%AD%90%E6%8E%A7%E4%BB%B6%E9%97%B4%E8%B7%9D%E7%9B%B8%E7%AD%89%EF%BC%8C%E9%A6%96%E5%B0%BE%E5%AD%90%E6%8E%A7%E4%BB%B6%E9%97%B4%E8%B7%9D%E4%B8%BA%E4%B8%AD%E9%97%B4%E5%AD%90%E6%8E%A7%E4%BB%B6%E9%97%B4%E8%B7%9D%E7%9A%84%E4%B8%80%E5%8D%8A%0A%20%20spaceAround%2C%0A%20%20%2F%2F%E5%B0%86%E4%B8%BB%E8%BD%B4%E7%A9%BA%E7%99%BD%E5%8C%BA%E5%9F%9F%E5%9D%87%E5%88%86%EF%BC%8C%E4%BD%BF%E5%90%84%E4%B8%AA%E5%AD%90%E6%8E%A7%E4%BB%B6%E9%97%B4%E8%B7%9D%E7%9B%B8%E7%AD%89%0A%20%20spaceEvenly%2C%0A%7D%0A%60%60%60%0A%0A%0A%23%23%20Dart%E8%AF%AD%E6%B3%95%0Amain%E5%87%BD%E6%95%B0%E4%BD%BF%E7%94%A8%E4%BA%86(%3D%3E)%E7%AC%A6%E5%8F%B7%2C%20%E8%BF%99%E6%98%AFDart%E4%B8%AD%E5%8D%95%E8%A1%8C%E5%87%BD%E6%95%B0%E6%88%96%E6%96%B9%E6%B3%95%E7%9A%84%E7%AE%80%E5%86%99%E3%80%82%0A%60%60%60java%0A%2F%2F%20%3D%3E%E6%98%AFreturn%E8%AF%AD%E5%8F%A5%E7%9A%84%E7%AE%80%E5%86%99%0Aadd3(a%2C%20b)%20%3D%3E%20a%20%2B%20b%3B%20%0A%60%60%60%0A%E5%8F%98%E9%87%8F%E4%BB%A5%E4%B8%8B%E5%88%92%E7%BA%BF%EF%BC%88\_%EF%BC%89%E5%BC%80%E5%A4%B4%EF%BC%8C%E5%9C%A8Dart%E8%AF%AD%E8%A8%80%E4%B8%AD%E4%BD%BF%E7%94%A8%E4%B8%8B%E5%88%92%E7%BA%BF%E5%89%8D%E7%BC%80%E6%A0%87%E8%AF%86%E7%AC%A6%EF%BC%8C%E4%BC%9A%E5%BC%BA%E5%88%B6%E5%85%B6%E5%8F%98%E6%88%90%E7%A7%81%E6%9C%89%E7%9A%84%E3%80%82%0A%0A%23%23%23%20%E5%BC%82%E6%AD%A5%0A\*%20flutter%E6%B2%A1%E6%9C%89UI%E7%BA%BF%E7%A8%8B%EF%BC%8C%E4%B9%9F%E6%B2%A1%E6%9C%89%E5%AD%90%E7%BA%BF%E7%A8%8B%E3%80%82%E4%B9%9F%E5%B0%B1%E6%98%AF%E8%AF%B4%EF%BC%8C%E6%97%A0%E8%AE%BA%E6%98%AF%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82%EF%BC%8C%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86%EF%BC%8C%E9%A1%B5%E9%9D%A2%E6%B8%B2%E6%9F%93%EF%BC%8C%E9%83%BD%E6%98%AF%E5%9C%A8%E5%90%8C%E4%B8%80%E4%B8%AA%E7%BA%BF%E7%A8%8B%E9%87%8C%E9%9D%A2%EF%BC%8C%E9%82%A3%E6%80%8E%E4%B9%88%E4%BF%9D%E9%9A%9C%E9%A1%B5%E9%9D%A2%E6%B8%B2%E6%9F%93%E4%B8%8D%E4%BC%9Aanr%E5%91%A2%EF%BC%9F%0A\*%20Dart%E6%98%AF%E4%B8%80%E4%B8%AA%E5%8D%95%E7%BA%BF%E7%A8%8B%E7%9A%84%E8%AF%AD%E8%A8%80%EF%BC%8C%E9%81%87%E5%88%B0%E6%9C%89%E5%BB%B6%E8%BF%9F%E7%9A%84%E8%BF%90%E7%AE%97%EF%BC%88%E6%AF%94%E5%A6%82IO%E6%93%8D%E4%BD%9C%E3%80%81%E5%BB%B6%E6%97%B6%E6%89%A7%E8%A1%8C%EF%BC%89%E6%97%B6%EF%BC%8C%E7%BA%BF%E7%A8%8B%E4%B8%AD%E6%8C%89%E9%A1%BA%E5%BA%8F%E6%89%A7%E8%A1%8C%E7%9A%84%E8%BF%90%E7%AE%97%E5%B0%B1%E4%BC%9A%E9%98%BB%E5%A1%9E%EF%BC%8C%E7%94%A8%E6%88%B7%E5%B0%B1%E4%BC%9A%E6%84%9F%E8%A7%89%E5%88%B0%E5%8D%A1%E9%A1%BF%EF%BC%8C%E4%BA%8E%E6%98%AF%E9%80%9A%E5%B8%B8%E7%94%A8%E5%BC%82%E6%AD%A5%E5%A4%84%E7%90%86%E6%9D%A5%E8%A7%A3%E5%86%B3%E8%BF%99%E4%B8%AA%E9%97%AE%E9%A2%98%E3%80%82%E5%BD%93%E9%81%87%E5%88%B0%E6%9C%89%E9%9C%80%E8%A6%81%E5%BB%B6%E8%BF%9F%E7%9A%84%E8%BF%90%E7%AE%97%EF%BC%88async%EF%BC%89%E6%97%B6%EF%BC%8C%E5%B0%86%E5%85%B6%E6%94%BE%E5%85%A5%E5%88%B0%E5%BB%B6%E8%BF%9F%E8%BF%90%E7%AE%97%E7%9A%84%E9%98%9F%E5%88%97%EF%BC%88await%EF%BC%89%E4%B8%AD%E5%8E%BB%EF%BC%8C%E6%8A%8A%E4%B8%8D%E9%9C%80%E8%A6%81%E5%BB%B6%E8%BF%9F%E8%BF%90%E7%AE%97%E7%9A%84%E9%83%A8%E5%88%86%E5%85%88%E6%89%A7%E8%A1%8C%E6%8E%89%EF%BC%8C%E6%9C%80%E5%90%8E%E5%86%8D%E6%9D%A5%E5%A4%84%E7%90%86%E5%BB%B6%E8%BF%9F%E8%BF%90%E7%AE%97%E7%9A%84%E9%83%A8%E5%88%86%E3%80%82(%20%60%E5%BB%B6%E8%BF%9F%E9%98%9F%E5%88%97%60)%0A%0A%5B%E5%BC%82%E6%AD%A5async%E3%80%81await%E5%92%8CFuture%E7%9A%84%E4%BD%BF%E7%94%A8%E6%8A%80%E5%B7%A7%5D(https%3A%2F%2Fsegmentfault.com%2Fa%2F1190000014396421)%0A%0A%E7%94%A8%20async%EF%BC%8Cawait%EF%BC%8CFuture%20%E4%B8%89%E5%85%84%E5%BC%9F%E6%9D%A5%E8%BF%9B%E8%A1%8C%E5%A4%84%E7%90%86%E5%BC%82%E6%AD%A5%E3%80%82%0Aasync%20%EF%BC%8C%E5%AE%83%E6%98%AF%E4%B8%80%E4%B8%AA%E5%BB%B6%E8%BF%9F%E8%AE%A1%E7%AE%97%E7%9A%84%E6%A0%87%E5%BF%97%EF%BC%8C%E6%A0%87%E5%BF%97%E4%BA%86%E6%8A%8A%E8%BF%99%E4%B8%AA%E4%BB%BB%E5%8A%A1%E6%94%BE%E5%88%B0%E4%BA%86%E5%BB%B6%E8%BF%9F%E8%BF%90%E7%AE%97%E7%9A%84%E9%98%9F%E5%88%97%EF%BC%88await%EF%BC%89%E4%B8%AD%EF%BC%8C%E9%80%9A%E8%BF%87Future%E8%BF%9B%E8%A1%8C%E8%BF%94%E5%9B%9E%E3%80%82%0A%0A%E5%9C%A8Dart%E4%B8%AD%EF%BC%8C%E6%9C%89await%E6%A0%87%E8%AE%B0%E7%9A%84%E8%BF%90%E7%AE%97%EF%BC%8C%E5%85%B6%E7%BB%93%E6%9E%9C%E5%80%BC%E9%83%BD%E6%98%AF%E4%B8%80%E4%B8%AAFuture%E5%AF%B9%E8%B1%A1%EF%BC%8CFuture%E4%B8%8D%E6%98%AFString%E7%B1%BB%E5%9E%8B%0ADart%E8%A7%84%E5%AE%9A%E6%9C%89async%E6%A0%87%E8%AE%B0%E7%9A%84%E5%87%BD%E6%95%B0%EF%BC%8C%E5%8F%AA%E8%83%BD%E7%94%B1await%E6%9D%A5%E8%B0%83%E7%94%A8%EF%BC%8C%E6%AF%94%E5%A6%82%E8%BF%99%E6%A0%B7%EF%BC%9A%0AString%20data%20%3D%20await%20getData()%3B%0A%60%60%60java%0A%20%2F%2Fget%E8%AF%B7%E6%B1%82%EF%BC%8C%E8%AF%B7%E6%B1%82%E8%BF%94%E5%9B%9E%E5%80%BC%E4%B8%BAFuture%3CString%3E%E7%B1%BB%E5%9E%8B%EF%BC%8C%E5%8D%B3%E5%85%B6%E8%BF%94%E5%9B%9E%E5%80%BC%E6%9C%AA%E6%9D%A5%E6%98%AF%E4%B8%80%E4%B8%AAString%E7%B1%BB%E5%9E%8B%E7%9A%84%E5%80%BC%0A%20%20getData()%20async%20%7B%20%20%20%20%0A%20%20%20%20%20%2F%2Fasync%E5%85%B3%E9%94%AE%E5%AD%97%E5%A3%B0%E6%98%8E%E8%AF%A5%E5%87%BD%E6%95%B0%E5%86%85%E9%83%A8%E6%9C%89%E4%BB%A3%E7%A0%81%E9%9C%80%E8%A6%81%E5%BB%B6%E8%BF%9F%E6%89%A7%E8%A1%8C%0A%20%20%20%20return%20await%20http.get(Uri.encodeFull(url)%2C%20headers%3A%20%7B%22Accept%22%3A%20%22application%2Fjson%22%7D)%3B%20%2F%2Fawait%E5%85%B3%E9%94%AE%E5%AD%97%E5%A3%B0%E6%98%8E%E8%BF%90%E7%AE%97%E4%B8%BA%E5%BB%B6%E8%BF%9F%E6%89%A7%E8%A1%8C%EF%BC%8C%E7%84%B6%E5%90%8Ereturn%E8%BF%90%E7%AE%97%E7%BB%93%E6%9E%9C%0A%20%20%7D%0A%60%60%60%0Aasync%E7%94%A8%E4%BA%8E%E6%A0%87%E6%98%8E%E5%87%BD%E6%95%B0%E6%98%AF%E4%B8%80%E4%B8%AA%E5%BC%82%E6%AD%A5%E5%87%BD%E6%95%B0%EF%BC%8C%E5%85%B6%E8%BF%94%E5%9B%9E%E5%80%BC%E7%B1%BB%E5%9E%8B%E6%98%AFFuture%E7%B1%BB%E5%9E%8B%0Aawait%E7%94%A8%E6%9D%A5%E7%AD%89%E5%BE%85%E8%80%97%E6%97%B6%E6%93%8D%E4%BD%9C%E7%9A%84%E8%BF%94%E5%9B%9E%E7%BB%93%E6%9E%9C%EF%BC%8C%E8%BF%99%E4%B8%AA%E6%93%8D%E4%BD%9C%E4%BC%9A%E9%98%BB%E5%A1%9E%E5%88%B0%E5%90%8E%E9%9D%A2%E7%9A%84%E4%BB%A3%E7%A0%81%0A%0A\*\*await%E5%85%B3%E9%94%AE%E5%AD%97%E5%BF%85%E9%A1%BB%E5%9C%A8async%E5%87%BD%E6%95%B0%E5%86%85%E9%83%A8%E4%BD%BF%E7%94%A8%0A%E8%B0%83%E7%94%A8async%E5%87%BD%E6%95%B0%E5%BF%85%E9%A1%BB%E4%BD%BF%E7%94%A8await%E5%85%B3%E9%94%AE%E5%AD%97\*\*%0A%0A%0A%0A%23%23%20%E5%85%B6%E4%BB%96%0A%0A%23%23%23%20%E5%92%B1%E4%BB%AC%E9%A1%B9%E7%9B%AE%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%0Aflutter%E4%BB%93%E5%BA%93%E5%9C%B0%E5%9D%80%EF%BC%9Ahttps%3A%2F%2Fgit.100tal.com%2Fpublication%2Fapp\_ta\_flutter%0A%E4%BB%A3%E7%A0%81clone%E5%88%B0%E4%B8%8EAndroid%E5%B7%A5%E7%A8%8B%E5%90%8C%E7%BA%A7%E7%9B%AE%E5%BD%95%0A%0AAndroid%E7%9B%AE%E5%89%8D%E6%9C%89%E4%B8%A4%E7%A7%8D%E4%BE%9D%E8%B5%96%E6%96%B9%E5%BC%8F%EF%BC%9A%0A%E6%9C%AC%E5%9C%B0%E4%BE%9D%E8%B5%96%EF%BC%88%E9%80%82%E7%94%A8%E4%BA%8E%E5%BC%80%E5%8F%91%E8%B0%83%E8%AF%95%E9%98%B6%E6%AE%B5%EF%BC%89%0A%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6repo\_projects.xml%E4%B8%AD%EF%BC%8C%E6%89%93%E5%BC%80%E4%B8%8B%E9%9D%A2%E8%BF%99%E8%A1%8C%0A%3Cproject%20name%3D%22publication%2Fapp\_ta\_flutter.git%22%20path%3D%22%2Fapp\_ta\_flutter%22%20%2F%3E%0A%0A%E8%BF%9C%E7%A8%8B%E4%BE%9D%E8%B5%96%EF%BC%88%E9%80%82%E7%94%A8%E6%89%93%E5%8C%85%E6%88%96flutter%E5%8A%9F%E8%83%BD%E7%A8%B3%E5%AE%9A%E9%98%B6%E6%AE%B5%EF%BC%89%0A%E9%85%8D%E7%BD%AErepo\_projects.xml%E4%B8%AD%EF%BC%8C%E6%B3%A8%E9%87%8A%E4%B8%8B%E9%9D%A2%E8%BF%99%E8%A1%8C%0A%3Cproject%20name%3D%22publication%2Fapp\_ta\_flutter.git%22%20path%3D%22%2Fapp\_ta\_flutter%22%20%2F%3E%0A%0A%23%23%23%20%E6%89%93%E5%8C%85%0A%E5%BC%80%E5%8F%91%E5%AE%8C%E5%90%8E%EF%BC%8C%E6%8F%90%E6%B5%8B%E6%88%96%E8%80%85%E4%B8%8A%E7%BA%BF%EF%BC%8C%E9%9C%80%E8%A6%81%E5%B0%86flutter%E4%BB%A3%E7%A0%81%E6%89%93%E5%8C%85%E3%80%82%E7%9B%AE%E5%89%8D%E5%B7%B2%E7%BB%8F%E6%94%AF%E6%8C%81%E4%BA%86jenkins%E4%B8%8A%E8%87%AA%E5%8A%A8%E6%89%93%E5%8C%85flutter%EF%BC%8C%E4%B8%8A%E4%BC%A0maven%EF%BC%8C%E7%84%B6%E5%90%8E%E4%BF%AE%E6%94%B9%E9%85%8D%E7%BD%AE%E4%BB%93%E5%BA%93%EF%BC%8C%E5%A2%9E%E5%8A%A0%E7%89%88%E6%9C%AC%E5%8F%B7%EF%BC%8C%E6%8E%A5%E7%9D%80push%E4%BB%A3%E7%A0%81%EF%BC%8C%E8%87%AA%E5%8A%A8%E5%8C%96%E6%89%93%E5%8C%85%E3%80%82%0Ajenkins%E6%89%93%E5%8C%85%E5%9C%B0%E5%9D%80%EF%BC%9A%5Bhttp%3A%2F%2F10.14.200.4%3A8880%2Fjenkins\_app%2Fview%2F%E5%9B%BE%E4%B9%A6%E5%87%BA%E7%89%88%2Fjob%2Fandroid%2Fjob%2Flib%2Fjob%2Fapp\_ta\_flutter%2Fbuild%3Fdelay%3D0sec%5D(http%3A%2F%2F10.14.200.4%3A8880%2Fjenkins\_app%2Fview%2F%25E5%259B%25BE%25E4%25B9%25A6%25E5%2587%25BA%25E7%2589%2588%2Fjob%2Fandroid%2Fjob%2Flib%2Fjob%2Fapp\_ta\_flutter%2Fbuild%3Fdelay%3D0sec)%0A%0A%E7%BA%A2%E6%A1%86%E5%BF%85%E9%80%89%EF%BC%8C%E5%85%B6%E4%BB%96%E4%B8%8D%E7%94%A8%E5%86%99%EF%BC%8C%E9%80%89%E6%8B%A9%E5%AE%8C%E5%90%8E%E7%82%B9build%0ABUSINESS\_BRANCH%EF%BC%9A%E9%80%89%E8%87%AA%E5%B7%B1%E7%9A%84%E5%BC%80%E5%8F%91%E7%9A%84flutter%E5%8A%9F%E8%83%BD%E5%AF%B9%E5%BA%94%E7%9A%84%E5%88%86%E6%94%AF%0APROPERTIES\_BRANCH%EF%BC%9A%E8%A6%81%E6%9B%B4%E6%96%B0%E5%88%B0%E5%93%AA%E4%B8%AA%E9%85%8D%E7%BD%AE%E4%BB%93%E5%BA%93%E7%9A%84%E5%88%86%E6%94%AF%0A!%5Bcf4f336024517a44ecb86357136209e5.png%5D(evernotecid%3A%2F%2FA511C64A-F456-4B32-91F8-405613EEF607%2Fappyinxiangcom%2F10438895%2FENResource%2Fp13654)%0A%0A%0A%0A%23%23%23%20%E8%B0%83%E8%AF%95%0A%E5%85%88%E6%8A%8AAPP%E6%9D%80%E6%AD%BB%EF%BC%8C%E5%9C%A8%E5%90%AF%E5%8A%A8%E8%BF%87%E7%A8%8B%E4%B8%ADattach%EF%BC%8C%E5%8F%AF%E4%BB%A5%E5%85%88%E7%82%B9%E8%BF%99%E4%B8%AA%0A!%5B982887bf79e874c365e0e976d9b65cfb.png%5D(evernotecid%3A%2F%2FA511C64A-F456-4B32-91F8-405613EEF607%2Fappyinxiangcom%2F10438895%2FENResource%2Fp13644)%0A%E5%87%BA%E7%8E%B0%E4%B8%8B%E9%9D%A2%E8%BF%99%E4%B8%AA%E5%B0%B1%E5%8F%AF%E4%BB%A5%E8%B0%83%E8%AF%95%E4%BA%86%0A!%5B70dcdae8bb2ab83b9caf4a479903142d.png%5D(evernotecid%3A%2F%2FA511C64A-F456-4B32-91F8-405613EEF607%2Fappyinxiangcom%2F10438895%2FENResource%2Fp13645)%0A%0A%0A%23%23%23%20%E4%BD%BF%E7%94%A8%E2%80%98%E5%B0%BE%E9%9A%8F%E9%80%97%E5%8F%B7%E2%80%99%0AFlutter%E4%BB%A3%E7%A0%81%E9%80%9A%E5%B8%B8%E6%B6%89%E5%8F%8A%E6%9E%84%E5%BB%BA%E7%9B%B8%E5%BD%93%E6%B7%B1%E7%9A%84%E6%A0%91%E7%8A%B6%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%EF%BC%8C%E4%BE%8B%E5%A6%82%E5%9C%A8%E4%B8%80%E4%B8%AAbuild%E6%96%B9%E6%B3%95%E4%B8%AD%E3%80%82%20%E4%B8%BA%E4%BA%86%E8%8E%B7%E5%BE%97%E8%89%AF%E5%A5%BD%E7%9A%84%E8%87%AA%E5%8A%A8%E6%A0%BC%E5%BC%8F%E5%8C%96%EF%BC%8C%E6%88%91%E4%BB%AC%E5%BB%BA%E8%AE%AE%E6%82%A8%E9%87%87%E7%94%A8%E5%8F%AF%E9%80%89%E7%9A%84%E5%B0%BE%E9%83%A8%E9%80%97%E5%8F%B7%E3%80%82%E6%B7%BB%E5%8A%A0%E5%B0%BE%E9%9A%8F%E9%80%97%E5%8F%B7%E5%BE%88%E7%AE%80%E5%8D%95%EF%BC%9A%E5%A7%8B%E7%BB%88%E5%9C%A8%E5%87%BD%E6%95%B0%E3%80%81%E6%96%B9%E6%B3%95%E5%92%8C%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0%E7%9A%84%E5%8F%82%E6%95%B0%E5%88%97%E8%A1%A8%E6%9C%AB%E5%B0%BE%E6%B7%BB%E5%8A%A0%E5%B0%BE%E9%9A%8F%E9%80%97%E5%8F%B7%EF%BC%8C%E4%BB%A5%E4%BE%BF%E4%BF%9D%E7%95%99%E6%82%A8%E7%9A%84%E7%BC%96%E7%A0%81%E6%A0%BC%E5%BC%8F%E3%80%82%20%E8%BF%99%E5%B0%86%E6%9C%89%E5%8A%A9%E4%BA%8E%E8%87%AA%E5%8A%A8%E6%A0%BC%E5%BC%8F%E5%8C%96%E7%A8%8B%E5%BA%8F%E4%B8%BAFlutter%E6%A0%B7%E5%BC%8F%E4%BB%A3%E7%A0%81%E6%8F%92%E5%85%A5%E9%80%82%E5%BD%93%E7%9A%84%E6%8D%A2%E8%A1%8C%E7%AC%A6%E3%80%82%0A!%5B33a45fb9c21b02a3c3d426222e90433c.png%5D(evernotecid%3A%2F%2FA511C64A-F456-4B32-91F8-405613EEF607%2Fappyinxiangcom%2F10438895%2FENResource%2Fp13646)%0A%0A%23%23%23%20%E4%B8%A4%E4%B8%AA%E5%A5%BD%E7%94%A8%E7%9A%84%E5%9B%BE%E7%89%87%E6%8F%92%E4%BB%B6%0AFlutterQuickLocateAsset%0AFlutterAssetAutoCompletion%0A%0A%23%23%23%20%E4%BD%BF%E7%94%A8%E8%87%AA%E5%AE%9A%E4%B9%89%E6%A8%A1%E6%9D%BF%0A%E6%8F%90%E9%AB%98%E5%BC%80%E5%8F%91%E6%95%88%E7%8E%87%0A!%5B603dea0f15cbf2b8f4276c93a057db06.png%5D(evernotecid%3A%2F%2FA511C64A-F456-4B32-91F8-405613EEF607%2Fappyinxiangcom%2F10438895%2FENResource%2Fp13653)%0A!%5Bee8e403c6ab9790340a9eba9a168b4c9.png%5D(evernotecid%3A%2F%2FA511C64A-F456-4B32-91F8-405613EEF607%2Fappyinxiangcom%2F10438895%2FENResource%2Fp13652)%0A%0A%0A%0A%0A%23%23%20Flutter%E4%B8%8E%E5%8E%9F%E7%94%9F%E9%80%9A%E4%BF%A1%0A%5B%E5%B0%86%20Flutter%20%E9%9B%86%E6%88%90%E5%88%B0%E7%8E%B0%E6%9C%89%E5%BA%94%E7%94%A8%5D(https%3A%2F%2Fflutter.cn%2Fdocs%2Fdevelopment%2Fadd-to-app)%0A%5BFlutter%20%E4%B8%8E%20Android%20%E7%9A%84%E7%9B%B8%E4%BA%92%E9%80%9A%E4%BF%A1%5D(https%3A%2F%2Flearnku.com%2Farticles%2F32448)%0A%0A%E5%8F%AF%E4%BB%A5%E4%BB%8ENative%E5%B1%82%E8%B0%83%E7%94%A8flutter%E5%B1%82%E7%9A%84dart%E4%BB%A3%E7%A0%81%EF%BC%8C%E4%B9%9F%E5%8F%AF%E4%BB%A5%E5%9C%A8flutter%E5%B1%82%E8%B0%83%E7%94%A8Native%E7%9A%84%E4%BB%A3%E7%A0%81%EF%BC%8C%E8%80%8C%E4%BD%9C%E4%B8%BA%E9%80%9A%E8%AE%AF%E6%A1%A5%E6%A2%81%E5%B0%B1%E6%98%AFMethodChannel%EF%BC%8C%E8%BF%99%E4%B8%AA%E7%B1%BB%E5%9C%A8%E5%88%9D%E5%A7%8B%E5%8C%96%E7%9A%84%E6%97%B6%E5%80%99%E9%9C%80%E8%A6%81%E6%B3%A8%E5%86%8C%E4%B8%80%E4%B8%AA%E6%B8%A0%E9%81%93%E5%80%BC%E3%80%82%E8%BF%99%E4%B8%AA%E5%80%BC%E5%BF%85%E9%A1%BB%E6%98%AF%E5%94%AF%E4%B8%80%E7%9A%84%EF%BC%8C%E5%B9%B6%E4%B8%94%E5%9C%A8%E4%BD%BF%E7%94%A8%E5%88%B0%E7%9A%84Native%E5%B1%82%E5%92%8CFlutter%E5%B1%82%E4%BA%92%E7%9B%B8%E5%AF%B9%E5%BA%94%E3%80%82%0A%0A\*\*flutter%E8%B0%83%E7%94%A8Android\*\*%0A%E6%B3%A8%E5%86%8C%0A%60%60%60java%0Astatic%20const%20nativeChannel%20%3D%0A%20%20%20%20%20%20const%20MethodChannel('com.example.flutter%2Fnative')%3B%0A%60%60%60%0Aflutter%0A%60%60%60java%0A%20%20%20%20%20%20Map%3CString%2C%20dynamic%3E%20result%20%3D%20%7B'message'%3A%20'%E6%88%91%E4%BB%8EFlutter%E9%A1%B5%E9%9D%A2%E5%9B%9E%E6%9D%A5%E4%BA%86'%7D%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20nativeChannel.invokeMethod('goBackWithResult'%2C%20result)%3B%0A%60%60%60%0AAndroid%0A%60%60%60java%0A%20MethodChannel%20nativeChannel%20%3D%20new%20MethodChannel(flutterEngine.getDartExecutor()%2C%20CHANNEL\_NATIVE)%3B%0A%20%20%20%20%20%20%20%20nativeChannel.setMethodCallHandler((methodCall%2C%20result)%20-%3E%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20switch%20(methodCall.method)%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%2F%2F%E5%9B%9E%E8%B0%83%0A%20%20%20%20%20%20%20%20%20%20%20%20case%20%22goBackWithResult%22%3A%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%2F%2F%20%E8%BF%94%E5%9B%9E%E4%B8%8A%E4%B8%80%E9%A1%B5%EF%BC%8C%E6%90%BA%E5%B8%A6%E6%95%B0%E6%8D%AE%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20ActivityManager.getInstance().finishActivity(FlutterActivity.class)%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20Toast.makeText(this%2C%20(String)%20methodCall.argument(%22message%22)%2C%20Toast.LENGTH\_SHORT).show()%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20break%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20case%20%22getSendParams%22%3A%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20result.success(getSendParams())%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20break%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20default%3A%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20result.notImplemented()%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20break%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%7D)%3B%0A%60%60%60%0A%E5%BC%82%E6%AD%A5%0A%60%60%60java%0A%20Future%20getSendParams()%20async%20%7B%0A%20%20%20%20String%20params%20%3D%20await%20\_SendFeedBackState.nativeChannel%0A%20%20%20%20%20%20%20%20.invokeMethod('getSendParams'%2C%20%22%22)%3B%0A%20%20%20%20print(%22getSendParams%EF%BC%9A%22%20%2B%20params)%3B%0A%20%20%7D%0A%60%60%60%0A%0A\*\*Android%E8%B0%83%E7%94%A8flutter\*\*%0AAndroid%0A%60%60%60java%0A%20%20%20%20%20%20%20%20Map%3CString%2C%20Object%3E%20result%20%3D%20new%20HashMap%3C%3E()%3B%0A%20%20%20%20%20%20%20%20result.put(%22message%22%2C%20message)%3B%0A%20%20%20%20%20%20%20%20%2F%2F%20%E5%88%9B%E5%BB%BAMethodChannel%0A%20%20%20%20%20%20%20%20MethodChannel%20flutterChannel%20%3D%20new%20MethodChannel(flutterEngine.getDartExecutor()%2C%20CHANNEL\_FLUTTER)%3B%0A%20%20%20%20%20%20%20%20flutterChannel.invokeMethod(%22onActivityResult%22%2C%20result)%3B%0A%60%60%60%0Aflutter%0A%60%60%60java%0A%20%20%40override%0A%20%20void%20initState()%20%7B%0A%20%20%20%20super.initState()%3B%0A%20%20%20%20Future%3Cdynamic%3E%20handler(MethodCall%20call)%20async%20%7B%0A%20%20%20%20%20%20switch%20(call.method)%20%7B%0A%20%20%20%20%20%20%20%20case%20'onActivityResult'%3A%0A%20%20%20%20%20%20%20%20%20%20Fluttertoast.showToast(%0A%20%20%20%20%20%20%20%20%20%20%20%20msg%3A%20call.arguments%5B'message'%5D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20toastLength%3A%20Toast.LENGTH\_SHORT%2C%0A%20%20%20%20%20%20%20%20%20%20)%3B%0A%20%20%20%20%20%20%20%20%20%20break%3B%0A%20%20%20%20%20%20%20%20case%20'goBack'%3A%0A%20%20%20%20%20%20%20%20%20%20%2F%2F%20%E8%BF%94%E5%9B%9E%E4%B8%8A%E4%B8%80%E9%A1%B5%0A%20%20%20%20%20%20%20%20%20%20if%20(Navigator.canPop(context))%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20Navigator.of(context).pop()%3B%0A%20%20%20%20%20%20%20%20%20%20%7D%20else%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20nativeChannel.invokeMethod('goBack')%3B%0A%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20break%3B%0A%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%0A%0A%20%20%20%20flutterChannel.setMethodCallHandler(handler)%3B%0A%20%20%7D%0A%0A%60%60%60%0A%0A%0A%0A%0A">www.dartcn.com%2Fguides%2Flanguage%2Flanguage-tour)%0A%5Bpub%E4%BB%93%E5%BA%93%5D(https%3A%2F%2Fpub.flutter-io.cn%2F)%0A%0A%0A%0A%23%23%20Widget%0AActivity%E3%80%81Fragment%E3%80%81view%20%E5%9C%A8Flutter%E4%B8%AD%E7%AD%89%E4%BB%B7%E4%BA%8EWidget%0A%0A\*\*%E4%B8%8EAndroid%20view%E5%8C%BA%E5%88%AB\*\*%0A\*%20Android%E4%B8%ADView%E6%98%AF%E5%8F%AF%E5%8F%98%E7%9A%84%EF%BC%8C%E5%BD%93%E7%94%A8%E6%88%B7%E4%BA%A4%E4%BA%92%E6%88%96%E6%95%B0%E6%8D%AE%E6%9B%B4%E6%96%B0%E6%97%B6%EF%BC%8C%E5%8F%AF%E7%9B%B4%E6%8E%A5%E8%B0%83%E7%94%A8View%E7%9A%84invalidate%E6%96%B9%E6%B3%95%E9%87%8D%E7%BB%98%EF%BC%8C%E8%BE%BE%E5%88%B0%E6%9B%B4%E6%96%B0UI%E7%9A%84%E7%9B%AE%E7%9A%84%E3%80%82%0A\*%20Flutter%E7%9A%84widget%E6%98%AF%E4%B8%8D%E5%8F%AF%E6%94%B9%E5%8F%98%E7%9A%84%E5%9B%A0%E6%AD%A4%E4%B8%8D%E8%83%BD%E7%9B%B4%E6%8E%A5%E6%9B%B4%E6%96%B0%EF%BC%8C%E8%80%8C%E5%BF%85%E9%A1%BB%E4%BD%BF%E7%94%A8Widget%E7%9A%84%E7%8A%B6%E6%80%81%E3%80%82Flutter%E7%9A%84widget%E5%88%86%E4%B8%BA%E6%9C%89%E7%8A%B6%E6%80%81%E5%92%8C%E6%97%A0%E7%8A%B6%E6%80%81%E4%B8%A4%E7%A7%8D%E3%80%82%0A%0AStateless%C2%A0widgets%20%E6%98%AF%E4%B8%8D%E5%8F%AF%E5%8F%98%E7%9A%84%2C%20%E8%BF%99%E6%84%8F%E5%91%B3%E7%9D%80%E5%AE%83%E4%BB%AC%E7%9A%84%E5%B1%9E%E6%80%A7%E4%B8%8D%E8%83%BD%E6%94%B9%E5%8F%98%20%EF%BC%8C%E6%89%80%E6%9C%89%E7%9A%84%E5%80%BC%E9%83%BD%E6%98%AF%E6%9C%80%E7%BB%88%E7%9A%84%E3%80%82%0AStateful%C2%A0widgets%EF%BC%88%E6%9C%89%E7%8A%B6%E6%80%81%E7%9A%84%E9%83%A8%E4%BB%B6%EF%BC%89%20%E6%8C%81%E6%9C%89%E7%9A%84%E7%8A%B6%E6%80%81%E5%8F%AF%E8%83%BD%E5%9C%A8widget%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E4%B8%AD%E5%8F%91%E7%94%9F%E5%8F%98%E5%8C%96.%20%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AA%20stateful%20widget%20%E8%87%B3%E5%B0%91%E9%9C%80%E8%A6%81%E4%B8%A4%E4%B8%AA%E7%B1%BB%3A%0A1.%20%E4%B8%80%E4%B8%AA%20StatefulWidget%E7%B1%BB%E3%80%82%0A2.%20%E4%B8%80%E4%B8%AA%20State%20%E7%B1%BB%E3%80%82%20%0Astateful%20widget%E5%B0%86%E8%87%AA%E8%BA%AB%E7%9A%84%E6%9E%84%E5%BB%BA%E5%A7%94%E6%89%98%E7%BB%99State%E5%AF%B9%E8%B1%A1%EF%BC%8CState%E5%AF%B9%E8%B1%A1%E7%9A%84build%E5%87%BD%E6%95%B0%E8%B4%9F%E8%B4%A3%E6%9E%84%E5%BB%BA%E8%AF%A5Widget%EF%BC%8C%E5%BD%93%E7%94%A8%E6%88%B7%E4%BA%A4%E4%BA%92%E6%88%96%E6%95%B0%E6%8D%AE%E5%8F%91%E7%94%9F%E5%8F%98%E5%8C%96%E6%97%B6%EF%BC%8CWidget%E7%8A%B6%E6%80%81%E5%8F%91%E7%94%9F%E6%94%B9%E5%8F%98%EF%BC%8C%E8%B0%83%E7%94%A8State%E7%9A%84%20%60setState%60%20%E6%96%B9%E6%B3%95%E9%80%9A%E7%9F%A5%E5%AE%83%EF%BC%8C%E8%80%8C%E5%90%8EState%E6%A0%B9%E6%8D%AE%E5%BD%93%E5%89%8D%E7%9A%84%E7%8A%B6%E6%80%81%E4%BF%A1%E6%81%AF%EF%BC%8C%E9%87%8D%E6%96%B0%E6%9E%84%E5%BB%BAWidget%20tree%0A%0A\*%20%E5%9C%A8Flutter%E4%B8%AD%EF%BC%8C%E4%B8%80%E4%B8%AA%E8%87%AA%E5%AE%9A%E4%B9%89widget%E9%80%9A%E5%B8%B8%E6%98%AF%E9%80%9A%E8%BF%87%E7%BB%84%E5%90%88%E5%85%B6%E5%AE%83widget%E6%9D%A5%E5%AE%9E%E7%8E%B0%E7%9A%84%EF%BC%8C%E8%80%8C%E4%B8%8D%E6%98%AF%E7%BB%A7%E6%89%BF%E3%80%82%0A\*%20%E6%9F%90%E4%BA%9Bwidget%E5%B1%9E%E6%80%A7%E9%9C%80%E8%A6%81%E5%8D%95%E4%B8%AAwidget%EF%BC%88child%EF%BC%89%EF%BC%8C%E8%80%8C%E5%85%B6%E5%AE%83%E4%B8%80%E4%BA%9B%E5%B1%9E%E6%80%A7%EF%BC%8C%E5%A6%82action%EF%BC%8C%E9%9C%80%E8%A6%81%E4%B8%80%E7%BB%84widgets(children%EF%BC%89%EF%BC%8C%E7%94%A8%E6%96%B9%E6%8B%AC%E5%8F%B7%5B%5D%E8%A1%A8%E7%A4%BA%E3%80%82%20%0A%0A%0A%23%23%23%20%E5%B8%B8%E7%94%A8Widget%E5%92%8C%E5%B1%9E%E6%80%A7%0A\*%20Container%EF%BC%9A%E7%88%B6view%EF%BC%8C%E5%AE%BD%E9%AB%98%E3%80%81%E8%83%8C%E6%99%AF%E8%89%B2%E3%80%81%E5%9C%86%E8%A7%92%E3%80%81margin%0A\*%20Padding%EF%BC%9AEdgeInsets.fromLTRB%0A\*%20Center%EF%BC%9A%E5%B1%85%E4%B8%AD%0A\*%20TextField%EF%BC%9A%E8%BE%93%E5%85%A5%E6%A1%86%EF%BC%88TextEditingController%EF%BC%89%0A\*%20Expanded%EF%BC%9A%E5%A1%AB%E5%85%85%E5%89%A9%E4%BD%99%E5%B8%83%E5%B1%80%EF%BC%8C%E7%BB%84%E4%BB%B6%E6%9C%89%E4%B8%AA%E5%8F%82%E6%95%B0flex%2C%E5%8F%AF%E4%BB%A5%E5%AE%9E%E7%8E%B0%E6%AF%94%E4%BE%8B%E5%88%86%E9%85%8D%E3%80%82%0A\*%20BoxDecoration%3A%E5%9C%86%E8%A7%92%EF%BC%8C%E9%9C%80%E8%A6%81%E6%94%BE%E5%9C%A8Container%E9%87%8C%EF%BC%8C%E5%AE%9E%E7%8E%B0%E8%BE%B9%E6%A1%86%E3%80%81%E5%9C%86%E8%A7%92%E3%80%81%E9%98%B4%E5%BD%B1%E3%80%81%E5%BD%A2%E7%8A%B6%E3%80%81%E6%B8%90%E5%8F%98%E3%80%81%E8%83%8C%E6%99%AF%E5%9B%BE%E5%83%8F%0A\*%20EdgeInsets.only%20symmetric(%7Bvertical%2C%20horizontal%7D)%EF%BC%9A%E7%94%A8%E4%BA%8E%E8%AE%BE%E7%BD%AE%E5%AF%B9%E7%A7%B0%E6%96%B9%E5%90%91%E7%9A%84%E5%A1%AB%E5%85%85%EF%BC%8Cvertical%E6%8C%87top%E5%92%8Cbottom%EF%BC%8Chorizontal%E6%8C%87left%E5%92%8Cright%E3%80%82%0A\*%20MediaQuery.removePadding%20%E5%8F%AF%E4%BB%A5%E7%A7%BB%E9%99%A4%E7%BB%84%E4%BB%B6%E7%9A%84%E8%BE%B9%E8%B7%9D%EF%BC%8C%E6%9C%89%E4%BA%9B%E7%BB%84%E4%BB%B6%E8%87%AA%E5%B8%A6%E6%9C%89%E8%BE%B9%E8%B7%9D%0A\*%20expenand%20%E5%BF%85%E9%A1%BB%E5%92%8Ccolum%E6%88%96row%E4%B8%80%E8%B5%B7%E7%94%A8%EF%BC%8C%E5%90%A6%E5%88%99debug%E8%83%BD%E8%BF%90%E8%A1%8C%EF%BC%8Crelease%E6%8A%A5%E9%94%99%E3%80%82%0A\*%20Text.rich(TextSpan%20%20%20%E4%B8%80%E4%B8%AAtextviwe%E4%B8%8D%E5%90%8C%E9%A2%9C%E8%89%B2%E5%A4%A7%E5%B0%8F%20%20%20%0A%60%60%60java%0ARichText(text%3A%20TextSpan(%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20children%3A%20%5B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20TextSpan(%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20text%3A%22\*%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20style%3A%20TextStyle(color%3A%20Color.colorAuxRedColor%2C%20fontSize%3A%2015)%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20)%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20TextSpan(%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20text%3A%22%E4%BD%A0%E5%A5%BD%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20style%3A%20TextStyle(color%3A%20Color.colorText222Color%2C%20fontSize%3A%2015)%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20)%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%5D%0A%20%20%20%20%20%20%20%20%20%20%20%20))%2C%0A%20%20%20%20%20%20%20%20%20%20%20%0A%60%60%60%0A%60%60%60java%0A%20Visibility(%0A%20%20%20visible%3A%20true%2C%0A%20%20%20%2F%2F%E6%98%AF%E5%90%A6%E4%BF%9D%E6%8C%81%E5%8D%A0%E4%BD%8D%0A%20%20%20maintainState%3A%20false%2C%0A%20%20%20child%3A%20Text(%22%E6%98%BE%E7%A4%BA%22)%2C%0A%20)%2C%0A%60%60%60%0A!%5B725fd7b1edf17b0af4da1c2abb2c2729.png%5D(evernotecid%3A%2F%2FA511C64A-F456-4B32-91F8-405613EEF607%2Fappyinxiangcom%2F10438895%2FENResource%2Fp13651)%0A%0A%0A%23%23%23%23%20%E7%82%B9%E5%87%BB%0A\*%20%E5%A6%82%E6%9E%9CWidget%E4%B8%8D%E6%94%AF%E6%8C%81%E4%BA%8B%E4%BB%B6%E7%9B%91%E5%90%AC%EF%BC%8C%E5%88%99%E5%8F%AF%E4%BB%A5%E5%B0%86%E8%AF%A5Widget%E5%8C%85%E8%A3%85%E5%88%B0GestureDetector%E4%B8%AD%EF%BC%8C%E5%B9%B6%E5%B0%86%E5%A4%84%E7%90%86%E5%87%BD%E6%95%B0%E4%BC%A0%E9%80%92%E7%BB%99onTap%E5%8F%82%E6%95%B0%E3%80%82%0A\*%20InkWell%EF%BC%9A%E7%82%B9%E5%87%BB%0A%0A%0A%23%23%23%23%20MaterialApp%0AMaterialApp%20%E6%98%AF%E6%88%91%E4%BB%AC%E4%BD%BF%E7%94%A8%20Flutter%E5%BC%80%E5%8F%91%E4%B8%AD%E6%9C%80%E5%B8%B8%E7%94%A8%E7%9A%84%E7%AC%A6%E5%90%88Material%20Design%E8%AE%BE%E8%AE%A1%E7%90%86%E5%BF%B5%E7%9A%84%E5%85%A5%E5%8F%A3Widget%E3%80%82%E4%BD%A0%E5%8F%AF%E4%BB%A5%E5%B0%86%E5%AE%83%E7%B1%BB%E6%AF%94%E6%88%90%E4%B8%BA%E7%BD%91%E9%A1%B5%E4%B8%AD%E7%9A%84%3Chtml%3E%3C%2Fhtml%3E%EF%BC%8C%E4%B8%94%E5%AE%83%E8%87%AA%E5%B8%A6%E8%B7%AF%E7%94%B1%E3%80%81%E4%B8%BB%E9%A2%98%E8%89%B2%EF%BC%8C%3Ctitle%3E%E7%AD%89%E5%8A%9F%E8%83%BD%E3%80%82%0A%0A%23%23%23%23%20Scaffold%0AScaffold%E9%80%9A%E5%B8%B8%E8%A2%AB%E7%94%A8%E4%BD%9CMaterialApp%E7%9A%84%E5%AD%90Widget%EF%BC%8C%E5%AE%83%E4%BC%9A%E5%A1%AB%E5%85%85%E5%8F%AF%E7%94%A8%E7%A9%BA%E9%97%B4%EF%BC%8C%E5%8D%A0%E6%8D%AE%E6%95%B4%E4%B8%AA%E7%AA%97%E5%8F%A3%E6%88%96%E8%AE%BE%E5%A4%87%E5%B1%8F%E5%B9%95%E3%80%82Scaffold%E6%8F%90%E4%BE%9B%E4%BA%86%E5%A4%A7%E5%A4%9A%E6%95%B0%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F%E9%83%BD%E5%BA%94%E8%AF%A5%E5%85%B7%E5%A4%87%E7%9A%84%E5%8A%9F%E8%83%BD%EF%BC%8C%E4%BE%8B%E5%A6%82%E9%A1%B6%E9%83%A8%E7%9A%84appBar%EF%BC%8C%E5%BA%95%E9%83%A8%E7%9A%84bottomNavigationBar%EF%BC%8C%E9%9A%90%E8%97%8F%E7%9A%84%E4%BE%A7%E8%BE%B9%E6%A0%8Fdrawer%E7%AD%89%E3%80%82%0A%60%60%60java%0Aconst%20Scaffold(%7B%0A%20%20Key%20key%2C%0A%20%20this.appBar%2C%20%2F%2F%20%E6%A0%87%E9%A2%98%E6%A0%8F%0A%20%20this.body%2C%20%20%2F%2F%20%E7%94%A8%E4%BA%8E%E6%98%BE%E7%A4%BA%E5%BD%93%E5%89%8D%E7%95%8C%E9%9D%A2%E4%B8%BB%E8%A6%81%E5%86%85%E5%AE%B9%E7%9A%84Widget%0A%20%20this.floatingActionButton%2C%20%2F%2F%20%E4%B8%80%E4%B8%AA%E6%82%AC%E6%B5%AE%E5%9C%A8body%E4%B8%8A%E7%9A%84%E6%8C%89%E9%92%AE%EF%BC%8C%E9%BB%98%E8%AE%A4%E6%98%BE%E7%A4%BA%E5%9C%A8%E5%8F%B3%E4%B8%8B%E8%A7%92%0A%20%20this.floatingActionButtonLocation%2C%20%2F%2F%20%E7%94%A8%E4%BA%8E%E8%AE%BE%E7%BD%AEfloatingActionButton%E6%98%BE%E7%A4%BA%E7%9A%84%E4%BD%8D%E7%BD%AE%0A%20%20this.floatingActionButtonAnimator%2C%20%2F%2F%20floatingActionButton%E7%A7%BB%E5%8A%A8%E5%88%B0%E4%B8%80%E4%B8%AA%E6%96%B0%E7%9A%84%E4%BD%8D%E7%BD%AE%E6%97%B6%E7%9A%84%E5%8A%A8%E7%94%BB%0A%20%20this.persistentFooterButtons%2C%20%2F%2F%20%E5%A4%9A%E7%8A%B6%E6%80%81%E6%8C%89%E9%92%AE%0A%20%20this.drawer%2C%20%2F%2F%20%E5%B7%A6%E4%BE%A7%E7%9A%84%E6%8A%BD%E5%B1%89%E8%8F%9C%E5%8D%95%0A%20%20this.endDrawer%2C%20%2F%2F%20%20%E5%8F%B3&#39;%E4%BE%A7%E7%9A%84%E6%8A%BD%E5%B1%89%E8%8F%9C%E5%8D%95%0A%20%20this.bottomNavigationBar%2C%2F%2F%20%E5%BA%95%E9%83%A8%E5%AF%BC%E8%88%AA%E6%A0%8F%E3%80%82%0A%20%20this.bottomSheet%2C%20%2F%2F%20%E6%98%BE%E7%A4%BA%E5%9C%A8%E5%BA%95%E9%83%A8%E7%9A%84%E5%B7%A5%E5%85%B7%E6%A0%8F%0A%20%20this.backgroundColor%2C%2F%2F%20%E5%86%85%E5%AE%B9%E7%9A%84%E8%83%8C%E6%99%AF%E9%A2%9C%E8%89%B2%0A%20%20this.resizeToAvoidBottomPadding%20%3D%20true%2C%20%2F%2F%20%E6%8E%A7%E5%88%B6%E7%95%8C%E9%9D%A2%E5%86%85%E5%AE%B9%20body%20%E6%98%AF%E5%90%A6%E9%87%8D%E6%96%B0%E5%B8%83%E5%B1%80%E6%9D%A5%E9%81%BF%E5%85%8D%E5%BA%95%E9%83%A8%E8%A2%AB%E8%A6%86%E7%9B%96%EF%BC%8C%E6%AF%94%E5%A6%82%E5%BD%93%E9%94%AE%E7%9B%98%E6%98%BE%E7%A4%BA%E7%9A%84%E6%97%B6%E5%80%99%EF%BC%8C%E9%87%8D%E6%96%B0%E5%B8%83%E5%B1%80%E9%81%BF%E5%85%8D%E8%A2%AB%E9%94%AE%E7%9B%98%E7%9B%96%E4%BD%8F%E5%86%85%E5%AE%B9%E3%80%82%0A%20%20this.primary%20%3D%20true%2C%2F%2F%20Scaffold%E6%98%AF%E5%90%A6%E6%98%BE%E7%A4%BA%E5%9C%A8%E9%A1%B5%E9%9D%A2%E7%9A%84%E9%A1%B6%E9%83%A8%0A%7D)%20%0A%60%60%60%0A%0A%0A%23%23%23%23%20SizedBox%0A\*%20%E4%B8%80%E8%88%AC%E6%98%AF%E7%94%A8%E6%9D%A5%E9%99%90%E5%88%B6%E5%AD%A9%E5%AD%90%E6%8E%A7%E4%BB%B6%E7%9A%84%E5%A4%A7%E5%B0%8F%E3%80%82%0A\*%20%E8%BF%98%E6%9C%89%E8%BF%99%E4%B9%88%E4%B8%80%E7%A7%8D%E5%9C%BA%E6%99%AF%E4%B9%9F%E5%8F%AF%E4%BB%A5%E4%BD%BF%E7%94%A8SizeBox%EF%BC%8C%E5%B0%B1%E6%98%AF%E5%8F%AF%E4%BB%A5%E4%BB%A3%E6%9B%BFpadding%E5%92%8Ccontainer%EF%BC%8C%E7%84%B6%E5%90%8E%20%E7%94%A8%E6%9D%A5%E8%AE%BE%E7%BD%AE%E4%B8%A4%E4%B8%AA%E6%8E%A7%E4%BB%B6%E4%B9%8B%E9%97%B4%E7%9A%84%E9%97%B4%E8%B7%9D%EF%BC%8C%E6%AF%94%E5%A6%82%E5%9C%A8%E8%A1%8C%E6%88%96%E5%88%97%E4%B8%AD%E5%B0%B1%E5%8F%AF%E4%BB%A5%E8%AE%BE%E7%BD%AE%E4%B8%A4%E4%B8%AA%E6%8E%A7%E4%BB%B6%E4%B9%8B%E9%97%B4%E7%9A%84%E9%97%B4%E8%B7%9D%20%E4%B8%BB%E8%A6%81%E6%98%AF%E5%8F%AF%E4%BB%A5%E6%AF%94%E4%BD%BF%E7%94%A8%E4%B8%80%E4%B8%AApadding%E6%88%96%E8%80%85container%E7%AE%80%E5%8D%95%E6%96%B9%E4%BE%BF%20%EF%BC%88%E5%9C%A8Flutter%E4%B8%AD%E5%8F%AF%E8%83%BD%E7%94%A8%E4%B8%8D%E5%90%8C%E7%9A%84%E6%8E%A7%E4%BB%B6%E5%8F%AF%E4%BB%A5%E5%AE%9E%E7%8E%B0%E5%88%B0%E7%9B%B8%E5%90%8C%E7%9A%84%E7%9B%AE%E7%9A%84%EF%BC%8C%E5%B0%BD%E9%87%8F%E4%BD%BF%E7%94%A8%E8%B6%8A%E7%AE%80%E5%8D%95%E7%9A%84widget%E6%9D%A5%E5%AE%9E%E7%8E%B0%EF%BC%89%0A%0A%23%23%23%20%E5%B8%83%E5%B1%80%0AFlutter%E4%B8%AD%E9%80%9A%E8%BF%87Row%E5%92%8CColumn%E6%9D%A5%E5%AE%9E%E7%8E%B0%E7%BA%BF%E6%80%A7%E5%B8%83%E5%B1%80%EF%BC%8C%E7%B1%BB%E4%BC%BC%E4%BA%8EAndroid%E4%B8%AD%E7%9A%84LinearLayout%E6%8E%A7%E4%BB%B6%0A\*\*row%E6%B0%B4%E5%B9%B3%EF%BC%8CColumn%E7%AB%96%E7%9B%B4\*\*%0A%0A\*%20%E5%AF%B9%E4%BA%8E%E7%BA%BF%E6%80%A7%E5%B8%83%E5%B1%80%EF%BC%8C%E6%9C%89%E4%B8%BB%E8%BD%B4%E5%92%8C%E7%BA%B5%E8%BD%B4%E4%B9%8B%E5%88%86%EF%BC%8C%E5%A6%82%E6%9E%9C%E5%B8%83%E5%B1%80%E6%98%AF%E6%B2%BF%E6%B0%B4%E5%B9%B3%E6%96%B9%E5%90%91%EF%BC%8C%E9%82%A3%E4%B9%88%E4%B8%BB%E8%BD%B4%E5%B0%B1%E6%98%AF%E6%8C%87%E6%B0%B4%E5%B9%B3%E6%96%B9%E5%90%91%EF%BC%8C%E8%80%8C%E7%BA%B5%E8%BD%B4%E5%8D%B3%E5%9E%82%E7%9B%B4%E6%96%B9%E5%90%91%EF%BC%9B%E5%A6%82%E6%9E%9C%E5%B8%83%E5%B1%80%E6%B2%BF%E5%9E%82%E7%9B%B4%E6%96%B9%E5%90%91%EF%BC%8C%E9%82%A3%E4%B9%88%E4%B8%BB%E8%BD%B4%E5%B0%B1%E6%98%AF%E6%8C%87%E5%9E%82%E7%9B%B4%E6%96%B9%E5%90%91%EF%BC%8C%E8%80%8C%E7%BA%B5%E8%BD%B4%E5%B0%B1%E6%98%AF%E6%B0%B4%E5%B9%B3%E6%96%B9%E5%90%91%E3%80%82%E5%9C%A8%E7%BA%BF%E6%80%A7%E5%B8%83%E5%B1%80%E4%B8%AD%EF%BC%8C%E6%9C%89%E4%B8%A4%E4%B8%AA%E5%AE%9A%E4%B9%89%E5%AF%B9%E9%BD%90%E6%96%B9%E5%BC%8F%E7%9A%84%E6%9E%9A%E4%B8%BE%E7%B1%BBMainAxisAlignment%E5%92%8CCrossAxisAlignment%EF%BC%8C%E5%88%86%E5%88%AB%E4%BB%A3%E8%A1%A8%E4%B8%BB%E8%BD%B4%E5%AF%B9%E9%BD%90%E5%92%8C%E7%BA%B5%E8%BD%B4%E5%AF%B9%E9%BD%90%E3%80%82%0A\*%20mainAxisSize%EF%BC%9A%E8%A1%A8%E7%A4%BARow%E5%9C%A8%E4%B8%BB%E8%BD%B4(%E6%B0%B4%E5%B9%B3)%E6%96%B9%E5%90%91%E5%8D%A0%E7%94%A8%E7%9A%84%E7%A9%BA%E9%97%B4%EF%BC%8C%E9%BB%98%E8%AE%A4%E6%98%AFMainAxisSize.max%EF%BC%8C%E8%A1%A8%E7%A4%BA%E5%B0%BD%E5%8F%AF%E8%83%BD%E5%A4%9A%E7%9A%84%E5%8D%A0%E7%94%A8%E6%B0%B4%E5%B9%B3%E6%96%B9%E5%90%91%E7%9A%84%E7%A9%BA%E9%97%B4%EF%BC%8C%E6%AD%A4%E6%97%B6%E6%97%A0%E8%AE%BA%E5%AD%90widgets%E5%AE%9E%E9%99%85%E5%8D%A0%E7%94%A8%E5%A4%9A%E5%B0%91%E6%B0%B4%E5%B9%B3%E7%A9%BA%E9%97%B4%EF%BC%8CRow%E7%9A%84%E5%AE%BD%E5%BA%A6%E5%A7%8B%E7%BB%88%E7%AD%89%E4%BA%8E%E6%B0%B4%E5%B9%B3%E6%96%B9%E5%90%91%E7%9A%84%E6%9C%80%E5%A4%A7%E5%AE%BD%E5%BA%A6%EF%BC%9B%0A\*%20%E8%80%8CMainAxisSize.min%E8%A1%A8%E7%A4%BA%E5%B0%BD%E5%8F%AF%E8%83%BD%E5%B0%91%E7%9A%84%E5%8D%A0%E7%94%A8%E6%B0%B4%E5%B9%B3%E7%A9%BA%E9%97%B4%EF%BC%8C%E5%BD%93%E5%AD%90%E7%BB%84%E4%BB%B6%E6%B2%A1%E6%9C%89%E5%8D%A0%E6%BB%A1%E6%B0%B4%E5%B9%B3%E5%89%A9%E4%BD%99%E7%A9%BA%E9%97%B4%EF%BC%8C%E5%88%99Row%E7%9A%84%E5%AE%9E%E9%99%85%E5%AE%BD%E5%BA%A6%E7%AD%89%E4%BA%8E%E6%89%80%E6%9C%89%E5%AD%90%E7%BB%84%E4%BB%B6%E5%8D%A0%E7%94%A8%E7%9A%84%E7%9A%84%E6%B0%B4%E5%B9%B3%E7%A9%BA%E9%97%B4%0A\*%20Row%E5%92%8CColumn%E9%83%BD%E5%8F%AA%E4%BC%9A%E5%9C%A8%E4%B8%BB%E8%BD%B4%E6%96%B9%E5%90%91%E5%8D%A0%E7%94%A8%E5%B0%BD%E5%8F%AF%E8%83%BD%E5%A4%A7%E7%9A%84%E7%A9%BA%E9%97%B4%EF%BC%8C%E8%80%8C%E7%BA%B5%E8%BD%B4%E7%9A%84%E9%95%BF%E5%BA%A6%E5%88%99%E5%8F%96%E5%86%B3%E4%BA%8E%E4%BB%96%E4%BB%AC%E6%9C%80%E5%A4%A7%E5%AD%90%E5%85%83%E7%B4%A0%E7%9A%84%E9%95%BF%E5%BA%A6%0A\*%20alignment%3A%20Alignment.centerLeft%2C%20%20%E5%B7%A6%E5%AF%B9%E9%BD%90%20%20%0A%60%60%60java%0Aenum%20MainAxisAlignment%20%7B%0A%20%2F%2F%E5%B0%86%E5%AD%90%E6%8E%A7%E4%BB%B6%E6%94%BE%E5%9C%A8%E4%B8%BB%E8%BD%B4%E7%9A%84%E5%BC%80%E5%A7%8B%E4%BD%8D%E7%BD%AE%0A%20%20start%2C%20%20%0A%20%20%20%2F%2F%E5%B0%86%E5%AD%90%E6%8E%A7%E4%BB%B6%E6%94%BE%E5%9C%A8%E4%B8%BB%E8%BD%B4%E7%9A%84%E7%BB%93%E6%9D%9F%E4%BD%8D%E7%BD%AE%0A%20%20end%2C%0A%20%20%2F%2F%E5%B0%86%E5%AD%90%E6%8E%A7%E4%BB%B6%E6%94%BE%E5%9C%A8%E4%B8%BB%E8%BD%B4%E7%9A%84%E4%B8%AD%E9%97%B4%E4%BD%8D%E7%BD%AE%0A%20%20center%2C%0A%20%20%2F%2F%E5%B0%86%E4%B8%BB%E8%BD%B4%E7%A9%BA%E7%99%BD%E4%BD%8D%E7%BD%AE%E8%BF%9B%E8%A1%8C%E5%9D%87%E5%88%86%EF%BC%8C%E6%8E%92%E5%88%97%E5%AD%90%E5%85%83%E7%B4%A0%EF%BC%8C%E6%89%8B%E5%B0%BE%E6%B2%A1%E6%9C%89%E7%A9%BA%E9%9A%99%0A%20%20spaceBetween%2C%0A%20%20%2F%2F%E5%B0%86%E4%B8%BB%E8%BD%B4%E7%A9%BA%E7%99%BD%E5%8C%BA%E5%9F%9F%E5%9D%87%E5%88%86%EF%BC%8C%E4%BD%BF%E4%B8%AD%E9%97%B4%E5%90%84%E4%B8%AA%E5%AD%90%E6%8E%A7%E4%BB%B6%E9%97%B4%E8%B7%9D%E7%9B%B8%E7%AD%89%EF%BC%8C%E9%A6%96%E5%B0%BE%E5%AD%90%E6%8E%A7%E4%BB%B6%E9%97%B4%E8%B7%9D%E4%B8%BA%E4%B8%AD%E9%97%B4%E5%AD%90%E6%8E%A7%E4%BB%B6%E9%97%B4%E8%B7%9D%E7%9A%84%E4%B8%80%E5%8D%8A%0A%20%20spaceAround%2C%0A%20%20%2F%2F%E5%B0%86%E4%B8%BB%E8%BD%B4%E7%A9%BA%E7%99%BD%E5%8C%BA%E5%9F%9F%E5%9D%87%E5%88%86%EF%BC%8C%E4%BD%BF%E5%90%84%E4%B8%AA%E5%AD%90%E6%8E%A7%E4%BB%B6%E9%97%B4%E8%B7%9D%E7%9B%B8%E7%AD%89%0A%20%20spaceEvenly%2C%0A%7D%0A%60%60%60%0A%0A%0A%23%23%20Dart%E8%AF%AD%E6%B3%95%0Amain%E5%87%BD%E6%95%B0%E4%BD%BF%E7%94%A8%E4%BA%86(%3D%3E)%E7%AC%A6%E5%8F%B7%2C%20%E8%BF%99%E6%98%AFDart%E4%B8%AD%E5%8D%95%E8%A1%8C%E5%87%BD%E6%95%B0%E6%88%96%E6%96%B9%E6%B3%95%E7%9A%84%E7%AE%80%E5%86%99%E3%80%82%0A%60%60%60java%0A%2F%2F%20%3D%3E%E6%98%AFreturn%E8%AF%AD%E5%8F%A5%E7%9A%84%E7%AE%80%E5%86%99%0Aadd3(a%2C%20b)%20%3D%3E%20a%20%2B%20b%3B%20%0A%60%60%60%0A%E5%8F%98%E9%87%8F%E4%BB%A5%E4%B8%8B%E5%88%92%E7%BA%BF%EF%BC%88\_%EF%BC%89%E5%BC%80%E5%A4%B4%EF%BC%8C%E5%9C%A8Dart%E8%AF%AD%E8%A8%80%E4%B8%AD%E4%BD%BF%E7%94%A8%E4%B8%8B%E5%88%92%E7%BA%BF%E5%89%8D%E7%BC%80%E6%A0%87%E8%AF%86%E7%AC%A6%EF%BC%8C%E4%BC%9A%E5%BC%BA%E5%88%B6%E5%85%B6%E5%8F%98%E6%88%90%E7%A7%81%E6%9C%89%E7%9A%84%E3%80%82%0A%0A%23%23%23%20%E5%BC%82%E6%AD%A5%0A\*%20flutter%E6%B2%A1%E6%9C%89UI%E7%BA%BF%E7%A8%8B%EF%BC%8C%E4%B9%9F%E6%B2%A1%E6%9C%89%E5%AD%90%E7%BA%BF%E7%A8%8B%E3%80%82%E4%B9%9F%E5%B0%B1%E6%98%AF%E8%AF%B4%EF%BC%8C%E6%97%A0%E8%AE%BA%E6%98%AF%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82%EF%BC%8C%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86%EF%BC%8C%E9%A1%B5%E9%9D%A2%E6%B8%B2%E6%9F%93%EF%BC%8C%E9%83%BD%E6%98%AF%E5%9C%A8%E5%90%8C%E4%B8%80%E4%B8%AA%E7%BA%BF%E7%A8%8B%E9%87%8C%E9%9D%A2%EF%BC%8C%E9%82%A3%E6%80%8E%E4%B9%88%E4%BF%9D%E9%9A%9C%E9%A1%B5%E9%9D%A2%E6%B8%B2%E6%9F%93%E4%B8%8D%E4%BC%9Aanr%E5%91%A2%EF%BC%9F%0A\*%20Dart%E6%98%AF%E4%B8%80%E4%B8%AA%E5%8D%95%E7%BA%BF%E7%A8%8B%E7%9A%84%E8%AF%AD%E8%A8%80%EF%BC%8C%E9%81%87%E5%88%B0%E6%9C%89%E5%BB%B6%E8%BF%9F%E7%9A%84%E8%BF%90%E7%AE%97%EF%BC%88%E6%AF%94%E5%A6%82IO%E6%93%8D%E4%BD%9C%E3%80%81%E5%BB%B6%E6%97%B6%E6%89%A7%E8%A1%8C%EF%BC%89%E6%97%B6%EF%BC%8C%E7%BA%BF%E7%A8%8B%E4%B8%AD%E6%8C%89%E9%A1%BA%E5%BA%8F%E6%89%A7%E8%A1%8C%E7%9A%84%E8%BF%90%E7%AE%97%E5%B0%B1%E4%BC%9A%E9%98%BB%E5%A1%9E%EF%BC%8C%E7%94%A8%E6%88%B7%E5%B0%B1%E4%BC%9A%E6%84%9F%E8%A7%89%E5%88%B0%E5%8D%A1%E9%A1%BF%EF%BC%8C%E4%BA%8E%E6%98%AF%E9%80%9A%E5%B8%B8%E7%94%A8%E5%BC%82%E6%AD%A5%E5%A4%84%E7%90%86%E6%9D%A5%E8%A7%A3%E5%86%B3%E8%BF%99%E4%B8%AA%E9%97%AE%E9%A2%98%E3%80%82%E5%BD%93%E9%81%87%E5%88%B0%E6%9C%89%E9%9C%80%E8%A6%81%E5%BB%B6%E8%BF%9F%E7%9A%84%E8%BF%90%E7%AE%97%EF%BC%88async%EF%BC%89%E6%97%B6%EF%BC%8C%E5%B0%86%E5%85%B6%E6%94%BE%E5%85%A5%E5%88%B0%E5%BB%B6%E8%BF%9F%E8%BF%90%E7%AE%97%E7%9A%84%E9%98%9F%E5%88%97%EF%BC%88await%EF%BC%89%E4%B8%AD%E5%8E%BB%EF%BC%8C%E6%8A%8A%E4%B8%8D%E9%9C%80%E8%A6%81%E5%BB%B6%E8%BF%9F%E8%BF%90%E7%AE%97%E7%9A%84%E9%83%A8%E5%88%86%E5%85%88%E6%89%A7%E8%A1%8C%E6%8E%89%EF%BC%8C%E6%9C%80%E5%90%8E%E5%86%8D%E6%9D%A5%E5%A4%84%E7%90%86%E5%BB%B6%E8%BF%9F%E8%BF%90%E7%AE%97%E7%9A%84%E9%83%A8%E5%88%86%E3%80%82(%20%60%E5%BB%B6%E8%BF%9F%E9%98%9F%E5%88%97%60)%0A%0A%5B%E5%BC%82%E6%AD%A5async%E3%80%81await%E5%92%8CFuture%E7%9A%84%E4%BD%BF%E7%94%A8%E6%8A%80%E5%B7%A7%5D(https%3A%2F%2Fsegmentfault.com%2Fa%2F1190000014396421)%0A%0A%E7%94%A8%20async%EF%BC%8Cawait%EF%BC%8CFuture%20%E4%B8%89%E5%85%84%E5%BC%9F%E6%9D%A5%E8%BF%9B%E8%A1%8C%E5%A4%84%E7%90%86%E5%BC%82%E6%AD%A5%E3%80%82%0Aasync%20%EF%BC%8C%E5%AE%83%E6%98%AF%E4%B8%80%E4%B8%AA%E5%BB%B6%E8%BF%9F%E8%AE%A1%E7%AE%97%E7%9A%84%E6%A0%87%E5%BF%97%EF%BC%8C%E6%A0%87%E5%BF%97%E4%BA%86%E6%8A%8A%E8%BF%99%E4%B8%AA%E4%BB%BB%E5%8A%A1%E6%94%BE%E5%88%B0%E4%BA%86%E5%BB%B6%E8%BF%9F%E8%BF%90%E7%AE%97%E7%9A%84%E9%98%9F%E5%88%97%EF%BC%88await%EF%BC%89%E4%B8%AD%EF%BC%8C%E9%80%9A%E8%BF%87Future%E8%BF%9B%E8%A1%8C%E8%BF%94%E5%9B%9E%E3%80%82%0A%0A%E5%9C%A8Dart%E4%B8%AD%EF%BC%8C%E6%9C%89await%E6%A0%87%E8%AE%B0%E7%9A%84%E8%BF%90%E7%AE%97%EF%BC%8C%E5%85%B6%E7%BB%93%E6%9E%9C%E5%80%BC%E9%83%BD%E6%98%AF%E4%B8%80%E4%B8%AAFuture%E5%AF%B9%E8%B1%A1%EF%BC%8CFuture%E4%B8%8D%E6%98%AFString%E7%B1%BB%E5%9E%8B%0ADart%E8%A7%84%E5%AE%9A%E6%9C%89async%E6%A0%87%E8%AE%B0%E7%9A%84%E5%87%BD%E6%95%B0%EF%BC%8C%E5%8F%AA%E8%83%BD%E7%94%B1await%E6%9D%A5%E8%B0%83%E7%94%A8%EF%BC%8C%E6%AF%94%E5%A6%82%E8%BF%99%E6%A0%B7%EF%BC%9A%0AString%20data%20%3D%20await%20getData()%3B%0A%60%60%60java%0A%20%2F%2Fget%E8%AF%B7%E6%B1%82%EF%BC%8C%E8%AF%B7%E6%B1%82%E8%BF%94%E5%9B%9E%E5%80%BC%E4%B8%BAFuture%3CString%3E%E7%B1%BB%E5%9E%8B%EF%BC%8C%E5%8D%B3%E5%85%B6%E8%BF%94%E5%9B%9E%E5%80%BC%E6%9C%AA%E6%9D%A5%E6%98%AF%E4%B8%80%E4%B8%AAString%E7%B1%BB%E5%9E%8B%E7%9A%84%E5%80%BC%0A%20%20getData()%20async%20%7B%20%20%20%20%0A%20%20%20%20%20%2F%2Fasync%E5%85%B3%E9%94%AE%E5%AD%97%E5%A3%B0%E6%98%8E%E8%AF%A5%E5%87%BD%E6%95%B0%E5%86%85%E9%83%A8%E6%9C%89%E4%BB%A3%E7%A0%81%E9%9C%80%E8%A6%81%E5%BB%B6%E8%BF%9F%E6%89%A7%E8%A1%8C%0A%20%20%20%20return%20await%20http.get(Uri.encodeFull(url)%2C%20headers%3A%20%7B%22Accept%22%3A%20%22application%2Fjson%22%7D)%3B%20%2F%2Fawait%E5%85%B3%E9%94%AE%E5%AD%97%E5%A3%B0%E6%98%8E%E8%BF%90%E7%AE%97%E4%B8%BA%E5%BB%B6%E8%BF%9F%E6%89%A7%E8%A1%8C%EF%BC%8C%E7%84%B6%E5%90%8Ereturn%E8%BF%90%E7%AE%97%E7%BB%93%E6%9E%9C%0A%20%20%7D%0A%60%60%60%0Aasync%E7%94%A8%E4%BA%8E%E6%A0%87%E6%98%8E%E5%87%BD%E6%95%B0%E6%98%AF%E4%B8%80%E4%B8%AA%E5%BC%82%E6%AD%A5%E5%87%BD%E6%95%B0%EF%BC%8C%E5%85%B6%E8%BF%94%E5%9B%9E%E5%80%BC%E7%B1%BB%E5%9E%8B%E6%98%AFFuture%E7%B1%BB%E5%9E%8B%0Aawait%E7%94%A8%E6%9D%A5%E7%AD%89%E5%BE%85%E8%80%97%E6%97%B6%E6%93%8D%E4%BD%9C%E7%9A%84%E8%BF%94%E5%9B%9E%E7%BB%93%E6%9E%9C%EF%BC%8C%E8%BF%99%E4%B8%AA%E6%93%8D%E4%BD%9C%E4%BC%9A%E9%98%BB%E5%A1%9E%E5%88%B0%E5%90%8E%E9%9D%A2%E7%9A%84%E4%BB%A3%E7%A0%81%0A%0A\*\*await%E5%85%B3%E9%94%AE%E5%AD%97%E5%BF%85%E9%A1%BB%E5%9C%A8async%E5%87%BD%E6%95%B0%E5%86%85%E9%83%A8%E4%BD%BF%E7%94%A8%0A%E8%B0%83%E7%94%A8async%E5%87%BD%E6%95%B0%E5%BF%85%E9%A1%BB%E4%BD%BF%E7%94%A8await%E5%85%B3%E9%94%AE%E5%AD%97\*\*%0A%0A%0A%0A%23%23%20%E5%85%B6%E4%BB%96%0A%0A%23%23%23%20%E5%92%B1%E4%BB%AC%E9%A1%B9%E7%9B%AE%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%0Aflutter%E4%BB%93%E5%BA%93%E5%9C%B0%E5%9D%80%EF%BC%9Ahttps%3A%2F%2Fgit.100tal.com%2Fpublication%2Fapp\_ta\_flutter%0A%E4%BB%A3%E7%A0%81clone%E5%88%B0%E4%B8%8EAndroid%E5%B7%A5%E7%A8%8B%E5%90%8C%E7%BA%A7%E7%9B%AE%E5%BD%95%0A%0AAndroid%E7%9B%AE%E5%89%8D%E6%9C%89%E4%B8%A4%E7%A7%8D%E4%BE%9D%E8%B5%96%E6%96%B9%E5%BC%8F%EF%BC%9A%0A%E6%9C%AC%E5%9C%B0%E4%BE%9D%E8%B5%96%EF%BC%88%E9%80%82%E7%94%A8%E4%BA%8E%E5%BC%80%E5%8F%91%E8%B0%83%E8%AF%95%E9%98%B6%E6%AE%B5%EF%BC%89%0A%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6repo\_projects.xml%E4%B8%AD%EF%BC%8C%E6%89%93%E5%BC%80%E4%B8%8B%E9%9D%A2%E8%BF%99%E8%A1%8C%0A%3Cproject%20name%3D%22publication%2Fapp\_ta\_flutter.git%22%20path%3D%22%2Fapp\_ta\_flutter%22%20%2F%3E%0A%0A%E8%BF%9C%E7%A8%8B%E4%BE%9D%E8%B5%96%EF%BC%88%E9%80%82%E7%94%A8%E6%89%93%E5%8C%85%E6%88%96flutter%E5%8A%9F%E8%83%BD%E7%A8%B3%E5%AE%9A%E9%98%B6%E6%AE%B5%EF%BC%89%0A%E9%85%8D%E7%BD%AErepo\_projects.xml%E4%B8%AD%EF%BC%8C%E6%B3%A8%E9%87%8A%E4%B8%8B%E9%9D%A2%E8%BF%99%E8%A1%8C%0A%3Cproject%20name%3D%22publication%2Fapp\_ta\_flutter.git%22%20path%3D%22%2Fapp\_ta\_flutter%22%20%2F%3E%0A%0A%23%23%23%20%E6%89%93%E5%8C%85%0A%E5%BC%80%E5%8F%91%E5%AE%8C%E5%90%8E%EF%BC%8C%E6%8F%90%E6%B5%8B%E6%88%96%E8%80%85%E4%B8%8A%E7%BA%BF%EF%BC%8C%E9%9C%80%E8%A6%81%E5%B0%86flutter%E4%BB%A3%E7%A0%81%E6%89%93%E5%8C%85%E3%80%82%E7%9B%AE%E5%89%8D%E5%B7%B2%E7%BB%8F%E6%94%AF%E6%8C%81%E4%BA%86jenkins%E4%B8%8A%E8%87%AA%E5%8A%A8%E6%89%93%E5%8C%85flutter%EF%BC%8C%E4%B8%8A%E4%BC%A0maven%EF%BC%8C%E7%84%B6%E5%90%8E%E4%BF%AE%E6%94%B9%E9%85%8D%E7%BD%AE%E4%BB%93%E5%BA%93%EF%BC%8C%E5%A2%9E%E5%8A%A0%E7%89%88%E6%9C%AC%E5%8F%B7%EF%BC%8C%E6%8E%A5%E7%9D%80push%E4%BB%A3%E7%A0%81%EF%BC%8C%E8%87%AA%E5%8A%A8%E5%8C%96%E6%89%93%E5%8C%85%E3%80%82%0Ajenkins%E6%89%93%E5%8C%85%E5%9C%B0%E5%9D%80%EF%BC%9A%5Bhttp%3A%2F%2F10.14.200.4%3A8880%2Fjenkins\_app%2Fview%2F%E5%9B%BE%E4%B9%A6%E5%87%BA%E7%89%88%2Fjob%2Fandroid%2Fjob%2Flib%2Fjob%2Fapp\_ta\_flutter%2Fbuild%3Fdelay%3D0sec%5D(http%3A%2F%2F10.14.200.4%3A8880%2Fjenkins\_app%2Fview%2F%25E5%259B%25BE%25E4%25B9%25A6%25E5%2587%25BA%25E7%2589%2588%2Fjob%2Fandroid%2Fjob%2Flib%2Fjob%2Fapp\_ta\_flutter%2Fbuild%3Fdelay%3D0sec)%0A%0A%E7%BA%A2%E6%A1%86%E5%BF%85%E9%80%89%EF%BC%8C%E5%85%B6%E4%BB%96%E4%B8%8D%E7%94%A8%E5%86%99%EF%BC%8C%E9%80%89%E6%8B%A9%E5%AE%8C%E5%90%8E%E7%82%B9build%0ABUSINESS\_BRANCH%EF%BC%9A%E9%80%89%E8%87%AA%E5%B7%B1%E7%9A%84%E5%BC%80%E5%8F%91%E7%9A%84flutter%E5%8A%9F%E8%83%BD%E5%AF%B9%E5%BA%94%E7%9A%84%E5%88%86%E6%94%AF%0APROPERTIES\_BRANCH%EF%BC%9A%E8%A6%81%E6%9B%B4%E6%96%B0%E5%88%B0%E5%93%AA%E4%B8%AA%E9%85%8D%E7%BD%AE%E4%BB%93%E5%BA%93%E7%9A%84%E5%88%86%E6%94%AF%0A!%5Bcf4f336024517a44ecb86357136209e5.png%5D(evernotecid%3A%2F%2FA511C64A-F456-4B32-91F8-405613EEF607%2Fappyinxiangcom%2F10438895%2FENResource%2Fp13654)%0A%0A%0A%0A%23%23%23%20%E8%B0%83%E8%AF%95%0A%E5%85%88%E6%8A%8AAPP%E6%9D%80%E6%AD%BB%EF%BC%8C%E5%9C%A8%E5%90%AF%E5%8A%A8%E8%BF%87%E7%A8%8B%E4%B8%ADattach%EF%BC%8C%E5%8F%AF%E4%BB%A5%E5%85%88%E7%82%B9%E8%BF%99%E4%B8%AA%0A!%5B982887bf79e874c365e0e976d9b65cfb.png%5D(evernotecid%3A%2F%2FA511C64A-F456-4B32-91F8-405613EEF607%2Fappyinxiangcom%2F10438895%2FENResource%2Fp13644)%0A%E5%87%BA%E7%8E%B0%E4%B8%8B%E9%9D%A2%E8%BF%99%E4%B8%AA%E5%B0%B1%E5%8F%AF%E4%BB%A5%E8%B0%83%E8%AF%95%E4%BA%86%0A!%5B70dcdae8bb2ab83b9caf4a479903142d.png%5D(evernotecid%3A%2F%2FA511C64A-F456-4B32-91F8-405613EEF607%2Fappyinxiangcom%2F10438895%2FENResource%2Fp13645)%0A%0A%0A%23%23%23%20%E4%BD%BF%E7%94%A8%E2%80%98%E5%B0%BE%E9%9A%8F%E9%80%97%E5%8F%B7%E2%80%99%0AFlutter%E4%BB%A3%E7%A0%81%E9%80%9A%E5%B8%B8%E6%B6%89%E5%8F%8A%E6%9E%84%E5%BB%BA%E7%9B%B8%E5%BD%93%E6%B7%B1%E7%9A%84%E6%A0%91%E7%8A%B6%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%EF%BC%8C%E4%BE%8B%E5%A6%82%E5%9C%A8%E4%B8%80%E4%B8%AAbuild%E6%96%B9%E6%B3%95%E4%B8%AD%E3%80%82%20%E4%B8%BA%E4%BA%86%E8%8E%B7%E5%BE%97%E8%89%AF%E5%A5%BD%E7%9A%84%E8%87%AA%E5%8A%A8%E6%A0%BC%E5%BC%8F%E5%8C%96%EF%BC%8C%E6%88%91%E4%BB%AC%E5%BB%BA%E8%AE%AE%E6%82%A8%E9%87%87%E7%94%A8%E5%8F%AF%E9%80%89%E7%9A%84%E5%B0%BE%E9%83%A8%E9%80%97%E5%8F%B7%E3%80%82%E6%B7%BB%E5%8A%A0%E5%B0%BE%E9%9A%8F%E9%80%97%E5%8F%B7%E5%BE%88%E7%AE%80%E5%8D%95%EF%BC%9A%E5%A7%8B%E7%BB%88%E5%9C%A8%E5%87%BD%E6%95%B0%E3%80%81%E6%96%B9%E6%B3%95%E5%92%8C%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0%E7%9A%84%E5%8F%82%E6%95%B0%E5%88%97%E8%A1%A8%E6%9C%AB%E5%B0%BE%E6%B7%BB%E5%8A%A0%E5%B0%BE%E9%9A%8F%E9%80%97%E5%8F%B7%EF%BC%8C%E4%BB%A5%E4%BE%BF%E4%BF%9D%E7%95%99%E6%82%A8%E7%9A%84%E7%BC%96%E7%A0%81%E6%A0%BC%E5%BC%8F%E3%80%82%20%E8%BF%99%E5%B0%86%E6%9C%89%E5%8A%A9%E4%BA%8E%E8%87%AA%E5%8A%A8%E6%A0%BC%E5%BC%8F%E5%8C%96%E7%A8%8B%E5%BA%8F%E4%B8%BAFlutter%E6%A0%B7%E5%BC%8F%E4%BB%A3%E7%A0%81%E6%8F%92%E5%85%A5%E9%80%82%E5%BD%93%E7%9A%84%E6%8D%A2%E8%A1%8C%E7%AC%A6%E3%80%82%0A!%5B33a45fb9c21b02a3c3d426222e90433c.png%5D(evernotecid%3A%2F%2FA511C64A-F456-4B32-91F8-405613EEF607%2Fappyinxiangcom%2F10438895%2FENResource%2Fp13646)%0A%0A%23%23%23%20%E4%B8%A4%E4%B8%AA%E5%A5%BD%E7%94%A8%E7%9A%84%E5%9B%BE%E7%89%87%E6%8F%92%E4%BB%B6%0AFlutterQuickLocateAsset%0AFlutterAssetAutoCompletion%0A%0A%23%23%23%20%E4%BD%BF%E7%94%A8%E8%87%AA%E5%AE%9A%E4%B9%89%E6%A8%A1%E6%9D%BF%0A%E6%8F%90%E9%AB%98%E5%BC%80%E5%8F%91%E6%95%88%E7%8E%87%0A!%5B603dea0f15cbf2b8f4276c93a057db06.png%5D(evernotecid%3A%2F%2FA511C64A-F456-4B32-91F8-405613EEF607%2Fappyinxiangcom%2F10438895%2FENResource%2Fp13653)%0A!%5Bee8e403c6ab9790340a9eba9a168b4c9.png%5D(evernotecid%3A%2F%2FA511C64A-F456-4B32-91F8-405613EEF607%2Fappyinxiangcom%2F10438895%2FENResource%2Fp13652)%0A%0A%0A%0A%0A%23%23%20Flutter%E4%B8%8E%E5%8E%9F%E7%94%9F%E9%80%9A%E4%BF%A1%0A%5B%E5%B0%86%20Flutter%20%E9%9B%86%E6%88%90%E5%88%B0%E7%8E%B0%E6%9C%89%E5%BA%94%E7%94%A8%5D(https%3A%2F%2Fflutter.cn%2Fdocs%2Fdevelopment%2Fadd-to-app)%0A%5BFlutter%20%E4%B8%8E%20Android%20%E7%9A%84%E7%9B%B8%E4%BA%92%E9%80%9A%E4%BF%A1%5D(https%3A%2F%2Flearnku.com%2Farticles%2F32448)%0A%0A%E5%8F%AF%E4%BB%A5%E4%BB%8ENative%E5%B1%82%E8%B0%83%E7%94%A8flutter%E5%B1%82%E7%9A%84dart%E4%BB%A3%E7%A0%81%EF%BC%8C%E4%B9%9F%E5%8F%AF%E4%BB%A5%E5%9C%A8flutter%E5%B1%82%E8%B0%83%E7%94%A8Native%E7%9A%84%E4%BB%A3%E7%A0%81%EF%BC%8C%E8%80%8C%E4%BD%9C%E4%B8%BA%E9%80%9A%E8%AE%AF%E6%A1%A5%E6%A2%81%E5%B0%B1%E6%98%AFMethodChannel%EF%BC%8C%E8%BF%99%E4%B8%AA%E7%B1%BB%E5%9C%A8%E5%88%9D%E5%A7%8B%E5%8C%96%E7%9A%84%E6%97%B6%E5%80%99%E9%9C%80%E8%A6%81%E6%B3%A8%E5%86%8C%E4%B8%80%E4%B8%AA%E6%B8%A0%E9%81%93%E5%80%BC%E3%80%82%E8%BF%99%E4%B8%AA%E5%80%BC%E5%BF%85%E9%A1%BB%E6%98%AF%E5%94%AF%E4%B8%80%E7%9A%84%EF%BC%8C%E5%B9%B6%E4%B8%94%E5%9C%A8%E4%BD%BF%E7%94%A8%E5%88%B0%E7%9A%84Native%E5%B1%82%E5%92%8CFlutter%E5%B1%82%E4%BA%92%E7%9B%B8%E5%AF%B9%E5%BA%94%E3%80%82%0A%0A\*\*flutter%E8%B0%83%E7%94%A8Android\*\*%0A%E6%B3%A8%E5%86%8C%0A%60%60%60java%0Astatic%20const%20nativeChannel%20%3D%0A%20%20%20%20%20%20const%20MethodChannel(&#39;com.example.flutter%2Fnative&#39;)%3B%0A%60%60%60%0Aflutter%0A%60%60%60java%0A%20%20%20%20%20%20Map%3CString%2C%20dynamic%3E%20result%20%3D%20%7B&#39;message&#39;%3A%20&#39;%E6%88%91%E4%BB%8EFlutter%E9%A1%B5%E9%9D%A2%E5%9B%9E%E6%9D%A5%E4%BA%86&#39;%7D%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20nativeChannel.invokeMethod(&#39;goBackWithResult&#39;%2C%20result)%3B%0A%60%60%60%0AAndroid%0A%60%60%60java%0A%20MethodChannel%20nativeChannel%20%3D%20new%20MethodChannel(flutterEngine.getDartExecutor()%2C%20CHANNEL\_NATIVE)%3B%0A%20%20%20%20%20%20%20%20nativeChannel.setMethodCallHandler((methodCall%2C%20result)%20-%3E%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20switch%20(methodCall.method)%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%2F%2F%E5%9B%9E%E8%B0%83%0A%20%20%20%20%20%20%20%20%20%20%20%20case%20%22goBackWithResult%22%3A%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%2F%2F%20%E8%BF%94%E5%9B%9E%E4%B8%8A%E4%B8%80%E9%A1%B5%EF%BC%8C%E6%90%BA%E5%B8%A6%E6%95%B0%E6%8D%AE%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20ActivityManager.getInstance().finishActivity(FlutterActivity.class)%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20Toast.makeText(this%2C%20(String)%20methodCall.argument(%22message%22)%2C%20Toast.LENGTH\_SHORT).show()%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20break%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20case%20%22getSendParams%22%3A%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20result.success(getSendParams())%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20break%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20default%3A%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20result.notImplemented()%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20break%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%7D)%3B%0A%60%60%60%0A%E5%BC%82%E6%AD%A5%0A%60%60%60java%0A%20Future%20getSendParams()%20async%20%7B%0A%20%20%20%20String%20params%20%3D%20await%20\_SendFeedBackState.nativeChannel%0A%20%20%20%20%20%20%20%20.invokeMethod(&#39;getSendParams&#39;%2C%20%22%22)%3B%0A%20%20%20%20print(%22getSendParams%EF%BC%9A%22%20%2B%20params)%3B%0A%20%20%7D%0A%60%60%60%0A%0A\*\*Android%E8%B0%83%E7%94%A8flutter\*\*%0AAndroid%0A%60%60%60java%0A%20%20%20%20%20%20%20%20Map%3CString%2C%20Object%3E%20result%20%3D%20new%20HashMap%3C%3E()%3B%0A%20%20%20%20%20%20%20%20result.put(%22message%22%2C%20message)%3B%0A%20%20%20%20%20%20%20%20%2F%2F%20%E5%88%9B%E5%BB%BAMethodChannel%0A%20%20%20%20%20%20%20%20MethodChannel%20flutterChannel%20%3D%20new%20MethodChannel(flutterEngine.getDartExecutor()%2C%20CHANNEL\_FLUTTER)%3B%0A%20%20%20%20%20%20%20%20flutterChannel.invokeMethod(%22onActivityResult%22%2C%20result)%3B%0A%60%60%60%0Aflutter%0A%60%60%60java%0A%20%20%40override%0A%20%20void%20initState()%20%7B%0A%20%20%20%20super.initState()%3B%0A%20%20%20%20Future%3Cdynamic%3E%20handler(MethodCall%20call)%20async%20%7B%0A%20%20%20%20%20%20switch%20(call.method)%20%7B%0A%20%20%20%20%20%20%20%20case%20&#39;onActivityResult&#39;%3A%0A%20%20%20%20%20%20%20%20%20%20Fluttertoast.showToast(%0A%20%20%20%20%20%20%20%20%20%20%20%20msg%3A%20call.arguments%5B&#39;message&#39;%5D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20toastLength%3A%20Toast.LENGTH\_SHORT%2C%0A%20%20%20%20%20%20%20%20%20%20)%3B%0A%20%20%20%20%20%20%20%20%20%20break%3B%0A%20%20%20%20%20%20%20%20case%20&#39;goBack&#39;%3A%0A%20%20%20%20%20%20%20%20%20%20%2F%2F%20%E8%BF%94%E5%9B%9E%E4%B8%8A%E4%B8%80%E9%A1%B5%0A%20%20%20%20%20%20%20%20%20%20if%20(Navigator.canPop(context))%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20Navigator.of(context).pop()%3B%0A%20%20%20%20%20%20%20%20%20%20%7D%20else%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20nativeChannel.invokeMethod(&#39;goBack&#39;)%3B%0A%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20break%3B%0A%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%0A%0A%20%20%20%20flutterChannel.setMethodCallHandler(handler)%3B%0A%20%20%7D%0A%0A%60%60%60%0A%0A%0A%0A%0A</a></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%85%B6%E4%BB%96%E8%AF%AD%E8%A8%80/" class="category-chain-item">其他语言</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E5%85%B6%E4%BB%96%E8%AF%AD%E8%A8%80/flutter/" class="category-chain-item">flutter</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Flutter分享</div>
+      <div>http://peiniwan.github.io/2022/12/cd27ceaafc13.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>六月的雨</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年12月24日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/04/8dd294b1fa2f.html" title="设计模式3（行为模式）">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">设计模式3（行为模式）</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/10/791c48c973f9.html" title="Kotlin分享">
+                        <span class="hidden-mobile">Kotlin分享</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

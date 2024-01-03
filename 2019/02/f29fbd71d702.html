@@ -1,0 +1,1158 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="六月的雨">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="递归、排序、二分、字符串如何在海量数据中快速查找某个数据？建立索引，空间换时间，例如数据库，存储在硬盘先思考后写；不要惧怕修改 递归先写一个的解决方法，不想多层，写完再想如何多个周末你带着女朋友去电影院看电影，女朋友问你，咱们现在坐在第几排啊？电影院里面太黑了，看不清，没法数，现在你怎么办？别忘了你是程序员，这个可难不倒你，递归就开始排上用场了。于是你就问前面一排的人他是第几排，你想只要在他的数字">
+<meta property="og:type" content="article">
+<meta property="og:title" content="递归、排序、二分、字符串">
+<meta property="og:url" content="http://peiniwan.github.io/2019/02/f29fbd71d702.html">
+<meta property="og:site_name" content="六月的雨的博客">
+<meta property="og:description" content="递归、排序、二分、字符串如何在海量数据中快速查找某个数据？建立索引，空间换时间，例如数据库，存储在硬盘先思考后写；不要惧怕修改 递归先写一个的解决方法，不想多层，写完再想如何多个周末你带着女朋友去电影院看电影，女朋友问你，咱们现在坐在第几排啊？电影院里面太黑了，看不清，没法数，现在你怎么办？别忘了你是程序员，这个可难不倒你，递归就开始排上用场了。于是你就问前面一排的人他是第几排，你想只要在他的数字">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E9%80%92%E5%BD%92%E3%80%81%E6%8E%92%E5%BA%8F%E3%80%81%E4%BA%8C%E5%88%86%E3%80%81%E5%AD%97%E7%AC%A6%E4%B8%B2.resources/2023/09/18/15-43-18-bfc3eaa6c0d6a52a2cc6a9e58afc5587-unknown_filename.46-7d7123.png">
+<meta property="article:published_time" content="2019-02-25T08:31:31.000Z">
+<meta property="article:modified_time" content="2023-12-26T02:56:17.229Z">
+<meta property="article:author" content="六月的雨">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E9%80%92%E5%BD%92%E3%80%81%E6%8E%92%E5%BA%8F%E3%80%81%E4%BA%8C%E5%88%86%E3%80%81%E5%AD%97%E7%AC%A6%E4%B8%B2.resources/2023/09/18/15-43-18-bfc3eaa6c0d6a52a2cc6a9e58afc5587-unknown_filename.46-7d7123.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>递归、排序、二分、字符串 - 六月的雨的博客</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"peiniwan.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>六月的雨的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="递归、排序、二分、字符串"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2019-02-25 16:31" pubdate>
+          2019年2月25日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          14k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          116 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">递归、排序、二分、字符串</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="递归、排序、二分、字符串"><a href="#递归、排序、二分、字符串" class="headerlink" title="递归、排序、二分、字符串"></a>递归、排序、二分、字符串</h1><p>如何在海量数据中快速查找某个数据？<br>建立索引，空间换时间，例如数据库，存储在硬盘<br>先思考后写；不要惧怕修改</p>
+<h2 id="递归"><a href="#递归" class="headerlink" title="递归"></a>递归</h2><p><strong>先写一个的解决方法，不想多层，写完再想如何多个</strong><br>周末你带着女朋友去电影院看电影，女朋友问你，咱们现在坐在第几排啊？电影院里面太黑了，看不清，没法数，现在你怎么办？别忘了你是程序员，这个可难不倒你，递归就开始排上用场了。<br>于是你就问前面一排的人他是第几排，你想只要在他的数字上加一，就知道自己在哪一排了。但是，前面的人也看不清啊，所以他也问他前面的人。就这样一排一排往前问，直到问到第一排的人，说我在第一排，然后再这样一排一排再把数字传回来。直到你前面的人告诉你他在哪一排，于是你就知道答案了。<br>我们用递推公式将它表示出来就是这样的：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs stylus"><span class="hljs-function"><span class="hljs-title">f</span><span class="hljs-params">(n)</span></span>=<span class="hljs-built_in">f</span>(n-<span class="hljs-number">1</span>)+<span class="hljs-number">1</span> 其中，<span class="hljs-built_in">f</span>(<span class="hljs-number">1</span>)=<span class="hljs-number">1</span><br></code></pre></td></tr></table></figure>
+<p>f(n) 表示你想知道自己在哪一排，f(n-1) 表示前面一排所在的排数，f(1)&#x3D;1 表示第一排的人知道自己在第一排。有了这个递推公式，我们就可以很轻松地将它改为递归代码，如下：</p>
+<figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs arduino"><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">f</span><span class="hljs-params">(<span class="hljs-type">int</span> n)</span> </span>&#123;<br>  <span class="hljs-keyword">if</span> (n == <span class="hljs-number">1</span>) <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;<br>  <span class="hljs-keyword">return</span> <span class="hljs-built_in">f</span>(n<span class="hljs-number">-1</span>) + <span class="hljs-number">1</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h4 id="递归需要满足的三个条件"><a href="#递归需要满足的三个条件" class="headerlink" title="递归需要满足的三个条件"></a>递归需要满足的三个条件</h4><ol>
+<li>一个问题的解可以分解为几个子问题的解</li>
+<li><strong>这个问题与分解之后的子问题，除了数据规模不同，求解思路完全一样</strong></li>
+<li>存在递归终止条件<br> 第一排的人不需要再继续询问任何人，就知道自己在哪一排，也就是 f(1)&#x3D;1，这就是递归的终止条件。</li>
+</ol>
+<h4 id="如何编写递归代码？"><a href="#如何编写递归代码？" class="headerlink" title="如何编写递归代码？"></a>如何编写递归代码？</h4><p>写递归代码最关键的是写出递推公式，找到终止条件<br>爬楼梯</p>
+<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs scss">int <span class="hljs-built_in">f</span>(int n) &#123;<br>  if (n == <span class="hljs-number">1</span>) return <span class="hljs-number">1</span>;<br>  if (n == <span class="hljs-number">2</span>) return <span class="hljs-number">2</span>;<br>  return <span class="hljs-built_in">f</span>(n-<span class="hljs-number">1</span>) + <span class="hljs-built_in">f</span>(n-<span class="hljs-number">2</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+<p><strong>写递归代码的关键就是找到如何将大问题分解为小问题的规律，并且基于此写出递推公式，然后再推敲终止条件，最后将递推公式和终止条件翻译成代码。</strong><br>人脑几乎没办法把整个“递”和“归”的过程一步一步都想清楚。计算机擅长做重复的事情，所以递归正和它的胃口。<br>对于递归代码，这种试图想清楚整个递和归过程的做法，实际上是进入了一个思维误区。很多时候，我们理解起来比较吃力，主要原因就是自己给自己制造了这种理解障碍。那正确的思维方式应该是怎样的呢？</p>
+<p>如果一个问题 A 可以分解为若干子问题 B、C、D，你可以假设子问题 B、C、D 已经解决，在此基础上思考如何解决问题 A。而且，你只需要思考问题 A 与子问题 B、C、D 两层之间的关系即可，不需要一层一层往下思考子问题与子子问题，子子问题与子子子问题之间的关系。屏蔽掉递归细节，这样子理解起来就简单多了。<br>因此，<strong>编写递归代码的关键是，只要遇到递归，我们就把它抽象成一个递推公式，不用想一层层的调用关系，不要试图用人脑去分解递归的每个步骤。</strong><br>不要陷入思维误区。</p>
+<h4 id="递归代码要警惕堆栈溢出"><a href="#递归代码要警惕堆栈溢出" class="headerlink" title="递归代码要警惕堆栈溢出"></a>递归代码要警惕堆栈溢出</h4><p>函数调用会使用栈来保存临时变量。每调用一个函数，都会将临时变量封装为栈帧压入内存栈，等函数执行完成返回时，才出栈。系统栈或者虚拟机栈空间一般都不大。如果递归求解的数据规模很大，调用层次很深，一直压入栈，就会有堆栈溢出的风险。</p>
+<p>那么，如何避免出现堆栈溢出呢？</p>
+<figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs arduino"><span class="hljs-comment">// 全局变量，表示递归的深度。</span><br><span class="hljs-type">int</span> depth = <span class="hljs-number">0</span>;<br><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">f</span><span class="hljs-params">(<span class="hljs-type">int</span> n)</span> </span>&#123;<br>  ++depth；<br>  <span class="hljs-keyword">if</span> (depth &gt; <span class="hljs-number">1000</span>) <span class="hljs-keyword">throw</span> exception;<br>  <span class="hljs-keyword">if</span> (n == <span class="hljs-number">1</span>) <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;<br>  <span class="hljs-keyword">return</span> <span class="hljs-built_in">f</span>(n<span class="hljs-number">-1</span>) + <span class="hljs-number">1</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>但这种做法并不能完全解决问题，因为最大允许的递归深度跟当前线程剩余的栈空间大小有关，事先无法计算。如果实时计算，代码过于复杂，就会影响代码的可读性。所以，如果最大深度比较小，比如 10、50，就可以用这种方法，否则这种方法并不是很实用。</p>
+<h4 id="递归代码要警惕重复计算"><a href="#递归代码要警惕重复计算" class="headerlink" title="递归代码要警惕重复计算"></a>递归代码要警惕重复计算</h4><p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E9%80%92%E5%BD%92%E3%80%81%E6%8E%92%E5%BA%8F%E3%80%81%E4%BA%8C%E5%88%86%E3%80%81%E5%AD%97%E7%AC%A6%E4%B8%B2.resources/2023/09/18/15-43-18-bfc3eaa6c0d6a52a2cc6a9e58afc5587-unknown_filename.46-7d7123.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.46"><br>为了避免重复计算，我们可以通过一个数据结构（比如散列表）来<code>保存已经求解过的 f(k)</code>。当递归调用到 f(k) 时，先看下是否已经求解过了。如果是，则直接从散列表中取值返回，不需要重复计算，这样就能避免刚讲的问题了。</p>
+<figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs stata">public int <span class="hljs-built_in">f</span>(int <span class="hljs-keyword">n</span>) &#123;<br>  <span class="hljs-keyword">if</span> (<span class="hljs-keyword">n</span> == 1) <span class="hljs-keyword">return</span> 1;<br>  <span class="hljs-keyword">if</span> (<span class="hljs-keyword">n</span> == 2) <span class="hljs-keyword">return</span> 2;<br>  <br>  <span class="hljs-comment">// hasSolvedList可以理解成一个Map，key是n，value是f(n)</span><br>  <span class="hljs-keyword">if</span> (hasSolvedList.containsKey(<span class="hljs-keyword">n</span>)) &#123;<br>	<span class="hljs-keyword">return</span> hasSolvedList.<span class="hljs-built_in">get</span>(<span class="hljs-keyword">n</span>);<br>  &#125;<br>  <br>  int <span class="hljs-keyword">ret</span> = <span class="hljs-built_in">f</span>(<span class="hljs-keyword">n</span>-1) + <span class="hljs-built_in">f</span>(<span class="hljs-keyword">n</span>-2);<br>  hasSolvedList.put(<span class="hljs-keyword">n</span>, <span class="hljs-keyword">ret</span>);<br>  <span class="hljs-keyword">return</span> <span class="hljs-keyword">ret</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>电影院递归代码，空间复杂度并不是 O(1)，而是 O(n)。</p>
+<h4 id="怎么将递归代码改写为非递归代码？"><a href="#怎么将递归代码改写为非递归代码？" class="headerlink" title="怎么将递归代码改写为非递归代码？"></a>怎么将递归代码改写为非递归代码？</h4><p>递归有利有弊，利是递归代码的表达力很强，写起来非常简洁；而弊就是空间复杂度高、有堆栈溢出的风险、存在重复计算、过多的函数调用会耗时较多等问题</p>
+<p>电影院修改</p>
+<figure class="highlight x86asm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs x86asm"><span class="hljs-keyword">int</span> f(<span class="hljs-keyword">int</span> n) &#123;<br>  <span class="hljs-keyword">int</span> <span class="hljs-keyword">ret</span> = <span class="hljs-number">1</span><span class="hljs-comment">;</span><br>  for (<span class="hljs-keyword">int</span> i = <span class="hljs-number">2</span><span class="hljs-comment">; i &lt;= n; ++i) &#123;</span><br>	<span class="hljs-keyword">ret</span> = <span class="hljs-keyword">ret</span> + <span class="hljs-number">1</span><span class="hljs-comment">;</span><br>  &#125;<br>  return <span class="hljs-keyword">ret</span><span class="hljs-comment">;</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>爬楼梯修改</p>
+<p>但是这种思路实际上是将递归改为了“手动”递归，本质并没有变，而且也并没有解决前面讲到的某些问题，徒增了实现的复杂度。</p>
+<h4 id="如何找到“最终推荐人”？"><a href="#如何找到“最终推荐人”？" class="headerlink" title="如何找到“最终推荐人”？"></a>如何找到“最终推荐人”？</h4><p>推荐注册返佣金的这个功能我想你应该不陌生吧？现在很多 App 都有这个功能。这个功能中，用户 A 推荐用户 B 来注册，用户 B 又推荐了用户 C 来注册。我们可以说，用户 C 的“最终推荐人”为用户 A，用户 B 的“最终推荐人”也为用户 A，而用户 A 没有“最终推荐人”。</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs csharp"><span class="hljs-function"><span class="hljs-built_in">long</span> <span class="hljs-title">findRootReferrerId</span>(<span class="hljs-params"><span class="hljs-built_in">long</span> actorId</span>)</span> &#123;<br>  Long referrerId = <span class="hljs-keyword">select</span> referrer_id <span class="hljs-keyword">from</span> [table] <span class="hljs-keyword">where</span> actor_id = actorId;<br>  <span class="hljs-keyword">if</span> (referrerId == <span class="hljs-literal">null</span>) <span class="hljs-keyword">return</span> actorId;<br>  <span class="hljs-keyword">return</span> findRootReferrerId(referrerId);<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>不过在实际项目中，上面的代码并不能工作，为什么呢？这里面有两个问题。<br>第一，如果递归很深，可能会有堆栈溢出的问题。<br>第二，如果数据库里存在脏数据，我们还需要处理由此产生的无限递归问题。比如 demo 环境下数据库中，测试工程师为了方便测试，会人为地插入一些数据，就会出现脏数据。如果 A 的推荐人是 B，B 的推荐人是 C，C 的推荐人是 A，这样就会发生死循环。</p>
+<p>第一个问题，我前面已经解答过了，可以用限制递归深度来解决。第二个问题，也可以用限制递归深度来解决。不过，还有一个更高级的处理方法，就是自动检测 A-B-C-A 这种“环”的存在。如何来检测环的存在呢？</p>
+<p><strong>调试递归</strong><br>我们平时调试代码喜欢使用 IDE 的单步跟踪功能，像规模比较大、递归层次很深的递归代码，几乎无法使用这种调试方式。<br>调试递归:</p>
+<ol>
+<li>打印日志发现，递归值。</li>
+<li>结合条件断点进行调试。<figure class="highlight llvm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><code class="hljs llvm">public class Recursion &#123;<br>	/**<br>	 * 求和<br>	 */<br>	public static int summation(int num) &#123;<br>		if (num <span class="hljs-operator">=</span><span class="hljs-operator">=</span> <span class="hljs-number">1</span>) &#123;<br>			return <span class="hljs-number">1</span><span class="hljs-comment">;</span><br>		&#125;<br>		return num + summation(num - <span class="hljs-number">1</span>)<span class="hljs-comment">;</span><br>&#125;  <br>/**<br> * 求二进制<br> */<br>public static int binary(int num) &#123;<br>	StringBuilder sb <span class="hljs-operator">=</span> new StringBuilder()<span class="hljs-comment">;</span><br>	if (num &gt; <span class="hljs-number">0</span>) &#123;<br>		summation(num / <span class="hljs-number">2</span>)<span class="hljs-comment">;</span><br>		int i <span class="hljs-operator">=</span> num % <span class="hljs-number">2</span><span class="hljs-comment">;</span><br>		sb.append(i)<span class="hljs-comment">;</span><br>	&#125;<br>	System.out.println(sb.toString())<span class="hljs-comment">;</span><br>	return <span class="hljs-number">-1</span><span class="hljs-comment">;</span><br>&#125;<br><br>/**<br> * 求n的阶乘<br> */<br>public int f(int n) &#123;<br>	if (n <span class="hljs-operator">=</span><span class="hljs-operator">=</span> <span class="hljs-number">1</span>) &#123;<br>		return n<span class="hljs-comment">;</span><br>	&#125; else &#123;<br>		return n * f(n - <span class="hljs-number">1</span>)<span class="hljs-comment">;</span><br>	&#125;<br>&#125;<br>```    <br><br>## 排序<br><br>![image.png](https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/picgo/picgo-clipboard-images/<span class="hljs-number">2023</span><span class="hljs-number">-11</span><span class="hljs-number">-24</span><span class="hljs-number">-17</span><span class="hljs-number">-17</span><span class="hljs-number">-377455289736895296e07</span>fc<span class="hljs-number">15</span>ac<span class="hljs-number">0</span>af<span class="hljs-number">91</span><span class="hljs-number">-20231124171700</span><span class="hljs-number">-3</span>aec<span class="hljs-number">4</span>b.png)<br><br>我们知道，时间复杂度反应的是数据规模 n 很大的时候的一个增长趋势，所以它表示的时候会忽略系数、常数、低阶。但是实际的软件开发中，我们排序的可能是 <span class="hljs-number">10</span> 个、<span class="hljs-number">100</span> 个、<span class="hljs-number">1000</span> 个这样规模很小的数据，所以，在对同一阶时间复杂度的排序算法性能对比的时候，我们就要把系数、常数、低阶也考虑进来。<br><br>基于比较的排序算法的执行过程，会涉及两种操作，一种是元素比较大小，另一种是元素交换或移动。所以，如果我们在分析排序算法的执行效率的时候，应该把比较次数和交换（或移动）次数也考虑进去。<br><br>**排序算法的内存消耗**<br>算法的内存消耗可以通过空间复杂度来衡量，排序算法也不例外。不过，针对排序算法的空间复杂度，我们还引入了一个新的概念，原地排序（Sorted in place）。`原地排序算法，就是特指空间复杂度是 O(<span class="hljs-number">1</span>) 的排序算法。冒泡、插入、选择，都是原地排序算法`。<br><span class="hljs-operator">=</span><span class="hljs-operator">=</span>借助额外的存储空间<span class="hljs-operator">=</span><span class="hljs-operator">=</span><br><br>**排序算法的稳定性**<br>针对排序算法，我们还有一个重要的度量指标，稳定性。这个概念是说，如果待排序的序列中存在值相等的元素，经过排序之后，<span class="hljs-operator">=</span><span class="hljs-operator">=</span>相等元素之间原有的先后顺序不变<span class="hljs-operator">=</span><span class="hljs-operator">=</span>。<br>我通过一个例子来解释一下。比如我们有一组数据 <span class="hljs-number">2</span>，<span class="hljs-number">9</span>，<span class="hljs-number">3</span>，<span class="hljs-number">4</span>，<span class="hljs-number">8</span>，<span class="hljs-number">3</span>，按照大小排序之后就是 <span class="hljs-number">2</span>，<span class="hljs-number">3</span>，<span class="hljs-number">3</span>，<span class="hljs-number">4</span>，<span class="hljs-number">8</span>，<span class="hljs-number">9</span>。这组数据里有两个 <span class="hljs-number">3</span>。<br>经过某种排序算法排序之后，如果两个 <span class="hljs-number">3</span> 的前后顺序没有改变，那我们就把这种排序算法叫作稳定的排序算法；如果前后顺序发生变化，那对应的排序算法就叫作不稳定的排序算法。<br><br>稳定排序算法可以保持金额相同的两个对象，在排序之后的前后顺序不变<br>* 稳定排序有：插入排序，基数排序，归并排序 ，冒泡排序 ，基数排序。<br>* 不稳定的排序算法有：快速排序，希尔排序，简单选择排序，堆排序。<br><br>### 冒泡排序（Bubble Sort）<br><br>稳定、原地排序<br>我们要对一组数据 <span class="hljs-number">4</span>，<span class="hljs-number">5</span>，<span class="hljs-number">6</span>，<span class="hljs-number">3</span>，<span class="hljs-number">2</span>，<span class="hljs-number">1</span>，从小到大进行排序。经过一次冒泡操作之后，<span class="hljs-number">6</span> 这个元素已经存储在正确的位置上。要想完成所有数据的排序，我们只要进行 <span class="hljs-number">6</span> 次这样的冒泡操作就行了。<br>![unknown_filename.<span class="hljs-number">32</span>](https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/<span class="hljs-variable">%E9</span><span class="hljs-variable">%80</span><span class="hljs-variable">%92</span><span class="hljs-variable">%E5</span><span class="hljs-variable">%BD</span><span class="hljs-variable">%92</span><span class="hljs-variable">%E3</span><span class="hljs-variable">%80</span><span class="hljs-variable">%81</span><span class="hljs-variable">%E6</span><span class="hljs-variable">%8</span>E<span class="hljs-variable">%92</span><span class="hljs-variable">%E5</span><span class="hljs-variable">%BA</span><span class="hljs-variable">%8</span>F<span class="hljs-variable">%E3</span><span class="hljs-variable">%80</span><span class="hljs-variable">%81</span><span class="hljs-variable">%E4</span><span class="hljs-variable">%BA</span><span class="hljs-variable">%8</span>C<span class="hljs-variable">%E5</span><span class="hljs-variable">%88</span><span class="hljs-variable">%86</span><span class="hljs-variable">%E3</span><span class="hljs-variable">%80</span><span class="hljs-variable">%81</span><span class="hljs-variable">%E5</span><span class="hljs-variable">%AD</span><span class="hljs-variable">%97</span><span class="hljs-variable">%E7</span><span class="hljs-variable">%AC</span><span class="hljs-variable">%A6</span><span class="hljs-variable">%E4</span><span class="hljs-variable">%B8</span><span class="hljs-variable">%B2.resources</span>/<span class="hljs-number">2023</span>/<span class="hljs-number">09</span>/<span class="hljs-number">18</span>/<span class="hljs-number">15</span><span class="hljs-number">-43</span><span class="hljs-number">-18</span><span class="hljs-number">-88</span>a<span class="hljs-number">3</span>aa<span class="hljs-number">0</span><span class="hljs-keyword">c</span><span class="hljs-number">2067</span>bab<span class="hljs-number">8</span>a<span class="hljs-number">02383193</span>d<span class="hljs-number">65e4</span><span class="hljs-keyword">c</span><span class="hljs-number">5</span>-unknown_filename.<span class="hljs-number">32</span><span class="hljs-number">-62</span><span class="hljs-keyword">c</span><span class="hljs-number">004</span>.png)<br>实际上，刚讲的冒泡过程还可以优化。当某次冒泡操作已经没有数据交换时，说明已经达到完全有序，不用再继续执行后续的冒泡操作。我这里还有另外一个例子，这里面给 <span class="hljs-number">6</span> 个元素排序，只需要 <span class="hljs-number">4</span> 次冒泡操作就可以了。<br>![unknown_filename.<span class="hljs-number">31</span>](https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/<span class="hljs-variable">%E9</span><span class="hljs-variable">%80</span><span class="hljs-variable">%92</span><span class="hljs-variable">%E5</span><span class="hljs-variable">%BD</span><span class="hljs-variable">%92</span><span class="hljs-variable">%E3</span><span class="hljs-variable">%80</span><span class="hljs-variable">%81</span><span class="hljs-variable">%E6</span><span class="hljs-variable">%8</span>E<span class="hljs-variable">%92</span><span class="hljs-variable">%E5</span><span class="hljs-variable">%BA</span><span class="hljs-variable">%8</span>F<span class="hljs-variable">%E3</span><span class="hljs-variable">%80</span><span class="hljs-variable">%81</span><span class="hljs-variable">%E4</span><span class="hljs-variable">%BA</span><span class="hljs-variable">%8</span>C<span class="hljs-variable">%E5</span><span class="hljs-variable">%88</span><span class="hljs-variable">%86</span><span class="hljs-variable">%E3</span><span class="hljs-variable">%80</span><span class="hljs-variable">%81</span><span class="hljs-variable">%E5</span><span class="hljs-variable">%AD</span><span class="hljs-variable">%97</span><span class="hljs-variable">%E7</span><span class="hljs-variable">%AC</span><span class="hljs-variable">%A6</span><span class="hljs-variable">%E4</span><span class="hljs-variable">%B8</span><span class="hljs-variable">%B2.resources</span>/<span class="hljs-number">2023</span>/<span class="hljs-number">09</span>/<span class="hljs-number">18</span>/<span class="hljs-number">15</span><span class="hljs-number">-43</span><span class="hljs-number">-18</span><span class="hljs-number">-35</span>b<span class="hljs-number">76771</span>b<span class="hljs-number">8</span>d<span class="hljs-number">43</span>bda<span class="hljs-number">5</span>b<span class="hljs-number">82e3</span>d<span class="hljs-number">56</span>ae<span class="hljs-number">1e3</span>f<span class="hljs-number">2</span>-unknown_filename.<span class="hljs-number">31</span>-<span class="hljs-keyword">cc</span><span class="hljs-number">45</span>fa.png)<br><br></code></pre></td></tr></table></figure>
+&#x2F;&#x2F; 冒泡排序，a表示数组，n表示数组大小<br>public void bubbleSort(int[] a, int n) {<br>  if (n &lt;&#x3D; 1) return;</li>
+</ol>
+<p> for (int i &#x3D; 0; i &lt; n; ++i) {<br>    &#x2F;&#x2F; 提前退出冒泡循环的标志位<br>    boolean flag &#x3D; false;<br>    for (int j &#x3D; 0; j &lt; n - i - 1; ++j) { &#x2F;&#x2F;-x：比较元素减少，-1：避免角标越界<br>      if (a[j] &gt; a[j+1]) { &#x2F;&#x2F; 交换<br>        int tmp &#x3D; a[j];<br>        a[j] &#x3D; a[j+1];<br>        a[j+1] &#x3D; tmp;<br>        flag &#x3D; true;  &#x2F;&#x2F; 表示有数据交换<br>      }<br>    }<br>    if (!flag) break;  &#x2F;&#x2F; 没有数据交换，提前退出<br>  }<br>}</p>
+<figure class="highlight llvm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs llvm"><br><br>### 插入排序（Insertion Sort）<br><br>稳定、原地排序<br>基本思想是每一步将一个待排序的记录，插入到前面已经排好序的有序序列中去，直到插完所有元素为止。<br><br>一个有序的数组，我们往里面添加一个新的数据后，如何继续保持数据有序呢？很简单，我们只要遍历数组，找到数据应该插入的位置将其插入即可。<br>![unknown_filename.<span class="hljs-number">33</span>](https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/<span class="hljs-variable">%E9</span><span class="hljs-variable">%80</span><span class="hljs-variable">%92</span><span class="hljs-variable">%E5</span><span class="hljs-variable">%BD</span><span class="hljs-variable">%92</span><span class="hljs-variable">%E3</span><span class="hljs-variable">%80</span><span class="hljs-variable">%81</span><span class="hljs-variable">%E6</span><span class="hljs-variable">%8</span>E<span class="hljs-variable">%92</span><span class="hljs-variable">%E5</span><span class="hljs-variable">%BA</span><span class="hljs-variable">%8</span>F<span class="hljs-variable">%E3</span><span class="hljs-variable">%80</span><span class="hljs-variable">%81</span><span class="hljs-variable">%E4</span><span class="hljs-variable">%BA</span><span class="hljs-variable">%8</span>C<span class="hljs-variable">%E5</span><span class="hljs-variable">%88</span><span class="hljs-variable">%86</span><span class="hljs-variable">%E3</span><span class="hljs-variable">%80</span><span class="hljs-variable">%81</span><span class="hljs-variable">%E5</span><span class="hljs-variable">%AD</span><span class="hljs-variable">%97</span><span class="hljs-variable">%E7</span><span class="hljs-variable">%AC</span><span class="hljs-variable">%A6</span><span class="hljs-variable">%E4</span><span class="hljs-variable">%B8</span><span class="hljs-variable">%B2.resources</span>/<span class="hljs-number">2023</span>/<span class="hljs-number">09</span>/<span class="hljs-number">18</span>/<span class="hljs-number">15</span><span class="hljs-number">-43</span><span class="hljs-number">-18</span><span class="hljs-number">-28</span>beb<span class="hljs-number">1</span>ac<span class="hljs-number">33817</span>bd<span class="hljs-number">7859</span>a<span class="hljs-number">4</span>ed<span class="hljs-number">3</span>badb<span class="hljs-number">1552</span>-unknown_filename.<span class="hljs-number">33</span><span class="hljs-number">-0</span>edc<span class="hljs-number">59</span>.png)<br>这是一个动态排序的过程，即动态地往有序集合中添加数据，我们可以通过这种方法保持集合中的数据一直有序。而对于一组静态数据，我们也可以借鉴上面讲的插入方法，来进行排序，于是就有了插入排序算法。<br><br>**插入排序具体是如何借助上面的思想来实现排序的呢？**<br>![unknown_filename.<span class="hljs-number">9</span>](https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/<span class="hljs-variable">%E9</span><span class="hljs-variable">%80</span><span class="hljs-variable">%92</span><span class="hljs-variable">%E5</span><span class="hljs-variable">%BD</span><span class="hljs-variable">%92</span><span class="hljs-variable">%E3</span><span class="hljs-variable">%80</span><span class="hljs-variable">%81</span><span class="hljs-variable">%E6</span><span class="hljs-variable">%8</span>E<span class="hljs-variable">%92</span><span class="hljs-variable">%E5</span><span class="hljs-variable">%BA</span><span class="hljs-variable">%8</span>F<span class="hljs-variable">%E3</span><span class="hljs-variable">%80</span><span class="hljs-variable">%81</span><span class="hljs-variable">%E4</span><span class="hljs-variable">%BA</span><span class="hljs-variable">%8</span>C<span class="hljs-variable">%E5</span><span class="hljs-variable">%88</span><span class="hljs-variable">%86</span><span class="hljs-variable">%E3</span><span class="hljs-variable">%80</span><span class="hljs-variable">%81</span><span class="hljs-variable">%E5</span><span class="hljs-variable">%AD</span><span class="hljs-variable">%97</span><span class="hljs-variable">%E7</span><span class="hljs-variable">%AC</span><span class="hljs-variable">%A6</span><span class="hljs-variable">%E4</span><span class="hljs-variable">%B8</span><span class="hljs-variable">%B2.resources</span>/<span class="hljs-number">2023</span>/<span class="hljs-number">09</span>/<span class="hljs-number">18</span>/<span class="hljs-number">15</span><span class="hljs-number">-43</span><span class="hljs-number">-18</span>-cdd<span class="hljs-number">8391</span>de<span class="hljs-number">3</span>b<span class="hljs-number">255</span><span class="hljs-keyword">c</span><span class="hljs-number">586</span>fbaa<span class="hljs-number">8e68</span>ec<span class="hljs-number">2771</span>-unknown_filename.<span class="hljs-number">9</span>-f<span class="hljs-number">1</span>a<span class="hljs-number">81</span>d.png)<br><br>插入排序也包含两种操作，一种是元素的比较，一种是元素的移动。<br>当我们需要将一个数据 a 插入到已排序区间时，需要拿 a 与已排序区间的元素依次比较大小，找到合适的插入位置。找到插入点之后，我们还需要将插入点之后的元素顺序往后移动一位，这样才能腾出位置给元素 a 插入。<br></code></pre></td></tr></table></figure>
+<p>&#x2F;&#x2F; 插入排序，a表示数组，n表示数组大小<br>public void insertionSort(int[] a, int n) {<br>  if (n &lt;&#x3D; 1) return;</p>
+<p>  for (int i &#x3D; 1; i &lt; n; ++i) {<br>      &#x2F;&#x2F;待插入元素<br>    int value &#x3D; a[i];<br>    int j &#x3D; i - 1;<br>    &#x2F;&#x2F; 查找插入的位置<br>    for (; j &gt;&#x3D; 0; –j) {<br>      if (a[j] &gt; value) {<br>        a[j+1] &#x3D; a[j];  &#x2F;&#x2F; 数据移动，将大于temp的往后移动一位<br>      } else {<br>        break;<br>      }<br>    }<br>    a[j+1] &#x3D; value; &#x2F;&#x2F; 插入数据<br>  }<br>}</p>
+<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs scss"><br>**插入排序和冒泡排序的时间复杂度相同，都是 <span class="hljs-built_in">O</span>(n2)，在实际的软件开发里，为什么我们更倾向于使用插入排序算法而不是冒泡排序算法呢？**<br>冒泡排序的数据交换要比插入排序的数据移动要复杂，冒泡排序需要 <span class="hljs-number">3</span> 个赋值操作，而插入排序只需要 <span class="hljs-number">1</span> 个。我们来看这段操作：冒泡排序中数据的交换操作：<br></code></pre></td></tr></table></figure>
+<p>冒泡排序中数据的交换操作：<br>if (a[j] &gt; a[j+1]) { &#x2F;&#x2F; 交换<br>   int tmp &#x3D; a[j];<br>   a[j] &#x3D; a[j+1];<br>   a[j+1] &#x3D; tmp;<br>   flag &#x3D; true;<br>}</p>
+<p>插入排序中数据的移动操作：<br>if (a[j] &gt; value) {<br>  a[j+1] &#x3D; a[j];  &#x2F;&#x2F; 数据移动<br>} else {<br>  break;<br>}</p>
+<figure class="highlight llvm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs llvm"><br><br>我们把执行一个赋值语句的时间粗略地计为单位时间（unit\_time），然后分别用冒泡排序和插入排序对同一个逆序度是 K 的数组进行排序。用冒泡排序，需要 K 次交换操作，每次需要 <span class="hljs-number">3</span> 个赋值语句，所以交换操作总耗时就是 <span class="hljs-number">3</span>\* K 单位时间。而插入排序中数据移动操作只需要 K 个单位时间。<br><br>#### 二分法插入排序<br><br>二分法插入排序是在插入第i个元素时，对前面的<span class="hljs-number">0</span>～i<span class="hljs-number">-1</span>元素进行折半，先跟他们中间的那个元素比，如果小，则对前半再进行折半，否则对后半进行折半，直到left&gt;right，然后以左下标为标准，左及左后边全部后移，然后左位置前插入该数据。<br><br>二分法没有排序，只有查找。所以当找到要插入的位置时。移动必须从最后一个记录开始，向后移动一位，再移动倒数第<span class="hljs-number">2</span>位，直到要插入的位置的记录移后一位。<br><br>![unknown_filename.<span class="hljs-number">4</span>](https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/<span class="hljs-variable">%E9</span><span class="hljs-variable">%80</span><span class="hljs-variable">%92</span><span class="hljs-variable">%E5</span><span class="hljs-variable">%BD</span><span class="hljs-variable">%92</span><span class="hljs-variable">%E3</span><span class="hljs-variable">%80</span><span class="hljs-variable">%81</span><span class="hljs-variable">%E6</span><span class="hljs-variable">%8</span>E<span class="hljs-variable">%92</span><span class="hljs-variable">%E5</span><span class="hljs-variable">%BA</span><span class="hljs-variable">%8</span>F<span class="hljs-variable">%E3</span><span class="hljs-variable">%80</span><span class="hljs-variable">%81</span><span class="hljs-variable">%E4</span><span class="hljs-variable">%BA</span><span class="hljs-variable">%8</span>C<span class="hljs-variable">%E5</span><span class="hljs-variable">%88</span><span class="hljs-variable">%86</span><span class="hljs-variable">%E3</span><span class="hljs-variable">%80</span><span class="hljs-variable">%81</span><span class="hljs-variable">%E5</span><span class="hljs-variable">%AD</span><span class="hljs-variable">%97</span><span class="hljs-variable">%E7</span><span class="hljs-variable">%AC</span><span class="hljs-variable">%A6</span><span class="hljs-variable">%E4</span><span class="hljs-variable">%B8</span><span class="hljs-variable">%B2.resources</span>/<span class="hljs-number">2023</span>/<span class="hljs-number">09</span>/<span class="hljs-number">18</span>/<span class="hljs-number">15</span><span class="hljs-number">-43</span><span class="hljs-number">-18</span><span class="hljs-number">-203</span>dafa<span class="hljs-number">292948512933</span>a<span class="hljs-number">9</span>f<span class="hljs-number">0</span>b<span class="hljs-number">15e8</span>d<span class="hljs-number">9</span>ce-unknown_filename.<span class="hljs-number">4</span><span class="hljs-number">-406681</span>.jpeg)<br></code></pre></td></tr></table></figure>
+<p>private static void sort(int[] a) {<br>    &#x2F;&#x2F; {4, 6, 8, 7, 3, 5, 9, 1}<br>    &#x2F;&#x2F; {4, 6, 7, 8, 3, 5, 9, 1}<br>    for (int i &#x3D; 1; i &lt; a.length; i++) {<br>        int temp &#x3D; a[i];&#x2F;&#x2F;7<br>        int left &#x3D; 0;<br>        int right &#x3D; i - 1;&#x2F;&#x2F;2<br>        int mid &#x3D; 0;<br>        &#x2F;&#x2F;确定(找到)要插入的位置<br>        while (left &lt;&#x3D; right) {<br>            &#x2F;&#x2F;先获取中间位置<br>            mid &#x3D; (left + right) &#x2F; 2;<br>            if (temp &lt; a[mid]) {<br>                &#x2F;&#x2F;如果值比中间值小，让right左移到中间下标-1，舍弃右边<br>                right &#x3D; mid - 1;<br>            } else {&#x2F;&#x2F;7  6<br>                &#x2F;&#x2F;如果值比中间值大,让left右移到中间下标+1，舍弃左边<br>                left &#x3D; mid + 1;&#x2F;&#x2F;2<br>            }<br>        }<br>        for (int j &#x3D; i - 1; j &gt;&#x3D; left; j–) {<br>            &#x2F;&#x2F;以左下标为标准，左及左后边全部后移，然后左位置前插入该数据。<br>            a[j + 1] &#x3D; a[j];<br>        }<br>        if (left !&#x3D; i) {&#x2F;&#x2F;如果相等，不需要移动<br>            &#x2F;&#x2F;左位置插入该数据<br>            a[left] &#x3D; temp;<br>        }<br>    }<br>}</p>
+<figure class="highlight llvm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs llvm"><br><br>#### 希尔排序（O(n^<span class="hljs-number">1.3</span>)）<br><br>* 希尔排序也是一种插入排序，它是简单插入排序经过改进之后的一个更高效的版本，也称为缩小增量排序，同时该算法是冲破O(n<span class="hljs-number">2</span>）的第一批算法之一。<br>* 希尔排序是把记录按下标的一定增量分组，对每组使用直接插入排序算法排序；随着增量逐渐减少，每组包含的关键词越来越多，当增量减至<span class="hljs-number">1</span>时，整个文件恰被分成一组，算法便终止。<br>* 先取一个小于n的整数d<span class="hljs-number">1</span>作为第一个增量，把数组的全部记录分组。所有距离为d<span class="hljs-number">1</span>的倍数的记录放在同一个组中。先在各组内进行直接插入排序；然后，取第二个增量d<span class="hljs-number">2</span>&lt;d<span class="hljs-number">1</span>重复上述的分组和排序，直至所取的增量 <span class="hljs-operator">=</span><span class="hljs-number">1</span>( &lt; …&lt;d<span class="hljs-number">2</span>&lt;d<span class="hljs-number">1</span>)，即所有记录放在同一组中进行直接插入排序为止。<br>	![unknown_filename.<span class="hljs-number">5</span>](https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/<span class="hljs-variable">%E9</span><span class="hljs-variable">%80</span><span class="hljs-variable">%92</span><span class="hljs-variable">%E5</span><span class="hljs-variable">%BD</span><span class="hljs-variable">%92</span><span class="hljs-variable">%E3</span><span class="hljs-variable">%80</span><span class="hljs-variable">%81</span><span class="hljs-variable">%E6</span><span class="hljs-variable">%8</span>E<span class="hljs-variable">%92</span><span class="hljs-variable">%E5</span><span class="hljs-variable">%BA</span><span class="hljs-variable">%8</span>F<span class="hljs-variable">%E3</span><span class="hljs-variable">%80</span><span class="hljs-variable">%81</span><span class="hljs-variable">%E4</span><span class="hljs-variable">%BA</span><span class="hljs-variable">%8</span>C<span class="hljs-variable">%E5</span><span class="hljs-variable">%88</span><span class="hljs-variable">%86</span><span class="hljs-variable">%E3</span><span class="hljs-variable">%80</span><span class="hljs-variable">%81</span><span class="hljs-variable">%E5</span><span class="hljs-variable">%AD</span><span class="hljs-variable">%97</span><span class="hljs-variable">%E7</span><span class="hljs-variable">%AC</span><span class="hljs-variable">%A6</span><span class="hljs-variable">%E4</span><span class="hljs-variable">%B8</span><span class="hljs-variable">%B2.resources</span>/<span class="hljs-number">2023</span>/<span class="hljs-number">09</span>/<span class="hljs-number">18</span>/<span class="hljs-number">15</span><span class="hljs-number">-43</span><span class="hljs-number">-18</span><span class="hljs-number">-72</span>bb<span class="hljs-number">0</span>d<span class="hljs-number">61</span>bd<span class="hljs-number">03</span>b<span class="hljs-number">1917</span>f<span class="hljs-number">2</span>a<span class="hljs-number">63834</span>fffacdf-unknown_filename.<span class="hljs-number">5</span>-b<span class="hljs-number">77824</span>.png)<br><br><br></code></pre></td></tr></table></figure>
+<p>public void heer(int[] a) {<br>    int d &#x3D; a.length &#x2F; 2;&#x2F;&#x2F;默认增量<br>    while (true) {<br>        for (int i &#x3D; 0; i &lt; d; i++) {<br>            for (int j &#x3D; i; j + d &lt; a.length; j +&#x3D; d) {<br>                &#x2F;&#x2F;i&#x3D;0  j&#x3D;0,4<br>                &#x2F;&#x2F;i&#x3D;1  j&#x3D;1,5<br>                int temp;<br>                if (a[j] &gt; a[j + d]) {<br>                    temp &#x3D; a[j];<br>                    a[j] &#x3D; a[j + d];<br>                    a[j + d] &#x3D; temp;<br>                }<br>            }<br>        }<br>        if (d &#x3D;&#x3D; 1) {<br>            break;<br>        }<br>        d–;<br>    }<br>}</p>
+<figure class="highlight llvm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs llvm"><br><br>### 选择排序（Selection Sort）<br><br>**基本思想为每一趟从待排序的数据元素中选择最小（或最大）的一个元素作为首元素，直到所有元素排完为止**<br>选择排序算法的实现思路有点类似插入排序，也分已排序区间和未排序区间。但是选择排序每次会从未排序区间中找到最小的元素，将其放到已排序区间的末尾。<br>![unknown_filename.<span class="hljs-number">35</span>](https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/<span class="hljs-variable">%E9</span><span class="hljs-variable">%80</span><span class="hljs-variable">%92</span><span class="hljs-variable">%E5</span><span class="hljs-variable">%BD</span><span class="hljs-variable">%92</span><span class="hljs-variable">%E3</span><span class="hljs-variable">%80</span><span class="hljs-variable">%81</span><span class="hljs-variable">%E6</span><span class="hljs-variable">%8</span>E<span class="hljs-variable">%92</span><span class="hljs-variable">%E5</span><span class="hljs-variable">%BA</span><span class="hljs-variable">%8</span>F<span class="hljs-variable">%E3</span><span class="hljs-variable">%80</span><span class="hljs-variable">%81</span><span class="hljs-variable">%E4</span><span class="hljs-variable">%BA</span><span class="hljs-variable">%8</span>C<span class="hljs-variable">%E5</span><span class="hljs-variable">%88</span><span class="hljs-variable">%86</span><span class="hljs-variable">%E3</span><span class="hljs-variable">%80</span><span class="hljs-variable">%81</span><span class="hljs-variable">%E5</span><span class="hljs-variable">%AD</span><span class="hljs-variable">%97</span><span class="hljs-variable">%E7</span><span class="hljs-variable">%AC</span><span class="hljs-variable">%A6</span><span class="hljs-variable">%E4</span><span class="hljs-variable">%B8</span><span class="hljs-variable">%B2.resources</span>/<span class="hljs-number">2023</span>/<span class="hljs-number">09</span>/<span class="hljs-number">18</span>/<span class="hljs-number">15</span><span class="hljs-number">-43</span><span class="hljs-number">-18</span><span class="hljs-number">-94687</span>aaf<span class="hljs-number">1</span>caac<span class="hljs-number">16</span>dc<span class="hljs-number">5</span>a<span class="hljs-number">797</span><span class="hljs-keyword">c</span><span class="hljs-number">2</span><span class="hljs-keyword">c</span><span class="hljs-number">46</span>aa<span class="hljs-number">17</span>a-unknown_filename.<span class="hljs-number">35</span><span class="hljs-number">-214</span>ec<span class="hljs-number">0</span>.png)<br>![unknown_filename.<span class="hljs-number">6</span>](https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/<span class="hljs-variable">%E9</span><span class="hljs-variable">%80</span><span class="hljs-variable">%92</span><span class="hljs-variable">%E5</span><span class="hljs-variable">%BD</span><span class="hljs-variable">%92</span><span class="hljs-variable">%E3</span><span class="hljs-variable">%80</span><span class="hljs-variable">%81</span><span class="hljs-variable">%E6</span><span class="hljs-variable">%8</span>E<span class="hljs-variable">%92</span><span class="hljs-variable">%E5</span><span class="hljs-variable">%BA</span><span class="hljs-variable">%8</span>F<span class="hljs-variable">%E3</span><span class="hljs-variable">%80</span><span class="hljs-variable">%81</span><span class="hljs-variable">%E4</span><span class="hljs-variable">%BA</span><span class="hljs-variable">%8</span>C<span class="hljs-variable">%E5</span><span class="hljs-variable">%88</span><span class="hljs-variable">%86</span><span class="hljs-variable">%E3</span><span class="hljs-variable">%80</span><span class="hljs-variable">%81</span><span class="hljs-variable">%E5</span><span class="hljs-variable">%AD</span><span class="hljs-variable">%97</span><span class="hljs-variable">%E7</span><span class="hljs-variable">%AC</span><span class="hljs-variable">%A6</span><span class="hljs-variable">%E4</span><span class="hljs-variable">%B8</span><span class="hljs-variable">%B2.resources</span>/<span class="hljs-number">2023</span>/<span class="hljs-number">09</span>/<span class="hljs-number">18</span>/<span class="hljs-number">15</span><span class="hljs-number">-43</span><span class="hljs-number">-18</span><span class="hljs-number">-922</span>ca<span class="hljs-number">6645</span>fa<span class="hljs-number">9e501</span>b<span class="hljs-number">2</span>cecd<span class="hljs-number">88624323</span>b<span class="hljs-number">8</span>-unknown_filename.<span class="hljs-number">6</span><span class="hljs-number">-892933</span>.jpeg)<br><br>那选择排序是稳定的排序算法吗？<br>比如 <span class="hljs-number">5</span>，<span class="hljs-number">8</span>，<span class="hljs-number">5</span>，<span class="hljs-number">2</span>，<span class="hljs-number">9</span> 这样一组数据，使用选择排序算法来排序的话，第一次找到最小元素 <span class="hljs-number">2</span>，与第一个 <span class="hljs-number">5</span> 交换位置，那第一个 <span class="hljs-number">5</span> 和中间的 <span class="hljs-number">5</span> 顺序就变了，所以就不稳定了。正是因此，相对于冒泡排序和插入排序，选择排序就稍微逊色了。<br><br></code></pre></td></tr></table></figure>
+<p>public void selectSort(int[] array) {<br>    int min;<br>    int tmp;<br>    for (int i &#x3D; 0; i &lt; array.length; i++) {<br>        min &#x3D; array[i];<br>        &#x2F;&#x2F;里面for第一次出来0，并且排在最前面，然后从i&#x3D;1开始遍历<br>        for (int j &#x3D; i; j &lt; array.length; j++) {<br>            if (array[j] &lt; min) {<br>                min &#x3D; array[j];&#x2F;&#x2F;记录最小值  3<br>                tmp &#x3D; array[i];&#x2F;&#x2F;9<br>                array[i] &#x3D; min;&#x2F;&#x2F;3<br>                array[j] &#x3D; tmp;&#x2F;&#x2F;9<br>            }<br>        }<br>    }<br>    for (int num : array) {<br>        System.out.println(num);<br>    }<br>}</p>
+<figure class="highlight llvm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs llvm"><br><br>### 归并排序（Merge Sort）<br><br>冒泡排序、插入排序、选择排序这三种排序算法，它们的时间复杂度都是 O(n<span class="hljs-number">2</span>)，比较高，适合小规模数据的排序。今天，我讲两种时间复杂度为 **O(nlogn)** 的排序算法，归并排序和快速排序。这两种排序算法适合大规模的数据排序<br><br>稳定，但是，归并排序并没有像快排那样，应用广泛，这是为什么呢？因为它有一个致命的“弱点”，那就是归并排序不是原地排序算法。<br>这是因为归并排序的合并函数，在合并两个有序数组为一个有序数组时，需要借助额外的存储空间。<br><br>#### 归并排序的原理：分治法<br><br>![unknown_filename.<span class="hljs-number">57</span>](https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/<span class="hljs-variable">%E9</span><span class="hljs-variable">%80</span><span class="hljs-variable">%92</span><span class="hljs-variable">%E5</span><span class="hljs-variable">%BD</span><span class="hljs-variable">%92</span><span class="hljs-variable">%E3</span><span class="hljs-variable">%80</span><span class="hljs-variable">%81</span><span class="hljs-variable">%E6</span><span class="hljs-variable">%8</span>E<span class="hljs-variable">%92</span><span class="hljs-variable">%E5</span><span class="hljs-variable">%BA</span><span class="hljs-variable">%8</span>F<span class="hljs-variable">%E3</span><span class="hljs-variable">%80</span><span class="hljs-variable">%81</span><span class="hljs-variable">%E4</span><span class="hljs-variable">%BA</span><span class="hljs-variable">%8</span>C<span class="hljs-variable">%E5</span><span class="hljs-variable">%88</span><span class="hljs-variable">%86</span><span class="hljs-variable">%E3</span><span class="hljs-variable">%80</span><span class="hljs-variable">%81</span><span class="hljs-variable">%E5</span><span class="hljs-variable">%AD</span><span class="hljs-variable">%97</span><span class="hljs-variable">%E7</span><span class="hljs-variable">%AC</span><span class="hljs-variable">%A6</span><span class="hljs-variable">%E4</span><span class="hljs-variable">%B8</span><span class="hljs-variable">%B2.resources</span>/<span class="hljs-number">2023</span>/<span class="hljs-number">09</span>/<span class="hljs-number">18</span>/<span class="hljs-number">15</span><span class="hljs-number">-43</span><span class="hljs-number">-18</span>-bde<span class="hljs-number">13</span><span class="hljs-keyword">c</span><span class="hljs-number">5e4</span>d<span class="hljs-number">581150</span>b<span class="hljs-number">17136</span>eeb<span class="hljs-number">2790</span>ec<span class="hljs-number">6</span>-unknown_filename.<span class="hljs-number">57</span><span class="hljs-number">-899</span>b<span class="hljs-number">55</span>.png)<br><br>归并排序和快速排序都用到了分治思想，非常巧妙。我们可以借鉴这个思想，来解决非排序的问题，比如：如何在 O(n) 的时间复杂度内查找一个无序数组中的第 K 大元素？<br><br>如果要排序一个数组，我们先把数组从中间分成前后两部分，然后对前后两部分分别排序，再将排好序的两部分合并在一起，这样整个数组就都有序了。<br>![unknown_filename.<span class="hljs-number">36</span>](https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/<span class="hljs-variable">%E9</span><span class="hljs-variable">%80</span><span class="hljs-variable">%92</span><span class="hljs-variable">%E5</span><span class="hljs-variable">%BD</span><span class="hljs-variable">%92</span><span class="hljs-variable">%E3</span><span class="hljs-variable">%80</span><span class="hljs-variable">%81</span><span class="hljs-variable">%E6</span><span class="hljs-variable">%8</span>E<span class="hljs-variable">%92</span><span class="hljs-variable">%E5</span><span class="hljs-variable">%BA</span><span class="hljs-variable">%8</span>F<span class="hljs-variable">%E3</span><span class="hljs-variable">%80</span><span class="hljs-variable">%81</span><span class="hljs-variable">%E4</span><span class="hljs-variable">%BA</span><span class="hljs-variable">%8</span>C<span class="hljs-variable">%E5</span><span class="hljs-variable">%88</span><span class="hljs-variable">%86</span><span class="hljs-variable">%E3</span><span class="hljs-variable">%80</span><span class="hljs-variable">%81</span><span class="hljs-variable">%E5</span><span class="hljs-variable">%AD</span><span class="hljs-variable">%97</span><span class="hljs-variable">%E7</span><span class="hljs-variable">%AC</span><span class="hljs-variable">%A6</span><span class="hljs-variable">%E4</span><span class="hljs-variable">%B8</span><span class="hljs-variable">%B2.resources</span>/<span class="hljs-number">2023</span>/<span class="hljs-number">09</span>/<span class="hljs-number">18</span>/<span class="hljs-number">15</span><span class="hljs-number">-43</span><span class="hljs-number">-18</span><span class="hljs-number">-52</span>ad<span class="hljs-number">18</span>a<span class="hljs-number">770</span>a<span class="hljs-number">87</span>d<span class="hljs-number">06</span>b<span class="hljs-number">0</span>a<span class="hljs-number">39105</span>fc<span class="hljs-number">4</span>ac<span class="hljs-number">5</span>b<span class="hljs-number">0</span>-unknown_filename.<span class="hljs-number">36</span><span class="hljs-number">-0</span>a<span class="hljs-number">9e62</span>.png)<br><br>归并排序使用的就是分治思想。分治，顾名思义，就是分而治之，**将一个大问题分解成小的子问题来解决。小的子问题解决了，大问题也就解决了。**<br>分治法的基本思想是：将原问题分解为若干个规模更小但结构与原问题相似的子问题。递归地解这些子问题，然后将这些子问题的解组合为原问题的解。<br><br>**分治思想跟我们前面讲的递归思想很像。是的，分治算法一般都是用递归来实现的。分治是一种解决问题的处理思想，递归是一种编程技巧，这两者并不冲突**。<br><br>#### 如何用递归代码来实现归并排序<br><br>写递归代码的技巧就是，分析得出递推公式，然后找到终止条件，最后将递推公式翻译成递归代码。所以，要想写出归并排序的代码，我们先写出归并排序的递推公式。<br></code></pre></td></tr></table></figure>
+<p>递推公式：<br>merge_sort(p…r) &#x3D; merge(merge_sort(p…q), merge_sort(q+1…r))</p>
+<p>终止条件：<br>p &gt;&#x3D; r 不用再继续分解</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs css"><br><br>merge\_sort(<span class="hljs-selector-tag">p</span>…r) 表示，给下标从 <span class="hljs-selector-tag">p</span> 到 r 之间的数组排序。我们将这个排序问题转化为了两个子问题，merge\_sort(<span class="hljs-selector-tag">p</span>…<span class="hljs-selector-tag">q</span>) 和 merge\_sort(<span class="hljs-selector-tag">q</span>+<span class="hljs-number">1</span>…r)，其中下标 <span class="hljs-selector-tag">q</span> 等于 <span class="hljs-selector-tag">p</span> 和 r 的中间位置，也就是 (<span class="hljs-selector-tag">p</span>+r)/<span class="hljs-number">2</span>。当下标从 <span class="hljs-selector-tag">p</span> 到 <span class="hljs-selector-tag">q</span> 和从 <span class="hljs-selector-tag">q</span>+<span class="hljs-number">1</span> 到 r 这两个子数组都排好序之后，我们再将两个有序的子数组合并在一起，这样下标从 <span class="hljs-selector-tag">p</span> 到 r 之间的数据就也排好序了。<br></code></pre></td></tr></table></figure>
+<p>public class MergeSort {<br>    public void mergeSort(int[] a, int left, int right) {<br>        if (left &lt; right) {<br>            int middle &#x3D; (left + right) &#x2F; 2;<br>            mergeSort(a, left, middle);&#x2F;&#x2F;左边归并排序，使得左子序列有序<br>            mergeSort(a, middle + 1, right);&#x2F;&#x2F;右边归并排序，使得右子序列有序<br>            merge(a, left, middle, right);&#x2F;&#x2F;将两个有序子数组合并操作<br>        }<br>    }</p>
+<pre><code class="hljs">private void merge(int[] a, int left, int middle, int right) &#123;//left0,mid0,right1
+    //在排序前，先建好一个长度等于原数组长度的临时数组，避免递归中频繁开辟空间
+    int[] tmpArray = new int[a.length];
+    int rightStart = middle + 1;//右序列指针
+    int leftStart = left;//左序列指针
+    int temp = left;//临时数组指针
+    //比较两个小数组相应下标位置的数组大小，小的先放进新数组
+    while (left &lt;= middle &amp;&amp; rightStart &lt;= right) &#123;
+        if (a[left] &lt;= a[rightStart]) &#123;
+            //相当于tmpArray[third]=a[left];third++;left++三步合一步
+            tmpArray[temp++] = a[left++];
+        &#125; else &#123;
+            tmpArray[temp++] = a[rightStart++];
+        &#125;
+    &#125;
+    //如果左边还有数据需要拷贝，把左边数组剩下的拷贝到新数组
+    while (left &lt;= middle) &#123;
+        tmpArray[temp++] = a[left++];
+    &#125;
+    //如果右边还有数据......
+    while (rightStart &lt;= right) &#123;
+        tmpArray[temp++] = a[rightStart++];
+    &#125;
+    //将temp中的元素全部拷贝到原数组中
+    while (leftStart &lt;= right) &#123;
+        a[leftStart] = tmpArray[leftStart++];
+    &#125;
+&#125;
+
+public static void main(String[] args) &#123;
+    MergeSort mergeSort = new MergeSort();
+    int[] a = new int[]&#123;9, 7, 6, 5, 4, 3, 2, 1&#125;;
+    mergeSort.mergeSort(a, 0, a.length - 1);
+    for (int n : a) &#123;
+        System.out.print(&quot; &quot; + n);
+    &#125;
+&#125;
+</code></pre>
+<p>}</p>
+<figure class="highlight llvm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs llvm"><br><br>### 快速排序（Quicksort）<br>快排是一种原地、不稳定的排序算法。<br>快排利用的也是分治思想。乍看起来，它有点像归并排序，但是思路其实完全不一样。我们待会会讲两者的区别。现在，我们先来看下快排的核心思想。<br>基本思想是：通过一趟排序将要排序的数据分割成独立的两部分，其中一部分的所有数据都比另外一部分的所有数据都要小，然后再按此方法对这两部分数据分别进行快速排序，整个排序过程可以递归进行，以此达到整个数据变成有序序列。利用分治法可将快速排序的分为三步：<br><br><span class="hljs-number">1</span>. 在数据集之中，选择一个元素作为”基准”（pivot）。<br><span class="hljs-number">2</span>. 所有小于”基准”的元素，都移到”基准”的左边；所有大于”基准”的元素，都移到”基准”的右边。这个操作称为分区 (partition) 操作，分区操作结束后，基准元素所处的位置就是最终排序后它的位置。<br><span class="hljs-number">3</span>. 对”基准”左边和右边的两个子集，不断重复第一步和第二步，直到所有子集只剩下一个元素为止。<br>	![unknown_filename.<span class="hljs-number">37</span>](https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/<span class="hljs-variable">%E9</span><span class="hljs-variable">%80</span><span class="hljs-variable">%92</span><span class="hljs-variable">%E5</span><span class="hljs-variable">%BD</span><span class="hljs-variable">%92</span><span class="hljs-variable">%E3</span><span class="hljs-variable">%80</span><span class="hljs-variable">%81</span><span class="hljs-variable">%E6</span><span class="hljs-variable">%8</span>E<span class="hljs-variable">%92</span><span class="hljs-variable">%E5</span><span class="hljs-variable">%BA</span><span class="hljs-variable">%8</span>F<span class="hljs-variable">%E3</span><span class="hljs-variable">%80</span><span class="hljs-variable">%81</span><span class="hljs-variable">%E4</span><span class="hljs-variable">%BA</span><span class="hljs-variable">%8</span>C<span class="hljs-variable">%E5</span><span class="hljs-variable">%88</span><span class="hljs-variable">%86</span><span class="hljs-variable">%E3</span><span class="hljs-variable">%80</span><span class="hljs-variable">%81</span><span class="hljs-variable">%E5</span><span class="hljs-variable">%AD</span><span class="hljs-variable">%97</span><span class="hljs-variable">%E7</span><span class="hljs-variable">%AC</span><span class="hljs-variable">%A6</span><span class="hljs-variable">%E4</span><span class="hljs-variable">%B8</span><span class="hljs-variable">%B2.resources</span>/<span class="hljs-number">2023</span>/<span class="hljs-number">09</span>/<span class="hljs-number">18</span>/<span class="hljs-number">15</span><span class="hljs-number">-43</span><span class="hljs-number">-18</span><span class="hljs-number">-3</span>da<span class="hljs-number">7</span>dab<span class="hljs-number">2</span>f<span class="hljs-number">05</span>b<span class="hljs-number">2409</span>df<span class="hljs-number">3272</span>d<span class="hljs-number">033e36</span>baa-unknown_filename.<span class="hljs-number">37</span><span class="hljs-number">-8</span>af<span class="hljs-number">3</span>f<span class="hljs-number">6</span>.png)<br><br>**快速排序和归并排序对比**<br>归并排序的处理过程是由下到上的，先处理子问题，然后再合并。而快排正好相反，它的处理过程是由上到下的，先分区，然后再处理子问题。归并排序虽然是稳定的、时间复杂度为 O(nlogn) 的排序算法，但是它是非原地排序算法。我们前面讲过，归并之所以是非原地排序算法，主要原因是合并函数无法在原地执行。快速排序通过设计巧妙的原地分区函数，可以实现原地排序，解决了归并排序占用太多内存的问题。<br><br></code></pre></td></tr></table></figure>
+<p>public class QuickSort {</p>
+<pre><code class="hljs">public void quick(int[] a) &#123;
+    if (a.length &gt; 0) &#123;
+        quickSort(a, 0, a.length - 1);
+    &#125;
+&#125;
+
+/**
+ * 快速排序
+ * @param a
+ * @param low  低位
+ * @param high 高位
+ */
+private void quickSort(int[] a, int low, int high) &#123;
+    if (low &lt; high) &#123;
+        int middle = getMiddle(a, low, high);
+        //递归排比第一个基数小的数和大的数
+        quickSort(a, 0, middle - 1);
+        quickSort(a, middle + 1, high);
+    &#125;
+&#125;
+
+/**
+ * 获取中间下标
+ *
+ * @param a
+ * @param low
+ * @param high
+ * @return
+ */
+private int getMiddle(int[] a, int low, int high) &#123;
+    int temp = a[low];//基准元素
+    while (low &lt; high) &#123;//第二次3，9
+        while (low &lt; high &amp;&amp; a[high] &gt;= temp) &#123;
+            high--;
+        &#125;
+        a[low] = a[high];//将比基数小的数放到基数前面///用个数字想一下就明白了
+        while (low &lt; high &amp;&amp; a[low] &lt;= temp) &#123;
+            low++;
+        &#125;
+        a[high] = a[low];//将比基数大的数放到基数后面
+    &#125;
+    a[low] = temp;//插入到排序后正确的位置，low就是基数应该在的位置
+    return low;
+&#125;
+</code></pre>
+<p>}</p>
+<pre><code class="hljs">
+
+#### O(n) 时间复杂度内求无序数组中的第 K 大元素
+
+快排核心思想就是分治和分区，我们可以利用分区的思想，来解答开篇的问题：O(n) 时间复杂度内求无序数组中的第 K 大元素。比如，4， 2， 5， 12， 3 这样一组数据，第 3 大元素就是 4。
+我们选择数组区间 A\[0…n-1\] 的最后一个元素 A\[n-1\] 作为 pivot，对数组 A\[0…n-1\] 原地分区，这样数组就分成了三部分，A\[0…p-1\]、A\[p\]、A\[p+1…n-1\]。
+
+如果 p+1=K，那 A\[p\] 就是要求解的元素；如果 K&gt;p+1, 说明第 K 大元素出现在 A\[p+1…n-1\] 区间，我们再按照上面的思路递归地在 A\[p+1…n-1\] 这个区间内查找。同理，如果 K&lt;p+1，那我们就在 A\[0…p-1\] 区间查找。
+![unknown_filename.38](https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E9%80%92%E5%BD%92%E3%80%81%E6%8E%92%E5%BA%8F%E3%80%81%E4%BA%8C%E5%88%86%E3%80%81%E5%AD%97%E7%AC%A6%E4%B8%B2.resources/2023/09/18/15-43-18-9af7c74d3b81e2ee04cf6f020f0a7ebd-unknown_filename.38-85d022.png)
+理解分治，小问题
+
+    int kthLargest = leetCode.findKthLargest(new int[]&#123;4, 2, 5, 12, 3&#125;, 3);
+    //倒数
+    class Solution &#123;
+        public int findKthLargest(int[] nums, int k) &#123;
+            int len = nums.length;
+            int left = 0, right = len - 1;
+            int pivot = 0;
+            while (len - k != (pivot = partition(nums, left, right))) &#123;
+            //4所在的问题就是2，那就找到了
+            //第k大应该在第K位，找每个数字应该在的位置，正好第0个4就是第K位，就找到了
+                if (pivot &lt; len - k) &#123;//在后面
+                    left = pivot + 1;
+                    right = len - 1;
+                &#125; else &#123;
+                    left = 0;
+                    right = pivot - 1;
+                &#125;
+            &#125;
+            return nums[pivot];
+        &#125;
+        private int partition(int[] nums, int left, int right) &#123;
+            int pivot = nums[left];
+            while (left &lt; right) &#123;
+                while (left &lt; right &amp;&amp; nums[right] &gt;= pivot)
+                    right--;
+                nums[left] = nums[right];
+                while (left &lt; right &amp;&amp; nums[left] &lt;= pivot)
+                    left++;
+                nums[right] = nums[left];
+            &#125;
+            nums[left] = pivot;
+            return left;
+        &#125;
+    &#125;
+    
+
+**为什么上述解决思路的时间复杂度是 O(n)？**
+第一次分区查找，我们需要对大小为 n 的数组执行分区操作，需要遍历 n 个元素。第二次分区查找，我们只需要对大小为 n/2 的数组执行分区操作，需要遍历 n/2 个元素。依次类推，分区遍历元素的个数分别为、n/2、n/4、n/8、n/16.……直到区间缩小为 1。
+如果我们把每次分区遍历的元素个数加起来，就是：n+n/2+n/4+n/8+…+1。这是一个等比数列求和，最后的和等于 2n-1。所以，上述解决思路的时间复杂度就为 O(n)。
+
+### 桶排序（Bucket sort）
+
+时间复杂度是 O(n) 的排序算法：桶排序、计数排序、基数排序。因为这些排序算法的时间复杂度是线性的，所以我们把这类排序算法叫作**线性排序（Linear sort）**。之所以能做到线性的时间复杂度，主要原因是，这三个算法是非基于比较的排序算法，都不涉及元素之间的比较操作。
+
+按照惯例，我先给你出一道思考题：如何根据年龄给 100 万用户排序？ 你可能会说，我用上一节课讲的归并、快排就可以搞定啊！是的，它们也可以完成功能，但是时间复杂度最低也是 O(nlogn)。有没有更快的排序方法呢？让我们一起进入今天的内容！
+
+桶排序，顾名思义，会用到“桶”，核心思想是将要排序的数据分到几个有序的桶里，每个桶里的数据再单独进行排序。桶内排完序之后，再把每个桶里的数据按照顺序依次取出，组成的序列就是有序的了。
+![unknown_filename.39](https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E9%80%92%E5%BD%92%E3%80%81%E6%8E%92%E5%BA%8F%E3%80%81%E4%BA%8C%E5%88%86%E3%80%81%E5%AD%97%E7%AC%A6%E4%B8%B2.resources/2023/09/18/15-43-18-a966114c395188070f806c2b8404f080-unknown_filename.39-c96548.png)
+![unknown_filename.54](https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E9%80%92%E5%BD%92%E3%80%81%E6%8E%92%E5%BA%8F%E3%80%81%E4%BA%8C%E5%88%86%E3%80%81%E5%AD%97%E7%AC%A6%E4%B8%B2.resources/2023/09/18/15-43-18-9e16c2b843d8503d5929808bd51c7674-unknown_filename.54-cd7ba2.png)
+
+**桶排序的时间复杂度为什么是 O(n) 呢**
+如果要排序的数据有 n 个，我们把它们均匀地划分到 m 个桶内，每个桶里就有 k=n/m 个元素。每个桶内部使用快速排序，时间复杂度为 O(k \* logk)。m 个桶排序的时间复杂度就是 O(m \* k \* logk)，因为 k=n/m，所以整个桶排序的时间复杂度就是 O(n\* log(n/m))。当桶的个数 m 接近数据个数 n 时，log(n/m) 就是一个非常小的常量，这个时候桶排序的时间复杂度接近 O(n)。
+
+**桶排序看起来很优秀，那它是不是可以替代我们之前讲的排序算法呢？**
+要排序的数据需要很容易就能划分成 m 个桶，并且，桶与桶之间有着天然的大小顺序。这样每个桶内的数据都排序完之后，桶与桶之间的数据不需要再进行排序。
+**桶排序比较适合用在外部排序中**。所谓的外部排序就是数据存储在外部磁盘中，数据量比较大，内存有限，无法将数据全部加载到内存中。
+
+比如说我们有 10GB 的订单数据，我们希望按订单金额（假设金额都是正整数）进行排序，但是我们的内存有限，只有几百 MB，没办法一次性把 10GB 的数据都加载到内存中。这个时候该怎么办呢？
+
+### 计数排序（Counting sort）
+
+我个人觉得，计数排序其实是桶排序的一种特殊情况。当要排序的 n 个数据，所处的范围并不大的时候，比如最大值是 k，我们就可以把数据划分成 k 个桶。每个桶内的数据值都是相同的，省掉了桶内排序的时间。
+我们都经历过高考，高考查分数系统你还记得吗？我们查分数的时候，系统会显示我们的成绩以及所在省的排名。如果你所在的省有 50 万考生，如何通过成绩快速排序得出名次呢？
+考生的满分是 900 分，最小是 0 分，这个数据的范围很小，所以我们可以分成 901 个桶，对应分数从 0 分到 900 分。根据考生的成绩，我们将这 50 万考生划分到这 901 个桶里。桶内的数据都是分数相同的考生，所以并不需要再进行排序。我们只需要依次扫描每个桶，将桶内的考生依次输出到一个数组中，就实现了 50 万考生的排序。因为只涉及扫描遍历操作，所以时间复杂度是 O(n)。
+
+计数排序的算法思想就是这么简单，**跟桶排序非常类似，只是桶的大小粒度不一样**
+
+[先行排序再看看](https://time.geekbang.org/column/article/42038E)
+
+![unknown_filename.53](https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E9%80%92%E5%BD%92%E3%80%81%E6%8E%92%E5%BA%8F%E3%80%81%E4%BA%8C%E5%88%86%E3%80%81%E5%AD%97%E7%AC%A6%E4%B8%B2.resources/2023/09/18/15-43-18-f69fa7784ae3b57bdf81620a3d6d6480-unknown_filename.53-a5429a.png)
+![unknown_filename.52](https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E9%80%92%E5%BD%92%E3%80%81%E6%8E%92%E5%BA%8F%E3%80%81%E4%BA%8C%E5%88%86%E3%80%81%E5%AD%97%E7%AC%A6%E4%B8%B2.resources/2023/09/18/15-43-18-4c9ffb43539a77b7be0ff34feeba4224-unknown_filename.52-8b3456.png)
+
+### 基数排序
+
+![unknown_filename.56](https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E9%80%92%E5%BD%92%E3%80%81%E6%8E%92%E5%BA%8F%E3%80%81%E4%BA%8C%E5%88%86%E3%80%81%E5%AD%97%E7%AC%A6%E4%B8%B2.resources/2023/09/18/15-43-18-e80f1162c1ddcffd97aab4fd19733cb5-unknown_filename.56-df576b.png)
+![unknown_filename.55](https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E9%80%92%E5%BD%92%E3%80%81%E6%8E%92%E5%BA%8F%E3%80%81%E4%BA%8C%E5%88%86%E3%80%81%E5%AD%97%E7%AC%A6%E4%B8%B2.resources/2023/09/18/15-43-18-a2e7ce3b2528b87b01d165cde486bf22-unknown_filename.55-78910a.png)
+
+### 如何实现一个通用的、高性能的排序函数？
+
+![unknown_filename.40](https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E9%80%92%E5%BD%92%E3%80%81%E6%8E%92%E5%BA%8F%E3%80%81%E4%BA%8C%E5%88%86%E3%80%81%E5%AD%97%E7%AC%A6%E4%B8%B2.resources/2023/09/18/15-43-18-365392b696aa0ea1bf2b656b99e76b8b-unknown_filename.40-824308.png)
+如果对小规模数据进行排序，可以选择时间复杂度是 O(n2) 的算法；如果对大规模数据进行排序，时间复杂度是 O(nlogn) 的算法更加高效。所以，为了兼顾任意规模数据的排序，一般都会首选时间复杂度是 O(nlogn) 的排序算法来实现排序函数。
+Java 语言采用堆排序实现排序函数，C 语言使用快速排序实现排序函数。
+
+我们知道，快排在最坏情况下的时间复杂度是 O(n2)，而归并排序可以做到平均情况、最坏情况下的时间复杂度都是 O(nlogn)，从这点上看起来很诱人，那为什么它还是没能得到“宠信”呢？
+
+归并排序并不是原地排序算法，空间复杂度是 O(n)。所以，粗略点、夸张点讲，**如果要排序 100MB 的数据，除了数据本身占用的内存之外，排序算法还要额外再占用 100MB 的内存空间**，空间耗费就翻倍了。
+
+#### 如何优化快速排序？
+
+为什么最坏情况下快速排序的时间复杂度是 O(n2) 呢？我们前面讲过，如果数据原来就是有序的或者接近有序的，每次分区点都选择最后一个数据，那快速排序算法就会变得非常糟糕，时间复杂度就会退化为 O(n2)。实际上，**这种 O(n2) 时间复杂度出现的主要原因还是因为我们分区点选的不够合理。**
+最理想的分区点是：被分区点分开的两个分区中，数据的数量差不多。
+
+1. 三数取中法
+2. 随机法
+
+在 qsort() 插入排序的算法实现中，也利用了这种编程技巧。虽然哨兵可能只是少做一次判断，但是毕竟排序函数是非常常用、非常基础的函数，性能的优化要做到极致。
+
+## 二分查找
+
+有点像分治，底层必须依赖数组，并且还要求数据是有序的。二分查找更适合处理静态数据，也就是没有频繁的数据插入、删除操作。
+![unknown_filename.41](https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E9%80%92%E5%BD%92%E3%80%81%E6%8E%92%E5%BA%8F%E3%80%81%E4%BA%8C%E5%88%86%E3%80%81%E5%AD%97%E7%AC%A6%E4%B8%B2.resources/2023/09/18/15-43-18-b6bf9679b06824b205a40d2b8f81ad1a-unknown_filename.41-c16e42.png)
+这是一个等比数列。其中 n/2k=1 时，k 的值就是总共缩小的次数。而每一次缩小操作只涉及两个数据的大小比较，所以，经过了 k 次区间缩小操作，时间复杂度就是 O(k)。通过 n/2k=1，我们可以求得 k=log2n，所以时间复杂度就是 O(logn)。
+
+        public int binarySearch(int[] arr, int k) &#123;
+            if (arr.length == 0) &#123;
+                return -1;
+            &#125;
+            if (arr[0] == k) &#123;
+                return 0;
+            &#125;
+            int a = 0;
+            int b = arr.length - 1;
+            while (a &lt;= b) &#123;
+                int m = a + (b - a) / 2;
+                if (k &lt; arr[m]) &#123;
+                    b = m-1;
+                &#125; else if (k &gt; arr[m]) &#123;
+                    a = m + 1;
+                &#125; else &#123;
+                    return m;
+                &#125;
+            &#125;
+            return -1;
+        &#125;
+    
+
+容易出错的 3 个地方
+
+1. 循环退出条件
+    注意是 low&lt;=high，而不是 low&lt;high。
+2. mid 的取值
+    我们可以将这里的除以 2 操作转化成位运算 low+((high-low)&gt;&gt;1)。因为相比除法运算来说，计算机处理位运算要快得多。
+3. low 和 high 的更新
+    low=mid+1，high=mid-1。注意这里的 +1 和 -1，如果直接写成 low=mid 或者 high=mid，就可能会发生死循环。比如，当 high=3，low=3 时，如果 a\[3\] 不等于 value，就会导致一直循环不退出。
+
+二分查找除了用循环来实现，还可以用递归来实现
+
+    
+    // 二分查找的递归实现
+    public int bsearch(int[] a, int n, int val) &#123;
+      return bsearchInternally(a, 0, n - 1, val);
+    &#125;
+    
+    private int bsearchInternally(int[] a, int low, int high, int value) &#123;
+      if (low &gt; high) return -1;
+    
+      int mid =  low + ((high - low) &gt;&gt; 1);
+      if (a[mid] == value) &#123;
+        return mid;
+      &#125; else if (a[mid] &lt; value) &#123;
+        return bsearchInternally(a, mid+1, high, value);
+      &#125; else &#123;
+        return bsearchInternally(a, low, mid-1, value);
+      &#125;
+    &#125;
+    
+
+#### 二分查找应用场景的局限性
+
+**首先，二分查找依赖的是顺序表结构，简单点说就是数组**。
+数组按照下标随机访问数据的时间复杂度是 O(1)，而链表随机访问的时间复杂度是 O(n)。所以，如果数据使用链表存储，二分查找的时间复杂就会变得很高。
+**其次，二分查找针对的是有序数据。**
+数据必须是有序的。如果数据没有序，我们需要先排序
+如果我们的数据集合有频繁的插入和删除操作，要想用二分查找，要么每次插入、删除操作之后保证数据仍然有序，要么在每次二分查找之前都先进行排序。针对这种动态数据集合，无论哪种方法，维护有序的成本都是很高的。
+所以，二分查找只能用在插入、删除操作不频繁，一次排序多次查找的场景中。针对动态变化的数据集合，二分查找将不再适用。那针对动态数据集合，如何在其中快速查找某个数据呢？别急，等到二叉树那一节我会详细讲。
+**再次，数据量太小不适合二分查找。**
+如果要处理的数据量很小，完全没有必要用二分查找，顺序遍历就足够了。比如我们在一个大小为 10 的数组中查找一个元素，不管用二分查找还是顺序遍历，查找速度都差不多。只有数据量比较大的时候，二分查找的优势才会比较明显。
+**最后，数据量太大也不适合二分查找。**
+二分查找的底层需要依赖数组这种数据结构，而数组为了支持随机访问的特性，要求内存空间连续，对内存的要求比较苛刻。比如，我们有 1GB 大小的数据，如果希望用数组来存储，那就需要 1GB 的连续内存空间。
+
+**如何在 1000 万个整数中快速查找某个整数？**
+这个问题并不难。我们的内存限制是 100MB，每个数据大小是 8 字节，最简单的办法就是将数据存储在数组中，内存占用差不多是 80MB，符合内存的限制。借助今天讲的内容，我们可以先对这 1000 万数据从小到大排序，然后再利用二分查找算法，就可以快速地查找想要的数据了。
+
+虽然大部分情况下，用二分查找可以解决的问题，用散列表、二叉树都可以解决。但是，我们后面会讲，不管是散列表还是二叉树，都会需要比较多的额外的内存空间。如果用散列表或者二叉树来存储这 1000 万的数据，用 100MB 的内存肯定是存不下的。而二分查找底层依赖的是数组，除了数据本身之外，不需要额外存储其他信息，是最省内存空间的存储方式，所以刚好能在限定的内存大小下解决这个问题。
+
+#### 二分查找变形
+
+十个二分九个错
+上一节讲的只是二分查找中最简单的一种情况，在不存在重复元素的有序数组中，查找值等于给定值的元素。最简单的二分查找写起来确实不难，但是，二分查找的变形问题就没那么好写了。
+![unknown_filename.42](https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E9%80%92%E5%BD%92%E3%80%81%E6%8E%92%E5%BA%8F%E3%80%81%E4%BA%8C%E5%88%86%E3%80%81%E5%AD%97%E7%AC%A6%E4%B8%B2.resources/2023/09/18/15-43-18-c1d6cb5ff6dfd01437c1ffcea0da30d8-unknown_filename.42-9e87b0.png)
+
+**变体一：查找第一个值等于给定值的元素**
+如下面这样一个有序数组，其中，a\[5\]，a\[6\]，a\[7\] 的值都等于 8，是重复的数据。我们希望查找第一个等于 8 的数据，也就是下标是 5 的元素。
+![unknown_filename.43](https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E9%80%92%E5%BD%92%E3%80%81%E6%8E%92%E5%BA%8F%E3%80%81%E4%BA%8C%E5%88%86%E3%80%81%E5%AD%97%E7%AC%A6%E4%B8%B2.resources/2023/09/18/15-43-18-afb95d03b8f2db09a02d2e556a6b293e-unknown_filename.43-5d11ce.png)
+如果我们用上一节课讲的二分查找的代码实现，首先拿 8 与区间的中间值 a\[4\] 比较，8 比 6 大，于是在下标 5 到 9 之间继续查找。下标 5 和 9 的中间位置是下标 7，a\[7\] 正好等于 8，所以代码就返回了。
+尽管 a\[7\] 也等于 8，但它并不是我们想要找的第一个等于 8 的元素，因为第一个值等于 8 的元素是数组下标为 5 的元素。
+
+    public int bsearch(int[] a, int n, int value) &#123;
+      int low = 0;
+      int high = n - 1;
+      while (low &lt;= high) &#123;
+        int mid =  low + ((high - low) &gt;&gt; 1);
+        if (a[mid] &gt; value) &#123;
+          high = mid - 1;
+        &#125; else if (a[mid] &lt; value) &#123;
+          low = mid + 1;
+        &#125; else &#123;
+          if ((mid == 0) || (a[mid - 1] != value)) return mid;
+          else high = mid - 1;
+        &#125;
+      &#125;
+      return -1;
+    &#125;
+    
+
+**变体二：查找最后一个值等于给定值的元素**
+前面的问题是查找第一个值等于给定值的元素，我现在把问题稍微改一下，查找最后一个值等于给定值的元素，又该如何做呢？
+
+    
+    public int bsearch(int[] a, int n, int value) &#123;
+      int low = 0;
+      int high = n - 1;
+      while (low &lt;= high) &#123;
+        int mid =  low + ((high - low) &gt;&gt; 1);
+        if (a[mid] &gt; value) &#123;
+          high = mid - 1;
+        &#125; else if (a[mid] &lt; value) &#123;
+          low = mid + 1;
+        &#125; else &#123;
+          if ((mid == n - 1) || (a[mid + 1] != value)) return mid;
+          else low = mid + 1;
+        &#125;
+      &#125;
+      return -1;
+    &#125;
+    
+
+**变体三：查找第一个大于等于给定值的元素**
+在有序数组中，查找第一个大于等于给定值的元素。比如，数组中存储的这样一个序列：3，4，6，7，10。如果查找第一个大于等于 5 的元素，那就是 6。
+
+    public int bsearch(int[] a, int n, int value) &#123;
+      int low = 0;
+      int high = n - 1;
+      while (low &lt;= high) &#123;
+        int mid =  low + ((high - low) &gt;&gt; 1);
+        if (a[mid] &gt;= value) &#123;
+          if ((mid == 0) || (a[mid - 1] &lt; value)) return mid;
+          else high = mid - 1;
+        &#125; else &#123;
+          low = mid + 1;
+        &#125;
+      &#125;
+      return -1;
+    &#125;
+    
+
+**变体四：查找最后一个小于等于给定值的元素**
+我们来看最后一种二分查找的变形问题，查找最后一个小于等于给定值的元素。比如，数组中存储了这样一组数据：3，5，6，8，9，10。最后一个小于等于 7 的元素就是 6。
+
+    
+    public int bsearch7(int[] a, int n, int value) &#123;
+      int low = 0;
+      int high = n - 1;
+      while (low &lt;= high) &#123;
+        int mid =  low + ((high - low) &gt;&gt; 1);
+        if (a[mid] &gt; value) &#123;
+          high = mid - 1;
+        &#125; else &#123;
+          if ((mid == n - 1) || (a[mid + 1] &gt; value)) return mid;
+          else low = mid + 1;
+        &#125;
+      &#125;
+      return -1;
+    &#125;
+    
+
+#### 跳表（Skip list)
+
+因为**二分查找底层依赖的是数组随机访问的特性**，所以只能用数组来实现。如果数据存储在链表中，就真的没法用二分查找算法了吗？
+Redis 中的有序集合（Sorted Set）就是用跳表来实现的。如果你有一定基础，应该知道红黑树也可以实现快速的插入、删除和查找操作。那 Redis 为什么会选择用跳表来实现有序集合呢？
+
+对于一个单链表来讲，即便链表中存储的数据是有序的，如果我们要想在其中查找某个数据，也只能从头到尾遍历链表。这样查找效率就会很低，时间复杂度会很高，是 O(n)。
+
+![unknown_filename.45](https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E9%80%92%E5%BD%92%E3%80%81%E6%8E%92%E5%BA%8F%E3%80%81%E4%BA%8C%E5%88%86%E3%80%81%E5%AD%97%E7%AC%A6%E4%B8%B2.resources/2023/09/18/15-43-18-8a66b846201e0dd5c84b8dd43783efe7-unknown_filename.45-0ec44c.png)
+如果我们现在要查找某个结点，比如 16。我们可以先在索引层遍历，当遍历到索引层中值为 13 的结点时，我们发现下一个结点是 17，那要查找的结点 16 肯定就在这两个结点之间。然后我们通过索引层结点的 down 指针，下降到原始链表这一层，继续遍历。这个时候，我们只需要再遍历 2 个结点，就可以找到值等于 16 的这个结点了。这样，原来如果要查找 16，需要遍历 10 个结点，现在只需要遍历 7 个结点。
+![unknown_filename.44](https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E9%80%92%E5%BD%92%E3%80%81%E6%8E%92%E5%BA%8F%E3%80%81%E4%BA%8C%E5%88%86%E3%80%81%E5%AD%97%E7%AC%A6%E4%B8%B2.resources/2023/09/18/15-43-18-527ef8ed60841f9cf804782e64bbbc88-unknown_filename.44-39b955.png)
+
+**这种链表加多级索引的结构，就是跳表**
+
+* * *
+
+## 字符串匹配
+
+我们用的最多的就是编程语言提供的字符串查找函数，比如 Java 中的 indexOf()，Python 中的 find() 函数等，它们底层就是依赖接下来要讲的字符串匹配算法。
+BF 算法和 RK 算法、BM 算法和 KMP 算法。
+
+### BF 算法
+
+BF 算法中的 BF 是 Brute Force 的缩写，中文叫作暴力匹配算法，也叫朴素匹配算法。
+
+我们在字符串 A 中查找字符串 B，那字符串 A 就是**主串**，字符串 B 就是**模式串**。我们把主串的长度记作 n，模式串的长度记作 m。因为我们是在主串中查找模式串，所以 n&gt;m。
+
+BF 算法的思想可以用一句话来概括，那就是，我们在主串中，检查起始位置分别是 0、1、2…n-m 且长度为 m 的 n-m+1 个子串，看有没有跟模式串匹配的（**看图**）。
+![unknown_filename.48](https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E9%80%92%E5%BD%92%E3%80%81%E6%8E%92%E5%BA%8F%E3%80%81%E4%BA%8C%E5%88%86%E3%80%81%E5%AD%97%E7%AC%A6%E4%B8%B2.resources/2023/09/18/15-43-18-a1e9b7f46b5056938f6b54a6f7d580e1-unknown_filename.48-533903.png)
+我们每次都比对 m 个字符，要比对 n-m+1 次，所以，这种算法的最坏情况时间复杂度是 O(n\* m)。
+
+     /**
+         * BF算法
+         * 检查起始位置分别是 0、1、2…n-m 且长度为 m 的 n-m+1 个子串，看有没有跟模式串匹配的
+         */
+        public static int bfFind(String S, String T, int pos) &#123;
+            char[] arr1 = S.toCharArray();
+            char[] arr2 = T.toCharArray();
+            int i = pos;
+            int j = 0;
+            while (i &lt; arr1.length &amp;&amp; j &lt; arr2.length) &#123;
+                if (arr1[i] == arr2[j]) &#123;
+                    i++;
+                    j++;
+                &#125; else &#123;
+                    i = i - j + 1;
+                    j = 0;
+                &#125;
+            &#125;
+            if (j == arr2.length) return i - j;
+            else return -1;
+        &#125;
+    
+    
+
+尽管理论上，BF 算法的时间复杂度很高，是 O(n\* m)，但在实际的开发中，它却是一个比较常用的字符串匹配算法。
+第一，实际的软件开发中，大部分情况下，模式串和主串的长度都不会太长。
+第二，朴素字符串匹配算法思想简单，代码实现也非常简单。
+
+### RK 算法
+
+BF 算法的升级版。
+BF每次检查主串与子串是否匹配，需要依次比对每个字符，所以 BF 算法的时间复杂度就比较高，是 O(n\* m)。我们对朴素的字符串匹配算法稍加改造，引入哈希算法，时间复杂度立刻就会降低。
+
+RK 算法的思路是这样的：我们通过哈希算法对主串中的 n-m+1 个子串分别求哈希值，然后逐个与模式串的哈希值比较大小。如果某个子串的哈希值与模式串相等，那就说明对应的子串和模式串匹配了（这里先不考虑哈希冲突的问题，后面我们会讲到）。因为哈希值是一个数字，数字之间比较是否相等是非常快速的，所以模式串和子串比较的效率就提高了。
+![unknown_filename.47](https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E9%80%92%E5%BD%92%E3%80%81%E6%8E%92%E5%BA%8F%E3%80%81%E4%BA%8C%E5%88%86%E3%80%81%E5%AD%97%E7%AC%A6%E4%B8%B2.resources/2023/09/18/15-43-18-4b16196e631ebc3ab77a51f3932e3ed0-unknown_filename.47-87011b.png)
+比如要处理的字符串只包含 a～z 这 26 个小写字母，那我们就用二十六进制来表示一个字符串。我们把 a～z 这 26 个字符映射到 0～25 这 26 个数字，a 就表示 0，b 就表示 1，以此类推，z 表示 25。
+在十进制的表示法中，一个数字的值是通过下面的方式计算出来的。对应到二十六进制，一个包含 a 到 z 这 26 个字符的字符串，计算哈希的时候，我们只需要把进位从 10 改成 26 就可以。
+![unknown_filename.51](https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E9%80%92%E5%BD%92%E3%80%81%E6%8E%92%E5%BA%8F%E3%80%81%E4%BA%8C%E5%88%86%E3%80%81%E5%AD%97%E7%AC%A6%E4%B8%B2.resources/2023/09/18/15-43-18-fb423633e2c6ad038660f0d2c0e08e0a-unknown_filename.51-1b15da.png)
+这种哈希算法有一个特点，在主串中，相邻两个子串的哈希值的计算公式有一定关系。我这有个个例子，你先找一下规律，再来看我后面的讲解。
+![unknown_filename.49](https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E9%80%92%E5%BD%92%E3%80%81%E6%8E%92%E5%BA%8F%E3%80%81%E4%BA%8C%E5%88%86%E3%80%81%E5%AD%97%E7%AC%A6%E4%B8%B2.resources/2023/09/18/15-43-18-e445d0397b158b59bdd45a485a96373d-unknown_filename.49-c709b5.png)
+从这里例子中，我们很容易就能得出这样的规律：相邻两个子串 s\[i-1\] 和 s\[i\]（i 表示子串在主串中的起始位置，子串的长度都为 m），对应的哈希值计算公式有交集，也就是说，我们可以使用 s\[i-1\] 的哈希值很快的计算出 s\[i\] 的哈希值。如果用公式表示的话，就是下面这个样子：
+![unknown_filename.50](https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E9%80%92%E5%BD%92%E3%80%81%E6%8E%92%E5%BA%8F%E3%80%81%E4%BA%8C%E5%88%86%E3%80%81%E5%AD%97%E7%AC%A6%E4%B8%B2.resources/2023/09/18/15-43-18-efc72ce48fd6887206b9e8a22cde0a36-unknown_filename.50-beb883.png)
+
+</code></pre>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E7%AE%97%E6%B3%95/" class="category-chain-item">算法</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>递归、排序、二分、字符串</div>
+      <div>http://peiniwan.github.io/2019/02/f29fbd71d702.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>六月的雨</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2019年2月25日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2019/03/08bb336e1c19.html" title="Android屏幕适配">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Android屏幕适配</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2019/02/ab822acb8dfb.html" title="Android（一）">
+                        <span class="hidden-mobile">Android（一）</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

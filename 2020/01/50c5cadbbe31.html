@@ -1,0 +1,852 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="六月的雨">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="图片优化NativeBitmap 实现 抖音NativeBitmap一、图片压缩的意义是什么1.节约流量、2.降低服务器带宽、3.降低app内存占用二、图片压缩的分类1.质量压缩(图片存储卡大小) 2.尺寸压缩 (内存)三、Android6.0与 7.0压缩JPEG图片的区别哈夫曼表如果是一张的话压缩处理，大量图片的话用lruint maxMemory &#x3D; (int) (Runtime.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="图片glide优化">
+<meta property="og:url" content="http://peiniwan.github.io/2020/01/50c5cadbbe31.html">
+<meta property="og:site_name" content="六月的雨的博客">
+<meta property="og:description" content="图片优化NativeBitmap 实现 抖音NativeBitmap一、图片压缩的意义是什么1.节约流量、2.降低服务器带宽、3.降低app内存占用二、图片压缩的分类1.质量压缩(图片存储卡大小) 2.尺寸压缩 (内存)三、Android6.0与 7.0压缩JPEG图片的区别哈夫曼表如果是一张的话压缩处理，大量图片的话用lruint maxMemory &#x3D; (int) (Runtime.">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E5%9B%BE%E7%89%87glide%E4%BC%98%E5%8C%96.resources/2023/09/15/18-47-41-bea9b5e32f5c3995eb42599a71471f06-unknown_filename.6-09bef1.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E5%9B%BE%E7%89%87glide%E4%BC%98%E5%8C%96.resources/2023/09/15/18-47-41-cbb9cee8c56cf98dbc9c728a66e82e48-unknown_filename.5-299a8a.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E5%9B%BE%E7%89%87glide%E4%BC%98%E5%8C%96.resources/2023/09/15/18-47-41-e9e1e0c0ce1bdad78ad6214a83b84dcc-unknown_filename.4-099550.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E5%9B%BE%E7%89%87glide%E4%BC%98%E5%8C%96.resources/2023/09/15/18-47-41-9a5cf42f99501286cdaa5875e3cdd162-unknown_filename.2-a5fa5d.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E5%9B%BE%E7%89%87glide%E4%BC%98%E5%8C%96.resources/2023/09/15/18-47-41-1700ea8a9edf89f522c8c9fe37639ebc-unknown_filename-fee6b9.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E5%9B%BE%E7%89%87glide%E4%BC%98%E5%8C%96.resources/2023/09/15/18-47-41-d013ac47e8d28dc68e35b2a37cf53e65-unknown_filename.3-bbc5f1.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E5%9B%BE%E7%89%87glide%E4%BC%98%E5%8C%96.resources/2023/09/15/18-47-41-524c206d7f8e799e3f88d5be4cf09261-unknown_filename.1-d70d56.png">
+<meta property="article:published_time" content="2020-01-19T08:41:00.000Z">
+<meta property="article:modified_time" content="2023-12-29T08:06:18.186Z">
+<meta property="article:author" content="六月的雨">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E5%9B%BE%E7%89%87glide%E4%BC%98%E5%8C%96.resources/2023/09/15/18-47-41-bea9b5e32f5c3995eb42599a71471f06-unknown_filename.6-09bef1.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>图片glide优化 - 六月的雨的博客</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"peiniwan.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>六月的雨的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="图片glide优化"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2020-01-19 16:41" pubdate>
+          2020年1月19日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.7k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          31 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">图片glide优化</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="图片优化"><a href="#图片优化" class="headerlink" title="图片优化"></a>图片优化</h2><p><a target="_blank" rel="noopener" href="https://njuptrain.site/posts/NativeBitmap-%E5%AE%9E%E7%8E%B0/">NativeBitmap 实现</a></p>
+<p><a target="_blank" rel="noopener" href="https://juejin.cn/post/7096059314233671694#heading-31">抖音NativeBitmap</a><br>一、图片压缩的意义是什么<br>1.节约流量、2.降低服务器带宽、3.降低app内存占用<br>二、图片压缩的分类<br>1.质量压缩(图片存储卡大小) 2.尺寸压缩 (内存)<br>三、Android6.0与 7.0压缩JPEG图片的区别<br>哈夫曼表<br>如果是一张的话压缩处理，大量图片的话用lru<br>int maxMemory &#x3D; (int) (Runtime.getRuntime().maxMemory() &#x2F; 1024)<br><strong>ImageUtils</strong></p>
+<p><strong>若发生OOM，则使用try catch将其捕获，然后清除图片cache，尝试降低bitmap format<br>由于webview存在内存系统泄漏，还有图库占用内存过多的问题，可以采用单独的进程。</strong><br>Chrome Devtool 在浏览器调试H5</p>
+<p><strong>图片：html用webview加载了也就10几行代码，古董机也可以加载出来</strong></p>
+<p><strong>图片的内存大小和imageview大小不一样时大小有什么区别：</strong><br>PNG 图片部分：<br>我们修改 imageview 的大小并不会影响PNG图片占用内存大小，所以把 imageview 写的小一点省内存就是个错觉，哈哈，我一直以来都有这个错觉哈。所以说 png 图我们能把分辨率做小就做小，真心吃内存啊</p>
+<p>SVG 矢量图部分：<br>同样我们修改 imageview 的大小并不会SVG影响图片占用内存大小，需要注意的是 SVG 图片实际的显示分辨率是由SVG 的 xml文件中的 width&#x2F;height 决定的，所以啊SVG 既然支持缩放，那我们就把宽高写小了好了，这样可以省内存呀。</p>
+<p><strong>总结</strong></p>
+<ul>
+<li><p>图片压缩大概分为两类，质量压缩和尺寸压缩。例如一些固定宽高的图片，feed，头像等等就可以对尺寸压缩，或者请求指定宽高的图片。修改图片的格式、质量、编码格式。在内存不足的时候可以清除内存缓存，在滚动的时候可以暂停图片加载，停下来的时候再去加载。glide也可以裁剪（请求属性不申请内存）。</p>
+</li>
+<li><p>onTrimMemory，调用 Glide.cleanMemroy() 清理掉所有的内存缓存。（内部是LruBitmapPool ）</p>
+</li>
+<li><p>升级到Glide4.0，使用asDrawable代替asBitmap，drawable更省内存。（或者下载下来，用空间换时间）</p>
+</li>
+<li><p>不使用application作为context。当context为application时，会把imageView是生命周期延长到整个运行过程中，imageView不能被回收，从而造成OOM异常。</p>
+</li>
+<li><p>当列表在滑动的时候，调用Glide的pauseRequests()取消请求，滑动停止时，调用resumeRequests()恢复请求。</p>
+<p>  if (view.getContext() !&#x3D; null) {<br>      switch (scrollState) {<br>          case SCROLL_STATE_IDLE:<br>              Glide.with(view.getContext()).resumeRequests();<br>              break;<br>          case SCROLL_STATE_TOUCH_SCROLL:<br>          case SCROLL_STATE_FLING:<br>              Glide.with(view.getContext()).pauseRequests();<br>              break;<br>      }<br>  }<br><br><br>  Bitmap.createBitmap() 方法，从名字上就可以看出，它是为了创建一个 Bitmap 对象，绘制的时候用。<br>  利用 Glide 的来优化此步骤，就需要用到 BitmapPool。BitmapPool 本身是一个接口，我们通常会使用到它的实现类 LruBitmapPool，从名称就可以看出，它基于 LRU 的规则，在一定的内存限制下，缓存和管理一些可供重用的 Bitmap 对象。</p>
+<pre><code class="hljs">  还有对于不失真的超长图，超大图，subsampling-scale-image-view，他的原理其实是使用系统的API **BitmapRegionDecoder** ，它可以用来显示图片指定的一个矩形区域。通过自定义View重写onTouchEvent()判断手势滑动位置，从而改变矩形区域的位置，重新计算mRect（ruai kte）去获取部分bitmap绘制到屏幕上。invidedata刷新ondraw。
+
+  还有GIF，FrameSequence是Android framework中里的一个工具包。 它封装了: libgif (gif编解码库c++ )，并提供Java API播放gif。使用它要比glide加载GIF效果效果要好，glide加载加载GIF图片CPU占用高，并且内存占用一直在增加。使用FrameSequence库就可以解决，不过每次判断去怎么加载很麻烦，可以使用glide的AppGlideModule apt注解解析器来自动生成代码。判断GIF图片时将InputStream转成FrameSequenceDrawable解析。这个还可以做播放Webp动画。
+
+  其他：自定义GlideModule。设置MemoryCache和BitmapPool大小，在未复用的情况下，每张图片都需要一块内存。而使用复用的时候，如果存在能被复用的图片会重复使用该图片的内存。所以复用不能减少程序正在使用的内存大小，而是解决了频繁申请内存导致的内存抖动、碎片等问题。
+</code></pre>
+</li>
+</ul>
+<p>好文章</p>
+<p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/ClAMGgMPQ1NNW5vdzxf91g">https://mp.weixin.qq.com/s/ClAMGgMPQ1NNW5vdzxf91g</a><br>对图片的优化前提是对图片操作的收拢，这样我们才可以做整体的策略控制。例如对于一些低端设备，我们可以将图片格式从 ARGB_8888 变为 RGB_565，这样一个简单的调整，可以让图片内存的占用减少一半；又例如在适当的时机，主动回收掉一些图片缓存，避免被 Low Memory Kiiler 盯上。</p>
+<h3 id="优化bitmap"><a href="#优化bitmap" class="headerlink" title="优化bitmap"></a>优化bitmap</h3><p><strong>inBitmap</strong></p>
+<ul>
+<li><p>inBitmap是在BitmapFactory中的内部类Options的一个变量，简单而言，使用该变量可以复用旧的Bitmap的内存而不用重新分配以及销毁旧Bitmap，进而改善运行效率。</p>
+</li>
+<li><p>4.4之前的版本inBitmap只能够重用相同大小的Bitmap内存区域。简单而言，被重用的Bitmap需要与新的Bitmap规格完全一致，否则不能重用。</p>
+</li>
+<li><p>4.4之后的版本系统不再限制旧Bitmap与新Bitmap的大小，只要保证旧Bitmap的大小是大于等于新Bitmap大小即可。</p>
+</li>
+<li><p>除上述规则之外，旧Bitmap必须是mutable的，这点也很好理解，如果一个Bitmap不支持修改，那么其内存自然也重用不了</p>
+</li>
+<li><p>Glide内部也使用了inBitmap作为缓存复用的一种方式。<br>  <img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E5%9B%BE%E7%89%87glide%E4%BC%98%E5%8C%96.resources/2023/09/15/18-47-41-bea9b5e32f5c3995eb42599a71471f06-unknown_filename.6-09bef1.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.6"></p>
+<p>  private Set&lt;WeakReference<Bitmap>&gt; reusablePool;</p>
+<p>  &#x2F;&#x2F; 复用池reusablePool &#x3D; Collections.synchronizedSet(new<br>  HashSet&lt;WeakReference<Bitmap>&gt;());</p>
+<p>   public Bitmap getReusable(int w, int h, int inSampleSize) {<br>      if (Build.VERSION.SDK_INT &lt; Build.VERSION_CODES.HONEYCOMB) {<br>          return null;<br>      }<br>      Bitmap reusable &#x3D; null;<br>      &#x2F;&#x2F;有满足的就拿出来<br>      Iterator&lt;WeakReference<Bitmap>&gt; iterator &#x3D; reusablePool.iterator();<br>      while (iterator.hasNext()) {<br>          Bitmap bitmap &#x3D; iterator.next().get();<br>          if (bitmap !&#x3D; null) {<br>              if (checkInBitmap(bitmap, w, h, inSampleSize)) {<br>                  reusable &#x3D; bitmap;<br>                  iterator.remove();<br>                  break;<br>              }<br>          } else {<br>              iterator.remove();<br>          }<br>      }<br><br>      return reusable;<br><br>  }</p>
+</li>
+</ul>
+<p><strong>替换 createBitmap()</strong><br>Bitmap.createBitmap() 方法，从名字上就可以看出，它是为了创建一个 Bitmap 对象，绘制的时候用。<br>利用 Glide 的来优化此步骤，就需要用到 BitmapPool。BitmapPool 本身是一个接口，我们通常会使用到它的实现类 LruBitmapPool，从名称就可以看出，它基于 LRU 的规则，在一定的内存限制下，缓存和管理一些可供重用的 Bitmap 对象。</p>
+<pre><code class="hljs">     val bitmapPool = Glide.get(this).bitmapPool
+     val bitmap = bitmapPool.get(100,100,Bitmap.Config.ARGB_8888)
+     if (bitmap==null) &#123;
+     bitmap = Bitmap.createBitmap(size, size, 
+Bitmap.Config.ARGB_8888);
+     &#125;
+// 处理 → 使用 bitmap
+// ......
+// 用完回收 bitmap
+        bitmapPool.put(bitmap)
+</code></pre>
+<p>IcaChe中存的是Btmap对象, reusepool中存的是 bitmap的对象可以复用,不必再创建。</p>
+<p><strong>三级缓存</strong><br>lruCache，磁盘缓存、bitmap复用</p>
+<p><strong>Glide 也支持异步加载 Bitmap，异步加载，就涉及到线程的切换问题</strong><br>我们也通过 Glide 加载一个图片资源，然后获得缓存的图片文件。其实只需要将 asBitmap() 换成 asFile() 即可。</p>
+<pre><code class="hljs"> Glide.with(activity)
+                .asBitmap()
+                .load(imageUrl)
+                .into(object:CustomTarget&lt;Bitmap&gt;()&#123;
+            override fun onLoadCleared(placeholder: Drawable?) &#123;
+            &#125;
+
+            override fun onResourceReady(resource: Bitmap,
+                    transition: Transition&lt;in Bitmap&gt;?) &#123;
+                val loadBitmap = resource
+            &#125;
+        &#125;)
+</code></pre>
+<p><strong>重复图片监控</strong><br>重复图片指的是 Bitmap 的像素数据完全一致，但是有多个不同的对象存在。这个监控不需要太多的样本量，一般只在内部使用。之前我实现过一个内存 Hprof 的分析工具，它可以自动将重复 Bitmap 的图片和引用链输出。下图是一个简单的例子，你可以看到两张图片的内容完全一样，通过解决这张重复图片可以节省 1MB 内存<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E5%9B%BE%E7%89%87glide%E4%BC%98%E5%8C%96.resources/2023/09/15/18-47-41-cbb9cee8c56cf98dbc9c728a66e82e48-unknown_filename.5-299a8a.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.5"><br><strong>Matrix 准备使用jar，在打包时报错，失败！</strong></p>
+<p><strong>三级缓存</strong></p>
+<ul>
+<li>先读取内存缓存, 因为优先加载, 速度最快，内存缓存没有再读取本地缓存, 次优先加载, 速度也快，本地没有再加载网络缓存, 速度慢,浪费流量在网络缓存中从网络下载图片，并且保存在本地和内存中，在下载的时候可以对图片进行压缩</li>
+<li>服务器端下载的图片是使用 Http的缓存机制，每次执行将本地图片的时间发送给服务器，如果俩次访问的时间间隔短，返回码是 304，会读取网络缓存（说明服务端的图片和本地的图片是相同的，直接使用本地保存的图片），如果返回码是 200，则开始下载新的图片并实现缓存。在从服务器获取到图片后，需要再在本地和内存中分别存一份，这样下次直接就可以从内存中直接获取了，这样就加快了显示的速度，提高了用户的体验。</li>
+</ul>
+<h4 id="尺寸压缩"><a href="#尺寸压缩" class="headerlink" title="尺寸压缩"></a>尺寸压缩</h4><p>options.insamplesize &#x3D; calculateInsampleSize(options，reqWidth: 100，reqHeight: 100); &#x2F;&#x2F;算出采样率（临近采样压缩算法）<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E5%9B%BE%E7%89%87glide%E4%BC%98%E5%8C%96.resources/2023/09/15/18-47-41-e9e1e0c0ce1bdad78ad6214a83b84dcc-unknown_filename.4-099550.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.4"><br>一般会这两种算法一起用压缩图片</p>
+<pre><code class="hljs">    public static Bitmap compressBySampleSize(final Bitmap src,
+                                              final int maxWidth,
+                                              final int maxHeight,
+                                              final boolean recycle) &#123;
+        if (isEmptyBitmap(src)) return null;
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        src.compress(CompressFormat.JPEG, 100, baos);
+        byte[] bytes = baos.toByteArray();
+        BitmapFactory.decodeByteArray(bytes, 0, bytes.length, options);
+        options.inSampleSize = calculateInSampleSize(options, maxWidth, maxHeight);
+        options.inJustDecodeBounds = false;
+        if (recycle &amp;&amp; !src.isRecycled()) src.recycle();
+        return BitmapFactory.decodeByteArray(bytes, 0, bytes.length, options);
+    &#125;
+</code></pre>
+<h4 id="质量压缩"><a href="#质量压缩" class="headerlink" title="质量压缩"></a>质量压缩</h4><p>bitmap.compress时可以指定它的的格式和图片质量<br>webp&lt;jpeg&lt;png（无损压缩）<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E5%9B%BE%E7%89%87glide%E4%BC%98%E5%8C%96.resources/2023/09/15/18-47-41-9a5cf42f99501286cdaa5875e3cdd162-unknown_filename.2-a5fa5d.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.2"></p>
+<pre><code class="hljs">// 将图片保存在本地，
+            bitmap.compress(CompressFormat.JPEG, 100,
+                    new FileOutputStream(file));//100是质量
+Bitmap bitmap = BitmapFactory.decodeStream(new FileInputStream(file));//decodeStream放的是输入输出流
+                return bitmap;
+
+Bitmap bitmap = BitmapFactory.decodeStream(new FileInputStream(file));
+                return bitmap;
+</code></pre>
+<p>6.0以下自己开启libjpeg，需要so<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E5%9B%BE%E7%89%87glide%E4%BC%98%E5%8C%96.resources/2023/09/15/18-47-41-1700ea8a9edf89f522c8c9fe37639ebc-unknown_filename-fee6b9.png" srcset="/img/loading.gif" lazyload alt="unknown_filename"></p>
+<h4 id="加载大图片"><a href="#加载大图片" class="headerlink" title="加载大图片"></a>加载大图片</h4><p>正常一张720x1080的图片在内存中占多少空间？怎么加载大图片？如何面对大的 bitmap如何处理？</p>
+<ol>
+<li>看他的渲染方式，占用的字节不同的。RGB888每个像素占用4个字节，很容易内存溢出</li>
+<li>图片的总大小 &#x3D; 图片的总像素 * 每个像素占用的大小</li>
+<li>计算机把图片所有像素信息全部解析出来，保存至内存，很容易内存溢出</li>
+</ol>
+<p>加载大图片<br>可以对图片的宽高和质量进行压缩,步骤：<br>获取屏幕宽高，获取图片宽高，图片的宽高除以屏幕宽高，算出宽和高的缩放比例，取较大值作为图片的缩放比例，且大于1才缩放，然后按缩放比例加载图片<br>获取屏幕宽高 、获取图片宽高<br>&#x2F;&#x2F;请求图片属性但不申请内存<br>opts.inJustDecodeBounds &#x3D; true;</p>
+<p><strong>在不失真的条件下显示一张超高清的图片或者长图？</strong><br>针对这个问题，我自己一般用以下两种方法解决：</p>
+<ol>
+<li><p>使用WebView来加载该图片；</p>
+</li>
+<li><p>网络大图：Http协议中的Range &#x2F; Accept-Range ，他可以指定获取body的一部分，从而达到分块加载图片的效果；</p>
+</li>
+<li><p>subsampling-scale-image-view（底层就是BitmapRegionDecoder）</p>
+</li>
+<li><p><strong>BitmapRegionDecoder</strong> 可以用来显示图片指定的一个矩形区域。通过自定义View重写onTouchEvent()判断手势滑动位置，从而改变矩形区域的位置，重新计算mRect（ruai k te）去获取部分bitmap绘制到屏幕上。invidedata刷新ondraw</p>
+<p> @Override<br> protected void onDraw(Canvas canvas) {<br> BitmapRegionDecoder，options就是BitmapFactory.Options<br>   Bitmap bm &#x3D; mDecoder.decodeRegion(mRect, options);<br>   canvas.drawBitmap(bm, 0, 0, null);<br> }</p>
+</li>
+</ol>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/lmj623565791/article/details/49300989/">https://blog.csdn.net/lmj623565791/article/details/49300989/</a></p>
+<p>GestureDetector 方便点</p>
+<hr>
+<h2 id="Glide"><a href="#Glide" class="headerlink" title="Glide"></a>Glide</h2><p><strong>glide问题</strong><br>使用Glide时，注意对传入的Acticity与Fragment进行判断，避免传入已经销毁Acticity，造成IllegalArgumentException异常。可以参考这篇<a target="_blank" rel="noopener" href="https://blog.csdn.net/loners_/article/details/73521968">Glide类似You cannot start a load for a destroyed activity异常简单分析</a></p>
+<h4 id="优化GIF"><a href="#优化GIF" class="headerlink" title="优化GIF"></a>优化GIF</h4><p>FrameSequence是Android framework中里的一个工具包。 它封装了: giflib (gif编解码库c++ )，并提供Java API播放gif。使用它要比glide加载GIF效果效果要好，glide加载加载GIF图片CPU占用高，并且内存占用一直在增加。使用FrameSequence库就可以解决，不过每次判断去怎么加载很麻烦，可以使用glide的AppGlideModule apt注解解析器来自动生成代码。判断GIF图片时将InputStream转成FrameSequenceDrawable解析。这个还可以做播放Webp动画。</p>
+<pre><code class="hljs">@GlideModule
+public class GifGlideModule extends AppGlideModule &#123;
+    @Override
+    public void registerComponents(
+    @NonNull Context context, @NonNull Glide glide, @NonNull Registry registry) &#123;
+        super.registerComponents(context, glide, registry);
+        registry.append(Registry.BUCKET_GIF,
+                InputStream.class,
+                FrameSequenceDrawable.class, new GifDecoder(glide.getBitmapPool()));
+    &#125;
+&#125;
+</code></pre>
+<blockquote>
+<p>Glide加载Gif图片的原理：将gif根据每一帧解析成很张图片,然后在依次设置给ImageView。</p>
+</blockquote>
+<p><strong>FrameSequenceDrawable原理</strong><br>利用了两个Bitmap对象，其中一个用于绘制到屏幕上，另外一个用于解析下一张要展示的图片，利用了HandlerThread在子线程解析，每次解析的时候获取上一张图片的展示时间，然后使用Drawable自身的scheduleSelf方法在指定时间替换图片，在达到替换时间时，会调用draw方法，在draw之前先去子线程解析下一张要展示的图片，然后重复这个步骤，直到播放结束或者一直播放。</p>
+<p><strong>需要自己编译</strong><br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E5%9B%BE%E7%89%87glide%E4%BC%98%E5%8C%96.resources/2023/09/15/18-47-41-d013ac47e8d28dc68e35b2a37cf53e65-unknown_filename.3-bbc5f1.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.3"><br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E5%9B%BE%E7%89%87glide%E4%BC%98%E5%8C%96.resources/2023/09/15/18-47-41-524c206d7f8e799e3f88d5be4cf09261-unknown_filename.1-d70d56.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.1"></p>
+<p>加载进度需要自己实现</p>
+<p><strong>Glide默认缓存</strong><br>内存缓存最大空间(maxSize)&#x3D;每个进程可用的最大内存 * 0.4<br>磁盘缓存大小: 250 * 1024 * 1024(250MB)</p>
+<pre><code class="hljs"> int DEFAULT_DISK_CACHE_SIZE = 250 * 1024 * 1024;
+</code></pre>
+<p>磁盘缓存目录磁盘缓存目录: 项目&#x2F;cache&#x2F;image_manager_disk_cache</p>
+<pre><code class="hljs"> String DEFAULT_DISK_CACHE_DIR = &quot;image_manager_disk_cache&quot;;
+</code></pre>
+<h4 id="优化方案"><a href="#优化方案" class="headerlink" title="优化方案"></a>优化方案</h4><p>几乎所有的 OOM 错误都是因为宿主应用出了问题，而不是 Glide 本身。 应用里两种常见的 OOM 错误分别是：<br>过大的内存分配 (Excessively large allocations)<br>内存泄露(Memory leaks, 被分配的内存没有被释放)</p>
+<ul>
+<li><p>引入largeHeap属性，让系统为App分配更多的独立内存。</p>
+</li>
+<li><p>禁止Glide内存缓存。设置skipMemoryCache(true)。内存缓存是CPU，速度更快。</p>
+</li>
+<li><p>自定义GlideModule。设置MemoryCache和BitmapPool大小。<strong>都可以说</strong></p>
+</li>
+<li><p>升级到Glide4.0，使用asDrawable代替asBitmap，drawable更省内存。（或者下载下来，用空间换时间）<br>   Bitmap 储存的是 像素信息（把所有信息都保存下来了，一个像素4个字节，想想有多大），Drawable 储存的是 对 Canvas 的一系列操作。而 BitmapDrawable 储存的是「把 Bitmap 渲染到 Canvas 上」这个操作。</p>
+</li>
+<li><p>ImageView的scaleType为fitXY时，改为fitCenter&#x2F;centerCrop&#x2F;fitStart&#x2F;fitEnd显示。</p>
+</li>
+<li><p>不使用application作为context。当context为application时，会把imageView是生命周期延长到整个运行过程中，imageView不能被回收，从而造成OOM异常。</p>
+</li>
+<li><p>当列表在滑动的时候，调用Glide的pauseRequests()取消请求，滑动停止时，调用resumeRequests()恢复请求。</p>
+<p>  if (view.getContext() !&#x3D; null) {<br>      switch (scrollState) {<br>          case SCROLL_STATE_IDLE:<br>              Glide.with(view.getContext()).resumeRequests();<br>              break;<br>          case SCROLL_STATE_TOUCH_SCROLL:<br>          case SCROLL_STATE_FLING:<br>              Glide.with(view.getContext()).pauseRequests();<br>              break;<br>      }<br>  }</p>
+</li>
+<li><p>Try catch某些大内存分配的操作。考虑在catch里面尝试一次降级的内存分配操作。例如decode bitmap的时候，catch到OOM，可以尝试把采样比例再增加一倍之后，再次尝试decode。</p>
+</li>
+<li><p>BitmapFactory.Options和BitmapFactory.decodeStream获取原始图片的宽、高，绕过Java层加载Bitmap，再调用Glide的override(width,height)控制显示。（？？）</p>
+</li>
+<li><p>onTrimMemory，调用 Glide.cleanMemroy() 清理掉所有的内存缓存。（内部是LruBitmapPool ）</p>
+</li>
+<li><p>如果是处于 lowMemory 的时候，将图片的 DecodeFormat 设置为 RGB_565</p>
+</li>
+<li><p>使用glide自己的圆角图片。bitmapTransfrom</p>
+</li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Android/" class="category-chain-item">Android</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>图片glide优化</div>
+      <div>http://peiniwan.github.io/2020/01/50c5cadbbe31.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>六月的雨</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2020年1月19日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2020/02/83951a1a3003.html" title="Python用Django写restfulapi接口">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Python用Django写restfulapi接口</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2020/01/3002aa1d0099.html" title="Jetpack MVP MVVM">
+                        <span class="hidden-mobile">Jetpack MVP MVVM</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

@@ -1,0 +1,1045 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="六月的雨">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="热修复、插件化、组件化组件化模块化：项目按照独立的模块进行划分项目组件化的重要环节在于，将项目按照模块来进行拆分，拆分成一个个业务module和其他基础module（lib），各个业务module之间互不依赖，互相解耦！每个业务module都可以安排不同的开发人员团队来进行开发，不强制使用一种开发模式，MVP可以，MVC也可以！然后各个业务module之间通过路由机制进行跳转和传递！ 资源名冲突c">
+<meta property="og:type" content="article">
+<meta property="og:title" content="热修复、插件化、组件化">
+<meta property="og:url" content="http://peiniwan.github.io/2019/12/64936ff4eee8.html">
+<meta property="og:site_name" content="六月的雨的博客">
+<meta property="og:description" content="热修复、插件化、组件化组件化模块化：项目按照独立的模块进行划分项目组件化的重要环节在于，将项目按照模块来进行拆分，拆分成一个个业务module和其他基础module（lib），各个业务module之间互不依赖，互相解耦！每个业务module都可以安排不同的开发人员团队来进行开发，不强制使用一种开发模式，MVP可以，MVC也可以！然后各个业务module之间通过路由机制进行跳转和传递！ 资源名冲突c">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%83%AD%E4%BF%AE%E5%A4%8D%E3%80%81%E6%8F%92%E4%BB%B6%E5%8C%96%E3%80%81%E7%BB%84%E4%BB%B6%E5%8C%96.resources/2023/09/15/18-49-57-558129a1644d0736cd25072fe9b87f86-unknown_filename.6-93023b.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%83%AD%E4%BF%AE%E5%A4%8D%E3%80%81%E6%8F%92%E4%BB%B6%E5%8C%96%E3%80%81%E7%BB%84%E4%BB%B6%E5%8C%96.resources/2023/09/15/18-49-57-cd1909472c93368bf95df301eb7c58e0-unknown_filename.7-013f36.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%83%AD%E4%BF%AE%E5%A4%8D%E3%80%81%E6%8F%92%E4%BB%B6%E5%8C%96%E3%80%81%E7%BB%84%E4%BB%B6%E5%8C%96.resources/2023/09/15/18-49-57-959a108dc14d4ede457274785e93557a-QQ%E6%88%AA%E5%9B%BE20191220155257-00878f.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%83%AD%E4%BF%AE%E5%A4%8D%E3%80%81%E6%8F%92%E4%BB%B6%E5%8C%96%E3%80%81%E7%BB%84%E4%BB%B6%E5%8C%96.resources/2023/09/15/18-49-57-1d77e0a5d9d2cc3928337e4240560cb9-unknown_filename.8-bd7ba6.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%83%AD%E4%BF%AE%E5%A4%8D%E3%80%81%E6%8F%92%E4%BB%B6%E5%8C%96%E3%80%81%E7%BB%84%E4%BB%B6%E5%8C%96.resources/2023/09/15/18-49-57-d2f3fa277380d6d72af2cad68c99165b-unknown_filename.4-340dd2.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%83%AD%E4%BF%AE%E5%A4%8D%E3%80%81%E6%8F%92%E4%BB%B6%E5%8C%96%E3%80%81%E7%BB%84%E4%BB%B6%E5%8C%96.resources/2023/09/15/18-49-57-83354f314f6a6f00d553e7ed9f2394b6-unknown_filename.5-8bae3b.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%83%AD%E4%BF%AE%E5%A4%8D%E3%80%81%E6%8F%92%E4%BB%B6%E5%8C%96%E3%80%81%E7%BB%84%E4%BB%B6%E5%8C%96.resources/2023/09/15/18-49-57-1773bde8e552cb02c3c2b9b615f41295-unknown_filename.2-c24a95.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%83%AD%E4%BF%AE%E5%A4%8D%E3%80%81%E6%8F%92%E4%BB%B6%E5%8C%96%E3%80%81%E7%BB%84%E4%BB%B6%E5%8C%96.resources/2023/09/15/18-49-57-02948fd9b34281a931a019cd061f9bb3-unknown_filename.3-007fef.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%83%AD%E4%BF%AE%E5%A4%8D%E3%80%81%E6%8F%92%E4%BB%B6%E5%8C%96%E3%80%81%E7%BB%84%E4%BB%B6%E5%8C%96.resources/2023/09/15/18-49-57-dcb489261f7dff4d3db54abb729db1eb-unknown_filename.1-4e2a34.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%83%AD%E4%BF%AE%E5%A4%8D%E3%80%81%E6%8F%92%E4%BB%B6%E5%8C%96%E3%80%81%E7%BB%84%E4%BB%B6%E5%8C%96.resources/2023/09/15/18-49-57-d52c46072c8e7043e6332cff6c41c212-unknown_filename-f5841f.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%83%AD%E4%BF%AE%E5%A4%8D%E3%80%81%E6%8F%92%E4%BB%B6%E5%8C%96%E3%80%81%E7%BB%84%E4%BB%B6%E5%8C%96.resources/2023/09/15/18-49-57-d2717d7c63a8224a518e62ebd51bc7f0-Image-bcf7fb.jpg">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%83%AD%E4%BF%AE%E5%A4%8D%E3%80%81%E6%8F%92%E4%BB%B6%E5%8C%96%E3%80%81%E7%BB%84%E4%BB%B6%E5%8C%96.resources/2023/09/15/18-49-57-ef8df50043de69c909b3b348173a9b0b-Image.3-627eb5.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%83%AD%E4%BF%AE%E5%A4%8D%E3%80%81%E6%8F%92%E4%BB%B6%E5%8C%96%E3%80%81%E7%BB%84%E4%BB%B6%E5%8C%96.resources/2023/09/15/18-49-57-15c550c8d2ad51ca4061a52ab8968183-Image.1-fffad7.jpg">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%83%AD%E4%BF%AE%E5%A4%8D%E3%80%81%E6%8F%92%E4%BB%B6%E5%8C%96%E3%80%81%E7%BB%84%E4%BB%B6%E5%8C%96.resources/2023/09/15/18-49-57-4623ba0ad503b9577b793569ab28422f-Image.2-5459d7.jpg">
+<meta property="article:published_time" content="2019-12-23T09:43:46.000Z">
+<meta property="article:modified_time" content="2023-12-26T02:56:17.227Z">
+<meta property="article:author" content="六月的雨">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%83%AD%E4%BF%AE%E5%A4%8D%E3%80%81%E6%8F%92%E4%BB%B6%E5%8C%96%E3%80%81%E7%BB%84%E4%BB%B6%E5%8C%96.resources/2023/09/15/18-49-57-558129a1644d0736cd25072fe9b87f86-unknown_filename.6-93023b.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>热修复、插件化、组件化 - 六月的雨的博客</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"peiniwan.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>六月的雨的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="热修复、插件化、组件化"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2019-12-23 17:43" pubdate>
+          2019年12月23日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.7k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          32 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">热修复、插件化、组件化</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="热修复、插件化、组件化"><a href="#热修复、插件化、组件化" class="headerlink" title="热修复、插件化、组件化"></a>热修复、插件化、组件化</h1><h3 id="组件化"><a href="#组件化" class="headerlink" title="组件化"></a>组件化</h3><p><strong>模块化：项目按照独立的模块进行划分</strong><br>项目组件化的重要环节在于，将项目按照模块来进行拆分，拆分成一个个业务module和其他基础module（lib），各个业务module之间互不依赖，互相解耦！每个业务module都可以安排不同的开发人员团队来进行开发，不强制使用一种开发模式，MVP可以，MVC也可以！然后各个业务module之间通过路由机制进行跳转和传递！</p>
+<p><strong>资源名冲突</strong><br>color，shape，drawable，图片资源，布局资源，或者anim资源等等，都有可能造成资源名称冲突。有时候大家负责不同的模块，如果不是按照统一规范命名，则会偶发出现该问题</p>
+<pre><code class="hljs">android &#123;
+// 所有xml资源命名以 &quot;login_&quot; 开头、否则编译报红
+resourcePrefix &quot;login_&quot;
+&#125;
+</code></pre>
+<p>得到组件化：<br>方法、view都能调用<br>都依赖 componentservice 服务实现，参考<br>componentservice MedRecordDossierService 接口<br>MedRecordDossierModule MedRecordDossierServiceImpl: MedRecordDossierService<br>ConsultationModule Router.getInstance().getService(MedRecordDossierService::class.java.name).getPatientFragment<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%83%AD%E4%BF%AE%E5%A4%8D%E3%80%81%E6%8F%92%E4%BB%B6%E5%8C%96%E3%80%81%E7%BB%84%E4%BB%B6%E5%8C%96.resources/2023/09/15/18-49-57-558129a1644d0736cd25072fe9b87f86-unknown_filename.6-93023b.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.6"><br>组件B的开发人员再编写好组件B之后，需要提供接口文档<br>组件A的开发人员想用组件B的服务时，就需要根据接口文档有关于组件B的服务描述中，找到组件B所提供的服务的名字，然后调用router.getService(服务全路径名);即可获取响应的服务<br>而面向接口编程其实说的是每个应用到服务的地方都是针对父类编程，以达到接口和实现的分离目的<br>由于在开发期是面对存放在componentservice目录下的服务父类编程，而在提供服务的组件中的IApplicationLike中注册了组件中关于服务的具体实现。</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%83%AD%E4%BF%AE%E5%A4%8D%E3%80%81%E6%8F%92%E4%BB%B6%E5%8C%96%E3%80%81%E7%BB%84%E4%BB%B6%E5%8C%96.resources/2023/09/15/18-49-57-cd1909472c93368bf95df301eb7c58e0-unknown_filename.7-013f36.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.7"></p>
+<p>彻底明白 Phone Module与 AndroidLibrary的区别<br>Phone Module可以单独运行</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs stylus"><span class="hljs-comment">// 配置资源路径，方便测试环境，打包不集成到正式环境</span><br>sourceSets &#123; <span class="hljs-comment">// 节省apt大小</span><br>	<span class="hljs-selector-tag">main</span> &#123;<br>		<span class="hljs-keyword">if</span> (!isRelease) &#123;<br>			<span class="hljs-comment">// 如果是组件化模式，需要单独运行时</span><br>			manifest<span class="hljs-selector-class">.srcFile</span> <span class="hljs-string">&#x27;src/main/debug/AndroidManifest.xml&#x27;</span><br>		&#125; <span class="hljs-keyword">else</span> &#123;<br>			<span class="hljs-comment">// 集成化模式，整个项目打包apk</span><br>			manifest<span class="hljs-selector-class">.srcFile</span> <span class="hljs-string">&#x27;src/main/AndroidManifest.xml&#x27;</span><br>			java &#123;<br>				<span class="hljs-comment">// release 时 debug 目录下文件不需要合并到主工程</span><br>				exclude <span class="hljs-string">&#x27;**/debug/**&#x27;</span><br>			&#125;<br>		&#125;<br>	&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<h4 id="3-组件化模块间交互"><a href="#3-组件化模块间交互" class="headerlink" title="3 组件化模块间交互"></a>3 组件化模块间交互</h4><p>3.1：方式一 使用 EventBus的方式，缺点是：EventBean维护成本太高，不好去管理：</p>
+<p>3.2：方式二 使用广播的方式，缺点是：不好管理，都统一发出去了</p>
+<p>3.3：方式三 使用隐士意图方式，缺点是：在AndroidManifest.xml里面配置xml写的太多了</p>
+<p>3.4：方式四 使用类加载方式，缺点就是，容易写错包名类名，缺点较少（<strong>我们尝试写写这种方式</strong>）</p>
+<p>3.5: 方式五 使用全局Map的方式，缺点是，要注册很多的对象（<strong>我们尝试写写这种方式</strong>）</p>
+<h5 id="项目重构"><a href="#项目重构" class="headerlink" title="项目重构"></a>项目重构</h5><ul>
+<li><p>项目由于业务需求越来越大，不同项目的功能想相互迁移变的越来越难，经过查阅大量文章，推动项目组件化，分成基础组件层、业务组件层、业务module层，从下往上依赖，module是不同的业务，如社区、还款等，方便迁移并且可以独立运行。</p>
+</li>
+<li><p>传递数据是通过scheme，scheme是一种页面内跳转协议，通过定义自己的scheme协议，可以非常方便跳转app中的各个页面：通过scheme协议，服务器可以定制化告诉App跳转那个页面，可以通过通知栏消息定制化跳转页面，可以通过H5页面跳转指定页面。</p>
+</li>
+<li><p>基础组件层：<br>  底层使用的库和封装的一些工具库（libs），比如okhttp,rxjava,rxandroid,glide、相机、照片等</p>
+</li>
+<li><p>业务组件层：<br>  与业务相关，封装第三方sdk，比如封装后的支付等、自定义view、工具类</p>
+</li>
+<li><p>业务模块层：<br>  按照业务划分模块，比如说还款模块，社区模块等</p>
+<pre><code class="hljs">&lt;intent-filter&gt;
+              &lt;action android:name=&quot;android.intent.action.VIEW&quot; /&gt;
+
+              &lt;category android:name=&quot;android.intent.category.DEFAULT&quot; /&gt;
+              &lt;category android:name=&quot;android.intent.category.BROWSABLE&quot; /&gt;
+
+              &lt;data android:scheme=&quot;qianbaoguanjia80e856566a23d&quot; /&gt;
+          &lt;/intent-filter&gt;
+</code></pre>
+<p>  Intent intent &#x3D; new Intent(Intent.ACTION_VIEW,<br>  Uri.parse(“qianbaoguanjia80e856566a23d:&#x2F;&#x2F;brushcard?goWhere&#x3D;” + “1”));<br>  startActivity(intent);</p>
+<pre><code class="hljs">     Intent intent = getIntent();
+      String action = intent.getAction();
+      if (Intent.ACTION_VIEW.equals(action)) &#123;
+
+          Uri uri = intent.getData();
+          if (uri != null) &#123;
+              String dataString = intent.getDataString();
+              Log.d(&quot;Alex&quot;, &quot;dataString:&quot; + dataString);
+
+              String host = uri.getHost();//从哪来
+              if (host.equals(&quot;brushcard&quot;)) &#123;
+                  String goWhere = uri.getQueryParameter(&quot;goWhere&quot;);//到哪去
+                  if (goWhere.equals(&quot;1&quot;)) &#123;
+                      return;
+                  &#125;
+              &#125;
+              return;
+</code></pre>
+</li>
+</ul>
+<h3 id="插件化"><a href="#插件化" class="headerlink" title="插件化"></a>插件化</h3><p>减少体积、添加功能<br>提高打开速度（多个dex，效果不理想）<br>为什么有反射：private防不住的，不是限制做坏事，是限制不小心写错了<br>把插件apk放在asset里，或者网络下载，保存在本地，可以通过dexClassLoader加载<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%83%AD%E4%BF%AE%E5%A4%8D%E3%80%81%E6%8F%92%E4%BB%B6%E5%8C%96%E3%80%81%E7%BB%84%E4%BB%B6%E5%8C%96.resources/2023/09/15/18-49-57-959a108dc14d4ede457274785e93557a-QQ%E6%88%AA%E5%9B%BE20191220155257-00878f.png" srcset="/img/loading.gif" lazyload alt="QQ截图20191220155257"></p>
+<pre><code class="hljs">public class MainActivity extends AppCompatActivity &#123;
+
+
+  @Override
+  protected void onCreate(Bundle savedInstanceState) &#123;
+    super.onCreate(savedInstanceState);
+    setContentView(R.layout.activity_main);
+
+    File apk = new File(getCacheDir() + &quot;/plugin-debug.apk&quot;);
+    try (Source source = Okio.source(getAssets().open(&quot;plugin-debug.apk&quot;));
+         BufferedSink sink = Okio.buffer(Okio.sink(apk))) &#123;
+      sink.writeAll(source);
+    &#125; catch (IOException e) &#123;
+      e.printStackTrace();
+    &#125;
+    DexClassLoader classLoader = new DexClassLoader(apk.getPath(), getCacheDir().getPath(), null, null);
+    try &#123;
+      Class utilsClass = classLoader.loadClass(&quot;com.demo.pluginnable_plugin.Utils&quot;);
+      Constructor utilsConstructor = utilsClass.getDeclaredConstructors()[0];
+      //   utilsConstructor.setAccessible(true); //反射用法需要
+      Object utils = utilsConstructor.newInstance();
+      Method shoutMethod = utilsClass.getDeclaredMethod(&quot;shout&quot;);
+      //    shoutMethod.setAccessible(true);
+      shoutMethod.invoke(utils);
+    &#125; catch (IllegalAccessException e) &#123;
+      e.printStackTrace();
+    &#125; catch (InstantiationException e) &#123;
+      e.printStackTrace();
+    &#125; catch (NoSuchMethodException e) &#123;
+      e.printStackTrace();
+    &#125; catch (InvocationTargetException e) &#123;
+      e.printStackTrace();
+    &#125; catch (ClassNotFoundException e) &#123;
+      e.printStackTrace();
+    &#125;
+
+    Intent intent = new Intent();//打不开
+    intent.setClassName(this, &quot;com.hencoder.a37_pluginnable_plugin.SecondActivity&quot;);
+    startActivity(intent);
+  &#125;
+&#125;
+</code></pre>
+<p>动态加载其他apk的activity，可以设置个代理类，因为一开始是不知道要启动的名字是叫什么的<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%83%AD%E4%BF%AE%E5%A4%8D%E3%80%81%E6%8F%92%E4%BB%B6%E5%8C%96%E3%80%81%E7%BB%84%E4%BB%B6%E5%8C%96.resources/2023/09/15/18-49-57-1d77e0a5d9d2cc3928337e4240560cb9-unknown_filename.8-bd7ba6.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.8"></p>
+<pre><code class="hljs">public class ProxyActivity extends AppCompatActivity &#123;
+  Object realActivity;
+
+
+//  realActivity = dexClassLoader.loadClass(???);
+
+
+  @Override
+  protected void onCreate(@Nullable Bundle savedInstanceState) &#123;
+    super.onCreate(savedInstanceState);
+//    realActivity.onCreate(savedInstanceState);
+  &#125;
+
+
+  @Override
+  protected void onStart() &#123;
+    super.onStart();
+//    realActivity.onStart();
+  &#125;
+
+  //动态加载asset\resour（主要是图片）
+  @Override
+  public Resources getResources() &#123;
+    return new Resources(getAssets(), super.getResources().getDisplayMetrics(), super.getResources().getConfiguration());
+  &#125;
+
+
+  private AssetManager createAssetManager(String dexPath) &#123;
+    try &#123;
+      AssetManager assetManager = AssetManager.class.newInstance();
+      Method addAssetPath = assetManager.getClass().getMethod(&quot;addAssetPath&quot;, String.class);
+      addAssetPath.invoke(assetManager, dexPath);
+      return assetManager;
+    &#125; catch (Exception e) &#123;
+      e.printStackTrace();
+      return null;
+    &#125;
+  &#125;
+
+
+  /*private Resources createResources(AssetManager assetManager) &#123;
+    Resources superRes = mContext.getResources();
+    Resources resources = new Resources(assetManager, superRes.getDisplayMetrics(), superRes.getConfiguration());
+    return resources;
+  &#125;*/
+&#125;
+</code></pre>
+<h4 id="资源文件"><a href="#资源文件" class="headerlink" title="资源文件"></a>资源文件</h4><p>Resources类就像公司的销售，而AssetManager类就像公司的研发。销售对外，研发基本不对外。<br>如图7-1所示，我们看到Resources类对外提供getString, getText， getDrawable 等各种方法，但其实都是间接调用AssetManager的私有方法，AssetManager 负责向Android系统要资源。</p>
+<p>使用 AssetManager addAssetPath 方法，把所有插件的资源都合并到宿主的资源中<br>AssetManager中有一个addAssetPath(String path) 方法，App 启动的时候，会把当前apk的路径传进去，接下来AssetManager和Resources就能访问当前apk的所有资源了。addAssetPath方法是不对外的，我们可以通过反射的方式，把插件apk的路径传人这个方法，那么就把插件资源添加到一个资源池中了。当前App的资源已经在这个池子中了。<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%83%AD%E4%BF%AE%E5%A4%8D%E3%80%81%E6%8F%92%E4%BB%B6%E5%8C%96%E3%80%81%E7%BB%84%E4%BB%B6%E5%8C%96.resources/2023/09/15/18-49-57-d2f3fa277380d6d72af2cad68c99165b-unknown_filename.4-340dd2.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.4"><br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%83%AD%E4%BF%AE%E5%A4%8D%E3%80%81%E6%8F%92%E4%BB%B6%E5%8C%96%E3%80%81%E7%BB%84%E4%BB%B6%E5%8C%96.resources/2023/09/15/18-49-57-83354f314f6a6f00d553e7ed9f2394b6-unknown_filename.5-8bae3b.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.5"></p>
+<h3 id="ClassLoader"><a href="#ClassLoader" class="headerlink" title="ClassLoader"></a>ClassLoader</h3><p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%83%AD%E4%BF%AE%E5%A4%8D%E3%80%81%E6%8F%92%E4%BB%B6%E5%8C%96%E3%80%81%E7%BB%84%E4%BB%B6%E5%8C%96.resources/2023/09/15/18-49-57-1773bde8e552cb02c3c2b9b615f41295-unknown_filename.2-c24a95.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.2"><br><strong>ClassLoader有PathClassLoader、DexClassLoader俩个子类</strong><br>对比 PathClassLoader 只能加载已经安装应用的 dex 或 apk 文件，DexClassLoader 则没有此限制，可以从 SD 卡上加载包含 class.dex 的 .jar 和 .apk 文件</p>
+<p>PathClassLoader 和 DexClassLoader 都能加载外部的 dex／apk，只不过<strong>区别是 DexClassLoader 可以指定 optimizedDirectory</strong>，也就是 dex2oat 的产物 .odex （优化后的dex文件）存放的位置，而 PathClassLoader 只能使用系统默认位置。但是这个 optimizedDirectory 在 Android 8.0 以后也被舍弃了，只能使用系统默认的位置了。<br>DEX 文件同级目录下添加一个 oat&#x2F; 文件作为 .odex 的存储目录。<br>我们可以指定到 getCacheDir().getPath()</p>
+<ul>
+<li>对于App而言，Apk文件中有一个classes.dex文件，那么这个dex就是Apk的主dex,是通过PathClassLoader加载的。</li>
+<li>在App的Activity 中，通过getClassLoader获取到的是PathClassLoader,它的父类是BootClassLoader。<br>  <img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%83%AD%E4%BF%AE%E5%A4%8D%E3%80%81%E6%8F%92%E4%BB%B6%E5%8C%96%E3%80%81%E7%BB%84%E4%BB%B6%E5%8C%96.resources/2023/09/15/18-49-57-02948fd9b34281a931a019cd061f9bb3-unknown_filename.3-007fef.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.3"></li>
+</ul>
+<h4 id="loadClass-的类加载过程"><a href="#loadClass-的类加载过程" class="headerlink" title="loadClass() 的类加载过程"></a>loadClass() 的类加载过程</h4><p><strong>双亲委托机制</strong><br>宏观上：是⼀个带缓存的、从上到下的加载过程（即网上所说的「双亲委托机制」）<br>这样做的意义是为了性能，每次加载都会消耗时间，但如果父亲加载过，就可以直接拿来使用了。<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%83%AD%E4%BF%AE%E5%A4%8D%E3%80%81%E6%8F%92%E4%BB%B6%E5%8C%96%E3%80%81%E7%BB%84%E4%BB%B6%E5%8C%96.resources/2023/09/15/18-49-57-dcb489261f7dff4d3db54abb729db1eb-unknown_filename.1-4e2a34.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.1"></p>
+<pre><code class="hljs">  protected Class&lt;?&gt; loadClass(String name, boolean resolve)
+        throws ClassNotFoundException
+    &#123;
+            // First, check if the class has already been loaded
+            Class&lt;?&gt; c = findLoadedClass(name);
+            if (c == null) &#123;
+                try &#123;
+                    if (parent != null) &#123;
+                        c = parent.loadClass(name, false);
+                    &#125; else &#123;
+                        c = findBootstrapClassOrNull(name);
+                    &#125;
+                &#125; catch (ClassNotFoundException e) &#123;
+                    // ClassNotFoundException thrown if class not found
+                    // from the non-null parent class loader
+                &#125;
+
+
+                if (c == null) &#123;
+                    // If still not found, then invoke findClass in order
+                    // to find the class.
+                    c = findClass(name);
+                &#125;
+            &#125;
+            return c;
+    &#125;
+</code></pre>
+<h3 id="热更新"><a href="#热更新" class="headerlink" title="热更新"></a>热更新</h3><p>热修复（热更新）主要用来修复代码、修复bug，而插件化是增加新的功能类或者是资源文件。<br><strong>应用场景</strong><br>当一个App发布之后，突然发现了一个严重bug需要进行紧急修复，你得：重新打包App、测试、向各个应用市场和渠道换包、提示用户升级、用户下载、覆盖安装。有时候仅仅是为了修改了一行代码，也要付出巨大的成本进行换包和重新发布。</p>
+<p><strong>热修复和插件化的原理主要是操作ClassLoader</strong></p>
+<ul>
+<li>Java程序（class文件）并不是本地的可执行程序。当运行Java程序时，首先运行JVM（Java虚拟机），然后再把Java class文件加载到JVM里头运行，负责加载Java class的这部分就叫做Class Loader（类加载器）。</li>
+<li>一个ClassLoader可以包含多个dex文件，每个dex文件是一个Element（元素），多个dex文件排列成一个有序的数组dexElements，当找类的时候，会按顺序遍历dex文件，然后从当前遍历的dex文件中找类，如果找不到从下一个dex文件继续查找，如果找到类则返回。</li>
+<li>然后就可以做一些事情，比如，在这个数组的第一个元素放置我们的补丁，里面包含修复过的类，这样的话，当遍历findClass的时候，后面的就会忽略。</li>
+<li>热更新的关键在于，把补丁dex文件加载放进一个Element，并且插入到dexElements这个数组的前面(插入到后面的话会被忽略掉)</li>
+</ul>
+<p><strong>热更更新和插件化的区别</strong><br>区别有两点</p>
+<ol>
+<li>插件化的内容在原 App 中没有，而热更新是原 App 中的内容做了改动</li>
+<li>插件化在代码中有固定的入口，而热更新则可能改变任何一个位置的代码，热更新的原理ClassLoader 的 dex 文件替换，直接修改字节码。</li>
+</ol>
+<p><strong>tinker</strong></p>
+<p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/212121671ec6">好文章</a><br>有Git才有tinkerID，有还报错的话本地提交一次。<br>需要改造Application，不支持AndroidDagger<br><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/63fcffa3d4b2">https://www.jianshu.com/p/63fcffa3d4b2</a><br>坑太多，建议使用 <a target="_blank" rel="noopener" href="http://www.tinkerpatch.com/">http://www.tinkerpatch.com/</a></p>
+<p>tinker将old.apk和new.apk做了diff，拿到patch.dex，然后将patch.dex与本机中apk的classes.dex做了合并，生成新的classes.dex，运行时通过反射将合并后的dex文件放置在加载的dexElements数组的前面。</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%83%AD%E4%BF%AE%E5%A4%8D%E3%80%81%E6%8F%92%E4%BB%B6%E5%8C%96%E3%80%81%E7%BB%84%E4%BB%B6%E5%8C%96.resources/2023/09/15/18-49-57-d52c46072c8e7043e6332cff6c41c212-unknown_filename-f5841f.png" srcset="/img/loading.gif" lazyload alt="unknown_filename"><br>创建一个新的dexElements，把补丁的每个DexElement放到新的数组里，把旧的都拷贝到新的后面<br>newClassLoader.pathList.dexElements</p>
+<pre><code class="hljs">public class HotfixApplication extends Application &#123;
+  File apk;
+
+  @Override
+  protected void attachBaseContext(Context base) &#123;
+    super.attachBaseContext(base);
+
+    apk = new File(getCacheDir() + &quot;/hotfix.dex&quot;);
+    if (apk.exists()) &#123;
+      try &#123;
+        ClassLoader classLoader = getClassLoader();
+        Class loaderClass = BaseDexClassLoader.class;
+        Field pathListField = loaderClass.getDeclaredField(&quot;pathList&quot;);
+        pathListField.setAccessible(true);
+        Object pathListObject = pathListField.get(classLoader); // getClassLoader().pathList
+
+        Class pathListClass = pathListObject.getClass();
+        Field dexElementsField = pathListClass.getDeclaredField(&quot;dexElements&quot;);
+        dexElementsField.setAccessible(true);
+        PathClassLoader newClassLoader = new PathClassLoader(apk.getPath(), null);
+        Object newPathListObject = pathListField.get(newClassLoader); // newClassLoader.pathList
+        Object newDexElementsObject = dexElementsField.get(newPathListObject); // newClassLoader.pathList.dexElements
+
+        Object dexElementsObject = dexElementsField.get(pathListObject); // getClassLoader().pathList.dexElements
+
+        int oldLength = Array.getLength(dexElementsObject);
+        int newLength = Array.getLength(newDexElementsObject);
+        Object concatDexElementsObject = Array.newInstance(dexElementsObject.getClass().getComponentType(), oldLength + newLength);
+        for (int i = 0; i &lt; newLength; i++) &#123;
+          Array.set(concatDexElementsObject, i, Array.get(newDexElementsObject, i));
+        &#125;
+        for (int i = 0; i &lt; oldLength; i++) &#123;
+          Array.set(concatDexElementsObject, newLength + i, Array.get(dexElementsObject, i));
+        &#125;
+
+        dexElementsField.set(pathListObject, concatDexElementsObject);
+      &#125; catch (NoSuchFieldException | IllegalAccessException e) &#123;
+        e.printStackTrace();
+      &#125;
+    &#125;
+  &#125;
+&#125;
+
+
+
+public class MainActivity extends AppCompatActivity &#123;
+  TextView titleTv;
+  Button showTitleBt;
+  Button hotfixBt;
+  Button removeHotfixBt;
+  Button killSelfBt;
+  File apk;
+
+  @Override
+  protected void onCreate(Bundle savedInstanceState) &#123;
+
+    super.onCreate(savedInstanceState);
+    setContentView(R.layout.activity_main);
+
+    titleTv = findViewById(R.id.titleTv);
+    showTitleBt = findViewById(R.id.showTitleBt);
+    hotfixBt = findViewById(R.id.hotfixBt);
+    removeHotfixBt = findViewById(R.id.removeHotfixBt);
+    killSelfBt = findViewById(R.id.killSelfBt);
+
+    apk = new File(getCacheDir() + &quot;/hotfix.dex&quot;);
+
+    View.OnClickListener onClickListener = new View.OnClickListener() &#123;
+      @Override
+      public void onClick(final View v) &#123;
+        switch (v.getId()) &#123;
+          case R.id.showTitleBt:
+            Title title = new Title();
+            titleTv.setText(title.getTitle());
+            break;
+          case R.id.hotfixBt:
+            try (Source source = Okio.source(getAssets().open(&quot;apk/hotfix.dex&quot;));
+                 BufferedSink sink = Okio.buffer(Okio.sink(apk))) &#123;
+              sink.writeAll(source);
+            &#125; catch (IOException e) &#123;
+              e.printStackTrace();
+            &#125;
+//            OkHttpClient client = new OkHttpClient();
+//            Request request = new Request.Builder()
+//                .url(&quot;https://api.hencoder.com/patch/upload/hotfix.dex&quot;)
+//                .get()
+//                .build();
+//            client.newCall(request)
+//                .enqueue(new Callback() &#123;
+//                  @Override
+//                  public void onFailure(@NotNull Call call, @NotNull IOException e) &#123;
+//                  &#125;
+//
+//                  @Override
+//                  public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException &#123;
+//                    try &#123;
+//                      FileOutputStream fos = new FileOutputStream(apk);
+//                      fos.write(response.body().bytes());
+//                      fos.close();
+//                    &#125; catch (Exception e) &#123;
+//                      e.printStackTrace();
+//                    &#125;
+//                    v.post(new Runnable() &#123;
+//                      @Override
+//                      public void run() &#123;
+//                        Toast.makeText(MainActivity.this, &quot;加载补丁成功&quot;, Toast.LENGTH_SHORT).show();
+//                      &#125;
+//                    &#125;);
+//                  &#125;
+//                &#125;);
+            break;
+          case R.id.removeHotfixBt:
+            if (apk.exists()) &#123;
+              apk.delete();
+            &#125;
+            break;
+          case R.id.killSelfBt:
+            android.os.Process.killProcess(android.os.Process.myPid());
+            break;
+        &#125;
+      &#125;
+    &#125;;
+
+    showTitleBt.setOnClickListener(onClickListener);
+    hotfixBt.setOnClickListener(onClickListener);
+    removeHotfixBt.setOnClickListener(onClickListener);
+    killSelfBt.setOnClickListener(onClickListener);
+  &#125;
+&#125;
+
+
+
+def patchPath = &#39;com/hencoder/a38_hotfix/Title&#39;
+
+task hotfix &#123;
+    doLast &#123;
+//        exec &#123;
+//            commandLine &#39;rm&#39;, &#39;-r&#39;, &#39;./build/patch&#39;
+//        &#125;
+//        exec &#123;
+//            commandLine &#39;mkdir&#39;, &#39;./build/patch&#39;
+//        &#125;
+        exec &#123;
+            commandLine &#39;javac&#39;, &quot;./src/main/java/$&#123;patchPath&#125;.java&quot;, &#39;-d&#39;, &#39;./build/patch&#39;
+        &#125;
+        exec &#123;
+            commandLine &#39;C:\\Users\\41009\\AppData\\Local\\Android\\Sdk\\build-tools\\29.0.2\\d8.bat&#39;, &quot;./build/patch/$&#123;patchPath&#125;.class&quot;, &#39;--output&#39;, &#39;./build/patch&#39;
+        &#125;
+        exec &#123;
+            commandLine &#39;mv&#39;, &quot;./build/patch/classes.dex&quot;, &#39;./build/patch/hotfix.dex&#39;
+        &#125;
+    &#125;
+&#125;
+</code></pre>
+<h3 id="AndFix"><a href="#AndFix" class="headerlink" title="AndFix"></a>AndFix</h3><p>原理：<br>方法的替换，把有bug的方法替换成补丁文件中的方法。</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%83%AD%E4%BF%AE%E5%A4%8D%E3%80%81%E6%8F%92%E4%BB%B6%E5%8C%96%E3%80%81%E7%BB%84%E4%BB%B6%E5%8C%96.resources/2023/09/15/18-49-57-d2717d7c63a8224a518e62ebd51bc7f0-Image-bcf7fb.jpg" srcset="/img/loading.gif" lazyload alt="Image"></p>
+<p><strong>优点</strong>：<br>重大bug，需要紧急修复<br>可以下次迭代修复的bug<br>影响用户体验的行为<br>无需重启</p>
+<p><strong>缺点</strong>：<br>无法添加新类(内部类也不行)和新的字段、新的方法<br>资源文件无法替换   试了下换原有的图片可以，但是新增的不行<br>不能修改xml布局文件   不能<br>加固后的包补丁无法使用，如果要加固，需要加固前的包来生成补丁，不过这样生成的补丁也很容易破解<br>不能对同一个方法修复两次，否则App根本跑不起来<br>对加载过的补丁文件要做名字修改 如果名字重叠 就不会再次加载</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%83%AD%E4%BF%AE%E5%A4%8D%E3%80%81%E6%8F%92%E4%BB%B6%E5%8C%96%E3%80%81%E7%BB%84%E4%BB%B6%E5%8C%96.resources/2023/09/15/18-49-57-ef8df50043de69c909b3b348173a9b0b-Image.3-627eb5.png" srcset="/img/loading.gif" lazyload alt="Image.3"></p>
+<p><strong>补丁加载的时机</strong><br>可以放在自定义Application的onCreate方法中，也可以放在button的点击事件中，也可以放在监听网络变化的广播中。<br>加载过的补丁会被保存到data&#x2F;packagename&#x2F;files&#x2F;apatch_opt目录下，所以下载过来的补丁用过一次就可以删除了。</p>
+<p>操作：<br>通过命令生成补丁<br> -a,–alias <alias>     keystore entry alias.<br> -e,–epassword &lt;***&gt;   keystore entry password.<br> -f,–from <loc>        new Apk file path.<br> -k,–keystore <loc>    keystore path.<br> -n,–name <name>       patch name.<br> -o,–out <dir>         output dir.<br> -p,–kpassword &lt;***&gt;   keystore password.<br> -t,–to <loc>          old Apk file path.</p>
+<p>apkpatch -f D:\addfixUtils\2.apk -t D:\addfixUtils\1.apk -o D:\addfixUtils\output -k D:\addfixUtils\key.jks -p 000000 -a liuyu -e 000000</p>
+<p>其他<br>如果本地保存了多个补丁，那么AndFix会按照补丁生成的时间顺序加载补丁。具体是根据.apatch文件中的PATCH.MF的字段Created-Time。</p>
+<p>刚开始做的demo中，每次产生的apatch文件用的名字都是相同的，结果导致只有第一次的补丁能生效。看了源码后发现只有每次名字不同才能加载，log中应该也有提示，但是没注意到。</p>
+<p>由于原理类似dexposed,所以目前发现activity的生命周期方法中不要直接hotfix.推荐在initview&#x2F;initdata之类的方法中进行.</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%83%AD%E4%BF%AE%E5%A4%8D%E3%80%81%E6%8F%92%E4%BB%B6%E5%8C%96%E3%80%81%E7%BB%84%E4%BB%B6%E5%8C%96.resources/2023/09/15/18-49-57-15c550c8d2ad51ca4061a52ab8968183-Image.1-fffad7.jpg" srcset="/img/loading.gif" lazyload alt="Image.1"></p>
+<p>常见问题<a target="_blank" rel="noopener" href="http://baichuan.taobao.com/docs/doc.htm?spm=a3c0d.7629140.0.0.Tokj1O&treeId=234&articleId=105843&docType=1">http://baichuan.taobao.com/docs/doc.htm?spm=a3c0d.7629140.0.0.Tokj1O&amp;treeId=234&amp;articleId=105843&amp;docType=1</a></p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%83%AD%E4%BF%AE%E5%A4%8D%E3%80%81%E6%8F%92%E4%BB%B6%E5%8C%96%E3%80%81%E7%BB%84%E4%BB%B6%E5%8C%96.resources/2023/09/15/18-49-57-4623ba0ad503b9577b793569ab28422f-Image.2-5459d7.jpg" srcset="/img/loading.gif" lazyload alt="Image.2"></p>
+<p>阿里百川<br><a target="_blank" rel="noopener" href="http://www.tuicool.com/articles/viEJfeE">http://www.tuicool.com/articles/viEJfeE</a><br>主要好处是可以对补丁很好的管理，例如停止发布、继续发布、发布回滚等等</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Android/" class="category-chain-item">Android</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>热修复、插件化、组件化</div>
+      <div>http://peiniwan.github.io/2019/12/64936ff4eee8.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>六月的雨</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2019年12月23日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2020/01/a5feb953a79c.html" title="泛型">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">泛型</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2019/12/871a6f949ea1.html" title="Android内存优化">
+                        <span class="hidden-mobile">Android内存优化</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

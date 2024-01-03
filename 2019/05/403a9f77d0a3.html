@@ -1,0 +1,892 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="六月的雨">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="CoordinatorLayout &amp; ConstraintLayoutCoordinatorLayoutactivity_answer_detail.xml 自定义Behavior https:&#x2F;&#x2F;www.jianshu.com&#x2F;p&#x2F;b987fad8fcb4CoordinatorLayout介绍 https:&#x2F;&#x2F;www.jianshu.com&#x2F;p&#x2F;1edeff139de5BottomSh">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CoordinatorLayout &amp; ConstraintLayout">
+<meta property="og:url" content="http://peiniwan.github.io/2019/05/403a9f77d0a3.html">
+<meta property="og:site_name" content="六月的雨的博客">
+<meta property="og:description" content="CoordinatorLayout &amp; ConstraintLayoutCoordinatorLayoutactivity_answer_detail.xml 自定义Behavior https:&#x2F;&#x2F;www.jianshu.com&#x2F;p&#x2F;b987fad8fcb4CoordinatorLayout介绍 https:&#x2F;&#x2F;www.jianshu.com&#x2F;p&#x2F;1edeff139de5BottomSh">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/CoordinatorLayout_&_ConstraintLayout.resources/2023/09/18/09-58-10-0df5c84f604e535d1b95327da083b294-unknown_filename.4-b55b96.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/CoordinatorLayout_&_ConstraintLayout.resources/2023/09/18/09-58-10-4590717f2cef02318b473528ace3f4db-unknown_filename.5-0a12c2.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/CoordinatorLayout_&_ConstraintLayout.resources/2023/09/18/09-58-10-f96ed6aa92450fb1a461c5f1352e23b3-unknown_filename.1-87d986.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/CoordinatorLayout_&_ConstraintLayout.resources/2023/09/18/09-58-10-7c340e0b7554930c2eec01aa7739712f-unknown_filename.2-77be8e.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/CoordinatorLayout_&_ConstraintLayout.resources/2023/09/18/09-58-10-cde50056a2bacdc66d0e5014299ed451-unknown_filename.3-03ada7.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/CoordinatorLayout_&_ConstraintLayout.resources/2023/09/18/09-58-10-63bcbfce2c66b2bc0a7630056bbf82ae-unknown_filename.6-570ecc.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/CoordinatorLayout_&_ConstraintLayout.resources/2023/09/18/09-58-10-f7365e8b25cdf59e435d4f52f1189910-QQ%E6%88%AA%E5%9B%BE20191026153932-81acb8.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/CoordinatorLayout_&_ConstraintLayout.resources/2023/09/18/09-58-10-8bcf558119843ef1f0bfb0f8afdfd45b-unknown_filename-a03917.png">
+<meta property="article:published_time" content="2019-05-19T03:03:19.000Z">
+<meta property="article:modified_time" content="2023-12-22T07:30:06.469Z">
+<meta property="article:author" content="六月的雨">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/CoordinatorLayout_&_ConstraintLayout.resources/2023/09/18/09-58-10-0df5c84f604e535d1b95327da083b294-unknown_filename.4-b55b96.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>CoordinatorLayout &amp; ConstraintLayout - 六月的雨的博客</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"peiniwan.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>六月的雨的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="CoordinatorLayout &amp; ConstraintLayout"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2019-05-19 11:03" pubdate>
+          2019年5月19日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.9k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          16 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">CoordinatorLayout &amp; ConstraintLayout</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="CoordinatorLayout-ConstraintLayout"><a href="#CoordinatorLayout-ConstraintLayout" class="headerlink" title="CoordinatorLayout &amp; ConstraintLayout"></a>CoordinatorLayout &amp; ConstraintLayout</h1><h2 id="CoordinatorLayout"><a href="#CoordinatorLayout" class="headerlink" title="CoordinatorLayout"></a>CoordinatorLayout</h2><p>activity_answer_detail.xml</p>
+<p>自定义Behavior</p>
+<p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/b987fad8fcb4">https://www.jianshu.com/p/b987fad8fcb4</a><br>CoordinatorLayout介绍</p>
+<p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/1edeff139de5">https://www.jianshu.com/p/1edeff139de5</a><br>BottomSheetBehavior</p>
+<p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/04711494868e/">https://www.jianshu.com/p/04711494868e/</a></p>
+<h2 id="ConstraintLayout"><a href="#ConstraintLayout" class="headerlink" title="ConstraintLayout"></a>ConstraintLayout</h2><h3 id="好处"><a href="#好处" class="headerlink" title="好处"></a>好处</h3><p><strong>用RelativeLayout可以解决问题，为什么还要使用ConstraintLayout呢？</strong><br>因为ConstraintLayout使用起来比RelativeLayout更灵活，性能更出色！<br>还有一点就是ConstraintLayout可以按照比例约束控件位置和尺寸，能够更好地适配屏幕大小不同的机型。可以角度、距离定位</p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/guolin_blog/article/details/53122387">拖动写UI</a></p>
+<p><a target="_blank" rel="noopener" href="https://juejin.cn/post/7101491983494938655">使用场景</a></p>
+<h3 id="注意的点"><a href="#注意的点" class="headerlink" title="注意的点"></a>注意的点</h3><ul>
+<li>找准布局基准元素，一般是界面的固定不变的业务元素，其它组件，根据其约束来进行布局</li>
+<li>使用Group等虚拟布局组件来简化布局代码</li>
+<li>还是有缺点的，因为控件相互依赖很强，牵一发而动全身，后期修改UI，维护起来很麻烦，但是瑕不掩瑜吧<br>  答：<strong>多实用辅助线 guideline</strong> 把 这样 相对来说会很好点。</li>
+<li>这个布局不存在谁先写；</li>
+<li>如何居中:底部和顶部都和另一个控件平齐就是居中</li>
+<li>如果不好写，可以考虑Guideline、Barrier等等，在辅助线左右</li>
+<li>app:layout_constraintHorizontal_weight类似：LinearLayout和weight</li>
+<li>goneMargin 主要用于约束的控件可见性被设置为gone的时候使用的margin值</li>
+<li>layout_constraintHorizontal_bias 水平偏移，假如赋值为0，则TextView1在布局的最左侧，假如赋值为1，则TextView1在布局的最右侧，假如假如赋值为0.5，则水平居中</li>
+<li>使用 0dp (MATCH_CONSTRAINT)<br>  官方不推荐在ConstraintLayout中使用match_parent，可以设置 0dp (MATCH_CONSTRAINT) 配合约束代替match_parent。<br>  因为ConstraintLayout的一大特点就是为了解决布局嵌套，既然没有了布局嵌套，那么match parent也就没有多大意义了。</li>
+<li>当宽或高至少有一个尺寸被设置为0dp时，可以通过属性layout_constraintDimensionRatio 设置宽高比。app:layout_constraintDimensionRatio&#x3D;”1:1”</li>
+<li>自动添加约束<br>  <img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/CoordinatorLayout_&_ConstraintLayout.resources/2023/09/18/09-58-10-0df5c84f604e535d1b95327da083b294-unknown_filename.4-b55b96.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.4"></li>
+<li>在当控件有自己设置的宽度，例如warp_content、固定值时，我们为控件添加的都是约束“Constraint”，这个约束有点像橡皮筋一样会拉这个控件，但是并不会改变控件的尺寸<br>  <img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/CoordinatorLayout_&_ConstraintLayout.resources/2023/09/18/09-58-10-4590717f2cef02318b473528ace3f4db-unknown_filename.5-0a12c2.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.5"></li>
+</ul>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/CoordinatorLayout_&_ConstraintLayout.resources/2023/09/18/09-58-10-f96ed6aa92450fb1a461c5f1352e23b3-unknown_filename.1-87d986.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.1"><br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/CoordinatorLayout_&_ConstraintLayout.resources/2023/09/18/09-58-10-7c340e0b7554930c2eec01aa7739712f-unknown_filename.2-77be8e.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.2"></p>
+<h3 id="辅助工具"><a href="#辅助工具" class="headerlink" title="辅助工具"></a>辅助工具</h3><h4 id="Barrier"><a href="#Barrier" class="headerlink" title="Barrier"></a>Barrier</h4><p>避免布局嵌套<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/CoordinatorLayout_&_ConstraintLayout.resources/2023/09/18/09-58-10-cde50056a2bacdc66d0e5014299ed451-unknown_filename.3-03ada7.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.3"></p>
+<h4 id="Guideline"><a href="#Guideline" class="headerlink" title="Guideline"></a>Guideline</h4><p>android:orientation 垂直vertical，水平horizontal<br>layout_constraintGuide_begin 开始位置<br>layout_constraintGuide_end 结束位置<br>layout_constraintGuide_percent 距离顶部的百分比(orientation &#x3D; horizontal时则为距离左边)。</p>
+<p>不会显示再界面上，和 Barrier 区别：Barrier作用于几个控件，设置屏障。 Guideline直接就是比例或距离</p>
+<h4 id="Group"><a href="#Group" class="headerlink" title="Group"></a>Group</h4><p>Group可以把多个控件归为一组，方便隐藏或显示一组控件<br>app:constraint_referenced_ids</p>
+<h4 id="Placeholder"><a href="#Placeholder" class="headerlink" title="Placeholder"></a>Placeholder</h4><p>Placeholder指的是占位符。在Placeholder中可使用setContent()设置另一个控件的id，使这个控件移动到占位符的位置。改变view位置。</p>
+<h4 id="Flow"><a href="#Flow" class="headerlink" title="Flow"></a>Flow</h4><h4 id="Space"><a href="#Space" class="headerlink" title="Space"></a>Space</h4><p><strong>android.widget.Space</strong><br>在ConstraintLayout中，虽然不能使用负-margin的方式来完成传统布局中的一些错位的效果，但是可以借助Space来实现类似的功能，例如借助Space来实现左边TextView在右边TextView某一百分比（或者是dp）对齐的场景。<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/CoordinatorLayout_&_ConstraintLayout.resources/2023/09/18/09-58-10-63bcbfce2c66b2bc0a7630056bbf82ae-unknown_filename.6-570ecc.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.6"></p>
+<pre><code class="hljs">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;androidx.constraintlayout.widget.ConstraintLayout 
+  xmlns:androxmlns:app=&quot;http://schemas.android.com/apk/res-auto&quot;
+  xmlns:tools=&quot;http://schemas.android.com/tools&quot;
+  android:layout_width=&quot;match_parent&quot;
+  android:layout_height=&quot;match_parent&quot;&gt;
+
+  &lt;TextView
+      android:android:layout_width=&quot;200dp&quot;
+      android:layout_height=&quot;wrap_content&quot;
+      android:layout_marginTop=&quot;32dp&quot;
+      android:layout_marginEnd=&quot;32dp&quot;
+      android:background=&quot;#bebebe&quot;
+      android:text=&quot;TextView&quot;
+      app:layout_constraintEnd_toEndOf=&quot;parent&quot;
+      app:layout_constraintTop_toTopOf=&quot;parent&quot; /&gt;
+
+  &lt;Space
+      android:android:layout_width=&quot;wrap_content&quot;
+      android:layout_height=&quot;wrap_content&quot;
+      app:layout_constraintEnd_toEndOf=&quot;@+id/textView2&quot;
+      app:layout_constraintHorizontal_bias=&quot;0.2&quot;
+      app:layout_constraintStart_toStartOf=&quot;@+id/textView2&quot;
+      tools:layout_editor_absoluteY=&quot;68dp&quot; /&gt;
+
+  &lt;TextView
+      android:android:layout_width=&quot;wrap_content&quot;
+      android:layout_height=&quot;wrap_content&quot;
+      android:text=&quot;TextView&quot;
+      app:layout_constraintEnd_toStartOf=&quot;@+id/space&quot;
+      tools:layout_editor_absoluteY=&quot;92dp&quot; /&gt;
+  
+&lt;/androidx.constraintlayout.widget.ConstraintLayout&gt;
+</code></pre>
+<p>由于ConstraintLayout不支持负-Margin，所以很多场景下，我们都可以借助Space等辅助元素来实现中转，完成传统布局下通过-Margin实现的效果。</p>
+<h4 id="Layer-Added-in-2-0"><a href="#Layer-Added-in-2-0" class="headerlink" title="Layer (Added in 2.0)"></a>Layer (Added in 2.0)</h4><p>Layer 可以看作是它引用的 view 的边界（可以理解为包含这些 view 的一个 ViewGroup，但是Layer并不是ViewGroup，Layer并不会增加 view 的层级）。另外Layer支持对里面的 view 一起做变换。<br>考虑这么一个场景，如果一个页面里面有部分 view 需要加个背景，使用Layer引用这几个 view，然后给Layer设置背景就可以了。如果不用Layer，只能另外加个 ViewGroup 包住这几个 View 了，这样会增加 view 的层级，不利于性能。避免布局嵌套，可以为一组控件统一设置旋转&#x2F;缩放&#x2F;位移</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/CoordinatorLayout_&_ConstraintLayout.resources/2023/09/18/09-58-10-f7365e8b25cdf59e435d4f52f1189910-QQ%E6%88%AA%E5%9B%BE20191026153932-81acb8.png" srcset="/img/loading.gif" lazyload alt="QQ截图20191026153932"></p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/CoordinatorLayout_&_ConstraintLayout.resources/2023/09/18/09-58-10-8bcf558119843ef1f0bfb0f8afdfd45b-unknown_filename-a03917.png" srcset="/img/loading.gif" lazyload alt="unknown_filename"></p>
+<pre><code class="hljs">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;androidx.constraintlayout.widget.ConstraintLayout xmlns:androxmlns:app=&quot;http://schemas.android.com/apk/res-auto&quot;
+    android:layout_width=&quot;match_parent&quot;
+    android:layout_height=&quot;match_parent&quot;&gt;
+
+    &lt;androidx.constraintlayout.widget.Group
+        android:android:layout_width=&quot;wrap_content&quot;
+        android:layout_height=&quot;wrap_content&quot;
+        android:visibility=&quot;visible&quot;
+        app:constraint_referenced_ids=&quot;iv_back,tv_title,iv_more&quot; /&gt;
+
+    &lt;androidx.constraintlayout.widget.Barrier
+        android:android:layout_width=&quot;wrap_content&quot;
+        android:layout_height=&quot;wrap_content&quot;
+        app:barrierDirection=&quot;bottom&quot;
+        app:constraint_referenced_ids=&quot;iv_back&quot; /&gt;
+
+    &lt;android.widget.Space
+        android:android:layout_width=&quot;0dp&quot;
+        android:layout_height=&quot;10dp&quot;
+        android:layout_marginBottom=&quot;20dp&quot;
+        app:layout_constraintLeft_toLeftOf=&quot;parent&quot;
+        app:layout_constraintRight_toRightOf=&quot;parent&quot;
+        app:layout_constraintTop_toBottomOf=&quot;@+id/iv_back&quot; /&gt;
+
+    &lt;View
+        android:layout_width=&quot;match_parent&quot;
+        android:layout_height=&quot;0dp&quot;
+        android:background=&quot;@android:color/black&quot;
+        app:layout_constraintBottom_toBottomOf=&quot;@+id/space&quot;
+        app:layout_constraintTop_toTopOf=&quot;parent&quot; /&gt;
+
+    &lt;ImageView
+        android:android:layout_width=&quot;60dp&quot;
+        android:layout_height=&quot;60dp&quot;
+        android:layout_marginLeft=&quot;10dp&quot;
+        android:layout_marginTop=&quot;10dp&quot;
+        android:src=&quot;@mipmap/ic_launcher&quot;
+        app:layout_constraintLeft_toLeftOf=&quot;parent&quot;
+        app:layout_constraintTop_toTopOf=&quot;parent&quot; /&gt;
+
+    &lt;TextView
+        android:android:layout_width=&quot;wrap_content&quot;
+        android:layout_height=&quot;wrap_content&quot;
+        android:text=&quot;标题&quot;
+        android:textColor=&quot;@android:color/white&quot;
+        android:textSize=&quot;20sp&quot;
+        app:layout_constraintBottom_toBottomOf=&quot;@id/iv_back&quot;
+        app:layout_constraintLeft_toLeftOf=&quot;parent&quot;
+        app:layout_constraintRight_toRightOf=&quot;parent&quot;
+        app:layout_constraintTop_toTopOf=&quot;@id/iv_back&quot; /&gt;
+
+
+    &lt;ImageView
+        android:android:layout_width=&quot;60dp&quot;
+        android:layout_height=&quot;60dp&quot;
+        android:layout_marginTop=&quot;10dp&quot;
+        android:layout_marginRight=&quot;10dp&quot;
+        android:src=&quot;@mipmap/ic_launcher&quot;
+        app:layout_constraintRight_toRightOf=&quot;parent&quot;
+        app:layout_constraintTop_toTopOf=&quot;parent&quot; /&gt;
+
+    &lt;TextView
+        android:android:layout_width=&quot;wrap_content&quot;
+        android:layout_height=&quot;wrap_content&quot;
+        android:layout_marginLeft=&quot;10dp&quot;
+        android:layout_marginTop=&quot;10dp&quot;
+        android:text=&quot;火影忍者&quot;
+        android:textSize=&quot;30sp&quot;
+        app:layout_constraintLeft_toLeftOf=&quot;parent&quot;
+        app:layout_constraintTop_toBottomOf=&quot;@id/space&quot; /&gt;
+
+    &lt;ImageView
+        android:android:layout_width=&quot;60dp&quot;
+        android:layout_height=&quot;60dp&quot;
+        android:layout_marginLeft=&quot;10dp&quot;
+        android:layout_marginTop=&quot;10dp&quot;
+        android:src=&quot;@mipmap/ic_launcher&quot;
+        app:layout_constraintLeft_toLeftOf=&quot;parent&quot;
+        app:layout_constraintTop_toBottomOf=&quot;@id/tv_star_title&quot; /&gt;
+
+    &lt;TextView
+        android:android:layout_width=&quot;0dp&quot;
+        android:layout_height=&quot;wrap_content&quot;
+        android:layout_marginLeft=&quot;10dp&quot;
+        android:layout_marginTop=&quot;5dp&quot;
+        android:ellipsize=&quot;end&quot;
+        android:lines=&quot;1&quot;
+        android:text=&quot;名字反反复复反反复复反反复复反反复复反反复复反反复复反反复复反反复复反反复复分&quot;
+        android:textSize=&quot;18sp&quot;
+        app:layout_constraintLeft_toRightOf=&quot;@id/iv_icon&quot;
+        app:layout_constraintRight_toLeftOf=&quot;@+id/iv_right&quot;
+        app:layout_constraintTop_toTopOf=&quot;@+id/iv_icon&quot; /&gt;
+
+    &lt;TextView
+        android:layout_width=&quot;wrap_content&quot;
+        android:layout_height=&quot;wrap_content&quot;
+        android:layout_marginBottom=&quot;5dp&quot;
+        android:text=&quot;吧名&quot;
+        android:textSize=&quot;18sp&quot;
+        app:layout_constraintBottom_toBottomOf=&quot;@+id/iv_icon&quot;
+        app:layout_constraintLeft_toLeftOf=&quot;@+id/tv_name&quot; /&gt;
+
+    &lt;!--这个布局不存在谁先写；如何居中；
+    如果不好写，可以考虑Guideline、Barrier等等
+    --&gt;
+    &lt;ImageView
+        android:android:layout_width=&quot;60dp&quot;
+        android:layout_height=&quot;0dp&quot;
+        android:layout_marginTop=&quot;12dp&quot;
+        android:layout_marginRight=&quot;10dp&quot;
+        android:scaleType=&quot;centerCrop&quot;
+        android:src=&quot;@mipmap/ic_launcher&quot;
+        app:layout_constraintDimensionRatio=&quot;h,4:2&quot;
+        app:layout_constraintHorizontal_bias=&quot;1&quot;
+        app:layout_constraintLeft_toRightOf=&quot;@+id/tv_name&quot;
+        app:layout_constraintRight_toRightOf=&quot;parent&quot;
+        app:layout_constraintTop_toTopOf=&quot;@+id/tv_name&quot; /&gt;
+
+    &lt;ImageView
+        android:android:layout_width=&quot;match_parent&quot;
+        android:layout_height=&quot;0dp&quot;
+        android:layout_marginTop=&quot;10dp&quot;
+        android:src=&quot;@mipmap/ic_launcher&quot;
+        app:layout_constraintDimensionRatio=&quot;h,1:1&quot;
+        app:layout_constraintTop_toBottomOf=&quot;@id/iv_icon&quot; /&gt;
+
+    &lt;TextView
+        android:layout_width=&quot;match_parent&quot;
+        android:layout_height=&quot;wrap_content&quot;
+        android:layout_marginTop=&quot;10dp&quot;
+        android:text=&quot;内容哈哈哈哈哈哈哈&quot;
+        android:textColor=&quot;@android:color/white&quot;
+        android:textSize=&quot;20sp&quot;
+        app:layout_constraintTop_toBottomOf=&quot;@id/guideline&quot; /&gt;
+
+    &lt;TextView
+        android:layout_width=&quot;match_parent&quot;
+        android:layout_height=&quot;wrap_content&quot;
+        android:layout_marginBottom=&quot;10dp&quot;
+        android:text=&quot;内容哈哈哈哈哈哈哈&quot;
+        android:textColor=&quot;@android:color/white&quot;
+        android:textSize=&quot;20sp&quot;
+        app:layout_constraintBottom_toTopOf=&quot;@id/guideline&quot; /&gt;
+
+    &lt;androidx.constraintlayout.widget.Guideline
+        android:android:layout_width=&quot;wrap_content&quot;
+        android:layout_height=&quot;wrap_content&quot;
+        android:orientation=&quot;horizontal&quot;
+        app:layout_constraintGuide_percent=&quot;0.5&quot; /&gt;
+
+
+&lt;/androidx.constraintlayout.widget.ConstraintLayout&gt;
+</code></pre>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Android/" class="category-chain-item">Android</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>CoordinatorLayout &amp; ConstraintLayout</div>
+      <div>http://peiniwan.github.io/2019/05/403a9f77d0a3.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>六月的雨</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2019年5月19日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2019/05/5f49ab1860fb.html" title="代理、反射、注解、hook">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">代理、反射、注解、hook</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2019/04/fb4d62e5c244.html" title="kotlin、Lambda">
+                        <span class="hidden-mobile">kotlin、Lambda</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

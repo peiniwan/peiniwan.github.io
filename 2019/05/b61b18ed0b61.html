@@ -1,0 +1,962 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="六月的雨">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Binder 进程间通信进程间通信(ipc)IPC的主要目的是调用其他进程的函数  使用多进程显而易见的好处就是分担主进程的内存压力。我们的应用越做越大，内存越来越多，将一些独立的组件放到不同的进程，它就不占用主进程的内存空间了。当然还有其他好处，有些应用后台是有多个进程的，启动一个不可见的轻量级私有进程，在后台收发消息，或者做一些耗时的事情，或者开机启动这个进程，然后做监听等。还有就是防止主进程">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Binder 进程间通信">
+<meta property="og:url" content="http://peiniwan.github.io/2019/05/b61b18ed0b61.html">
+<meta property="og:site_name" content="六月的雨的博客">
+<meta property="og:description" content="Binder 进程间通信进程间通信(ipc)IPC的主要目的是调用其他进程的函数  使用多进程显而易见的好处就是分担主进程的内存压力。我们的应用越做越大，内存越来越多，将一些独立的组件放到不同的进程，它就不占用主进程的内存空间了。当然还有其他好处，有些应用后台是有多个进程的，启动一个不可见的轻量级私有进程，在后台收发消息，或者做一些耗时的事情，或者开机启动这个进程，然后做监听等。还有就是防止主进程">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Binder_%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1.resources/2023/09/15/18-50-43-942aa981f8ddc132d75936e9a108d88e-unknown_filename.6-e0e762.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Binder_%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1.resources/2023/09/15/18-50-43-21161fa4518997147db59bd538a79188-unknown_filename.3-11cf0f.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Binder_%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1.resources/2023/09/15/18-50-43-d098135bb0d7517cfcf41762cce6eeac-unknown_filename.10-d7bcd7.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Binder_%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1.resources/2023/09/15/18-50-43-a46c5ef2b77129004901ee72f6fd313d-unknown_filename.13-b68141.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Binder_%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1.resources/2023/09/15/18-50-43-3fea1adf417a6047f15c398e559ba267-unknown_filename.14-2a459d.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Binder_%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1.resources/2023/09/15/18-50-43-c39d24029067dc8b310ecc5c24c04e73-unknown_filename.11-affb53.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Binder_%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1.resources/2023/09/15/18-50-43-d535d118941b2ce613d96a00372c86b5-unknown_filename.12-47e09f.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Binder_%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1.resources/2023/09/15/18-50-43-b0a684a7ade4b9dcbfe5d57315147ab6-unknown_filename-389477.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Binder_%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1.resources/2023/09/15/18-50-43-7a752757f78b00d53af8a44434318362-unknown_filename.1-cad1b1.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Binder_%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1.resources/2023/09/15/18-50-43-0b27ffc6ca61560ee597113bd4cf43ca-unknown_filename.7-0448c0.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Binder_%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1.resources/2023/09/15/18-50-43-42c476195f8b467a65124b26e57e4978-unknown_filename.2-5f90d1.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Binder_%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1.resources/2023/09/15/18-50-43-d772d3e8ddede1b16cb9d97bc67c5849-unknown_filename.8-d4944c.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Binder_%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1.resources/2023/09/15/18-50-43-9f398d4c5c3012e5584e3903839e6ff9-unknown_filename.5-5561d6.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Binder_%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1.resources/2023/09/15/18-50-43-059823902e225e7587438407a9672fe5-unknown_filename.4-d31a09.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Binder_%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1.resources/2023/09/15/18-50-43-c8625b252f78ea946bc9408ae352c0e9-unknown_filename.9-dfbae2.png">
+<meta property="article:published_time" content="2019-05-20T04:25:24.000Z">
+<meta property="article:modified_time" content="2023-12-26T02:56:17.227Z">
+<meta property="article:author" content="六月的雨">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Binder_%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1.resources/2023/09/15/18-50-43-942aa981f8ddc132d75936e9a108d88e-unknown_filename.6-e0e762.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>Binder 进程间通信 - 六月的雨的博客</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"peiniwan.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>六月的雨的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Binder 进程间通信"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2019-05-20 12:25" pubdate>
+          2019年5月20日 中午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          4.6k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          39 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Binder 进程间通信</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="Binder-进程间通信"><a href="#Binder-进程间通信" class="headerlink" title="Binder 进程间通信"></a>Binder 进程间通信</h1><h1 id="进程间通信-ipc"><a href="#进程间通信-ipc" class="headerlink" title="进程间通信(ipc)"></a>进程间通信(ipc)</h1><p>IPC的主要目的是调用其他进程的函数</p>
+<ul>
+<li>使用多进程显而易见的好处就是分担主进程的内存压力。我们的应用越做越大，内存越来越多，将一些独立的组件放到不同的进程，它就不占用主进程的内存空间了。当然还有其他好处，有些应用后台是有多个进程的，启动一个不可见的轻量级私有进程，在后台收发消息，或者做一些耗时的事情，或者开机启动这个进程，然后做监听等。还有就是防止主进程被杀守护进程，守护进程和主进程之间相互监视，有一方被杀就重新启动它。因为它们要常驻后台，特别是即时通讯或者社交应用</li>
+<li>推送、融云</li>
+</ul>
+<p>RemoteCallbackList</p>
+<p><a target="_blank" rel="noopener" href="http://jerey.cn/android/2017/10/13/%E7%AE%80%E4%BB%8BRemoteCallbackList/">http://jerey.cn/android/2017/10/13/简介RemoteCallbackList/</a></p>
+<p><strong>什么时候用服务</strong><br>不需要和用户交互而且还要长期运行的任务。服务的运行不依赖于任何用户界面，即使程序被切换到后台，或者用户打开了另一个应用程序，服务仍然能够保持独立运行。音乐、播放器</p>
+<p>如果一个 app 两个进程同时操作 sharedpreferences，如何保证数据安全。不能，使用ContentProvider、mmkv</p>
+<h2 id="binder"><a href="#binder" class="headerlink" title="binder"></a>binder</h2><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/freekiteyu/article/details/70082302">https://blog.csdn.net/freekiteyu/article/details/70082302</a></p>
+<p><a target="_blank" rel="noopener" href="https://yuandaimaahao.github.io/AndroidFrameworkTutorialPages/003.%E5%AD%A6%E7%A9%BFBinder%E7%AF%87/006.Android%20Binder%20%E9%A9%B1%E5%8A%A8%E6%A1%86%E6%9E%B6%E8%AE%BE%E8%AE%A1%E5%88%86%E6%9E%90.html">Android Binder 驱动框架设计与分析</a><br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Binder_%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1.resources/2023/09/15/18-50-43-942aa981f8ddc132d75936e9a108d88e-unknown_filename.6-e0e762.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.6"><br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Binder_%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1.resources/2023/09/15/18-50-43-21161fa4518997147db59bd538a79188-unknown_filename.3-11cf0f.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.3"></p>
+<p>我的理解：</p>
+<ul>
+<li><p>Binder是Android系统中进程间通讯（IPC）的一种方式。不同进程、不同APP间就是通过binder通讯的。Binder 通信采用 C&#x2F;S 架构，从组件视角来说，包含 Client、 Server、 ServiceManager 以及 Binder 驱动。</p>
+</li>
+<li><p>服务端提供服务，客户端获取数据。ServiceManager的作用查询服务和注册服务。Binder 驱动是运行在内核空间(liux)，进程间通讯的底层就是Binder 驱动。它使用的是mmap() 是操作系统中一种内存映射的方法。</p>
+<ul>
+<li>ServiceManager 将用户空间的参数等请求数据复制到内核空间，并向服务端插入一条执行执行方法的事务（事务（Transaction），一般是指要做的或所做的事情）。事务执行完通知 ServiceManager 将执行结果从内核空间复制到用户空间，并唤醒等待的线程(binder_send_reply发送reply、binder_write客户端写)，响应结果，通讯就结束了。</li>
+</ul>
+</li>
+<li><p>在 Android 开发中，可以使用 AIDL，并通过系统生成的代码来实现客户端和服务端的通信。AIDL 可以处理跨进程的方法调用、数据传输、回调等功能，简化了开发者在进行跨进程通信时的代码编写工作。</p>
+</li>
+<li><p>内存映射就是将用户空间的一块内存区域映射到内核空间。映射关系建立后，用户对这块内存区域的修改可以直接反应到内核空间；反之内核空间对这段区域的修改也能直接反应到用户空间。内存映射能减少数据拷贝次数，实现用户空间和内核空间的高效互动。</p>
+</li>
+<li><p>内核空间与用户空间共享内存通过 copy_from_user(), copy_to_user() 内核方法来完成用户空间与内核空间内存的数据传输。</p>
+</li>
+<li><p>ServiceManager 分为 framework 层和 native 层，framework 层只是对 native 层进行了封装方便调用。</p>
+</li>
+<li><p>ServiceManager 的作用很简单就是提供了查询服务和注册服务的功能。</p>
+</li>
+<li><p>ServiceManager 的启动是系统在开机时，init 进程解析 init.rc 文件调用 service_manager.c 中的 main() 方法入口启动的。 native 层有一个 binder.c 封装了一些与 Binder 驱动交互的方法。</p>
+</li>
+<li><p>ServiceManager 的启动分为三步，首先打开驱动创建全局链表 binder_procs，然后将自己当前进程信息保存到 binder_procs 链表，<strong>最后开启 loop 不断的处理共享内存中的数据</strong>，并处理 BR_xxx 命令（ioctl 的命令，BR 可以理解为 binder reply 驱动处理完的响应）。</p>
+</li>
+</ul>
+<ol start="3">
+<li>Binder 驱动：运行在<strong>内核空间 kernel</strong>，负责各个用户进程通过 Binder 实现通信的内核模块（Binder Dirver）底层就是Binder 驱动</li>
+</ol>
+<h3 id="驱动"><a href="#驱动" class="headerlink" title="驱动"></a>驱动</h3><p>Binder是一种虚拟的物理设备驱动</p>
+<ul>
+<li>虚拟设备驱动程序：虚拟设备驱动程序是模拟硬件设备的驱动程序。它模拟了一块硬件，因此软件可能会有访问真实硬件的错觉。一些虚拟设备驱动程序示例是虚拟网络适配器，虚拟DVD &#x2F; CD驱动器，虚拟磁盘（内存）等</li>
+<li>驱动是干什么的？仅从功能的角度来说，驱动程序使得应用程序可以访问硬件。</li>
+<li>那应用是如何访问硬件的？linux 中一切皆文件，访问硬件就是对文件的读写操作。比如 led 灯对应的文件是 &#x2F;dev&#x2F;led, 读写这个文件就能操作 led 灯。而binder驱动就是读写硬件内存区域</li>
+</ul>
+<h3 id="虚拟内存"><a href="#虚拟内存" class="headerlink" title="虚拟内存"></a>虚拟内存</h3><p>在 Linux 中，每个进程都有自己的虚拟内存地址空间。虚拟内存地址空间又分为了用户地址空间和内核地址空间。</p>
+<p>虚拟内存 通过创建虚拟地址空间来隔离不同进程的内存访问，解决了多进程运行时的内存冲突问题。每个进程都有自己的虚拟地址空间，并通过 MMU（内存管理单元） 将虚拟地址映射到物理内存地址上，从而实现对物理内存的访问和管理。<br>有了虚拟内存以后，内存的读过程如下：<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Binder_%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1.resources/2023/09/15/18-50-43-d098135bb0d7517cfcf41762cce6eeac-unknown_filename.10-d7bcd7.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.10"><br>虽然用户地址空间是不能互相访问的，但是不同进程的内核地址空间是映射到相同物理地址的，它们是相同和共享的，我们可以借助<strong>内核地址空间作为中转站来实现进程间数据的传输</strong>。<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Binder_%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1.resources/2023/09/15/18-50-43-a46c5ef2b77129004901ee72f6fd313d-unknown_filename.13-b68141.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.13"><br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Binder_%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1.resources/2023/09/15/18-50-43-3fea1adf417a6047f15c398e559ba267-unknown_filename.14-2a459d.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.14"><br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Binder_%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1.resources/2023/09/15/18-50-43-c39d24029067dc8b310ecc5c24c04e73-unknown_filename.11-affb53.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.11"><br>不同进程之间的内核地址空间映射到相同的物理地址，即不同的进程的内核地址空间是共享的。不同进程之间的用户地址空间映射到不同的物理地址，相互之间是隔离的，无法访问的。</p>
+<h3 id="MMAP"><a href="#MMAP" class="headerlink" title="MMAP"></a>MMAP</h3><p>Binder只需要一次数据拷贝，性能更好<br>内核空间与用户空间共享内存通过 copy_from_user(), copy_to_user() 内核方法来完成用户空间与内核空间内存的数据传输</p>
+<p>Binder IPC 机制中涉及到的内存映射通过 mmap() 来实现，mmap() 是操作系统中一种内存映射的方法。内存映射简单的讲就是将用户空间的一块内存区域映射到内核空间。映射关系建立后，用户对这块内存区域的修改可以直接反应到内核空间；反之内核空间对这段区域的修改也能直接反应到用户空间。</p>
+<p>内存映射能减少数据拷贝次数，实现用户空间和内核空间的高效互动。两个空间各自的修改能直接反映在映射的内存区域，从而被对方空间及时感知。也正因为如此，内存映射能够提供对进程间通信的支持。<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Binder_%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1.resources/2023/09/15/18-50-43-d535d118941b2ce613d96a00372c86b5-unknown_filename.12-47e09f.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.12"><br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Binder_%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1.resources/2023/09/15/18-50-43-b0a684a7ade4b9dcbfe5d57315147ab6-unknown_filename-389477.png" srcset="/img/loading.gif" lazyload alt="unknown_filename"></p>
+<p><strong>客户端怎么执行服务端的方法</strong></p>
+<ul>
+<li>我们们在使用 Binder 时基本都是调用 framework 层封装好的方法，AIDL 就是 framework 层提供的傻瓜式是使用方式。假设服务已经注册完，我们来看看客户端怎么执行服务端的方法。</li>
+<li>首先我们通过 ServiceManager 获取到服务端的 BinderProxy 代理对象，通过调用 BinderProxy 将参数，方法标识（例如：TRANSACTION_test，AIDL中自动生成）传给 ServiceManager，同时客户端线程进入等待状态。</li>
+<li>ServiceManager 将用户空间的参数等请求数据复制到内核空间，并向服务端插入一条执行执行方法的事务。事务执行完通知 ServiceManager 将执行结果从内核空间复制到用户空间，并唤醒等待的线程，响应结果，通讯结束。</li>
+</ul>
+<p><strong>Binder 通信中的代理模式</strong></p>
+<ul>
+<li>我们已经解释清楚 Client、Server 借助 Binder 驱动完成跨进程通信的实现机制了，但是还有个问题会让我们困惑。A 进程想要 B 进程中某个对象（object）是如何实现的呢？毕竟它们分属不同的进程，A 进程 没法直接使用 B 进程中的 object。</li>
+<li>在数据流经 Binder 驱动的时候驱动会对数据做一层转换。当 A 进程想要获取 B 进程中的 object 时，驱动并不会真的把 object 返回给 A，而是返回了一个跟 object 看起来一模一样的代理对象 ProxyObject，这个 ProxyObject 具有和 object 一摸一样的方法，但是这些方法并没有 B 进程中 object 对象那些方法的能力，这些方法只需要把把请求参数交给驱动即可。对于 A 进程来说和直接调用 object 中的方法是一样的。</li>
+<li>当 Binder 驱动接收到 A 进程的消息后，发现这是个 objectProxy 就去查询自己维护的表单，一查发现这是 B 进程 object 的代理对象。于是就会去通知 B 进程调用 object 的方法，并要求 B 进程把返回结果发给自己。当驱动拿到 B 进程的返回结果后就会转发给 A 进程，一次通信就完成了</li>
+</ul>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Binder_%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1.resources/2023/09/15/18-50-43-7a752757f78b00d53af8a44434318362-unknown_filename.1-cad1b1.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.1"></p>
+<p>其实进程间通信就是为了实现数据共享。一个程序不同组件在不同进程也叫多进程，和俩个应用没有本质区别。使用 process 属性可以实现多进程，但是会带来很多麻烦，主要原因是共享数据会失败，弊端有:静态和单利失效，同步失效，sharedprefer也变的不可靠等问题。</p>
+<h2 id="常规通讯"><a href="#常规通讯" class="headerlink" title="常规通讯"></a>常规通讯</h2><p>只有允许不同应用的客户端用 IPC 方式访问服务，并且想要在服务中处理多线程（多任务）时，才有必要使用 AIDL。 如果您不需要执行跨越不同应用的并发 IPC，就应该通过实现一个 Binder 创建接口；或者，如果您想执行 IPC，但根本不需要处理多线程，则使用 Messenger 类来实现接口。无论如何，在实现 AIDL 之前，请您务必理解绑定服务。</p>
+<p><a target="_blank" rel="noopener" href="https://developer.android.com/guide/components/aidl?hl=zh-cn">aidl文档</a></p>
+<h3 id="Messenger"><a href="#Messenger" class="headerlink" title="Messenger"></a>Messenger</h3><ol>
+<li>通过 Messenger进行传递（<strong>handler</strong>），在远程服务里创建handler（接收客户端发送的消息）、 Messenger对像，在onbind里返回( Messenger.getbinder)。在客户端绑定服务，拿着 Messenger对象发消息(可以用bundle)。在远程服务的handlermessage方法就会收到。他是一个个处理的，如果大量并发请求用aidl， Messenger底层就是aidl</li>
+</ol>
+<blockquote>
+<p>在客户端中创建一个Messenger。然后，当客户端收到 onServiceConnected() 回调时，会向服务发送一条 Message，并在其 send() 方法的 replyTo 参数中包含客户端的 Messenger。<br>注意：Messenger和Message是俩个东西</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">sayHello</span><span class="hljs-params">(View v)</span> &#123;<br><br>	<span class="hljs-keyword">if</span> (!mBound) <span class="hljs-keyword">return</span>;<br>	<span class="hljs-type">Message</span> <span class="hljs-variable">msg</span> <span class="hljs-operator">=</span> Message.obtain(<span class="hljs-literal">null</span>, MessengerService.MSG_SAY_HELLO, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>);<br>	<span class="hljs-keyword">try</span> &#123;<br>	   mService.send(msg);<br>	&#125; <span class="hljs-keyword">catch</span> (RemoteException e) &#123;<br>		e.printStackTrace();<br>	&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+<ol start="2">
+<li>直接使用Binder对象：缺点是这种方式不能进行跨进程，跨应用程序的函数调用。只能实现在同一个进程之中，同一个应用程序之中的不同的组件之间通讯。</li>
+</ol>
+<blockquote>
+<p>用法：继承Binder，然后在service里return<br>继承Binder用它的对象返回，客户端将bind对象强转成自定义Bind</p>
+</blockquote>
+<h3 id="AIDL"><a href="#AIDL" class="headerlink" title="AIDL"></a>AIDL</h3><p>Android interface definition language (android接口定义语言) , 用来跨进程的访问方法。</p>
+<p><strong>AIDL是什么，怎么实现的，为什么要创建个文件aidl</strong><br>stub 具体实现类、proxy代理类<br>1）、定义AIDL文件；——类似于后台给了一个接口文档，里面描述了各种各样的接口，而在AIDL文件中描述的是类似于JAVA接口的方法定义<br>2）、实现AIDL文件里面定义的接口；——类似于后台实现接口文档的接口控制器，里面定义了接口的具体实现<br>3）、暴露接口；——这个就像后台开发人员把接口文档给App开发人员，然后App开发人员就知道有哪些接口可以调用来实现业务了<br>4）、调用；——这个就是App开发人员调用后台的接口来获取过程数据了。<br>从上面的描述可以看出，这个AIDL实际上就是一个C&#x2F;S模型，一边是客户端，一边是服务器。</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Binder_%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1.resources/2023/09/15/18-50-43-0b27ffc6ca61560ee597113bd4cf43ca-unknown_filename.7-0448c0.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.7"></p>
+<p><strong>aidl操作步骤</strong></p>
+<ol>
+<li><p>在两个项目中新建aidl文件，客户端和服务端中这个文件所在的包名要保持一致，内容也要一样，在接口文件AIDLFunctions.aidl中，我们定义一个方法 show</p>
+<p> interface AidlFunctions{<br> void show();<br> }</p>
+</li>
+<li><p>编译之后， 会在build目录下，自动产生同名的，后缀为 java 的文件。里面有我们要用到的 Stub内部类。 com.example.aidl.AidlFunctions是刚定义。<br> 里面的东西</p>
+<p> public static abstract class Stub extends android.os.Binder implements com.example.aidl.AidlFunctions</p>
+</li>
+</ol>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Binder_%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1.resources/2023/09/15/18-50-43-42c476195f8b467a65124b26e57e4978-unknown_filename.2-5f90d1.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.2"></p>
+<ol start="3">
+<li><p>AIDL的使用，需要一个Service配合，所以我们在服务端还要声明一个Service</p>
+<p> public class AIDLService extends Service {<br> &#x2F;&#x2F;stub就是系统自动产生的<br> AidlFunctions.Stub binder;<br><br> @Override<br> public void onCreate() {<br>     &#x2F;&#x2F; TODO Auto-generated method stub<br>     super.onCreate();<br> }<br><br> @Override<br> public IBinder onBind(Intent intent) {<br>     &#x2F;&#x2F; TODO Auto-generated method stub<br>     binder &#x3D; new AidlFunctions.Stub() {<br><br>         @Override<br>         &#x2F;&#x2F;这里是我们在接口中声明的方法的实现<br>         public void show() throws RemoteException {<br>             System.out.println(“——————–收到———————-“);<br>         }<br>     };<br>     return binder;<br> }<br> }</p>
+</li>
+</ol>
+<p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/29999c1a93cd">https://www.jianshu.com/p/29999c1a93cd</a><br>需要把服务端的AIDL文件以及Book类复制过来，将 aidl 文件夹整个复制到和Java文件夹同个层级下，不需要改动任何代码</p>
+<p>远端服务通过action绑定<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Binder_%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1.resources/2023/09/15/18-50-43-d772d3e8ddede1b16cb9d97bc67c5849-unknown_filename.8-d4944c.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.8"></p>
+<ol start="4">
+<li><p>客户端：</p>
+<p> &#x2F;&#x2F;绑定服务，要用到ServiceConnection<br> private ServiceConnection serviceConnection;<br> &#x2F;&#x2F;自定义的接口，和服务端一样<br> private AidlFunctions aidlFunctions;</p>
+<p> serviceConnection &#x3D; new ServiceConnection() {</p>
+<pre><code class="hljs"> @Override
+ public void onServiceDisconnected(ComponentName name) &#123;
+     System.out.println(&quot;--------------------ServiceDisconnected----------------------&quot;);
+ &#125;
+
+ @Override
+ public void onServiceConnected(ComponentName name, IBinder service) &#123;
+     System.out.println(&quot;--------------------ServiceConnected----------------------&quot;);
+     aidlFunctions = AidlFunctions.Stub.asInterface(service);
+ &#125;
+</code></pre>
+<p> };<br> Intent intent &#x3D; new Intent(“com.example.androidaidl.AIDLService”);<br> bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);<br> &#x2F;&#x2F;调用show方法<br> try {<br> aidlFunctions.show();<br> } catch (RemoteException e) {<br> &#x2F;&#x2F; TODO Auto-generated catch block<br> e.printStackTrace();<br> }</p>
+</li>
+</ol>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Binder_%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1.resources/2023/09/15/18-50-43-9f398d4c5c3012e5584e3903839e6ff9-unknown_filename.5-5561d6.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.5"><br>典型的代理模式<br><strong>onTransact</strong><br>Server 则是通过 onTransact 方法接收 Client 进程传过来的数据，包括函数名称、函数参数，找到对应的函数（这里是 sum ），把参数喂进去，得到结果，返回 所以 onTransact 函数经历了读数据→执行要调用的函数→把执行结果再写数据的过程<br>注意，在 AIDL 的另一端，是通过 Stub 类的 onTransact 把值从 data 中取出来 ，计算完得到结果，再把结果通过 reply 返回。<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Binder_%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1.resources/2023/09/15/18-50-43-059823902e225e7587438407a9672fe5-unknown_filename.4-d31a09.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.4"></p>
+<h4 id="AIDL生成的文件"><a href="#AIDL生成的文件" class="headerlink" title="AIDL生成的文件"></a>AIDL生成的文件</h4><pre><code class="hljs">interface IMyAidlInterface &#123;
+    int sendData(String data);
+    String getData();
+&#125;
+
+
+//生成
+public interface IMyAidlInterface extends android.os.IInterface &#123;
+ 
+    public static abstract class Stub extends android.os.Binder implements com.zero.aidleservicedemo.IMyAidlInterface &#123;
+        private static final java.lang.String DESCRIPTOR = &quot;com.zero.aidleservicedemo.IMyAidlInterface&quot;;
+
+        public Stub() &#123;
+            this.attachInterface(this, DESCRIPTOR);
+        &#125;
+
+        /**
+         * Cast an IBinder object into an com.zero.aidleservicedemo.IMyAidlInterface interface,
+         * generating a proxy if needed.   生成代理需要
+         */
+        public static com.zero.aidleservicedemo.IMyAidlInterface asInterface(android.os.IBinder obj) &#123;
+            if ((obj == null)) &#123;
+                return null;
+            &#125;
+            android.os.IInterface iin = obj.queryLocalInterface(DESCRIPTOR);
+            if (((iin != null) &amp;&amp; (iin instanceof com.zero.aidleservicedemo.IMyAidlInterface))) &#123;
+                return ((com.zero.aidleservicedemo.IMyAidlInterface) iin);
+            &#125;
+            return new com.zero.aidleservicedemo.IMyAidlInterface.Stub.Proxy(obj);
+        &#125;
+
+        @Override
+        public android.os.IBinder asBinder() &#123;
+            return this;
+        &#125;
+
+        @Override
+        public boolean onTransact(int code, android.os.Parcel data, android.os.Parcel reply, int flags) throws android.os.RemoteException &#123;
+            java.lang.String descriptor = DESCRIPTOR;
+            switch (code) &#123;
+               //自己的方法
+                case TRANSACTION_sendData: &#123;
+           
+                    return true;
+                &#125;
+                case TRANSACTION_getData: &#123;
+                    data.enforceInterface(descriptor);
+                    java.lang.String _result = this.getData();
+                    reply.writeNoException();
+                    reply.writeString(_result);
+                    return true;
+                &#125;
+                default: &#123;
+                    return super.onTransact(code, data, reply, flags);
+                &#125;
+            &#125;
+        &#125;
+
+       //代理类
+        private static class Proxy implements com.zero.aidleservicedemo.IMyAidlInterface &#123;
+            private android.os.IBinder mRemote;
+
+            @Override
+            public android.os.IBinder asBinder() &#123;
+                return mRemote;
+            &#125;
+
+
+            @Override
+            public int sendData(java.lang.String data) throws android.os.RemoteException &#123;
+                return _result;
+            &#125;
+
+            @Override
+            public java.lang.String getData() throws android.os.RemoteException &#123;
+                android.os.Parcel _data = android.os.Parcel.obtain();
+                android.os.Parcel _reply = android.os.Parcel.obtain();
+                java.lang.String _result;
+                try &#123;
+                    _data.writeInterfaceToken(DESCRIPTOR);
+                    mRemote.transact(Stub.TRANSACTION_getData, _data, _reply, 0);
+                    _reply.readException();
+                    _result = _reply.readString();
+                &#125; finally &#123;
+                    _reply.recycle();
+                    _data.recycle();
+                &#125;
+                return _result;
+            &#125;
+        &#125;
+    &#125;
+
+    public int sendData(java.lang.String data) throws android.os.RemoteException;
+
+    public java.lang.String getData() throws android.os.RemoteException;
+&#125;
+</code></pre>
+<h3 id="其他通讯方法"><a href="#其他通讯方法" class="headerlink" title="其他通讯方法"></a>其他通讯方法</h3><p>socket、binder、信号链、共享内存<br>Intent，binder、 Messenger、AIDL，sharedpre、广播、scheme</p>
+<ol>
+<li><p>使用intent的附加信息extras来传递，通过bundle，传递的是bundle支持的类型，比如基本数据类型、实现pracellable或serializeable的对象</p>
+<p> &#x2F;*<em>指定包名和带包名的Activity的名字</em>&#x2F;<br> ComponentName componentName &#x3D; new ComponentName(“com.example.androidaidl”, “com.example.androidaidl.MainActivity”);<br> Intent intent &#x3D; new Intent();<br> intent.putExtra(“id”, 1001);<br> intent.setComponent(componentName);<br> startActivity(intent);      </p>
+</li>
+<li><p>使用文件共享，序列化或是sharedpre，不过不适用于读写并发的操作</p>
+</li>
+<li><p>广播：Android的广播是系统级的，只要传递的Action一样，就可以接收到其他进程广播的消息，广播中可以通过Intent传递数据。</p>
+</li>
+<li><p>scheme协议是android中的一种页面内跳转协议，通过定义自己的scheme协议，可以非常方便跳转app中的各个页面，并且传递数据，还是可以通过H5页面跳转指定页面等。</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/ganchuanpu/p/9288014.html">soket</a>,长链接读网络数据</p>
+</li>
+</ol>
+<h3 id="ElegantBus"><a href="#ElegantBus" class="headerlink" title="ElegantBus"></a>ElegantBus</h3><p>aidl发送的是JSON字符串，然后转成对应的对象<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Binder_%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1.resources/2023/09/15/18-50-43-c8625b252f78ea946bc9408ae352c0e9-unknown_filename.9-dfbae2.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.9"></p>
+<h3 id="ContentProvider"><a href="#ContentProvider" class="headerlink" title="ContentProvider"></a>ContentProvider</h3><p>（进程间数据共享）和message一样，底层也是binder，除了oncreate方法其他方法(crud)都是运行在bindler线程里。所以在oncerate里不能做耗时操作。Android本身就提供了不少的ContentProvider访问，比如联系人、相册等。 访问ContentProvider，需要通过Uri，需要以“content:&#x2F;&#x2F;”开头。在其他应用访问通过uri(主机名)：</p>
+<p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/4b04d50485ec">ContentProvider</a></p>
+<pre><code class="hljs">  contentResolver?.call(
+            MainProcessContentProvider.MAINCONTENTPROVIDER_URI,
+            &quot;getAge&quot;,
+            null,
+            bundleOf(&quot;student&quot; to &quot;小米&quot;)
+        )
+</code></pre>
+<p>一般的跨进程通信就是基于以上方式实现，这种方式存在的缺点就是每次都需要定义一个Service，再通过BindService来进行进程间通信。最近翻看代码发现可以用ContentProvider.call()来实现便捷的跨进程通信</p>
+<pre><code class="hljs">   @Override
+    public Bundle call(@NonNull String method, @Nullable String arg, @Nullable Bundle extras) &#123;
+        if (!TextUtils.isEmpty(method) &amp;&amp; TextUtils.equals(method, &quot;setData&quot;)) &#123;
+            mBinderParcel.mProxy = extras.getBinder(&quot;binder&quot;);
+        &#125; else if (!TextUtils.isEmpty(method) &amp;&amp; TextUtils.equals(method, &quot;getData&quot;)) &#123;
+            Bundle bundle = new Bundle();
+            bundle.putBinder(&quot;binder&quot;, mBinderParcel.mProxy);
+            return bundle;
+        &#125;
+        return null;
+    &#125;
+</code></pre>
+<p>method可以用来区分调用的逻辑，arg貌似没什么用，extras是一个Bundle类型用来存放数据。<br>调用的时候<br>```</p>
+<pre><code class="hljs">  getContentResolver().call(Uri.parse(&quot;content://com.example.mycontentprovider&quot;), &quot;setData&quot;, null, bundle); //设置数据
+
+   Bundle bundle = getContentResolver().call(Uri.parse(&quot;content://com.example.mycontentprovider&quot;), &quot;getData&quot;, null, null);
+
+
+mBinder = IMyAidlInterface.Stub.asInterface(bundle.getBinder(&quot;binder&quot;));
+
+ Log.i(&quot;kingiyu&quot;, &quot;RemoteActivity--&gt;--&gt;onCreate--&gt;&quot; + mBinder.getData());
+```
+</code></pre>
+<h3 id="实践问题"><a href="#实践问题" class="headerlink" title="实践问题"></a>实践问题</h3><h4 id="AutoService"><a href="#AutoService" class="headerlink" title="AutoService"></a>AutoService</h4><p>Java&amp;Android开发-浅析ServiceLoader类 - 掘金</p>
+<h4 id="多进程移出列表"><a href="#多进程移出列表" class="headerlink" title="多进程移出列表"></a>多进程移出列表</h4><p>singleTask 会闪退<br>1.singleInstance 到了home再回来会重启<br><activity
+android:name=".web.DsWebViewMultipleActivity"
+android:configChanges="keyboardHidden|orientation|screenSize"
+android:exported="true"
+android:launchMode="singleInstance"
+android:process=":remoteweb"
+android:screenOrientation="portrait"
+android:theme="@style/common\_webview\_theme"
+android:windowSoftInputMode="stateHidden|stateAlwaysHidden|adjustResize"/></p>
+<p>2.加上android:excludeFromRecents&#x3D;”true” 到了home再回来就没有webview了，后续就activity在这个task都不会看到了<br><activity
+android:name=".web.DsWebViewMultipleActivity"
+android:configChanges="keyboardHidden|orientation|screenSize"
+android:exported="true"
+android:launchMode="singleTask"
+android:process=":remoteweb"
+android:screenOrientation="portrait"
+android:taskAffinity=".DsWebViewMultipleActivity"
+android:theme="@style/common\_webview\_theme"
+android:windowSoftInputMode="stateHidden|stateAlwaysHidden|adjustResize"></activity></p>
+<p>3.toLastTaskInfoPage 到了home回显示2个，用户困惑 最好的方案<br>2.3都有个问题：<a target="_blank" rel="noopener" href="https://www.jianshu.com/p/4cee420f17cc">https://www.jianshu.com/p/4cee420f17cc</a><br>如果Activity 正是当前正在使用的，切换到 Recent screens 也是可以看到的。但是退到后台运行后，比如按下 Home 键，属性就会发生作用。？<br><a target="_blank" rel="noopener" href="https://rengwuxian.com/dang-wo-an-xia-home-jian-zai-qie-hui-lai-hui-fa-sheng-shen-me/">https://rengwuxian.com/dang-wo-an-xia-home-jian-zai-qie-hui-lai-hui-fa-sheng-shen-me/</a></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%BA%90%E7%A0%81/" class="category-chain-item">源码</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Binder 进程间通信</div>
+      <div>http://peiniwan.github.io/2019/05/b61b18ed0b61.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>六月的雨</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2019年5月20日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2019/05/da8057e8b42d.html" title="Java集合">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Java集合</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2019/05/5f49ab1860fb.html" title="代理、反射、注解、hook">
+                        <span class="hidden-mobile">代理、反射、注解、hook</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

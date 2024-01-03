@@ -1,0 +1,794 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="六月的雨">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="LiveData的不足LiveData结构简单，但是不够强大，它有以下不足  LiveData不支持线程切换，所有数据转换都将在主线程上完成，有时需要频繁更改线程，面对复杂数据流时处理起来比较麻烦 LiveData的操作符不够强大,在处理复杂数据流时有些捉襟见肘 LiveData 只能在主线程更新数据： 只能在主线程 setValue，即使 postValue 内部也是切换到主线程执行； Live">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Flow学习">
+<meta property="og:url" content="http://peiniwan.github.io/2022/03/885557fee9aa.html">
+<meta property="og:site_name" content="六月的雨的博客">
+<meta property="og:description" content="LiveData的不足LiveData结构简单，但是不够强大，它有以下不足  LiveData不支持线程切换，所有数据转换都将在主线程上完成，有时需要频繁更改线程，面对复杂数据流时处理起来比较麻烦 LiveData的操作符不够强大,在处理复杂数据流时有些捉襟见肘 LiveData 只能在主线程更新数据： 只能在主线程 setValue，即使 postValue 内部也是切换到主线程执行； Live">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-03-07T09:41:03.000Z">
+<meta property="article:modified_time" content="2023-12-29T08:02:48.918Z">
+<meta property="article:author" content="六月的雨">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>Flow学习 - 六月的雨的博客</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"peiniwan.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>六月的雨的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Flow学习"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-03-07 17:41" pubdate>
+          2022年3月7日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.3k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          19 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Flow学习</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h3 id="LiveData的不足"><a href="#LiveData的不足" class="headerlink" title="LiveData的不足"></a>LiveData的不足</h3><p>LiveData结构简单，但是不够强大，它有以下不足</p>
+<ol>
+<li>LiveData不支持线程切换，所有数据转换都将在主线程上完成，有时需要频繁更改线程，面对复杂数据流时处理起来比较麻烦</li>
+<li>LiveData的操作符不够强大,在处理复杂数据流时有些捉襟见肘</li>
+<li>LiveData 只能在主线程更新数据： 只能在主线程 setValue，即使 postValue 内部也是切换到主线程执行；</li>
+<li>LiveData 数据重放问题： 注册新的订阅者，会重新收到 LiveData 存储的数据，这在有些情况下不符合预期（可以使用自定义的 LiveData 子类 SingleLiveData 或 UnPeekLiveData 解决，此处不展开）；</li>
+<li>LiveData 不防抖： 重复 setValue 相同的值，订阅者会收到多次 onChanged() 回调（可以使用 distinctUntilChanged() 解决，此处不展开）；</li>
+<li>LiveData 不支持背压： 在数据生产速度 &gt; 数据消费速度时，LiveData 无法正常处理。比如在子线程大量 postValue 数据但主线程消费跟不上时，中间就会有一部分数据被忽略。</li>
+<li>Flow可以跟LiveData结合使用，LiveData的生命周期在OnDestory前不会自动取消订阅，在一些UI相关场景没有问题，可以使用LiveData。Flow则更加强大，可以在onPause等时机中止上游流，节省资源。</li>
+</ol>
+<p>Flow,LiveData说白了都是观察者模式，在ViewModel中生产数据，在View中观察数据，Flow生产数据时不用切换线程，LiveData生产数据时会切换到主线程，这就是区别。</p>
+<p>Flow 支持数据重放配置： Flow 的子类 SharedFlow 支持配置重放<br>replay，能够自定义对新订阅者重放数据的配置；</p>
+<h3 id="好文章"><a href="#好文章" class="headerlink" title="好文章"></a>好文章</h3><p><a target="_blank" rel="noopener" href="https://juejin.cn/post/7034381227025465375#heading-2">Flow使用</a></p>
+<p><a target="_blank" rel="noopener" href="https://juejin.cn/post/6986265488275800072#comment">官方推荐取代LiveData，有必要吗</a></p>
+<p><a target="_blank" rel="noopener" href="https://juejin.cn/post/7077149853876224013#comment">有小伙伴说看不懂 LiveData、Flow、Channel，跟我走（这篇文章更好）</a></p>
+<p>适合mvi框架里用</p>
+<h3 id="Flow"><a href="#Flow" class="headerlink" title="Flow"></a>Flow</h3><p>用法：使用flow {…} 函数创建了一个冷数据流Flow，通过emit来发射数据，然后通过collect函数来收集这些数据</p>
+<pre><code class="hljs">fun test() &#123;
+    lifecycleScope.launch &#123;
+        flow &#123;
+            for (i in 1..3) &#123;
+                delay(100)
+                emit(i)
+            &#125;
+        &#125;.collect &#123; value -&gt; Log.d(TAG, &quot;value :$&#123;value&#125;&quot;) &#125;
+    &#125;
+&#125;
+</code></pre>
+<h4 id="线程切换"><a href="#线程切换" class="headerlink" title="线程切换"></a>线程切换</h4><ul>
+<li><p>flowOn可以将执行此流的上下文更改为指定的上下文。</p>
+</li>
+<li><p>flowOn可以进行组合使用。</p>
+</li>
+<li><p>flowOn只影响前面没有自己上下文的操作符。已经有上下文的操作符不受后面flowOn影响。</p>
+</li>
+<li><p>不管flowOn如何切换线程,collect始终是运行在调用它的协程调度器上。</p>
+<p>  fun test() {<br>  lifecycleScope.launch {<br>      flow {<br>          for (i in 1..3) {<br>              Log.d(TAG, “flow :${ currentCoroutineContext()}”)<br>              delay(100) &#x2F;&#x2F; io<br>              emit(i)<br>          }<br>      }.flowOn(Dispatchers.IO)<br>          .map {<br>              Log.d(TAG, “map :${ currentCoroutineContext()}”)  &#x2F;&#x2F;default<br>              it<br>          }.flowOn(Dispatchers.Default)<br>          .collect { value -&gt;<br>              Log.d(TAG, “collect:${ currentCoroutineContext()} value :${value}”) &#x2F;&#x2F;主线程<br>          }<br>  }<br>  }</p>
+</li>
+</ul>
+<h4 id="常用操作符"><a href="#常用操作符" class="headerlink" title="常用操作符"></a>常用操作符</h4><p><strong>过度操作符</strong>：又或者叫做流程操作符，用来区分流程执行到某一个阶段。比如：onStart&#x2F;onEach&#x2F;onCompletion。过渡操作符应用于上游流，并返回下游流。这些操作符也是冷操作符，就像流一样。这类操作符本身不是挂起函数。它运行的速度很快，返回新的转换流的定义。<br><strong>异常操作符</strong>：用来捕获处理流的异常。比如：catch,onErrorCollect(已废弃，建议用catch)。<br><strong>转换操作符</strong>：主要做一些数据转换操作。比如：transform&#x2F;map&#x2F;filter&#x2F;flatMapConcat等<br><strong>限制操作符</strong>：流触及相应限制的时候会将它的执行取消。比如：drop&#x2F;take等<br><strong>末端操作符</strong>：是在流上用于启动流收集挂起函数。collect 是最基础的末端操作符，但是还有另外一些更方便使用的末端操作符。例如：toList、toSet、first、single、reduce、fold等等</p>
+<pre><code class="hljs">fun test() &#123;
+    val flow1 = (1..3).asFlow()
+    val flow2 = flowOf(&quot;one&quot;, &quot;two&quot;, &quot;three&quot;)
+    lifecycleScope.launch &#123;
+        flow2.zip(flow1) &#123; value1, value2 -&gt;
+            &quot;$value1 :$value2&quot;
+        &#125;.collect &#123; value -&gt;
+            Log.d(TAG, &quot;collect :$&#123;value&#125;&quot;)
+        &#125;
+    &#125;
+&#125;
+D/carman: collect :1 :one
+D/carman: collect :2 :two
+D/carman: collect :3 :three
+</code></pre>
+<h4 id="直接使用Flow的局限性"><a href="#直接使用Flow的局限性" class="headerlink" title="直接使用Flow的局限性"></a>直接使用Flow的局限性</h4><p>虽然Flow可以将任意的对象转换成流的形式进行收集后计算结果。但是如果我们是直接使用Flow，它一次流的收集是我们已知需要计算的值，而且它每次收集完以后就会立即销毁。我们也不能在后续的使用中，发射新的值到该流中进行计算。<br><strong>为什么要使用StateFlow和ShareFlow？</strong><br>我们希望状态的变动都能通知到会有所动作的观察者。</p>
+<p>StateFlow和ShareFlow也是Flow API的一部分，它们允许数据流以最优方式，发出状态更新并向多个使用方发出值。</p>
+<p>与使用flow构建器构建的冷数据流不同，StateFlow是热数据流。</p>
+<p>StateFlow是继承自SharedFlow，我们可以把StateFlow看作为SharedFlow一个更佳具体实现。</p>
+<h3 id="冷流和热流"><a href="#冷流和热流" class="headerlink" title="冷流和热流"></a>冷流和热流</h3><h4 id="冷流"><a href="#冷流" class="headerlink" title="冷流"></a>冷流</h4><ul>
+<li>只有订阅者订阅时，才开始执行发射数据流的代码。并且冷流和订阅者只能是一对一的关系，当有多个不同的订阅者时，消息是重新完整发送的。也就是说对冷流而言，有多个订阅者的时候，他们各自的事件是独立的。</li>
+<li>冷数据流，不消费则不生产数据,这一点与LiveData不同：LiveData的发送端并不依赖于接收端。</li>
+</ul>
+<h4 id="热流"><a href="#热流" class="headerlink" title="热流"></a>热流</h4><ul>
+<li><p>无论有没有订阅者订阅，事件始终都会发生。当 热流有多个订阅者时，热流与订阅者们的关系是一对多的关系，可以与多个订阅者共享信息。（都收到）</p>
+</li>
+<li><p>冷流和订阅者只能是一对一的关系，当我们要实现一个流，多个订阅者的需求时(这在开发中是很常见的)，就需要热流了</p>
+</li>
+<li><p>SharedFlow即共享的Flow，可以实现一对多关系,SharedFlow是一种热流。</p>
+<p>  &#x2F;&#x2F;ViewModel<br>  val sharedFlow&#x3D;MutableSharedFlow<String>()</p>
+<p>  viewModelScope.launch{<br>    sharedFlow.emit(“Hello”)<br>    sharedFlow.emit(“SharedFlow”)<br>  }</p>
+<p>  &#x2F;&#x2F;Activity<br>  lifecycleScope.launch{<br>  viewMode.sharedFlow.collect {<br>     print(it)<br>  }<br>  }</p>
+</li>
+</ul>
+<h4 id="为什么引入StateFlow"><a href="#为什么引入StateFlow" class="headerlink" title="为什么引入StateFlow"></a>为什么引入StateFlow</h4><p>StateFlow 与 LiveData 是最接近的，因为:</p>
+<p>有初始值： StateFlow 初始化时必须传入初始值；<br>容量为 1： StateFlow 只会保存一个值；<br>重放为 1： StateFlow 会向新订阅者重放最新的值；<br>不支持 resetReplayCache() 重置重放缓存：</p>
+<ol>
+<li>它始终是有值的。</li>
+<li>它的值是唯一的。</li>
+<li>它允许被多个观察者共用 (因此是共享的数据流)。</li>
+<li>它永远只会把最新的值重现给订阅者，这与活跃观察者的数量是无关的。</li>
+</ol>
+<p>构造函数</p>
+<pre><code class="hljs">public fun &lt;T&gt; MutableStateFlow(value: T): MutableStateFlow&lt;T&gt; = StateFlowImpl(value ?: NULL)
+</code></pre>
+<p>1.StateFlow构造函数较为简单，只需要传入一个默认值<br>2.StateFlow本质上是一个replay为 1，并且没有缓冲区的SharedFlow, 因此第一次订阅时会先获得默认值<br>3.StateFlow仅在值已更新，并且值发生了变化时才会返回，即如果更新后的值没有变化，也没会回调Collect方法，这点与LiveData不同</p>
+<p>stateIn将普通流转化成StateFlow</p>
+<pre><code class="hljs">val result: StateFlow&lt;Result&lt;UiState&gt;&gt; = someFlow
+    .stateIn(
+        scope = viewModelScope, 
+        started = WhileSubscribed(5000), 
+        initialValue = Result.Loading
+    )
+</code></pre>
+<p>需要传入一个默认值，同时之所以WhileSubscribed中传入了5000，是为了实现等待5秒后仍然没有订阅者存在就终止协程的功能，这个方法有以下功能</p>
+<ul>
+<li>防抖</li>
+<li>用户将您的应用转至后台运行，5 秒钟后所有来自其他层的数据更新会停止，这样可以节省电量。</li>
+<li>最新的数据仍然会被缓存，所以当用户切换回应用时，视图立即就可以得到数据进行渲染。</li>
+<li>订阅将被重启，新数据会填充进来，当数据可用时更新视图。</li>
+<li>在屏幕旋转时，因为重新订阅的时间在 5s 内，因此上游流不会中止</li>
+</ul>
+<h4 id="最佳实践"><a href="#最佳实践" class="headerlink" title="最佳实践"></a>最佳实践</h4><p>使用带超时参数的 WhileSubscribed 策略暴露 Flow（可以防抖）<br>望等待 5 秒后没有订阅者则停止数据流，可以使用 whileSubscribed(5000)。</p>
+<pre><code class="hljs">class MyViewModel(...) : ViewModel() &#123;
+    val result = userId.mapLatest &#123; newUserId -&gt;
+        repository.observeItem(newUserId)
+    &#125;.stateIn(
+        scope = viewModelScope, 
+        started = WhileSubscribed(5000), 
+        initialValue = Result.Loading
+    )
+&#125;
+</code></pre>
+<p>接收<br>使用 repeatOnLifecycle 来收集数据更新</p>
+<pre><code class="hljs">onCreateView(...) &#123;
+    viewLifecycleOwner.lifecycleScope.launch &#123;
+        viewLifecycleOwner.lifecycle.repeatOnLifecycle(STARTED) &#123;
+            myViewModel.myUiState.collect &#123; ... &#125;
+        &#125;
+    &#125;
+&#125;
+</code></pre>
+<p>如果你的数据流比较复杂，同时不需要获取myFlow.value，需要配置新用户订阅重播无素的个数，或者需要发送重复的值，可以考虑使用SharedFlow</p>
+<p>SharedFlow配置更为灵活，支持配置replay, 缓冲区大小等，StateFlow是SharedFlow的特化版本，replay固定为 1，缓冲区大小默认为 0</p>
+<p><strong>replay</strong> 表示当新的订阅者Collect时，发送几个已经发送过的数据给它，默认为 0，即默认新订阅者不会获取以前的数据</p>
+<h4 id="Channel"><a href="#Channel" class="headerlink" title="Channel"></a>Channel</h4><p><a target="_blank" rel="noopener" href="https://juejin.cn/post/6844904153181847566#heading-0">Google 的建议</a> 是优先使用 Flow 而不是 Channel，主要原因是 Flow 会更自动地关闭数据流，而一旦 Channel 没有正常关闭，则容易造成资源泄漏。此外，Flow 相较于 Channel 提供了更明确的约束和操作符，更灵活。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%85%B6%E4%BB%96%E8%AF%AD%E8%A8%80/" class="category-chain-item">其他语言</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E5%85%B6%E4%BB%96%E8%AF%AD%E8%A8%80/kotlin/" class="category-chain-item">kotlin</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Flow学习</div>
+      <div>http://peiniwan.github.io/2022/03/885557fee9aa.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>六月的雨</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年3月7日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/10/791c48c973f9.html" title="Kotlin分享">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Kotlin分享</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/02/4e48abd74ae7.html" title="Flutter Tips">
+                        <span class="hidden-mobile">Flutter Tips</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

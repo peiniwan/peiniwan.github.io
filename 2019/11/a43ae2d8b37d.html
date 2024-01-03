@@ -1,0 +1,925 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="六月的雨">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="系统源码View 绘制流程Activity的界面是在onResume之后才开始进行绘制的，onWindowFocusChanged回调里能确认UI可见可操作。 onCreate - onStart - onResume - measure - layout -measure - layout - draw - onWindowFocusChanged   每个 Activity 包含了一个 Win">
+<meta property="og:type" content="article">
+<meta property="og:title" content="系统源码">
+<meta property="og:url" content="http://peiniwan.github.io/2019/11/a43ae2d8b37d.html">
+<meta property="og:site_name" content="六月的雨的博客">
+<meta property="og:description" content="系统源码View 绘制流程Activity的界面是在onResume之后才开始进行绘制的，onWindowFocusChanged回调里能确认UI可见可操作。 onCreate - onStart - onResume - measure - layout -measure - layout - draw - onWindowFocusChanged   每个 Activity 包含了一个 Win">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%B3%BB%E7%BB%9F%E6%BA%90%E7%A0%81.resources/2023/09/15/18-23-14-7052a93b389d0d561ed14c1efa8ff5eb-unknown_filename-55099a.jpeg">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%B3%BB%E7%BB%9F%E6%BA%90%E7%A0%81.resources/2023/09/15/18-23-14-771d41b8371c973d1d35c8e428eb0153-%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20191116113902-4c7ba5.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%B3%BB%E7%BB%9F%E6%BA%90%E7%A0%81.resources/2023/09/15/18-23-14-2a53d44c380b593e37d1144b9ab7d32d-unknown_filename.28-f14ce9.jpeg">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%B3%BB%E7%BB%9F%E6%BA%90%E7%A0%81.resources/2023/09/15/18-23-14-d10c6510995be95c11c671bccaa261ad-unknown_filename.30-c8cf82.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%B3%BB%E7%BB%9F%E6%BA%90%E7%A0%81.resources/2023/09/15/18-23-14-afa045848120d625f289795cd091bc3f-%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20191116143525-704839.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%B3%BB%E7%BB%9F%E6%BA%90%E7%A0%81.resources/2023/09/15/18-23-14-4e3ec983ae3a8d3c77bd8cbda2a18acb-unknown_filename.31-e983e8.jpeg">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%B3%BB%E7%BB%9F%E6%BA%90%E7%A0%81.resources/2023/09/15/18-23-14-eebbd80772f6e7766c74a93ebc2e53c7-unknown_filename.18-2828ba.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%B3%BB%E7%BB%9F%E6%BA%90%E7%A0%81.resources/2023/09/15/18-23-14-6e6fa98791128bb71fb71815dbb69241-unknown_filename.19-ceb3a1.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%B3%BB%E7%BB%9F%E6%BA%90%E7%A0%81.resources/2023/09/15/18-23-14-566532bd5ebd93d5f914b24ef6b00830-unknown_filename.2-9ff731.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%B3%BB%E7%BB%9F%E6%BA%90%E7%A0%81.resources/2023/09/15/18-23-14-9564e77420be08d80e487b35d1279a64-unknown_filename.17-d02162.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%B3%BB%E7%BB%9F%E6%BA%90%E7%A0%81.resources/2023/09/15/18-23-14-cd7cb4e3634f82cb911a2d16766b3c2d-unknown_filename.9-4cbd16.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%B3%BB%E7%BB%9F%E6%BA%90%E7%A0%81.resources/2023/09/15/18-23-14-b4e2fbc08e08f9e7481929820cb6d48f-unknown_filename.6-016b82.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%B3%BB%E7%BB%9F%E6%BA%90%E7%A0%81.resources/2023/09/15/18-23-14-d8db38f03b4eeb682ec769a3700bb242-unknown_filename.10-4cb978.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%B3%BB%E7%BB%9F%E6%BA%90%E7%A0%81.resources/2023/09/15/18-23-14-abf29d796ef7e8e26531b39d01bf8c9b-unknown_filename.26-504aee.jpeg">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%B3%BB%E7%BB%9F%E6%BA%90%E7%A0%81.resources/2023/09/15/18-23-14-7d9727f25cda6031a6784e64887e9cc0-unknown_filename.27-afa6e8.jpeg">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%B3%BB%E7%BB%9F%E6%BA%90%E7%A0%81.resources/2023/09/15/18-23-14-28072f84ea308092f6ab02110c4f9693-unknown_filename.11-a2fbb6.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%B3%BB%E7%BB%9F%E6%BA%90%E7%A0%81.resources/2023/09/15/18-23-14-14aea50780ee7febd7c5e3296c70ac24-unknown_filename.12-600c2f.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%B3%BB%E7%BB%9F%E6%BA%90%E7%A0%81.resources/2023/09/15/18-23-14-794ea4506b2a3bc07e7837ccaa7aa815-unknown_filename.5-f821b1.png">
+<meta property="article:published_time" content="2019-11-16T06:27:14.000Z">
+<meta property="article:modified_time" content="2023-12-26T02:56:17.229Z">
+<meta property="article:author" content="六月的雨">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%B3%BB%E7%BB%9F%E6%BA%90%E7%A0%81.resources/2023/09/15/18-23-14-7052a93b389d0d561ed14c1efa8ff5eb-unknown_filename-55099a.jpeg">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>系统源码 - 六月的雨的博客</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"peiniwan.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>六月的雨的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="系统源码"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2019-11-16 14:27" pubdate>
+          2019年11月16日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          4.3k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          36 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">系统源码</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="系统源码"><a href="#系统源码" class="headerlink" title="系统源码"></a>系统源码</h1><h2 id="View-绘制流程"><a href="#View-绘制流程" class="headerlink" title="View 绘制流程"></a>View 绘制流程</h2><p>Activity的界面是在onResume之后才开始进行绘制的，onWindowFocusChanged回调里能确认UI可见可操作。</p>
+<pre><code class="hljs">onCreate - onStart - onResume - measure - layout -measure - layout - draw - onWindowFocusChanged
+</code></pre>
+<ul>
+<li>每个 Activity 包含了一个 Window 对象，这个对象是由 PhoneWindow 做的实现（Window 是一个抽象类，而 PhoneWindow 是它的子类）。而 PhoneWindow 将 DecorView 作为了一个应用窗口的根 View，这个 DecorView 又把屏幕划分为了两个区域：一个是 TitleBar，一个是 ContentView，而我们平时在 Xml 文件中写的布局正好是展示在 ContentView 中的.</li>
+<li>PhoneWindow是Android系统中最基本的窗口系统，每个Activity会创建一个。同时，PhoneWindow也是Activity和View系统交互的接口。<br>  <img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%B3%BB%E7%BB%9F%E6%BA%90%E7%A0%81.resources/2023/09/15/18-23-14-7052a93b389d0d561ed14c1efa8ff5eb-unknown_filename-55099a.jpeg" srcset="/img/loading.gif" lazyload alt="unknown_filename"><br>  <img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%B3%BB%E7%BB%9F%E6%BA%90%E7%A0%81.resources/2023/09/15/18-23-14-771d41b8371c973d1d35c8e428eb0153-%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20191116113902-4c7ba5.png" srcset="/img/loading.gif" lazyload alt="微信截图_20191116113902"></li>
+</ul>
+<hr>
+<h4 id="Window-WindowManager-Activity-之间联系"><a href="#Window-WindowManager-Activity-之间联系" class="headerlink" title="Window WindowManager Activity 之间联系"></a><a target="_blank" rel="noopener" href="https://github.com/maoqitian/Nice-Knowledge-System/blob/master/AndroidFramework%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/Android%20%E8%A7%86%E5%9B%BE%E5%B1%82/Window%20WindowManager%20Activity%20%E4%B9%8B%E9%97%B4%E8%81%94%E7%B3%BB.md">Window WindowManager Activity 之间联系</a></h4><p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%B3%BB%E7%BB%9F%E6%BA%90%E7%A0%81.resources/2023/09/15/18-23-14-2a53d44c380b593e37d1144b9ab7d32d-unknown_filename.28-f14ce9.jpeg" srcset="/img/loading.gif" lazyload alt="unknown_filename.28"></p>
+<h3 id="Window-实例化"><a href="#Window-实例化" class="headerlink" title="Window 实例化"></a>Window 实例化</h3><ul>
+<li>ActivityThread初始启动应用创建Activity 的方法handleLaunchActivity方法中调用了Activity的attach方法，创建了Window对象为PhoneWindow</li>
+<li>Window的 Callback 对象指向的是当前 Activity对象，方便事件分发传递回Activity<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">final</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">attach</span><span class="hljs-params">(Context context, ActivityThread aThread ...)</span> &#123;<br>    attachBaseContext(context);<br>    ...<br>    mWindow = <span class="hljs-keyword">new</span> <span class="hljs-title class_">PhoneWindow</span>(<span class="hljs-built_in">this</span>, window, activityConfigCallback);<span class="hljs-comment">//1</span><br>    ...<br>    mWindow.setCallback(<span class="hljs-built_in">this</span>);<span class="hljs-comment">//2</span><br>    ...<br>&#125;<br></code></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="DecorView-创建"><a href="#DecorView-创建" class="headerlink" title="DecorView 创建"></a>DecorView 创建</h3><p>PhoneWindow的setContentView方法会创建DecorView，最终将加载根布局到</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><code class="hljs csharp">DecorView(FrameLayout)<br>    <span class="hljs-function"><span class="hljs-keyword">protected</span> DecorView <span class="hljs-title">generateDecor</span>(<span class="hljs-params"><span class="hljs-built_in">int</span> featureId</span>)</span> &#123;<br>           ...<br>            <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> DecorView(context, featureId, <span class="hljs-keyword">this</span>, getAttributes());<br>&#125;<br>```       <br><br><span class="hljs-meta">### Window 与 WindowManager</span><br><br>* Activity的 attach 方法，其中调用了Window 的 setWindowManager方法，创建了WindowManager，WindowManager是一个接口，创建的是它的实现类 WindowManagerImpl 对象<br>* WindowManager的addview方法 将 DecorView 与WindowManager 建立联系，也就是从addview方法触发了绘制界面，实际上调用的是WindowManagerImpl的 addview 方法<br>* 又调了WindowManagerGlobal的addview方法[[WMS<span class="hljs-meta">#addView]]，这里创建了ViewRootImpl</span><br>* ViewRootImpl，每个ViewRootImpl对应一个Window<br><br>![unknown_filename<span class="hljs-number">.29</span>](https:<span class="hljs-comment">//obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%B3%BB%E7%BB%9F%E6%BA%90%E7%A0%81.resources/2023/09/15/18-23-14-6fc6eb8dac1fd49a9664148daeaa5235-unknown_filename.29-1288b7.jpeg)</span><br><span class="hljs-meta">#### requestLayout 调用 scheduleTraversals</span><br><br>frameworks/<span class="hljs-keyword">base</span>/core/java/android/view/ViewRootImpl.java<br>* 如下源码，ViewRootImpl的scheduleTraversals方法注释<span class="hljs-number">1</span>处在主线程Handler 插入一个异步空消息，等到Vsync信号来时，Handler会优先执行这个异步消息，保证绘制的优先级<br>* 注释<span class="hljs-number">2</span>执行了Choreographer.postCallback方法，Choreographer能够监听Vsync信号，当Vsync信号到来时执行callback，也就是执行mTraversalRunnable，它是Runnable对象<br>```<span class="hljs-function">java</span><br><span class="hljs-function">        <span class="hljs-keyword">void</span> <span class="hljs-title">scheduleTraversals</span>()</span> &#123;<br>            <span class="hljs-keyword">if</span> (!mTraversalScheduled) &#123;<br>                mTraversalBarrier = mHandler.getLooper().getQueue().postSyncBarrier();<span class="hljs-comment">//1</span><br>                mChoreographer.postCallback(<br>                        Choreographer.CALLBACK_TRAVERSAL, mTraversalRunnable, <span class="hljs-literal">null</span>);<span class="hljs-comment">//2</span><br>                pokeDrawLockIfNeeded();<br>            &#125;<br>        &#125;<br></code></pre></td></tr></table></figure>
+
+<h4 id="activity生命周期"><a href="#activity生命周期" class="headerlink" title="activity生命周期"></a>activity生命周期</h4><p>EXECUTE_TRANSACTION(也是打开activity的H)——&gt;execute——&gt;executeCallbacks——&gt;cycleToPath——&gt;performLifecycleSequence——&gt;handleResumeActivityi（好像不对？）<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%B3%BB%E7%BB%9F%E6%BA%90%E7%A0%81.resources/2023/09/15/18-23-14-d10c6510995be95c11c671bccaa261ad-unknown_filename.30-c8cf82.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.30"></p>
+<h4 id="整个流程"><a href="#整个流程" class="headerlink" title="整个流程"></a>整个流程</h4><ul>
+<li>attach把window，windowmanager创建出来了，setContview中最后通过phoneWindow把DecorView创建出来了</li>
+<li>然后在onResume，WindowManager的addview方法 将 DecorView 与WindowManager 建立联系，然后创建了viewRootImpl，并将ViewRootImpl对象和DecorView建立关联（assignParent）</li>
+<li>接着ViewRootImpl 的 setView里面有requestLayout，三大流程绘制</li>
+</ul>
+<h4 id="ViewRootImpl"><a href="#ViewRootImpl" class="headerlink" title="ViewRootImpl"></a>ViewRootImpl</h4><ul>
+<li>ViewRoot不是View，它的实现类是ViewRootImpl，ViewRoot是DecorView的“管理者”。它是DecorView和WindowManager之间的交互。View的三大流程均是通过ViewRoot来完成的。</li>
+<li><strong>View的绘制流程是从ViewRoot（ViewRootImpl）的performTraversals方法开始的</strong>。所以performTraversals方法依次调用performMeasure,performLayout和performDraw三个方法。然后各自经历measure、layout、draw三个流程最终显示在用户面前。</li>
+</ul>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%B3%BB%E7%BB%9F%E6%BA%90%E7%A0%81.resources/2023/09/15/18-23-14-afa045848120d625f289795cd091bc3f-%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20191116143525-704839.png" srcset="/img/loading.gif" lazyload alt="微信截图_20191116143525"><br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%B3%BB%E7%BB%9F%E6%BA%90%E7%A0%81.resources/2023/09/15/18-23-14-4e3ec983ae3a8d3c77bd8cbda2a18acb-unknown_filename.31-e983e8.jpeg" srcset="/img/loading.gif" lazyload alt="unknown_filename.31"></p>
+<h4 id="View-post-为什么可以获取到宽高信息"><a href="#View-post-为什么可以获取到宽高信息" class="headerlink" title="View.post()为什么可以获取到宽高信息"></a>View.post()为什么可以获取到宽高信息</h4><pre><code class="hljs">    View 是Android 中视图的程序方式,View 不能单独存在,必须依附 Window 这个抽象概念上,因此有视图的地方就有Window。
+activity所有界面的呈现都是在window上的，window中的type是用来控制它的显示层级关系。
+
+    内部执行是通过handler 去执行的， View.post 调用时会把Runnable保存到一个缓存数组中（handle.post），等到View加载到Window时会调用View的 dispatchAttachedToWindow 方法，然后通过handler执行Runnable方法，就可以获取到他的宽高。
+
+    在 onCreate() 和 onResume() 中是无法获取到宽高的，而 View.post() 回调中可以
+
+    setContentView() 逻辑很复杂，但干的事情很直白。创建 DecorView ，然后根据我们传入的布局文件 id 解析 xml，将得到的 view 塞进 DecorView 中。注意，到现在，我们得到的只是一个 空壳子 View 树，它并没有被添加到屏幕上，其实也不能添加到屏幕上。所以，在 onCreate() 回调中获取视图宽高显然是不可取的。
+</code></pre>
+<h5 id="原理"><a href="#原理" class="headerlink" title="原理"></a><a target="_blank" rel="noopener" href="https://juejin.cn/post/6895735092438630407">原理</a></h5><p>根据 ViewRootImpl 是否已经创建，View.post() 会执行不同的逻辑。如果 ViewRootImpl 已经创建，即 mAttachInfo 已经初始化，直接通过 Handler 发送消息来执行任务。如果 ViewRootImpl 未创建，即 View 尚未开始绘制，会将任务保存为 HandlerAction，暂存在队列 HandlerActionQueue 中，等到 View 开始绘制，执行 performTraversal() 方法时，在 dispatchAttachedToWindow() 方法中通过 Handler 分发 HandlerActionQueue 中暂存的任务。<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%B3%BB%E7%BB%9F%E6%BA%90%E7%A0%81.resources/2023/09/15/18-23-14-eebbd80772f6e7766c74a93ebc2e53c7-unknown_filename.18-2828ba.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.18"><br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%B3%BB%E7%BB%9F%E6%BA%90%E7%A0%81.resources/2023/09/15/18-23-14-6e6fa98791128bb71fb71815dbb69241-unknown_filename.19-ceb3a1.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.19"></p>
+<ul>
+<li>如果 View 是 new 出来的，并且没有通过 addView 等方法依赖到 DecorView 上面，它的 post 方法也是不会执行的，因为它没有机会和 ViewRootImpl 进行互动了</li>
+</ul>
+<h4 id="SurfaceView的绘制原理"><a href="#SurfaceView的绘制原理" class="headerlink" title="SurfaceView的绘制原理"></a>SurfaceView的绘制原理</h4><p>Android应用程序窗口是通过SurfaceFlinger服务来绘制自己的UI。一般来说，每一个窗口在SurfaceFlinger服务中都对应有一个 Surface，用来描述它的<strong>绘图表面</strong>。对于那些具有SurfaceView的窗口来说，每一个SurfaceView在SurfaceFlinger服务中还对应有一个独立的 Surface，用来单独描述它的绘图表面，以区别于它的宿主窗口的绘图 表面。<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%B3%BB%E7%BB%9F%E6%BA%90%E7%A0%81.resources/2023/09/15/18-23-14-566532bd5ebd93d5f914b24ef6b00830-unknown_filename.2-9ff731.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.2"></p>
+<h4 id="SurfaceFlinger"><a href="#SurfaceFlinger" class="headerlink" title="SurfaceFlinger"></a>SurfaceFlinger</h4><ul>
+<li>在 App 进程中创建 PhoneWindow 后会创建 ViewRoot。ViewRoot 的创建会创建一个 Surface。</li>
+<li>图像流的最常见消耗方是 SurfaceFlinger，该系统服务会消耗当前可见的 Surface，并使用窗口管理器中提供的信息将它们合成到显示部分。SurfaceFlinger 是可以修改所显示部分内容的唯一服务。SurfaceFlinger 使用 OpenGL 和 Hardware Composer 来合成一组 Surface</li>
+<li><strong>HWComposer 是基于硬件来产生 VSync 信号的，来通知 SurfaceFlinger 重绘控制显示的帧率。</strong></li>
+<li>图像流生产方可以是生成图形缓冲区以供消耗的任何内容。例如 OpenGL ES、Canvas 2D 和 mediaserver 视频解码器。</li>
+</ul>
+<h4 id="Dialog不能用Application的Context"><a href="#Dialog不能用Application的Context" class="headerlink" title="Dialog不能用Application的Context"></a>Dialog不能用Application的Context</h4><p>我说不能，解释的是以前在崩溃日志中看到Activity不存在，但Dialog 还存在，然后造成崩溃，后来使用DialogFragment ，这样可以管理弹窗的生命周期，不再存在Dialog 的崩溃。但不知道为什么 Dialog不能使用Application的Context。查了资料总结一下。</p>
+<p>用Application的上下文来创建Dialog，在调用它的show方法时程序会Crash，LogCat的异常信息如下：</p>
+<pre><code class="hljs">Caused by: android.view.WindowManager$BadTokenException: Unable to add window -- token null is not for an application  
+</code></pre>
+<p>Token：这里提到的Token主是指窗口令牌（Window Token），是一种特殊的Binder令牌，Wms用它唯一标识系统中的一个窗口。 必须在一个窗口上</p>
+<hr>
+<h2 id="Android的启动流程"><a href="#Android的启动流程" class="headerlink" title="Android的启动流程"></a>Android的启动流程</h2><p>当启动电源系统启动后加载Linux内核后，加载各种驱动，当有了驱动以后，开始启动Android系统同时会加载用户级别的第一个进程init（system\core\init.c），加载init.rc文件，会启动一个Zygote进程，此进程是Android系统的一个母进程，用来启动Android的其他服务进程，然后接着在里面启动了System Server进程，负责启动和管理整个Java framework，包含ActivityManager，WindowManager，PackageManager，PowerManager等服务，被SystemServer进程启动的ActivityManagerService会启动Launcher，Launcher启动后会将已安装应用的快捷图标显示到界面上。</p>
+<ul>
+<li>System Server进程，是由Zygote进程fork而来（fork一般都用socket），System Server是Zygote孵化的第一个进程，System Server负责启动和管理整个Java framework，包含ActivityManager，WindowManager，PackageManager，PowerManager等服务。</li>
+<li>Zygote进程孵化出的第一个App进程是Launcher，这是用户看到的桌面App；</li>
+<li>Zygote进程还会创建Browser，Phone，Email等App进程，每个App至少运行在一个进程上。<br>  所有的App进程都是由Zygote进程fork生成的。</li>
+</ul>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p><a target="_blank" rel="noopener" href="https://app.yinxiang.com/shard/s52/nl/10438895/26b87fa6-cee1-4c9d-89eb-39a07ec5240c/">Android启动流程分析 - AI中台 - Confluence</a></p>
+<p>1.启动电源以及系统启动<br>当电源按下时引导芯片代码开始从预定义的地方（固化在ROM）开始执行。加载引导程序Bootloader到RAM，然后执行。<br>2.引导程序BootLoader<br>引导程序BootLoader是在Android操作系统开始运行前的一个小程序，它的主要作用是把系统OS拉起来并运行。<br>3.Linux内核启动<br>内核启动时，设置缓存、被保护存储器、计划列表、加载驱动。当内核完成系统设置，它首先在系统文件中寻找init.rc文件，并启动init进程。<br>4.init进程启动<br>初始化和启动属性服务，并且启动Zygote进程。</p>
+<blockquote>
+<p>解析init.zygote.rc中的参数，创建AppRuntime并调用AppRuntime.start()方法；<br>调用AndroidRuntime的startVM()方法创建虚拟机，再调用startReg()注册JNI函数；<br>通过JNI方式调用ZygoteInit.main()，第一次进入Java世界<br>5.Zygote进程启动<br>创建JavaVM并为JavaVM注册JNI，创建服务端Socket，启动SystemServer进程。<br>6.SystemServer进程启动<br>启动Binder线程池和SystemServiceManager，并且启动各种系统服务。<br>7.Launcher启动<br>被SystemServer进程启动的ActivityManagerService会启动Launcher，Launcher启动后会将已安装应用的快捷图标显示到界面上。</p>
+</blockquote>
+<h2 id="启动流程路线"><a href="#启动流程路线" class="headerlink" title="启动流程路线"></a>启动流程路线</h2><p>1.启动电源以及系统启动-&gt;2.引导程序BootLoader-&gt;3.Linux内核启动-&gt;4.init进程启动-&gt;5.Zygote进程启动-&gt;6.SystemServer进程启动-&gt;7.Launcher启动</p>
+<h3 id="init进程启动"><a href="#init进程启动" class="headerlink" title="init进程启动"></a>init进程启动</h3><p>init是Android系统中用户控件的第一个进程，init进程启动过程中主要分三个部分：<br>1.创建和挂载启动所需的文件目录<br>2.初始化和启动属性服务<br>3.解析init.rc配置文件并启动Zygote进程<br>源码如下 system&#x2F;core&#x2F;init&#x2F;init.cpp</p>
+<p>init.rc是一个配置文件，里面是一些脚本，该脚本的意思是service通知init进程创建名zygote的进程（fork出来的）并启动SystemService</p>
+<h3 id="SystemServer进程启动"><a href="#SystemServer进程启动" class="headerlink" title="SystemServer进程启动"></a>SystemServer进程启动</h3><p>从上面ZygoteInit的main方法中我们可以看到调用了startSystemServer方法启动SystemServic。</p>
+<p>解析SyetemServer进程，我们看下SystemService的main函数<br>frameworks&#x2F;base&#x2F;services&#x2F;java&#x2F;com&#x2F;android&#x2F;server&#x2F;SystemServer.java：</p>
+<pre><code class="hljs">public static void main(String[] args) &#123;
+        new SystemServer().run();
+    &#125;
+</code></pre>
+<p>main函数中只调用了SystemServer的run函数，如下所示。</p>
+<pre><code class="hljs">private void run() &#123;
+        ......
+            Looper.prepareMainLooper();
+            // Initialize native services.
+            System.loadLibrary(&quot;android_servers&quot;);
+            performPendingShutdown();
+            createSystemContext();
+            //  创建SystemServiceManager
+            mSystemServiceManager = new SystemServiceManager(mSystemContext);
+            mSystemServiceManager.setRuntimeRestarted(mRuntimeRestart);
+            LocalServices.addService(SystemServiceManager.class, mSystemServiceManager);
+            // Prepare the thread pool for init tasks that can be parallelized
+            SystemServerInitThreadPool.get();
+       ......
+        // Start services.
+        //启动系统的各种服务
+        try &#123;
+            traceBeginAndSlog(&quot;StartServices&quot;);
+        //引导服务、
+            startBootstrapServices();
+        //核心服务
+            startCoreServices();
+        //和其他服务
+            startOtherServices();
+            SystemServerInitThreadPool.shutdown();
+        &#125; catch (Throwable ex) &#123;
+            Slog.e(&quot;System&quot;, &quot;******************************************&quot;);
+            Slog.e(&quot;System&quot;, &quot;************ Failure starting system services&quot;, ex);
+            throw ex;
+        &#125; finally &#123;
+            traceEnd();
+        &#125;
+       ......
+        // Loop forever.
+        Looper.loop();
+    &#125;
+</code></pre>
+<p>创建的SystemServiceManager会对系统的服务进行创建、启动和生命周期管理，启动的引导服务startBootstrapServices函数中用SystemServiceManager启动了ActivityManagerService、PowerManagerService、PackageManagerService等服务。</p>
+<p>SystemServiceManager 用来管理系统中的各种Service，用于系统C&#x2F;S架构中的Binder机制通信：Client端要使用某个Service，则需要先到ServiceManager查询Service的相关信息，然后根据Service的相关信息与Service所在的Server进程建立通讯通路，这样Client端就可以使用Service了</p>
+<h2 id="PMS"><a href="#PMS" class="headerlink" title="PMS"></a>PMS</h2><h3 id="总结-1"><a href="#总结-1" class="headerlink" title="总结"></a>总结</h3><ul>
+<li>应用安装的时候，通过 PackageManagerService 解析 apk 的 AndroidManifest.xml 文件，提取出这个 apk 的信息写入到 system&#x2F;packages.xml 文件中，这些信息包括：权限、应用包名、icon、apk 的安装位置、版本、userID 等等。packages.xml 文件位于系统目录下&#x2F;data&#x2F;system&#x2F;packages.xml。</li>
+<li>同时桌面 Launcher 会为安装过的应用生成不同的应用入口，对应桌面上的应用图标，下面分析点击应用图标的到应用启动的过程。</li>
+</ul>
+<h3 id="PackageManagerService"><a href="#PackageManagerService" class="headerlink" title="PackageManagerService"></a>PackageManagerService</h3><p><a target="_blank" rel="noopener" href="https://juejin.cn/post/7028196921143459870#heading-8">APK安装过程 完全解析</a><br>PackageManagerService 通过名字 你可能会想起 和四大组件紧密相关的 ActivityManagerService（AMS），它俩都是运行在SystemServer进程，App端和AMS、PMS进行交互都是通过Binder跨进程完成。AMS负责Activity等四大组件的管理，而PMS则负责 包package 的管理，APK的全称是Android Package，即PMS的作用就是管理APK。</p>
+<pre><code class="hljs">public static IPackageManager getPackageManager() &#123;
+    if (sPackageManager != null) &#123;
+        return sPackageManager;
+    &#125;
+    final IBinder b = ServiceManager.getService(&quot;package&quot;);
+    sPackageManager = IPackageManager.Stub.asInterface(b);
+    return sPackageManager;
+&#125;
+</code></pre>
+<h3 id="PMS的初始化"><a href="#PMS的初始化" class="headerlink" title="PMS的初始化"></a>PMS的初始化</h3><p>因为 所有App运行都需要 这些系统服务，所以是 系统开机的时候 完成 PMS、AMS这些的初始化</p>
+<pre><code class="hljs">//SystemServer.java
+/**
+ * The main entry point from zygote.
+ */
+public static void main(String[] args) &#123;
+    new SystemServer().run();
+&#125;
+
+private void run() &#123;
+        ...
+        // Here we go!
+        Slog.i(TAG, &quot;Entered the Android system server!&quot;);
+        ...
+        // Prepare the main looper thread (this thread).
+        Looper.prepareMainLooper();
+        ...
+    // Start services. 
+        startBootstrapServices(t); //系统开启中 具有复杂相互依赖性的 关键服务
+        startCoreServices(t); //没有复杂依赖的核心服务
+        startOtherServices(t); //其他服务
+        ...
+    // Loop forever.
+    Looper.loop();
+    throw new RuntimeException(&quot;Main thread loop unexpectedly exited&quot;);
+&#125;
+</code></pre>
+<p>在开机系统启动时，zygote 进程会fork一个 SystemServer 进程然后执行上面main方法，这里进行大量的初始化，其中就包括 启动各种服务。 这里我们看 startBootstrapServices():</p>
+<pre><code class="hljs">private void startBootstrapServices(@NonNull TimingsTraceAndSlog t) &#123;
+    ...
+    // Installer 
+    Installer installer = mSystemServiceManager.startService(Installer.class);
+    ...
+    //AMS
+    mActivityManagerService = ActivityManagerService.Lifecycle.startService(mSystemServiceManager, atm);
+    mActivityManagerService.setInstaller(installer);
+    ...
+    //PMS
+    mPackageManagerService = PackageManagerService.main(mSystemContext, installer,mFactoryTestMode != FactoryTest.FACTORY_TEST_OFF, mOnlyCore);
+    ...
+&#125;
+</code></pre>
+<p>发现这里开启了 AMS、PMS，并且都使用了Installer。Installer 看名字像是安装器，后面再做介绍。 PMS的main方法内用构造方法创建了PMS实例，而它的构造方法内容特别多，我们关注其中一句调用scanDirTracedLI()：</p>
+<pre><code class="hljs">/** data/app，已安装app的目录 */
+private static final File sAppInstallDir = new File(Environment.getDataDirectory(), &quot;app&quot;);
+
+public PackageManagerService(Injector injector, boolean onlyCore, boolean factoryTest)&#123;
+    ...
+    //读取packages.xml中 上次的包信息，解析后将数据存放到mSettings中
+    mFirstBoot = !mSettings.readLPw(mInjector.getUserManagerInternal().getUsers(false));
+    ...
+    //扫描 data/app
+    scanDirTracedLI(sAppInstallDir, 0, scanFlags | SCAN_REQUIRE_KNOWN, 0,packageParser, executorService);
+    ...
+    //把新的 mSettings 内容更新到 packages.xml
+    mSettings.writeLPr();
+    ...
+&#125;
+</code></pre>
+<p>packages.xml：记录系统中 所有安装的应用信息，包括基本信息、签名和权限。<br>mSettings：用来保存和PMS相关的一些设置，它保存的内容在解析应用时会用到。</p>
+<p>先读取packages.xml文件，解析后将数据存放到mSettings中，代表上次启动时的应用包信息。然后扫描所有APK目录并解析APK，最后更新packages.xml文件。 而 packages.xml文件 是在 Settings 构造方法中创建。</p>
+<p>data&#x2F;app 是用户已安装App所在的目录，另外还有system&#x2F;app存放 系统App。PMS构造方法中会对 这两个目录在内的多个目录进行扫描，我们这里可以猜想到这是开机时对所有已安装App的初始化。</p>
+<p><strong>总结</strong><br>系统启动后创建并启动了PMS，并且PMS完成了对所有存在APK的目录进行了扫描，解析所有APK的AndroidManifest.xml，然后进一步扫描APK 最后提交包扫描结果到 PMS 的属性中。</p>
+<h2 id="APK的安装过程"><a href="#APK的安装过程" class="headerlink" title="APK的安装过程"></a>APK的安装过程</h2><ul>
+<li>APK用写入Session且包信息和APK安装操作 都提交到了PMS；</li>
+<li>PMS中先把APK拷贝到 &#x2F;data&#x2F;app，然后使用PackageParser2解析APK 获取 四大组件、搜集签名、PackageSetting等信息，并进行校验确保安装成功；</li>
+<li>接着提交信息包更新系统状态及PMS的内存数据；</li>
+<li>然后使用 Installer 准备用户目录&#x2F;data&#x2F;user、进行 dexOpt；</li>
+<li>最后发送安装结果通知UI层。</li>
+</ul>
+<h2 id="crash流程"><a href="#crash流程" class="headerlink" title="crash流程"></a>crash流程</h2><p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%B3%BB%E7%BB%9F%E6%BA%90%E7%A0%81.resources/2023/09/15/18-23-14-9564e77420be08d80e487b35d1279a64-unknown_filename.17-d02162.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.17"></p>
+<hr>
+<h2 id="IntentSerVice"><a href="#IntentSerVice" class="headerlink" title="IntentSerVice"></a>IntentSerVice</h2><pre><code class="hljs">   @Override
+    public void onCreate() &#123;
+
+        super.onCreate();
+        HandlerThread thread = new HandlerThread(&quot;IntentService[&quot; + mName + &quot;]&quot;);
+        thread.start();
+
+        mServiceLooper = thread.getLooper();
+        mServiceHandler = new ServiceHandler(mServiceLooper);
+    &#125;
+  //  -------
+        private final class ServiceHandler extends Handler &#123;
+        public ServiceHandler(Looper looper) &#123;
+            super(looper);
+        &#125;
+
+        @Override
+        public void handleMessage(Message msg) &#123;
+            onHandleIntent((Intent)msg.obj);
+            stopSelf(msg.arg1);
+        &#125;
+    &#125;
+</code></pre>
+<h2 id="Context"><a href="#Context" class="headerlink" title="Context"></a>Context</h2><ul>
+<li>Context指：一个应用程序环境的信息,即上下文。Context 是一个接口，ContextImpl 是子类，ContextWapper 是具体实现。</li>
+</ul>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%B3%BB%E7%BB%9F%E6%BA%90%E7%A0%81.resources/2023/09/15/18-23-14-cd7cb4e3634f82cb911a2d16766b3c2d-unknown_filename.9-4cbd16.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.9"></p>
+<p>Activity 因为有了 一层 Theme ，所以中间有个 ContextThemeWrapper ，相当于它是Service和Application 的侄子<br>Context Wrapper 是一个包装类 ，没 任何具体的实现，真正的逻辑都在 Contextlmpl里面</p>
+<ul>
+<li>可以看出每次创建 Application 和 Acitvity 以及 Service 时就会有一个 ContextImpl 实例，ContentProvider 和B roadcastReceiver 的 Context 是其他地方传入的。</li>
+<li>所以 Context 数量 &#x3D; Application 数量 + Activity 数量 + Service 数量，单进程情况下 Application 数量就是 1。</li>
+<li><strong>确定生命周期的</strong>、获取各种资源<br>  Application的Context生命周期与应用程序完全相同。<br>  Activity或者Service的Context与他们各自类生命周期相同。<br>  <img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%B3%BB%E7%BB%9F%E6%BA%90%E7%A0%81.resources/2023/09/15/18-23-14-b4e2fbc08e08f9e7481929820cb6d48f-unknown_filename.6-016b82.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.6"></li>
+<li>Context功能很多，可以弹出Toast、启动Activity、启动Service、发送广播、操作数据库等等都需要用到Context。</li>
+<li>Application通常作为工具类来使用的，Application中在onCreate()方法里去初始化各种全局的变量数据是一种比较推荐的做法，但是如果你想把初始化的时间点提前到极致，也可以去重写attachBaseContext()方法。不能写在构造函数里。</li>
+</ul>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/freekiteyu/article/details/79318031">原文链接</a></p>
+<h2 id="Service-工作原理"><a href="#Service-工作原理" class="headerlink" title="Service 工作原理"></a>Service 工作原理</h2><p>众所周知， Service 有两套流程，一套是启动流程，另一套是绑定流程<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%B3%BB%E7%BB%9F%E6%BA%90%E7%A0%81.resources/2023/09/15/18-23-14-d8db38f03b4eeb682ec769a3700bb242-unknown_filename.10-4cb978.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.10"></p>
+<p>假设要启动的 Service 是在一个新的进程中，启动过程可分为5个阶段<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%B3%BB%E7%BB%9F%E6%BA%90%E7%A0%81.resources/2023/09/15/18-23-14-abf29d796ef7e8e26531b39d01bf8c9b-unknown_filename.26-504aee.jpeg" srcset="/img/loading.gif" lazyload alt="unknown_filename.26"></p>
+<ol start="2">
+<li>AMS 检查启动 Service 的进程是否存在，如果不存在，先把 Service 信息存下来，然后新建一个新的进程<br> AMS 检查 Service 是否在 AndroidManifest 声明了 ，若没声明 则会直接报错 AMS检查启动 Service 的进程是否存在，如果不存在，先把 Seic 信息存下来，然后创建一个新的进程,在AMs 中，每个 rice ，都使用 SeviceRecord 对象来保存</li>
+</ol>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%B3%BB%E7%BB%9F%E6%BA%90%E7%A0%81.resources/2023/09/15/18-23-14-7d9727f25cda6031a6784e64887e9cc0-unknown_filename.27-afa6e8.jpeg" srcset="/img/loading.gif" lazyload alt="unknown_filename.27"></p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%B3%BB%E7%BB%9F%E6%BA%90%E7%A0%81.resources/2023/09/15/18-23-14-28072f84ea308092f6ab02110c4f9693-unknown_filename.11-a2fbb6.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.11"></p>
+<p>你会发现，这段代码和前面介绍的 handleLaunchActivity 差不多，都是 PMS 中取出包的信息 packagelnfo ，这是一个LoadedApk 对象 ，然后获取它的 classload 反射出来一个类的对象，在这里反射的是 Service.<br>四大组件的逻辑都是如此，所以我们要做插件化，可以在这里做文章，换成插件的classLoader ，加载插件中的四大组件<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%B3%BB%E7%BB%9F%E6%BA%90%E7%A0%81.resources/2023/09/15/18-23-14-14aea50780ee7febd7c5e3296c70ac24-unknown_filename.12-600c2f.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.12"></p>
+<p><strong>广播原理</strong><br>BroadcastManager静态注册是通过 PMS (即:PackageManagerService完成整个注册过程的，除此之外四大组件也是通过PMS完成注册)。<br>acitivityManagerService通知packmanagerService去查询静态广播，查到后将广播放到BroadcastQueue里，然后用handler机制去动态注册广播<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%B3%BB%E7%BB%9F%E6%BA%90%E7%A0%81.resources/2023/09/15/18-23-14-794ea4506b2a3bc07e7837ccaa7aa815-unknown_filename.5-f821b1.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.5"></p>
+<p><strong>内容提供者原理</strong><br>原理：packmanagerservice里注册，在使用ContentResolver来进行查询操作时，query 方法层层调用到 ActivityThread 的 acquireExistingProvider 方法，根据URI字符串当中的授权host（即 authority ）和当前所在用户的 userId 来获取对应的Provider实例。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%BA%90%E7%A0%81/" class="category-chain-item">源码</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>系统源码</div>
+      <div>http://peiniwan.github.io/2019/11/a43ae2d8b37d.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>六月的雨</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2019年11月16日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2019/11/7a3e15452212.html" title="HashMap、lru、散列表">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">HashMap、lru、散列表</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2019/11/454b0267f9ef.html" title="优化工具使用">
+                        <span class="hidden-mobile">优化工具使用</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

@@ -1,0 +1,948 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="六月的雨">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Java基础其他Java 的 Object 类有哪些常用的方法？ 哪些场景下，子类需要重写 equals 方法和 hashCode 方法？比较两个对象是否相等的时候。hashCode相等，两个对象不一定相等；两个对象equals后相等，则两个对象的hashCode一定相等。为什么在写自定义的类的时候要重写equals？默认是比较的两个对象内存的地址什么要同时重写hashcode方法？未重写之前ha">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java基础">
+<meta property="og:url" content="http://peiniwan.github.io/2019/03/7266a39bd8cf.html">
+<meta property="og:site_name" content="六月的雨的博客">
+<meta property="og:description" content="Java基础其他Java 的 Object 类有哪些常用的方法？ 哪些场景下，子类需要重写 equals 方法和 hashCode 方法？比较两个对象是否相等的时候。hashCode相等，两个对象不一定相等；两个对象equals后相等，则两个对象的hashCode一定相等。为什么在写自定义的类的时候要重写equals？默认是比较的两个对象内存的地址什么要同时重写hashcode方法？未重写之前ha">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Java%E5%9F%BA%E7%A1%80.resources/2023/09/15/17-54-06-3b9dc88315a3954a30083e244228dcec-unknown_filename.9-723e23.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Java%E5%9F%BA%E7%A1%80.resources/2023/09/15/17-54-06-bfadebde34077dcb0cd63f0690681190-unknown_filename.10-0ed521.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Java%E5%9F%BA%E7%A1%80.resources/2023/09/15/17-54-06-90e01f068a04377865528027241ba103-unknown_filename.4-2774b7.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Java%E5%9F%BA%E7%A1%80.resources/2023/09/15/17-54-06-098a7a27d0ec66292059fbdf80a307fe-unknown_filename.3-fe5b58.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Java%E5%9F%BA%E7%A1%80.resources/2023/09/15/17-54-06-44b847a8d6b69543716600700df134a6-unknown_filename.5-53810d.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Java%E5%9F%BA%E7%A1%80.resources/2023/09/15/17-54-06-736330e06f8259dde7e325e12c51a05e-0-531e70.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Java%E5%9F%BA%E7%A1%80.resources/2023/09/15/17-54-06-19cfcf9091d436c902dc9151bf648f8a-unknown_filename-2fbc6c.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Java%E5%9F%BA%E7%A1%80.resources/2023/09/15/17-54-06-656de1928640f3a589768ac9afd47d63-unknown_filename.1-96648a.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Java%E5%9F%BA%E7%A1%80.resources/2023/09/15/17-54-06-8f2bc31a920991f6ad031e1c4838d2dd-unknown_filename.2-db543b.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Java%E5%9F%BA%E7%A1%80.resources/2023/09/15/17-54-06-08d4c2d538e2beda458f1518833d5ed2-10d42a6e-8f6f-45dd-b14b-bc14e35972ef-d39db8.jpg">
+<meta property="article:published_time" content="2019-03-02T09:40:37.000Z">
+<meta property="article:modified_time" content="2023-12-29T08:05:44.872Z">
+<meta property="article:author" content="六月的雨">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Java%E5%9F%BA%E7%A1%80.resources/2023/09/15/17-54-06-3b9dc88315a3954a30083e244228dcec-unknown_filename.9-723e23.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>Java基础 - 六月的雨的博客</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"peiniwan.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>六月的雨的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Java基础"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2019-03-02 17:40" pubdate>
+          2019年3月2日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          7.4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          62 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Java基础</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="Java基础"><a href="#Java基础" class="headerlink" title="Java基础"></a>Java基础</h1><h3 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h3><p><strong>Java 的 Object 类有哪些常用的方法？</strong><br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Java%E5%9F%BA%E7%A1%80.resources/2023/09/15/17-54-06-3b9dc88315a3954a30083e244228dcec-unknown_filename.9-723e23.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.9"></p>
+<p><strong>哪些场景下，子类需要重写 equals 方法和 hashCode 方法？</strong><br>比较两个对象是否相等的时候。<br>hashCode相等，两个对象不一定相等；两个对象equals后相等，则两个对象的hashCode一定相等。<br>为什么在写自定义的类的时候要重写equals？<br>默认是比较的两个对象内存的地址<br>什么要同时重写hashcode方法？<br>未重写之前hashcode方法返回的是对象的32位JVM内存地址，当我们把这<strong>不同地址但是实际相等</strong>的两个对象放进HashMap里面的时候它们不被看成是同一个对象，占据了两个位置。这个跟我们的预期不符，所以要重写hashcode方法。</p>
+<p><strong>三元运算符</strong></p>
+<p>[条件语句] ? [表达式1] : [表达式2]其中如条件语句为真执行表达式1，否则执行表达式2.表达式1或者表达式2都要有返回值，也就是说，表达式1或者表达式2可以是某些值，比方说整型123。而在我的代码中，grade &#x3D; “B”是一个赋值语句，没办法返回什么值回来，是不能用三元运算符来写。</p>
+<p><strong>Linux:说出常用命令</strong><br>cd   ~       当前用户主目录<br>cd   &#x2F;        根目录<br>cd   -        上一次访问的目录<br>cd   ..       上一级目录<br>cd            当前用户主目录<br>ls   -l       dir 列出当前目录下的文件信息（此命令很常用，简化的格式为 ll）<br>mkdir: 创建目录</p>
+<p><strong>java中，强制转换符把float转换为int时，按四舍五入，还是直接丢掉小数部分</strong><br>直接舍掉小数 比如float是4.7 转换成int 后是4 而不是5 要四舍五入的话转换前先加上0.5<br>比如 int i ; double j &#x3D; 4.7; i &#x3D; (int)(j+0.5);</p>
+<p><strong>静态的作用</strong><br>static修饰的代码块，当类被加载时执行，且被执行一次，作为对静态属性的初始化。不要实例化就可以类名.的方式调用，在内存中只有一份，可以<strong>多个对象共享同一份内存空间</strong>。静态导入，是将类中的所有静态成员导入进来。</p>
+<p><strong>编译时vs运行时</strong><br>编译时：将Java代码编译成．class文件的过程<br>运行时：就是Java虚拟机执行．class文件的过程<br>编译时vs运行时：编译时类型和运行时类型<br>编译时类型：编译时类型由声明该变量时使用的类型决定（形参）<br>运行时类型：运行时类型由实际赋给该变量的对象决定（实参）</p>
+<p><strong>%</strong><br>3%7&#x3D;3 4%7&#x3D;4<br>不能除就是0+余数 0&amp;4&#x3D;0</p>
+<p>当你执行 a&#x2F;b 的取模运算，且 b 比 a 大时，结果很简单：a 本身就是余数。换句话说，a mod b 等于 a。<br>这是因为取模运算的定义是求出一个数除以另一个数后的余数。如果被除数 a 小于除数 b，那么它无法被 b 完全整除一次，因此没有“剩下”的部分就是 a 本身。<br>例如：</p>
+<ul>
+<li><code>3 mod 4</code> 结果是 <code>3</code>。</li>
+<li><code>1 mod 5</code> 结果也是 <code>1</code>。</li>
+<li><code>7 mod 10</code> 结果同样为 <code>7</code>。</li>
+</ul>
+<p>在所有这些例子中，由于被除数小于除数，所以它们自<strong>己就成了余数</strong>。</p>
+<p><strong>执行顺序</strong><br>静态变量  静态代码块  子类静态变量  子类静态代码块  <br>变量  代码块  构造函数  <br>子类变量  子类代码块  子类构造函数</p>
+<pre><code class="hljs">public class TestNew &#123;
+    static int a = 3;
+    static int b;
+    static void meth(int x)&#123;
+        System.out.println(&quot;x = &quot;+x);
+        System.out.println(&quot;a = &quot;+a);
+        System.out.println(&quot;b = &quot;+b);
+    &#125;
+    static &#123;
+        System.out.println(&quot;static block initialized&quot;);
+        b = a*4;
+    &#125;
+    public static void main(String[] args) &#123;
+        // TODO Auto-generated method stub
+        meth(42);
+    &#125;
+&#125;
+</code></pre>
+<p>执行结果是：static block initialized<br>x &#x3D; 42<br>a &#x3D; 3<br>b &#x3D; 12<br>上述class TestNew的执行顺序是：首先static 块执行(打印一条消息)，a被设置为3，最后b被初始化为a* 4 成12。<br>然后调用main()，main () 调用meth() ，把值42传递给x。3个println ( ) 语句引用两个static变量a和b，以及局部变量x 。</p>
+<p>当类加载器将类加载到JVM中的时候就会创建静态变量，这跟对象是否创建无关。静态变量加载的时候就会分配内存空间。<br>静态代码块的代码只会在类第一次初始化的时候执行一次。<br>一个类可以有多个静态代码块，它并不是类的成员，也没有返回值，并且不能直接调用。<br>静态代码块不能包含this或者super,它们通常被用初始化静态变量。<br>类加载在运行时</p>
+<p><strong>Java int和Integer</strong><br>1、Integer是int的包装类，int则是java的一种基本数据类型 <br>2、Integer变量必须实例化后才能使用，而int变量不需要 <br>3、Integer实际是对象的引用，当new一个Integer时，实际上是生成一个指针指向此对象；而int则是直接存储数据值 <br>4、Integer的默认值是null，int的默认值是0</p>
+<p><strong>形参和实参</strong><br><strong>java在方法传递参数时，是将变量复制一份，然后传入方法体去执行</strong><br>基本数据类型不会修改,num2。因为，a、b中的值，只是从num1、num2的复制过来的。<br>也就是说，a、b相当于num1、num2的副本，副本的内容无论怎么修改，都不会影响到原件本身。<br>引用类型会修改，是引用<br>string类型特殊，不会修改<br>String对象一旦创建，内容不可更改。每一次内容的更改都是重现创建出来的新对象。</p>
+<p><strong>String和 StringBuilder、StringBuffer的区别</strong></p>
+<ul>
+<li><p>String 类型和 StringBuffer 类型的主要性能区别其实在于 String 是不可变的对象, 因此在每次对 String 类型进行改变的时候其实都等同于生成了一个新的 String 对象，然后将指针指向新的 String 对象，所以经常改变内容的字符串最好不要用String ，因为每次生成对象都会对系统性能产生影响，特别当内存中无引用对象多了以后,JVM 的 GC 就会开始工作，那速度是一定会相当慢的。</p>
+</li>
+<li><p>StringBuilder是在单线程环境下使用的，因为它的所有方面都没有被synchronized修饰，因此它的效率也比StringBuffer要高。</p>
+</li>
+<li><p>string “+” 在高版本中改了。” Hello, “ + “<br>  world! “ 这样的表达式，编译器会把它处理成一个连接好的常量字符串”Hello, world!”。这样，也就不存在反复的对象创建和销毁了，常量字符串的连接显示了超高的效率。</p>
+</li>
+<li><p><strong>StringBuilder之所以快</strong>，是因为内部预先分配了一部分内存（空间换时间），只有在内存不足的时候，才会去扩展内存<br>  String加了final，所以是不可变，StringBuilder没有加</p>
+</li>
+</ul>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Java%E5%9F%BA%E7%A1%80.resources/2023/09/15/17-54-06-bfadebde34077dcb0cd63f0690681190-unknown_filename.10-0ed521.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.10"></p>
+<p><strong>string为什么是final</strong></p>
+<p>1.为了实现字符串池        2.为了线程安全<br>因为字符串是不可变的，所以是多线程安全的，同一个字符串实例可以被多个线程共享。这样便不用因为线程安全问题而使用同步。字符串自己便是线程安全的。</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Java%E5%9F%BA%E7%A1%80.resources/2023/09/15/17-54-06-90e01f068a04377865528027241ba103-unknown_filename.4-2774b7.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.4"></p>
+<p>final修饰的String，代表了String的不可继承性，final修饰的char[]代表了被存储的数据不可更改性。但是：虽然final代表了不可变，但<strong>仅仅是引用地址不可变，并不代表了数组本身不会变</strong>,请看下面图片。<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Java%E5%9F%BA%E7%A1%80.resources/2023/09/15/17-54-06-098a7a27d0ec66292059fbdf80a307fe-unknown_filename.3-fe5b58.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.3"><br>final也可以将数组本身改变的，这个时候，起作用的还有private，正是因为两者保证了String的不可变性。</p>
+<p><strong>只有当字符串是不可变的，字符串池才有可能实现</strong>。<br>字符串池可以在大量使用字符串的情况下，可以节省内存空间，提高效率。<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Java%E5%9F%BA%E7%A1%80.resources/2023/09/15/17-54-06-44b847a8d6b69543716600700df134a6-unknown_filename.5-53810d.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.5"></p>
+<p>如果字符串是可变的，那么会引起很严重的安全问题。譬如，数据库的用户名、密码都是以字符串的形式传入来获得数据库的连接，或者在socket编程中，主机名和端口都是以字符串的形式传入。因为字符串是不可变的，所以它的值是不可改变的，否则黑客们可以钻到空子，<strong>改变字符串指向的对象的值，造成安全漏洞</strong>。</p>
+<p><strong>Java 中的final关键字有哪些用法？</strong><br>(1)修饰类：表示该类不能被继承；<br>(2)修饰方法：表示方法不能被重写；<br>(3)修饰变量：表示变量只能一次赋值以后值不能被修改（常量）。<br>对于一个final变量，如果是基本数据类型的变量，则其数值一旦在初始化之后便不能更改；如果是引用类型的变量，则在对其初始化之后便不能再让其指向另一个对象。举个例子：<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Java%E5%9F%BA%E7%A1%80.resources/2023/09/15/17-54-06-736330e06f8259dde7e325e12c51a05e-0-531e70.png" srcset="/img/loading.gif" lazyload alt="0"></p>
+<p><strong>为什么匿名内部类中引用的局部变量必须要加final</strong><br>内部类里面使用外部类的<strong>局部变量</strong>时，其实就是内部类的对象在使用它，内部类对象生命周期中都可能调用它，而内部类试图访问外部方法中的局部变量时，外部方法的局部变量很可能已经不存在了，那么就得延续其生命，拷贝到内部类中，而拷贝会带来不一致性，从而需要使用final声明保证一致性。<br>说白了，内部类会自动拷贝外部变量的引用，为了避免：</p>
+<ol>
+<li>外部方法修改引用，而导致内部类得到的引用值不一致</li>
+<li>内部类修改引用，而导致外部方法的参数值在修改前和修改后不一致。于是就用 final 来让该引用不可改变。</li>
+</ol>
+<ul>
+<li>匿名内部类访问的外部类局部变量为什么要用final 修饰，jdk8为啥不需要了？<br>  1.因为 匿名内部类 使用的是<strong>外部类局部变量 的值</strong>，并非引用<br>  2.jdk8 其实用了语法糖，自动加了final，其实和原来一样</li>
+</ul>
+<p><strong>异或 ^</strong><br>异或是一种基于二进制的位运算，用符号XOR或者 ^ 表示，其运算法则是对运算符两侧数的每一个二进制位，同值取0，异值取1。、简单理解就是<strong>不进位加法</strong>，如1+1&#x3D;0，,0+0&#x3D;0,1+0&#x3D;1。</p>
+<pre><code class="hljs">int i = 15, j = 2;
+System.out.println(&quot;i ^ j = &quot; + (i ^ j));
+</code></pre>
+<p>i&#x3D;15转成二进制是1111，j&#x3D;2转成二进制是0010，根据异或的运算规则得到的是1101，转成十进制就是13.</p>
+<p>小写的b我们一般认为是比特bit。<br>大写的B我们一般认为是字节byte。<br>1B&#x3D;8b<br>1kb&#x3D;1024B 1M&#x3D;1024kb</p>
+<h3 id="进制"><a href="#进制" class="headerlink" title="进制"></a>进制</h3><p>十进制计数规则是：</p>
+<ul>
+<li>基数为10</li>
+<li>有10个数字，0、1、2、3、4、5、6、7、8、9。</li>
+<li>逢10进1，借1当10。<br>  二进制计数规则就是：</li>
+<li>基数为2。</li>
+<li>有2个数字，即0和1。</li>
+<li>逢2进1，借1当2。</li>
+</ul>
+<p>将十进制“11”转换为二进制。<br><strong>除2取余，逆序排列</strong><br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Java%E5%9F%BA%E7%A1%80.resources/2023/09/15/17-54-06-19cfcf9091d436c902dc9151bf648f8a-unknown_filename-2fbc6c.png" srcset="/img/loading.gif" lazyload alt="unknown_filename"></p>
+<p>将十进制11转换为二进制数为1011。<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Java%E5%9F%BA%E7%A1%80.resources/2023/09/15/17-54-06-656de1928640f3a589768ac9afd47d63-unknown_filename.1-96648a.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.1"></p>
+<p><strong>加法</strong><br>二进制运算只会有以下4种可能：<br>0+0&#x3D;00+1&#x3D;11+0&#x3D;1<br>1+1&#x3D;10（逢二进一）<br>对于多位数二进制相加，考虑进位采用“逢2进1”的方式，例如十进制25（二进制11001）加上十进制27（二进制11011）：<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Java%E5%9F%BA%E7%A1%80.resources/2023/09/15/17-54-06-8f2bc31a920991f6ad031e1c4838d2dd-unknown_filename.2-db543b.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.2"></p>
+<p><strong>java中有三种移位运算符</strong><br>&lt;&lt;      :     左移运算符，num &lt;&lt; 1,相当于num乘以2<br>&gt;&gt;      :     右移运算符，num &gt;&gt; 1,相当于num除以2<br>&gt;&gt;&gt;    :     无符号右移，忽略符号位，空位都以0补齐<br>下面来看看这些移位运算都是怎样使用的</p>
+<pre><code class="hljs">    public class Test &#123;
+
+        public static void main(String[] args) &#123;
+            int number = 10;
+            //原始数二进制
+            printInfo(number);
+            number = number &lt;&lt; 1;
+            //左移一位
+            printInfo(number);
+            number = number &gt;&gt; 1;
+            //右移一位
+            printInfo(number);
+        &#125;
+
+        /**
+         * 输出一个int的二进制数
+         *
+         * @param num
+         */
+        private static void printInfo(int num) &#123;
+            System.out.println(Integer.toBinaryString(num));
+        &#125;
+    &#125;
+</code></pre>
+<p>运行结果为</p>
+<pre><code class="hljs">1010
+10100
+1010
+</code></pre>
+<p>我们把上面的结果对齐一下：</p>
+<pre><code class="hljs">43210      位数--------
+ 1010      十进制：10     原始数         number
+10100      十进制：20     左移一位       number = number &lt;&lt; 1;
+ 1010      十进制：10     右移一位       number = number &gt;&gt; 1;
+</code></pre>
+<p>如0100000 &gt;&gt; 2 &#x3D; 0001000，可以看到右移两位后的数变成了8<br>看了上面的demo，现在是不是对左移和右移了解了很多了呢<br>对于：&gt;&gt;&gt;<br>无符号右移，忽略符号位，空位都以0补齐<br>value &gt;&gt;&gt; num     –   num 指定要移位值value 移动的位数。<br>无符号右移的规则只记住一点：忽略了符号位扩展，0补最高位  无符号右移运算符&gt;&gt;&gt; 只是对32位和64位的值有意义</p>
+<p><strong>++在前还是后</strong><br>i++是先赋值再++<br>++i是先++再赋值<br>比如：i &#x3D; 1;j &#x3D; i++;那么此时的j &#x3D; 1;i &#x3D; 2;<br>i &#x3D; 1;j &#x3D; ++i,那么此时的j &#x3D; 2,i &#x3D; 2;<br>i++这种在前在后都一样，只是先赋值还是先+1的问题。<br>影响的是j的值</p>
+<h3 id="基础"><a href="#基础" class="headerlink" title="基础"></a>基础</h3><p>面向对象的特征有哪些方面？<br>答：四大特性封装、继承、多态、抽象。</p>
+<ul>
+<li><p>继承<br>  一个子类可以有多个直接父类(java中不允许,但进行了改良，在java中是通过”多实现”的方式来体现。) 因为多个父类中有相同成员，会产生调用不确定性。</p>
+</li>
+<li><p>多态<br>  用同样的对象引用调用同样的方法但是做了不同的事情。多态性分为编译时的多态性和运行时的多态性。方法重载（overload）实现的是编译时的多态性（也称为前绑定），而方法重写（override）实现的是运行时的多态性（也称为后绑定）。</p>
+<p>  public static void method(Animal a)<br>   {<br>a.eat();<br>if(a instanceof Cat)&#x2F;&#x2F;instanceof：用于判断对象的具体类型,只能用于引用数据类型判断<br>  &#x2F;&#x2F;通常在向下转型前用于健壮性的判断, 如果传入了其他的东西就不能调用<br>{<br> Cat c &#x3D; (Cat)a;<br> c.catchMouse();<br>}<br>else if(a instanceof Dog){<br> Dog d &#x3D; (Dog)a;<br> d.lookHome();<br>}</p>
+</li>
+</ul>
+<p>多态的好处：提高了代码的扩展性，前期定义的代码可以使用后期的内容。<br>多态的弊端： 前期定义的内容不能使用(调用)后期子类的特有内容。</p>
+<p>重载（overload）在同一个类中，名字相同，参数个数不同or 参数类型不同。<br>覆盖（override）子类重写父类的方法中。覆盖也称为重写，覆写。<br>构造器（constructor）是否可被重写（override）？<br>答：构造器不能被继承，因此不能被重写，但可以被重载。</p>
+<ul>
+<li>抽象<br>  抽象是将一类对象的共同特征总结出来的过程，包括数据抽象和行为抽象两方面。抽象只关注对象有哪些属性和行为，并不关注这些行为的细节是什么。<br>  Abstract:关键字，用于修饰类和方法。</li>
+</ul>
+<ol>
+<li>abstract修饰的方法：没有方法体，只有方法的声明</li>
+<li>Abstract修饰的类：抽象类，不能被实例化</li>
+</ol>
+<p>注意：</p>
+<ol>
+<li><p>有抽象方法的类一定是抽象类，但抽象类中可以没有抽象方法</p>
+</li>
+<li><p>不能用abstract修饰私有方法、构造方法、静态方法。用Abstract修饰的成员就是要去实现，而构造器不能被继承不能被重写（可以被重载），其他不能修饰的原因是一样的。</p>
+<pre><code class="hljs"> 抽象类（abstract class）和接口（interface）有什么异同？
+</code></pre>
+<p> 答：<strong>抽象类和接口都不能够实例化</strong>，但可以定义抽象类和接口类型的引用。一个类如果继承了某个抽象类或者实现了某个接口都需要对其中的抽象方法全部进行实现，否则该类仍然需要被声明为抽象类。<br> 接口比抽象类更加抽象，因为抽象类中可以定义构造器，可以有抽象方法和具体方法，而接口中不能定义构造器而且其中的方法全部都是抽象方法。抽象类中的成员可以是private、默认、protected、public的，而接口中的成员全都是public的。抽象类中可以定义成员变量，而接口中定义的成员变量实际上都是常量。</p>
+<pre><code class="hljs"> 接口是否可继承（extends）接口？抽象类是否可实现（implements）接口？抽象类是否可继承具体类（concrete class）？
+</code></pre>
+<p> 答：接口可以继承接口，并且支持多重继承。抽象类可以实现(implements)接口，抽象类可继承具体类也可以继承抽象类。</p>
+<pre><code class="hljs"> 静态嵌套类(Static Nested Class)和内部类（Inner Class）的不同？
+</code></pre>
+<p> 答：Static Nested Class是被声明为静态（static）的内部类，它可以不依赖于外部类实例被实例化。而通常的内部类需要在外部类实例化后才能实例化。<br> 内部类访问特点：</p>
+</li>
+<li><p>内部类可以直接访问外部类中的成员，包括私有成员</p>
+</li>
+<li><p>外部类要访问内部类，必须建立内部类的对象。Outer.Inner in &#x3D; new Outer().new Inner();in.show();如果内部类中定义了静态成员，该内部类也必须是静态的。</p>
+<pre><code class="hljs"> 抽象的（abstract）方法是否可同时是静态的（static）,是否可同时是本地方法（native），是否可同时被synchronized修饰？
+</code></pre>
+<p> 答：都不能。抽象方法需要子类重写，而静态的方法是无法被重写的，因此二者是矛盾的。本地方法是由本地代码（如C代码）实现的方法，而抽象方法是没有实现的，也是矛盾的。synchronized和方法的实现细节有关，抽象方法不涉及实现细节，因此也是相互矛盾的。</p>
+<pre><code class="hljs"> 是否可以从一个静态（static）方法内部发出对非静态（non-static）方法的调用？
+</code></pre>
+<p> 答：不可以，静态方法只能访问静态成员，因为非静态方法的调用要先创建对象，在调用静态方法时可能对象并没有被初始化。</p>
+<pre><code class="hljs"> 访问修饰符public,private,protected,以及不写（默认）时的区别？
+</code></pre>
+<p> <img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Java%E5%9F%BA%E7%A1%80.resources/2023/09/15/17-54-06-08d4c2d538e2beda458f1518833d5ed2-10d42a6e-8f6f-45dd-b14b-bc14e35972ef-d39db8.jpg" srcset="/img/loading.gif" lazyload alt="10d42a6e-8f6f-45dd-b14b-bc14e35972ef"></p>
+</li>
+</ol>
+<p>类的成员不写访问修饰时默认为default。默认对于同一个包中的其他类相当于公开（public），对于不是同一个包中的其他类相当于私有（private）。受保护（protected）对子类相当于公开，对不是同一包中的没有父子关系的类相当于私有。Java中，外部类的修饰符只能是public或默认，类的成员（包括内部类）的修饰符可以是以上四种。</p>
+<p><strong>各种单位</strong><br>二进制的一位，就叫做 1 bit<br>字节 Byte 和比特 bit 的换算关系是 1 Byte &#x3D; 8 bit 。一个字节8位，0-255，65535？<br>英文字符通常是一个字节，也就是 1B，中文字符通常是两个字节，也就是 2B。</p>
+<p>1 KB 并不是一千字节，因为计算机只认识二进制，所以在这里的 KB，是 2 的 10 次方，也就是 1024 个字节</p>
+<p><strong>ASCII</strong><br>像a、b、c、d这样的52个字母（包括大写）以及0、1等数字还有一些常用的符号（例如* 、#、@等）在计算机中存储时也要使用二进制数来表示，而具体用哪些二进制数字表示哪个符号。</p>
+<p>ASCII 码使用指定的7 位或8 位二进制数组合来表示128 或256 种可能的字符</p>
+<p>32～126(共95个)是字符(32是空格），其中48～57为0到9十个阿拉伯数字。<br>65～90为26个大写英文字母，97～122号为26个小写英文字母，其余为一些标点符号、运算符号等。（十进制：122，代表z）<br>常见ASCII码的大小规则：0<del>9&lt;A</del>Z&lt;a~z。</p>
+<p>在英语中，用128个符号编码便可以表示所有，但是用来表示其他语言，128个符号是不够的</p>
+<p>汉字就多达10万左右。<strong>一个字节只能表示256种符号</strong>，肯定是不够的，就必须使用多个字节表达一个符号<br>在UTF8编码中，英文字符占用一个字节；绝大多数汉字占用三个字节，个别汉字占用四个字节。</p>
+<p><strong>“abc”,”x”</strong><br>“x”大，通过遍历字符来比较ASCII的即两个字符串，分别比较对应位数的值，若前面字符的ASCII相同，则比较后面的</p>
+<pre><code class="hljs">    String 是最基本的数据类型吗？
+答：不是。Java中的基本数据类型只有8个：byte（1个字节7位，2^7）、short（2,2^15）、int（4）、long（8）、float（4）、double（8）、char、boolean；除了基本类型（primitive type）和枚举类型（enumeration type），剩下的都是引用类型（reference type）。
+整形默认int，浮点默认double，小的自动转成大的，大的得强转小的。java:byte short int long float double char boolean 先乘除后加减 先算术再移位最后逻辑
+![wpsbe76](https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Java%E5%9F%BA%E7%A1%80.resources/2023/09/15/17-54-06-46c95b9b0ae06a41e26d70280b700758-wpsbe76-d0ceb2.png)
+
+    float f=3.4;是否正确？
+答:不正确。3.4是双精度数，将双精度型（double）赋值给浮点型（float）属于下转型（down-casting，也称为窄化）会造成精度损失，因此需要强制类型转换float f =(float)3.4; 或者写成float f =3.4F。
+
+    float和double之间的区别
+单精度浮点数有效数字8位，第7位数字将会四舍五入，双精度浮点数有效数字16位，在程序中处理速度不同，一般来说，CPU处理单精度浮点数的速度比处理双精度浮点数快，果不声明，默认小数为double类型，所以如果要用float的话，必须进行强转
+
+    int,long的取值范围以及BigDecimal，数值越界了如何处理？
+双精度浮点型变量double可以处理16位有效数。BigDecimal，用来对超过16位有效位的数进行精确的运算。但在实际应用中，可能需要对更大或者更小的数进行运算和处理。
+一般情况下，对于那些不需要准确计算精度的数字，我们可以直接使用Float和Double处理，但是Double.valueOf(String) 和Float.valueOf(String)会丢失精度。所以开发中，如果我们需要精确计算的结果。比如计算金额、转换格式单位等
+
+    short s1 = 1; s1 = s1 + 1;有错吗?short s1 = 1; s1 += 1;有错吗？ 
+答：对于short s1 = 1; s1 = s1 + 1;由于1是int类型，因此s1+1运算结果也是int 型，需要强制转换类型才能赋值给short型。而short s1 = 1; s1 += 1;可以正确编译，因为s1+= 1;相当于s1 = (short)(s1 + 1);其中有隐含的强制类型转换。
+
+    拆箱装箱
+当基本数据类型给引用数据类型装箱，当基本数据类型和引用数据类型做运算拆箱
+
+
+class AutoUnboxingTest &#123;
+
+    public static void main(String[] args) &#123;
+        Integer a = new Integer(3);
+        Integer b = 3;                  // 将3自动装箱成Integer类型
+        int c = 3;
+        System.out.println(a == b);     // false 两个引用没有引用同一对象
+        System.out.println(a == c);     // true a自动拆箱成int类型再和c比较
+    &#125;
+&#125;
+</code></pre>
+<p>最近还遇到一个面试题，也是和自动装箱和拆箱有点关系的，代码如下所示：</p>
+<pre><code class="hljs">public class Test03 &#123;
+
+    public static void main(String[] args) &#123;
+        Integer f1 = 100, f2 = 100, f3 = 150, f4 = 150;
+
+        System.out.println(f1 == f2);
+        System.out.println(f3 == f4);
+    &#125;
+&#125;
+</code></pre>
+<p>如果不明就里很容易认为两个输出要么都是true要么都是false。首先需要注意的是f1、f2、f3、f4四个变量都是Integer对象引用，所以下面的&#x3D;&#x3D;运算比较的不是值而是引用。装箱的本质是什么呢？当我们给一个Integer对象赋一个int值的时候，会调用Integer类的静态方法valueOf答案：小于127就是TRUE，大于127就是false，因为当数值在byte范围内容，如果该数值已经存在，则不会在开辟新的空间 ，所以a和b指向了同一个Integer对象，同一个引用。</p>
+<pre><code class="hljs">    String s = new String(&quot;xyz&quot;);创建了几个字符串对象？
+答：两个对象，一个是静态区（常量池）的“xyz”;，一个是用new创建在堆上的对象。如果xyz创建过了，就是一个对象，会复用常量池。
+
+    Math.round(11.5) 等于多少？Math.round(-11.5)等于多少？
+ 答：Math.round(11.5)的返回值是12，Math.round(-11.5)的返回值是-11。四舍五入的原理是在参数上加0.5然后进行下取整。
+
+    swtich 是否能作用在byte 上，是否能作用在long 上，是否能作用在String上？ 
+答：从Java 7开始，expr还可以是字符串（String），但是长整型（long）都不行
+
+    数组有没有length()方法？String有没有length()方法？ 
+答：数组没有length()方法，有length 的属性。String 有length()方法。
+
+    阐述final、finally、finalize的区别。
+</code></pre>
+<ol>
+<li>final：同上</li>
+<li>finally：通常放在try…catch…的后面构造总是执行代码块，这就意味着程序无论正常执行还是发生异常，这里的代码只要JVM不关闭都能执行，可以将释放外部资源的代码写在finally块中。</li>
+<li>finalize：Object类中定义的方法，Java中允许使用finalize()方法在垃圾收集器将对象从内存中清除出去之前做必要的清理工作。这个方法是由垃圾收集器在销毁对象时调用的，通过重写finalize()方法可以整理系统资源或者执行其他清理工作。</li>
+</ol>
+<ul>
+<li>equals和&#x3D;&#x3D;的区别？</li>
+</ul>
+<ol>
+<li><p>基本数据类型，也称原始数据类型。byte,short,char,int,long,float,double,boolean   他们之间的比较，应用双等号（&#x3D;&#x3D;）,比较的是他们的值。</p>
+</li>
+<li><p>复合数据类型、引用数据类型(类) 当他们用（&#x3D;&#x3D;）进行比较的时候，比较的是他们在内存中的存放地址，所以，除非是同一个new出来的对象，他们的比较后的结果为true，否则比较后结果为false。<br> 3.  JAVA当中所有的类都是继承于Object这个基类的，在Object中的基类中定义了一个equals的方法，这个方法的初始行为是比较对象的内存地 址，但在一些类库当中这个方法被覆盖掉了，如String,Integer,Date在这些类当中equals有其自身的实现，而不再是比较类在堆内存中的存放地址了。<br> 4.  对于复合数据类型之间进行equals比较，在没有覆写equals方法的情况下，他们之间的比较还是基于他们在内存中的存放位置的地址值的，因为Object的equals方法也是用双等号（&#x3D;&#x3D;）进行比较的，所以比较后的结果跟双等号（&#x3D;&#x3D;）的结果相同。</p>
+<pre><code class="hljs"> this和super
+</code></pre>
+<p> 当成员变量和局部变量重名，可以用关键字this来区分。this就是所在函数所属对象的引用。简单说：哪个对象调用了this所在的函数，this就代表哪个对象。this也可以用于在构造函数中调用其他构造函数。子父类中的成员变量同名用super区分父类。</p>
+<pre><code class="hljs"> Error和Exception有什么区别？
+</code></pre>
+<p> 答：Error表示系统级的错误和程序不必处理的异常，是恢复不是不可能但很困难的情况下的一种严重问题；比如内存溢出，不可能指望程序能处理这样的情况；Exception表示需要捕捉或者需要程序进行处理的异常，是一种设计或实现问题；也就是说，它表示如果程序运行正常，从不会发生的情况。</p>
+<pre><code class="hljs"> try&#123;&#125;里有一个return语句，那么紧跟在这个try后的finally&#123;&#125;里的代码会不会被执行，什么时候被执行，在return前还是后?
+</code></pre>
+<p> 答：会执行，在方法返回调用者前执行。<br> 注意：在finally中改变返回值的做法是不好的，因为如果存在finally代码块，try中的return语句不会立马返回调用者，而是记录下返回值待finally代码块执行完毕之后再向调用者返回其值，然后如果在finally中修改了返回值，就会返回修改后的值。显然，在finally中返回或者修改返回值会对程序造成很大的困扰。</p>
+<pre><code class="hljs"> Java语言如何进行异常处理，关键字：throws、throw、try、catch、finally分别如何使用？
+</code></pre>
+</li>
+<li><p>一般情况下是用try来执行一段程序，如果系统会抛出（throw）一个异常对象，可以通过它的类型来捕获（catch）它，或通过总是执行代码块（finally）来处理；try用来指定一块预防所有异常的程序；</p>
+</li>
+<li><p>catch子句紧跟在try块后面，用来指定你想要捕获的异常的类型；</p>
+</li>
+<li><p>throw语句用来明确地抛出一个异常；</p>
+</li>
+<li><p>throws用来声明一个方法可能抛出的各种异常（当然声明异常时允许无病呻吟）；</p>
+</li>
+<li><p>finally为确保一段代码不管发生什么异常状况都要被执行；</p>
+</li>
+<li><p>try语句可以嵌套，每当遇到一个try语句，异常的结构就会被放入异常栈中，直到所有的try语句都完成。如果下一级的try语句没有对某种异常进行处理，异常栈就会执行出栈操作，直到遇到有处理这种异常的try语句或者最终将异常抛给JVM。</p>
+</li>
+</ol>
+<ul>
+<li>列出一些你常见的运行时异常？<br>  ArithmeticException（算术异常）<br>  ClassCastException （类转换异常）<br>  IllegalArgumentException （非法参数异常）<br>  IndexOutOfBoundsException （下标越界异常）<br>  NullPointerException （空指针异常）<br>  SecurityException （安全异常）</li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Java/" class="category-chain-item">Java</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Java基础</div>
+      <div>http://peiniwan.github.io/2019/03/7266a39bd8cf.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>六月的雨</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2019年3月2日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2019/03/2319bb8ac7d1.html" title="Android其他优化">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Android其他优化</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2019/03/08bb336e1c19.html" title="Android屏幕适配">
+                        <span class="hidden-mobile">Android屏幕适配</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

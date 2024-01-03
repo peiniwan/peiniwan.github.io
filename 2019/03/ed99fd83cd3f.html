@@ -1,0 +1,877 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="六月的雨">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="看过哪些源码handlerasyntaskhashmapokhttpglideRetrofitLeakCanary eventbuscurrentHashmapRecycleView LeakCanary原理 lifecycleCallbacks监听Activity，onActivityDestroyed方法最终会调用RefWatcher.watch方法:  通过将Activity包装到WeakR">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第三方框架源码">
+<meta property="og:url" content="http://peiniwan.github.io/2019/03/ed99fd83cd3f.html">
+<meta property="og:site_name" content="六月的雨的博客">
+<meta property="og:description" content="看过哪些源码handlerasyntaskhashmapokhttpglideRetrofitLeakCanary eventbuscurrentHashmapRecycleView LeakCanary原理 lifecycleCallbacks监听Activity，onActivityDestroyed方法最终会调用RefWatcher.watch方法:  通过将Activity包装到WeakR">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%AC%AC%E4%B8%89%E6%96%B9%E6%A1%86%E6%9E%B6%E6%BA%90%E7%A0%81.resources/2023/09/15/18-24-12-a3f46a69cc2c4941bb5b2bdab9dd9626-unknown_filename.2-9903de.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%AC%AC%E4%B8%89%E6%96%B9%E6%A1%86%E6%9E%B6%E6%BA%90%E7%A0%81.resources/2023/09/15/18-24-12-260913b1689c6dfef21a6cc62ff32cfd-unknown_filename.1-0a8c15.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%AC%AC%E4%B8%89%E6%96%B9%E6%A1%86%E6%9E%B6%E6%BA%90%E7%A0%81.resources/2023/09/15/18-24-12-c93128eeed24b6821df5315f1c4d5227-unknown_filename.3-1aea76.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%AC%AC%E4%B8%89%E6%96%B9%E6%A1%86%E6%9E%B6%E6%BA%90%E7%A0%81.resources/2023/09/15/18-24-12-ef4d38782e1e07edcf453a3c0a784d65-QQ%E6%88%AA%E5%9B%BE20191125132921-c37b68.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%AC%AC%E4%B8%89%E6%96%B9%E6%A1%86%E6%9E%B6%E6%BA%90%E7%A0%81.resources/2023/09/15/18-24-12-a8516954a19a24c14d487108976da749-QQ%E6%88%AA%E5%9B%BE20191125133038-8bea0a.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%AC%AC%E4%B8%89%E6%96%B9%E6%A1%86%E6%9E%B6%E6%BA%90%E7%A0%81.resources/2023/09/15/18-24-12-81d3f0771a1a4b1138954748b83473c9-unknown_filename.9-018c18.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%AC%AC%E4%B8%89%E6%96%B9%E6%A1%86%E6%9E%B6%E6%BA%90%E7%A0%81.resources/2023/09/15/18-24-12-8db8e1b5a5424e812a522a7c3327460d-unknown_filename.10-63dc7f.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%AC%AC%E4%B8%89%E6%96%B9%E6%A1%86%E6%9E%B6%E6%BA%90%E7%A0%81.resources/2023/09/15/18-24-12-6d586b5987259ece66f0cff4efbdf69a-unknown_filename.4-016ec3.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%AC%AC%E4%B8%89%E6%96%B9%E6%A1%86%E6%9E%B6%E6%BA%90%E7%A0%81.resources/2023/09/15/18-24-12-17e14b7541ab100a92bf815bccfdb78a-unknown_filename.5-da3059.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%AC%AC%E4%B8%89%E6%96%B9%E6%A1%86%E6%9E%B6%E6%BA%90%E7%A0%81.resources/2023/09/15/18-24-12-25d6a4e1ff51fd40bb91f2b3dba6454d-unknown_filename.6-8fadc5.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%AC%AC%E4%B8%89%E6%96%B9%E6%A1%86%E6%9E%B6%E6%BA%90%E7%A0%81.resources/2023/09/15/18-24-12-99199a0ffb4cbeafc0e16456ad8aab8d-unknown_filename.7-4a5423.png">
+<meta property="article:published_time" content="2019-03-03T07:49:42.000Z">
+<meta property="article:modified_time" content="2023-12-29T08:07:48.336Z">
+<meta property="article:author" content="六月的雨">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%AC%AC%E4%B8%89%E6%96%B9%E6%A1%86%E6%9E%B6%E6%BA%90%E7%A0%81.resources/2023/09/15/18-24-12-a3f46a69cc2c4941bb5b2bdab9dd9626-unknown_filename.2-9903de.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>第三方框架源码 - 六月的雨的博客</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"peiniwan.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>六月的雨的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="第三方框架源码"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2019-03-03 15:49" pubdate>
+          2019年3月3日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.6k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          30 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">第三方框架源码</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>看过哪些源码<br>handler<br>asyntask<br>hashmap<br>okhttp<br>glide<br>Retrofit<br>LeakCanary</p>
+<p>eventbus<br>currentHashmap<br>RecycleView</p>
+<h3 id="LeakCanary原理"><a href="#LeakCanary原理" class="headerlink" title="LeakCanary原理"></a>LeakCanary原理</h3><ol>
+<li><p>lifecycleCallbacks监听Activity，onActivityDestroyed方法最终会调用<strong>RefWatcher</strong>.watch方法:</p>
+</li>
+<li><p>通过将Activity包装到WeakReference（弱引用）中，弱引⽤在引⽤对象被垃圾回收之前，会将引⽤放⼊它关联的队列中。所以可以通过队列中是否有对应的引⽤来判断对象是否被垃圾回收了。（有的话被回收了，没有的话就没有被回收）</p>
+<p>   private boolean gone(KeyedWeakReference reference) {<br> return !retainedKeys.contains(reference.key);<br>   }</p>
+</li>
+<li><p>如果Activity没有被回收，调用GcTigger.runGc方法运行GC，如果这时候还没有被回收，那就说明Activity可能已经泄露。</p>
+</li>
+<li><p>生成dunp文件，对他进行分析，开启一个前台服务</p>
+</li>
+</ol>
+<p>监控 Activity 和 Fragment 原理。<br>通过注册 Application 和 Fragment 上的⽣命周期回调来完成在 Activity 和 Fragment 销毁的时候开始观察。</p>
+<p>为什么生成文件时会ANR<br>导出heap堆文件会短暂冻结APP</p>
+<p>watch() ⽅法<br>原理：就是通过弱引⽤的⽅式来判断队列中是否有弱引⽤来判断对象是否被垃圾回收了。<br>KeyedWeakReference（key是是個随机值，object就是view、fragment、activity）</p>
+<pre><code class="hljs">final class KeyedWeakReference extends WeakReference&lt;Object&gt; &#123;
+  public final String key;
+  public final String name;
+
+  KeyedWeakReference(Object referent, String key, String name,
+      ReferenceQueue&lt;Object&gt; referenceQueue) &#123;
+    super(checkNotNull(referent, &quot;referent&quot;), checkNotNull(referenceQueue, &quot;referenceQueue&quot;));
+    this.key = checkNotNull(key, &quot;key&quot;);
+    this.name = checkNotNull(name, &quot;name&quot;);
+  &#125;
+&#125;
+</code></pre>
+<p>触发 GC 的正确姿势<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%AC%AC%E4%B8%89%E6%96%B9%E6%A1%86%E6%9E%B6%E6%BA%90%E7%A0%81.resources/2023/09/15/18-24-12-a3f46a69cc2c4941bb5b2bdab9dd9626-unknown_filename.2-9903de.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.2"><br>通过 dumpHprofData 来获取 hprof ⽂件<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%AC%AC%E4%B8%89%E6%96%B9%E6%A1%86%E6%9E%B6%E6%BA%90%E7%A0%81.resources/2023/09/15/18-24-12-260913b1689c6dfef21a6cc62ff32cfd-unknown_filename.1-0a8c15.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.1"></p>
+<p>2.0 LeakCanary 不需要主动初始化的原理<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%AC%AC%E4%B8%89%E6%96%B9%E6%A1%86%E6%9E%B6%E6%BA%90%E7%A0%81.resources/2023/09/15/18-24-12-c93128eeed24b6821df5315f1c4d5227-unknown_filename.3-1aea76.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.3"><br>存放路径<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%AC%AC%E4%B8%89%E6%96%B9%E6%A1%86%E6%9E%B6%E6%BA%90%E7%A0%81.resources/2023/09/15/18-24-12-ef4d38782e1e07edcf453a3c0a784d65-QQ%E6%88%AA%E5%9B%BE20191125132921-c37b68.png" srcset="/img/loading.gif" lazyload alt="QQ截图20191125132921"><br>可以直接studio里打开分析<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%AC%AC%E4%B8%89%E6%96%B9%E6%A1%86%E6%9E%B6%E6%BA%90%E7%A0%81.resources/2023/09/15/18-24-12-a8516954a19a24c14d487108976da749-QQ%E6%88%AA%E5%9B%BE20191125133038-8bea0a.png" srcset="/img/loading.gif" lazyload alt="QQ截图20191125133038"></p>
+<p>AndroidExcludeRefs过滤</p>
+<p>Shark是Leakcanary 2.0.0时推出的Heap分析工具，替代了之前使用的HAHA库，其作者称它比haha使用的perflib快6倍，使用的内存却是之前的10分之一</p>
+<h3 id="EventBus源码"><a href="#EventBus源码" class="headerlink" title="EventBus源码"></a>EventBus源码</h3><p>register(this)就是去当前类，遍历所有的方法，找到onEvent开头的然后进行存储（把匹配的方法最终保存在subscriptionsByEventType（Map，key：eventType ； value：CopyOnWriteArrayList<Subscription> ），eventType是我们方法参数的Class，Subscription中则保存着subscriber, subscriberMethod（method, threadMode, eventType）, priority；包含了执行改方法所需的一切），然后post的时候，根据post传入的参数，去找到匹配的方法，数据传递是通过handler。在handmessage里判断</p>
+<p><strong>BroadcastReceiver 和 EventBus 有啥不同？</strong><br>系统系统级的事件都是通过广播来通知的，比如说网络的变化、电量的变化、短信接收和发送状态等。所以，如果是和 Android 系统相关的通知，我们还得选择本地广播。但是，广播相对于其他实现方式，是很重量级的，它消耗的资源较多，耗电占内存。<br>eventbus调度灵活，使用简单、快速轻量，但是阅读性比较差。</p>
+<p><strong>Evenbus是做什么的？和RXjava有什么区别？</strong></p>
+<ul>
+<li>EventBus是一款针对Android优化的发布&#x2F;订阅事件总线。主要功能是替代Intent,Handler,BroadCast在Fragment，Activity，Service，线程之间传递消息.优点是开销小，代码更优雅。以及将发送者和接收者解耦。</li>
+<li>以前我们做组件间的消息分发更新，一般会采用观察者模式,或者接口数据回调的相关方式。但是这样的做法虽然可以解决问题，但是组件之间的耦合比较严重，而且代码也不易阅读和相关维护。为了解决这样的问题我们可以使用消息总线EventBus框架。</li>
+<li>原生的异步AsnyTask简直就是个坑，它就是一个任务队列，多个任务执行并不是并发的，有可能就卡在其中一个出不来了。。。</li>
+<li>RxJava要比EventBus的应用更广泛，RxJava里面几乎可以做任何事情。做异步、网络的数据处理，写出来的代码比较优雅。</li>
+</ul>
+<p>黏性事件<br>简单讲，就是在发送事件之后再订阅该事件也能收到该事件，跟黏性广播类似，但是它只能收到最新的一次消息，比如说在未订阅之前已经发送了多条黏性消息了，然后再订阅只能收到最近的一条消息。</p>
+<h3 id="BlockCanary原理"><a href="#BlockCanary原理" class="headerlink" title="BlockCanary原理"></a>BlockCanary原理</h3><ul>
+<li><p>View的绘制也是通过Handler来执行的，所以如果能知道每次Handler处理消息的时间，就能知道每次绘制的耗时了？ 那Handler消息的处理时间怎么获取呢？</p>
+</li>
+<li><p>可以发现，loop方法内有一个Printer类，在dispatchMessage处理消息的前后分别打印了两次日志。</p>
+</li>
+<li><p>那我们把这个日志类Printer替换成我们自己的Printer，然后统计两次打印日志的时间不就相当于处理消息的时间了？</p>
+<p>   public static void loop() {<br>  …<br>      for (;;) {<br>      …<br>          Printer logging &#x3D; me.mLogging;<br>          if (logging !&#x3D; null) {<br>              logging.println(“&gt;&gt;&gt;&gt;&gt; Dispatching to “ + msg.target + “ “ +msg.callback + “: “ + msg.what);<br>          }<br>          msg.target.dispatchMessage(msg);<br>          if (logging !&#x3D; null) {<br>              logging.println(“&lt;&lt;&lt;&lt;&lt; Finished to “ + msg.target + “ “ + msg.callback);<br>          }<br>      …<br>      }<br>  }<br><br>      Looper.getMainLooper().setMessageLogging(mainLooperPrinter);<br><br>  public void setMessageLogging(@Nullable Printer printer) {<br>      mLogging &#x3D; printer;<br>  }</p>
+</li>
+</ul>
+<p>接着说说对各个log分析的过程。<br>看timecost和threadtimecost，如果两者差得很多，则是主线程被等待或者资源被抢占。<br>看卡顿发生前最近的几次堆栈，如果堆栈相同，则可以判定为是该处发生卡顿，否则需要比较分析。</p>
+<h3 id="ARouter原理"><a href="#ARouter原理" class="headerlink" title="ARouter原理"></a>ARouter原理</h3><p>在ARouter中会要求路由地址至少需要两级，如”&#x2F;xx&#x2F;xx”,一个模块下可以有多个分组。这里我们就将路由地址定为必须大于等于两级，其中第一级是group。如app module下的路由注解：</p>
+<pre><code class="hljs">ARouter.getInstance().build(&quot;/test/login&quot;)
+            .withString(&quot;password&quot;, 666666)
+            .withString(&quot;name&quot;, &quot;小三&quot;)
+            .navigation();
+</code></pre>
+<p>ARouter group作用：ARouter在编译期框架扫描了所有的注册页面／字段／拦截器等，那么很明显运行期不可能一股脑全部加载进来，这样就太不和谐了。所以就使用分组来管理。<br>Group的值默认就是第一个 &#x2F; &#x2F;（两个分隔符） 之间的内容。</p>
+<p>arouter-compiler 自定义注解解析器生成文件</p>
+<pre><code class="hljs">public class RouteProcessor extends AbstractProcessor 
+ 
+javaCompileOptions &#123;
+   annotationProcessorOptions &#123;
+    arguments = [ moduleName : project.getName() ]
+   &#125;
+  &#125;
+
+
+ @Override
+ public boolean process(Set&lt;? extends TypeElement&gt; annotations, RoundEnvironment roundEnv) &#123;
+  if (CollectionUtils.isNotEmpty(annotations)) &#123;
+   // 获取所有添加Route注解的元素
+   Set&lt;? extends Element&gt; routeElements = roundEnv.getElementsAnnotatedWith(Route.class);
+   try &#123;
+    logger.info(&quot;&gt;&gt;&gt; Found routes, start... &lt;&lt;&lt;&quot;);
+    // 调用arseRoute()函数进行处理获取的注解元素集合
+    this.parseRoutes(routeElements);
+
+   &#125; catch (Exception e) &#123;
+    logger.error(e);
+   &#125;
+   // 如果有Route元素的注解，并且处理过程中无异常则返回true
+   return true;
+  &#125;
+  // 否则返回false
+  return false;
+ &#125;
+</code></pre>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%AC%AC%E4%B8%89%E6%96%B9%E6%A1%86%E6%9E%B6%E6%BA%90%E7%A0%81.resources/2023/09/15/18-24-12-81d3f0771a1a4b1138954748b83473c9-unknown_filename.9-018c18.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.9"><br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%AC%AC%E4%B8%89%E6%96%B9%E6%A1%86%E6%9E%B6%E6%BA%90%E7%A0%81.resources/2023/09/15/18-24-12-8db8e1b5a5424e812a522a7c3327460d-unknown_filename.10-63dc7f.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.10"></p>
+<p>核心思想:<br>我们在代码里加入的@Route注解，会在编译时期通过apt生成一些存储path和activityClass映射关系的类文件，然后app进程启动的时候会拿到这些类文件，把保存这些映射关系的数据读到内存里(保存在map里)，生成文件，然后在进行路由跳转的时候，通过build()方法传入要到达页面的路由地址，ARouter会通过它自己存储的路由表找到路由地址对应的Activity.class(activity.class &#x3D; map.get(path))，然后new Intent()，当调用ARouter的withString()方法它的内部会调用intent.putExtra(String name, String value)，调用navigation()方法，它的内部会调用startActivity(intent)进行跳转，这样便可以实现两个相互没有依赖的module顺利的启动对方的Activity了。</p>
+<p><a target="_blank" rel="noopener" href="https://juejin.cn/post/6844903648690962446#comment">https://juejin.cn/post/6844903648690962446#comment</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/6021f3f61fa6">郭霖源码和基本使用</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/5b35309e9bb2">https://www.jianshu.com/p/5b35309e9bb2</a></p>
+<pre><code class="hljs">@Target(&#123;ElementType.TYPE&#125;)
+@Retention(RetentionPolicy.CLASS)
+public @interface Route &#123;
+    String path();
+    String group() default &quot;&quot;;
+    String name() default &quot;&quot;;
+    int extras() default Integer.MIN_VALUE;
+    int priority() default -1;
+&#125;
+</code></pre>
+<p>RouteMeta：基本路由信息<br>初始化：ARouter.init(Application.this)，实则是LogisticsCenter 在帮我们管理逻辑<br>LogisticsCenter 内部通过先存储SP，然后遍历、匹配（满足条件则添加到具体的集合中，按照文件的前缀不同，将他们添加到路由映射表Warehouse的groupsIndex、interceptorsIndex、providersIndex 中）</p>
+<h3 id="图片加载框架比较"><a href="#图片加载框架比较" class="headerlink" title="图片加载框架比较"></a>图片加载框架比较</h3><p><strong>共同优点</strong></p>
+<ol>
+<li>都对多级缓存、线程池、缓存算法做了处理</li>
+<li>自适应程度高，根据系统性能初始化缓存配置、系统信息变更后动态调整策略。比如根据 CPU 核数确定最大并发数，根据可用内存确定内存缓存大小，网络状态变化时调整最大并发数等。</li>
+<li>支持多种数据源支持多种数据源，网络、本地、资源、Assets 等</li>
+</ol>
+<p><strong>不同点</strong></p>
+<ol>
+<li>Picasso所能实现的功能，Glide都能做，无非是所需的设置不同。但是Picasso体积比起Glide小太多。</li>
+<li>Glide 不仅是一个图片缓存，它支持 Gif、WebP、缩略图、视频的某一帧。Glide 支持加载 Gif 动态图，而 Picasso 不支持该特性</li>
+<li>Fresco在5.0以下的内存优化非常好，代价就是体积也非常的大，按体积算Fresco&gt;Glide&gt;Picasso</li>
+<li>UIL可以算是老牌最火的图片加载库了，该作者在项目中说明已经停止了对该项目的维护。</li>
+</ol>
+<p><strong>图片框架的缓存</strong></p>
+<ol>
+<li>MemorycCache图片内存缓存。默认使用了 LRU 算法。</li>
+<li>DiskCache图片磁盘缓存，默认使用LruDiskCache算法，在缓存满时删除最近最少使用的图片</li>
+</ol>
+<h4 id="glide源码"><a href="#glide源码" class="headerlink" title="glide源码"></a>glide源码</h4><p>一般看源码先看他的使用方法，通过使用的方法看对应的代码。<br>Glide.with(MainActivity.this).load(url).into(headerImage);</p>
+<p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/2112e452a894">解析文章</a><br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%AC%AC%E4%B8%89%E6%96%B9%E6%A1%86%E6%9E%B6%E6%BA%90%E7%A0%81.resources/2023/09/15/18-24-12-6d586b5987259ece66f0cff4efbdf69a-unknown_filename.4-016ec3.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.4"><br>主要有：内存缓存和磁盘缓存<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%AC%AC%E4%B8%89%E6%96%B9%E6%A1%86%E6%9E%B6%E6%BA%90%E7%A0%81.resources/2023/09/15/18-24-12-17e14b7541ab100a92bf815bccfdb78a-unknown_filename.5-da3059.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.5"><br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%AC%AC%E4%B8%89%E6%96%B9%E6%A1%86%E6%9E%B6%E6%BA%90%E7%A0%81.resources/2023/09/15/18-24-12-25d6a4e1ff51fd40bb91f2b3dba6454d-unknown_filename.6-8fadc5.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.6"><br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%AC%AC%E4%B8%89%E6%96%B9%E6%A1%86%E6%9E%B6%E6%BA%90%E7%A0%81.resources/2023/09/15/18-24-12-99199a0ffb4cbeafc0e16456ad8aab8d-unknown_filename.7-4a5423.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.7"></p>
+<ul>
+<li><p>with方法把context传进去，返回RequestManager 。并且调用GlideBuilder.build（做初始化的），在这里做一些初始化操作，比如构建线程池（包括sourceExecutor ，diskCacheExecutor ），缓存大小和缓存器，默认的连接监听工厂（connectivityMonitorFactory ），Engine对象（怎么使用缓存的，先弱引用，后Lru，最后走网络）和RequestManagerRetriever 对象、<br>  DecodeJob（解析InputStream生成图片）。</p>
+</li>
+<li><p>RequestManager监听了ActivityFragmentLifecycle ，会在onStop pauseRequests();onStart 恢复resumeRequests();</p>
+</li>
+<li><p>load（URL）Glide.with(context)已经返回了RequestManager,其实就是RequestManager.load(“”)。主要就是把URL传进去，获取RequestBuilder对象。</p>
+</li>
+<li><p>主要的操作都在into方法里（在这里会取lru缓存还是本地缓存，还是没有，告诉RequestBuilder）。RequestBuilder的into方法里（上面返回了）开启了线程池进行加载资源。网络请求是通过url打开连接，返回一个HttpURLConnection对象，进行网络请求的。加载得资源后转换到主线程并进行回调设置给imageview。</p>
+<p>  public synchronized void start(DecodeJob<R> decodeJob) {<br>  this.decodeJob &#x3D; decodeJob;<br>  &#x2F;&#x2F;获取GlideExecutor 线程池<br>  GlideExecutor executor &#x3D; decodeJob.willDecodeFromCache() ? diskCacheExecutor : getActiveSourceExecutor();<br>   &#x2F;&#x2F;开始执行decodeJob这个Runnable<br>  executor.execute(decodeJob);<br>}<br>  private static final Executor MAIN_THREAD_EXECUTOR &#x3D;<br>    new Executor() {<br>      private final Handler handler &#x3D; new Handler(Looper.getMainLooper());<br><br>      @Override<br>      public void execute(@NonNull Runnable command) {<br>        handler.post(command);<br>      }<br>    };</p>
+</li>
+<li><p>Glide支持图片的二级缓存(并不是三级缓存，因为从网络加载并不属于缓存)，即内存缓存和磁盘缓存。</p>
+</li>
+<li><p>glide为什么有lru还会内存溢出。因为直接把整个大图片的整个内存加载进去了。对于大图可以下载下来，asdrawale来加载，drawable更省内存，Drawable应该不属于常驻内存的对象，不然的话，不可能不会出现OOM的～～</p>
+</li>
+<li><p>Glide内部处理了网络图片加载的错位或者闪烁(tag)。</p>
+<p>     public Request getRequest() {<br>          &#x2F;&#x2F;本质还是getTag<br>          Object tag &#x3D; getTag();<br>          Request request &#x3D; null;<br>          if (tag !&#x3D; null) {<br>              if (tag instanceof Request) {<br>                  request &#x3D; (Request) tag;<br>              } else {<br>                  throw new IllegalArgumentException(“You must not call setTag() on a view<br>  Glide is targeting”);<br>              }<br>          }<br>          return request;<br>      }</p>
+<p>     <br>      @Override<br>      public void setRequest(Request request) {<br>          &#x2F;&#x2F;本质是setTag<br>          setTag(request);<br>      }</p>
+</li>
+</ul>
+<p><strong>对图片加载用到了LruCache（最少最近使用）算法</strong></p>
+<p><strong>自己设计一个handler或者线程池</strong></p>
+<p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/9f3b96937253">链接</a><br>Java里面链表可以作为队列的实例（都是Collection子类）<br>Queue<Request> requestQueue &#x3D; new LinkedList<Request>();<br>线程池原理：创建了个队列，然后从队列里取线程</p>
+<pre><code class="hljs">public class ThreadPool&#123;
+
+    //用一个Set或者其他数据结构把创建的线程保存起来，为的是方便以后获取线程的handle，做其他操作。
+    Set&lt;WorkerThread&gt; set = null;//（可以不看）
+    private Queue&lt;Runnable&gt; queue;
+    //初始化线程池，创建内部类WorkerThread并且启动它
+    public ThreadPool(int size)&#123;
+        for( int i = 0 ;i &lt; size ;i++ )&#123;
+            WorkerThread t = new WorkerThread();
+            t.start();
+            set.add( t );
+        &#125;
+        queue = new LinkedList&lt;Runnable&gt;();
+    &#125;
+
+
+    //submit一个runnable进线程池
+    public void submit(Runnable runnable)&#123;
+        synchronized (queue)&#123;
+            queue.add(runnable);
+        &#125;
+    &#125;
+    
+    //WorkerThread用一个死循环不停的去向Runnable队列拿Runnable执行。
+    public class  WorkerThread extends Thread&#123;
+        @Override
+        public void run() &#123;
+            super.run();
+            while(true)&#123;
+                synchronized (queue)&#123;
+                        if( !queue.isEmpty() )&#123;
+                    Runnable current = queue.poll();
+                    current.run();
+                      &#125;
+                &#125;
+            &#125;
+        &#125;
+    &#125;
+&#125;
+</code></pre>
+<hr>
+<h3 id="如何读源码"><a href="#如何读源码" class="headerlink" title="如何读源码"></a>如何读源码</h3><ol>
+<li><p>理想情况下，逐⾏通读可以最⾼效率读通⼀个项⽬的代码，因为每⾏代码都只需要读⼀遍；但实时情况下，逐⾏通读会导致脑中积累太多没有成体系的代码，导致你读个⼏⼗⼏百⾏就读不下去了，因此⼀点也不实⽤。⽽从切⼊点开始读，可以在最快时间内把看到的代码体系化，形成⼀个「完整的⼩世界」；在把「⼩世界」看明⽩之后，再去⼀步步扩⼤和深⼊，就能够逐渐掌握更多的细节。</p>
+</li>
+<li><p>寻找切⼊点的⽅式：离你最近的位置就是切⼊点，通常是业务代码中的最后⼀⾏。</p>
+</li>
+<li><p>以 Retrofifit 为例，最后的 Call.enqueue() 会被我作为切⼊点；在尝试从 Call.enqueue() 切⼊失败后，逐步回退到Retrofit.create()⽅法，找到项⽬结构的核⼼，然后开始继续发散和深⼊</p>
+</li>
+<li><p>代码阅读过程中，不懂的代码会越来越多，脑⼦就会越来越乱。如果不断尝试把看到的代码结合起来组合成完整逻辑，就能让头脑始终保持清晰，⽽不是深⼊到某个细节好久之后忽然⼀抬头：「我为什么点进这个⽅法来着？」可以试着在读源码的时候，经常把多⾏或多段代码在脑⼦⾥（或者笔记⾥）组合成⼀整块，从⽽让代码结构更清晰，让阅读过程不断增加进度感，也减⼩继续阅读的难度。</p>
+</li>
+<li><p>以 Retrofifit 为例，当读懂 Proxy.newProxyInstance() ⽅法实际上是创建了⼀个代理对象的时候，可以停下来做⼀个总结：「这是 Retrofifit 的⼤框架」，在脑⼦⾥或者笔记上都可以。总结消化过后，再继续阅读。</p>
+</li>
+<li><p>读代码经常会出现「横向逻辑还没看清晰，纵向深度也没挖透」的情况。那么到底是要横向扩展阅读结构，还是纵向挖深度，最好是在每次遇到这种分岔路⼝的时候就先做好决定。不能在每个分岔路⼝都想也不想地看到不懂的就追下去，容易迷路。</p>
+</li>
+<li><p>在遇到「横向也⼴，纵向也深」的时候，根据情况选择其中⼀个就好，并没有必然哪种选择更优的铁律。⽽如果遇到越钻越头⼤的情况，可以退回之前的某⼀步，换条路继续⾛。换路的时候记得做好标记：「我在哪⾥探路失败了」。</p>
+</li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%BA%90%E7%A0%81/" class="category-chain-item">源码</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>第三方框架源码</div>
+      <div>http://peiniwan.github.io/2019/03/ed99fd83cd3f.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>六月的雨</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2019年3月3日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2019/03/86bf1b883516.html" title="自定义View总结">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">自定义View总结</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2019/03/2319bb8ac7d1.html" title="Android其他优化">
+                        <span class="hidden-mobile">Android其他优化</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

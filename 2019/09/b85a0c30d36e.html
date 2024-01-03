@@ -1,0 +1,854 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="六月的雨">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="嵌套滚动 https:&#x2F;&#x2F;juejin.cn&#x2F;post&#x2F;6844903960432607246?share_token&#x3D;78170f20-c77a-47d5-9949-045774cf21ba#heading-3 https:&#x2F;&#x2F;www.jianshu.com&#x2F;p&#x2F;8f412c6cb0ef https:&#x2F;&#x2F;juejin.cn&#x2F;post&#x2F;6844903960432607246?share_token">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RecycleView_ ListView原理">
+<meta property="og:url" content="http://peiniwan.github.io/2019/09/b85a0c30d36e.html">
+<meta property="og:site_name" content="六月的雨的博客">
+<meta property="og:description" content="嵌套滚动 https:&#x2F;&#x2F;juejin.cn&#x2F;post&#x2F;6844903960432607246?share_token&#x3D;78170f20-c77a-47d5-9949-045774cf21ba#heading-3 https:&#x2F;&#x2F;www.jianshu.com&#x2F;p&#x2F;8f412c6cb0ef https:&#x2F;&#x2F;juejin.cn&#x2F;post&#x2F;6844903960432607246?share_token">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/RecycleView__ListView%E5%8E%9F%E7%90%86.resources/2023/09/18/09-58-18-d1297e898f9b0a591dada5f4864cfe97-unknown_filename.6-76ace0.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/RecycleView__ListView%E5%8E%9F%E7%90%86.resources/2023/09/18/09-58-18-a51d0b105e9fa241970be6aa5b1e900c-unknown_filename.3-fd9a6c.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/RecycleView__ListView%E5%8E%9F%E7%90%86.resources/2023/09/18/09-58-18-5abea9a05ceac40a8c4396cf6395f485-unknown_filename.1-3fb93d.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/RecycleView__ListView%E5%8E%9F%E7%90%86.resources/2023/09/18/09-58-18-b071917fe2a29429411a9b47b94247fe-unknown_filename.2-c9fe14.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/RecycleView__ListView%E5%8E%9F%E7%90%86.resources/2023/09/18/09-58-18-83038e2480407a3e787289fb8c93933a-unknown_filename.7-c00cca.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/RecycleView__ListView%E5%8E%9F%E7%90%86.resources/2023/09/18/09-58-18-492d953a17df01be18d97cbaab063a27-unknown_filename.8-5ab42b.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/RecycleView__ListView%E5%8E%9F%E7%90%86.resources/2023/09/18/09-58-18-66d4414642ec9017e653d08451dffe07-unknown_filename.4-4bebad.png">
+<meta property="article:published_time" content="2019-09-28T03:17:43.000Z">
+<meta property="article:modified_time" content="2023-12-29T08:07:26.783Z">
+<meta property="article:author" content="六月的雨">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/RecycleView__ListView%E5%8E%9F%E7%90%86.resources/2023/09/18/09-58-18-d1297e898f9b0a591dada5f4864cfe97-unknown_filename.6-76ace0.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>RecycleView_ ListView原理 - 六月的雨的博客</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"peiniwan.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>六月的雨的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="RecycleView_ ListView原理"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2019-09-28 11:17" pubdate>
+          2019年9月28日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          21 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">RecycleView_ ListView原理</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="嵌套"><a href="#嵌套" class="headerlink" title="嵌套"></a>嵌套</h2><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/hzmming2008/article/details/115318748?spm=1001.2101.3001.6661.1&utm_medium=distribute.pc_relevant_t0.none-task-blog-2~default~BlogCommendFromBaidu~Rate-1-115318748-blog-80593211.pc_relevant_vip_default&depth_1-utm_source=distribute.pc_relevant_t0.none-task-blog-2~default~BlogCommendFromBaidu~Rate-1-115318748-blog-80593211.pc_relevant_vip_default">滚动</a></p>
+<p><a target="_blank" rel="noopener" href="https://juejin.cn/post/6844903960432607246?share_token=78170f20-c77a-47d5-9949-045774cf21ba#heading-3">https://juejin.cn/post/6844903960432607246?share_token=78170f20-c77a-47d5-9949-045774cf21ba#heading-3</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/8f412c6cb0ef">https://www.jianshu.com/p/8f412c6cb0ef</a></p>
+<p><a target="_blank" rel="noopener" href="https://juejin.cn/post/6844903960432607246?share_token=78170f20-c77a-47d5-9949-045774cf21ba">https://juejin.cn/post/6844903960432607246?share_token=78170f20-c77a-47d5-9949-045774cf21ba</a><br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/RecycleView__ListView%E5%8E%9F%E7%90%86.resources/2023/09/18/09-58-18-d1297e898f9b0a591dada5f4864cfe97-unknown_filename.6-76ace0.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.6"></p>
+<h2 id="ListView原理"><a href="#ListView原理" class="headerlink" title="ListView原理"></a>ListView原理</h2><p>ListView实现成百上千条数据都不会OOM的原因<br>因为getview的第二个参数convertView就是之前用过的VIew对象，当view对象完全移除屏幕后，会存入RecycleBin对象里，当listview的屏幕外下面的view滑出来的时候，会从RecycleBin里取出复用。ListView中的子View其实来来回回就那么几个，移出屏幕的子View会很快被移入屏幕的数据重新利用起来，所以不会OOM<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/RecycleView__ListView%E5%8E%9F%E7%90%86.resources/2023/09/18/09-58-18-a51d0b105e9fa241970be6aa5b1e900c-unknown_filename.3-fd9a6c.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.3"></p>
+<p><strong>coverview原理</strong><br>这个参数用于将之前加载好的布局进行缓存，以便之后可以进行重用，在 getView()方法中进行了判断，如果 convertView为空，则使用LayoutInflater去加载布局，如果不为空则直接对 convertView进行重用</p>
+<h2 id="RecycleView和ListView对比"><a href="#RecycleView和ListView对比" class="headerlink" title="RecycleView和ListView对比"></a>RecycleView和ListView对比</h2><p>RecycleView是ListView的升级版，和ListView一样，RecyclerView是用来显示大量数据的容器，并通过复用有限数量的View，来提高滚动时的性能。与ListView不同的是RecyclerView不负责布局，只专注于复用机制，布局交由LayoutManager来管理。</p>
+<p>ListView的局限</p>
+<ul>
+<li>只有纵向列表一种布局</li>
+<li>没有支持动画的API</li>
+<li>没有强制实现ViewHolder</li>
+</ul>
+<p>RecyclerView 的优势</p>
+<ul>
+<li>默认支持 Linear, Grid, Staggered Grid 三种布局</li>
+<li>友好的 ItemAnimator 动画 API</li>
+<li>强制实现 ViewHolder</li>
+<li>解耦的架构设计（adapter、layoutManager、item animator）</li>
+<li>局部刷新</li>
+<li>缓存有区别</li>
+</ul>
+<h2 id="RecycleView原理"><a href="#RecycleView原理" class="headerlink" title="RecycleView原理"></a>RecycleView原理</h2><h3 id="用法"><a href="#用法" class="headerlink" title="用法"></a>用法</h3><pre><code class="hljs">public class MyAdapter extends RecyclerView.Adapter&lt;MyAdapter.ViewHolder&gt; &#123;
+    private List&lt;String&gt; dataList;
+
+    public MyAdapter(List&lt;String&gt; dataList) &#123;
+        this.dataList = dataList;
+    &#125;
+
+    @Override
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) &#123;
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_layout, parent, false);
+        return new ViewHolder(view);
+    &#125;
+
+    @Override
+    public void onBindViewHolder(ViewHolder holder, int position) &#123;
+        String item = dataList.get(position);
+        holder.textView.setText(item);
+    &#125;
+
+    @Override
+    public int getItemCount() &#123;
+        return dataList.size();
+    &#125;
+
+    public static class ViewHolder extends RecyclerView.ViewHolder &#123;
+        TextView textView;
+
+        public ViewHolder(View itemView) &#123;
+            super(itemView);
+            textView = itemView.findViewById(R.id.textView);
+        &#125;
+    &#125;
+&#125;
+</code></pre>
+<h3 id="缓存"><a href="#缓存" class="headerlink" title="缓存"></a>缓存</h3><p><a target="_blank" rel="noopener" href="https://juejin.cn/post/7173816645511544840?searchId=20230802143652E62B1DA3FEB2DE9CAA23">这10张图拿去，别再说学不会RecyclerView的缓存复用机制了！</a><br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/RecycleView__ListView%E5%8E%9F%E7%90%86.resources/2023/09/18/09-58-18-5abea9a05ceac40a8c4396cf6395f485-unknown_filename.1-3fb93d.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.1"><br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/RecycleView__ListView%E5%8E%9F%E7%90%86.resources/2023/09/18/09-58-18-b071917fe2a29429411a9b47b94247fe-unknown_filename.2-c9fe14.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.2"><br>RecyclerView 缓存分层：</p>
+<h4 id="第一层缓存-Scrap"><a href="#第一层缓存-Scrap" class="headerlink" title="第一层缓存 Scrap"></a>第一层缓存 Scrap</h4><p>（&#x2F;skræp&#x2F; 碎片、小块）（mAttachedScrap）屏幕内缓存，可直接复用，无需重新绑定，且用 position 寻找缓存，这个缓存结构实际上更多是为了避免出现像局部刷新这一类的操作，导致所有的列表项都需要重绘的情形。<br>final ArrayList<ViewHolder> mAttachedScrap &#x3D; new ArrayList&lt;&gt;();<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/RecycleView__ListView%E5%8E%9F%E7%90%86.resources/2023/09/18/09-58-18-83038e2480407a3e787289fb8c93933a-unknown_filename.7-c00cca.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.7"></p>
+<h4 id="第二层缓存-mCachedViews"><a href="#第二层缓存-mCachedViews" class="headerlink" title="第二层缓存 mCachedViews"></a>第二层缓存 mCachedViews</h4><p>mCachedViews主要用于存放已被移出屏幕、但有可能很快重新进入屏幕的列表项，它的默认大小是2。可直接复用，无需重新绑定，且用 position 寻找缓存，</p>
+<pre><code class="hljs">  final ArrayList&lt;ViewHolder&gt; mCachedViews = new ArrayList&lt;ViewHolder&gt;();
+    int mViewCacheMax = DEFAULT_CACHE_SIZE;
+    static final int DEFAULT_CACHE_SIZE = 2;
+</code></pre>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/RecycleView__ListView%E5%8E%9F%E7%90%86.resources/2023/09/18/09-58-18-492d953a17df01be18d97cbaab063a27-unknown_filename.8-5ab42b.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.8"></p>
+<h4 id="第三层-ViewCacheExtension"><a href="#第三层-ViewCacheExtension" class="headerlink" title="第三层 ViewCacheExtension"></a>第三层 ViewCacheExtension</h4><p>开发者自定义控制的 View 缓存帮助类。一般而言，我们不会自定义缓存实现，使用Recycler提供的3级缓存足够。</p>
+<h4 id="第四层-RecycledViewPoll"><a href="#第四层-RecycledViewPoll" class="headerlink" title="第四层 RecycledViewPoll"></a>第四层 RecycledViewPoll</h4><p>所有被废弃的 ItemView 的池（没有废弃使用）<br>mRecyclerPool主要用于按不同的itemType分别存放超出mCachedViews限制的、被移出屏幕的列表项，其会先以SparseArray区分不同的itemType，然后每种itemType对应的值又以ArrayList的形式持有着每个列表项的ViewHolder对象，每种itemType的ArrayList大小限制默认为5。</p>
+<p>由于mCachedViews默认的大小限制仅为2，因此，当滑出屏幕的列表项超过2个后，就会按照先进先出的顺序，依次将ViewHolder对象从mCachedViews移出，并按itemType放入RecycledViewPool中的不同ArrayList。</p>
+<h4 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h4><ul>
+<li><p>Scrap 与 Cache 是通过 position 来找到缓存的，并且他的数据是肯定的，所以不需要重新绑定数据</p>
+</li>
+<li><p>RecycledViewPool 是通过 viewType 来找到缓存的，并且他的数据是脏数据，找到缓存的话，需要重新绑定数据</p>
+</li>
+<li><p>RecycleView.setItemViewCacheSize(size) 加大 RecyclerView 缓存空间,利用空间换时间策阅来提高流畅性。</p>
+</li>
+<li><p>多个 RecyclerView 共用 RecycledViewPool，比如RecyclerView里又有多类似的RecyclerView，竖向里有横向</p>
+<p>  RecyclerView. RecycledViewPool recycledViewPool &#x3D;<br>  new RecyclerView. RecycledView Pool ( ) ;<br>  recyclerView1. setRecycledViewPool ( recycledViewPool) ;<br>  recyclerView2. setRecycledViewPool ( recycledViewPool) ;<br>  recyclerView3.setRecycledViewPool ( recycledViewPool) ;</p>
+</li>
+</ul>
+<h3 id="ListView、RecycleView的优化"><a href="#ListView、RecycleView的优化" class="headerlink" title="ListView、RecycleView的优化"></a>ListView、RecycleView的优化</h3><ul>
+<li><p>Item的布局层次结构尽量简单，避免布局太深或者不必要的重绘</p>
+</li>
+<li><p>Item 高度固定,设置RecyclerView.setHasFixedSize(true),避免不停的测量。requeLayout 资源浪费，</p>
+</li>
+<li><p>recycleview加载1000条数据也没问题，因为会只加载一屏的数据，但是添加了scroview就会出现卡顿。如果是listview，还需要指定他的高度， nested scroll view会导致recycleview把数据全部加载出来</p>
+</li>
+<li><p><strong>如果不要求动画</strong>,可用通过 ((SimpleItemAnimator) rv.getItemAnimator()).setSupportsChangeAnimations(false); 把默认动画关闭来提高性能</p>
+</li>
+<li><p>避免在 getView 方法中做耗时的操作，例如加载大量图片，当用户不停的滑动时，由于ui在主线程操作的，会出现卡顿，可以在滑动的时候停止加载(setOnscrollerListener)，在getView方法里只有静止才加载图片</p>
+<p>  if (view.getContext() !&#x3D; null) {<br>      switch (scrollState) {<br>          case SCROLL_STATE_IDLE:<br>              Glide.with(view.getContext()).resumeRequests();<br>              break;<br>          case SCROLL_STATE_TOUCH_SCROLL:<br>          case SCROLL_STATE_FLING:<br>              Glide.with(view.getContext()).pauseRequests();<br>              break;<br>      }<br>  }</p>
+</li>
+<li><p>在一些场景中，<strong>ScollView内会包含多个ListView，可以把listview的高度写死固定下来</strong>。ScollView在快速滑动过程中需要大量计算每一个listview的高度，阻塞了UI线程导致卡顿现象出现，如果我们每一个item的高度都是均匀的，可以通过计算把listview的高度确定下来，避免卡顿现象出现</p>
+</li>
+<li><p>使用 RecycleView 代替listview：每个item内容的变动，listview都需要去调用notifyDataSetChanged来更新全部的item，太浪费性能了。RecycleView可以实现当个item的局部刷新，并且引入了增加和删除的动态效果，在性能上和定制上都有很大的改善</p>
+</li>
+<li><p>ListView 中元素避免半透明：半透明绘制需要大量乘法计算，在滑动时不停重绘会造成大量的计算，在比较差的机子上会比较卡。 在设计上能不半透明就不不半透明。实在要弄就把在滑动的时候把半透明设置成不透明，滑动完再重新设置成半透明。</p>
+</li>
+<li><p>复用历史的view对象convertview</p>
+</li>
+<li><p>减少item查询的次数 viewholder</p>
+</li>
+<li><p>异步加载数据（把图片缓存）</p>
+</li>
+</ul>
+<h3 id="其他注意"><a href="#其他注意" class="headerlink" title="其他注意"></a>其他注意</h3><pre><code class="hljs">    列表中 item/广告的 impression 统计
+ListView getView
+RecyclerView 通过 onBindViewHolder() 统计?可能错误!
+通过onViewAttachedToWindow()统计
+
+    点击监听器的设置用户不停的滑动就会不停的创建监听器，每次绑定一个新的。这样写会造成内存抖动。点击监听器只是一个观察者模式
+![unknown_filename](https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/RecycleView__ListView%E5%8E%9F%E7%90%86.resources/2023/09/18/09-58-18-1ed8301ce26cf4ab884252f97a9a8d98-unknown_filename-257440.png)
+
+1. 用户滑动到横向滑动的 item RecyclerView 的时候,由于需要创建更复杂的
+    RecyclerView 以及多个子 view,可能会导致页面卡顿
+2. 由于 RenderThread 的存在,RecyclerView会进行 prefetch
+    * 只有LinearLayoutManager API
+    * 只有嵌套在内部的 RecyclerView 才会生效
+</code></pre>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/RecycleView__ListView%E5%8E%9F%E7%90%86.resources/2023/09/18/09-58-18-66d4414642ec9017e653d08451dffe07-unknown_filename.4-4bebad.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.4"></p>
+<h3 id="DiffUtil-提高列表性能的方法"><a href="#DiffUtil-提高列表性能的方法" class="headerlink" title="DiffUtil 提高列表性能的方法"></a>DiffUtil 提高列表性能的方法</h3><p>它会自动计算新老数据集的差异，并根据差异情况，自动调用以下四个方法</p>
+<pre><code class="hljs">adapter.notifyItemRangeInserted(position, count);
+adapter.notifyItemRangeRemoved(position, count);
+adapter.notifyItemMoved(fromPosition, toPosition);
+adapter.notifyItemRangeChanged(position, count, payload);
+</code></pre>
+<ol>
+<li>局部更新方法 notifyltemXXX() 不适用于所有情况</li>
+<li>notifyDataSetChange() 会导致整个布局重绘,重新绑定所有ViewHolder, 而<br> 且会失去可能的动画效果</li>
+<li>DiffUtil 适用于整个页面需要刷新,但是有部分数据可能相同的情况</li>
+</ol>
+<p>DiffUtil 在使用起来，主要需要关注几个类：</p>
+<p>DiffUtil.Callback：具体用于限定数据集比对规则。<br>DiffUtil.DiffResult：比对数据集之后，返回的差异结果。<br>1、DiffUtil.Callback<br>DiffUtil.Callback 主要就是为了限定两个数据集中子项的比对规则。毕竟开发者面对的数据结构多种多样，既然没法做一套通用的内容比对方式，那么就将比对的规则，交还给开发者来实现即可。</p>
+<p>它拥有 4 个抽象方法和 1 个非抽象方法的抽象类。我们需要继承并实现它的所有方法：在自定义的 Callback 中，其实需要实现 4 个方法：</p>
+<p>getOldListSize()：旧数据集的长度。<br>getNewListSize()：新数据集的长度<br>areItemsTheSame()：判断是否是同一个Item。<br>areContentsTheSame()：如果是通一个Item（即areItemsTheSame返回true），此方法用于判断是否同一个 Item 的内容也相同。<br>如我们有两个 Object，它们可能拥有很多属性，但是其中只有两个属性需要被显示出来，那只要这两个属性一致我们这个方法就要返回true。</p>
+<pre><code class="hljs"> @Override
+    public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) &#123;
+        TestBean beanOld = mOldDatas.get(oldItemPosition);
+        TestBean beanNew = mNewDatas.get(newItemPosition);
+        if (!beanOld.getDesc().equals(beanNew.getDesc())) &#123;
+            return false;//如果有内容不同，就返回false
+        &#125;
+        if (beanOld.getPic() != beanNew.getPic()) &#123;
+            return false;//如果有内容不同，就返回false
+        &#125;
+        return true; //默认两个data内容是相同的
+    &#125;
+
+
+       DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new DiffCallBack(mOldList, mList), true);
+        diffResult.dispatchUpdatesTo(myAdapter);
+        mOldList = new ArrayList&lt;&gt;(mList);
+        myAdapter.setDatas(mList);
+</code></pre>
+<p>作者：BugFree张瑞<br>链接：<a target="_blank" rel="noopener" href="https://www.jianshu.com/p/70de674c6ffa">https://www.jianshu.com/p/70de674c6ffa</a><br>来源：简书<br>著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。</p>
+<p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/60a41bb5cd7f">二次分装</a></p>
+<pre><code class="hljs">val oldList = ... // 老列表
+val newList = ... // 新列表
+val adapter：RecyclerView.Adapter = ...
+
+// 1.定义比对方法
+val callback = object : DiffUtil.Callback() &#123;
+    override fun getOldListSize(): Int = oldList.size
+    override fun getNewListSize(): Int = newList.size
+    override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean &#123;
+        // 分别获取新老列表中对应位置的元素
+        val oldItem = oldList[oldItemPosition]
+        val newItem = newList[newItemPosition]
+        return ... // 定义什么情况下新老元素是同一个对象（通常是业务id）
+    &#125;
+    override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean &#123;
+        val oldItem = oldList[oldItemPosition]
+        val newItem = newList[newItemPosition]
+        return ... // 定义什么情况下同一对象内容是否相同 (由业务逻辑决定)
+    &#125;
+    override fun getChangePayload(oldItemPosition: Int, newItemPosition: Int): Any? &#123;
+        val oldItem = oldList[oldItemPosition]
+        val newItem = newList[newItemPosition]
+        return ... // 具体定义同一对象内容是如何地不同 (返回值会作为payloads传入onBindViewHoder())
+    &#125;
+&#125;
+// 2.进行比对并输出结果
+val diffResult = DiffUtil.calculateDiff(callback)
+// 3\. 将比对结果应用到 adapter
+diffResult.dispatchUpdatesTo(adapter)
+复制代码
+</code></pre>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%BA%90%E7%A0%81/" class="category-chain-item">源码</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>RecycleView_ ListView原理</div>
+      <div>http://peiniwan.github.io/2019/09/b85a0c30d36e.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>六月的雨</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2019年9月28日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2019/10/c7cbc247409f.html" title="Android动画">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Android动画</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2019/09/874f0cd028fe.html" title="加密序列化">
+                        <span class="hidden-mobile">加密序列化</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

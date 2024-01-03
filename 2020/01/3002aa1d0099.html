@@ -1,0 +1,896 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="六月的雨">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Jetpack MVP MVVM MVC(Model-View-Controller)M是指逻辑模型，V是指视图模型，C则是控制器。通过controller的控制去操作model层的数据，并且返回给view层展示。一个逻辑模型可以对于多种视图模型。 Android中也可以说采用了当前比较流行的MVC框架，在Android中： 　　1) 视图层（View）：一般采用XML文件进行界面的描述，使用的时">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Jetpack MVP MVVM">
+<meta property="og:url" content="http://peiniwan.github.io/2020/01/3002aa1d0099.html">
+<meta property="og:site_name" content="六月的雨的博客">
+<meta property="og:description" content="Jetpack MVP MVVM MVC(Model-View-Controller)M是指逻辑模型，V是指视图模型，C则是控制器。通过controller的控制去操作model层的数据，并且返回给view层展示。一个逻辑模型可以对于多种视图模型。 Android中也可以说采用了当前比较流行的MVC框架，在Android中： 　　1) 视图层（View）：一般采用XML文件进行界面的描述，使用的时">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Jetpack_MVP_MVVM.resources/2023/09/18/09-57-43-d7f74906a1a5c013af78bcd20d16185e-QQ%E6%88%AA%E5%9B%BE20191218104245-33c467.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Jetpack_MVP_MVVM.resources/2023/09/18/09-57-43-91292531382e5905716b9d61adaca31b-unknown_filename.6-8672ee.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Jetpack_MVP_MVVM.resources/2023/09/18/09-57-43-c472aca420de8048fa0235072178117c-unknown_filename.5-5fe015.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Jetpack_MVP_MVVM.resources/2023/09/18/09-57-43-fcf115459a973918ef2f621808bbfffa-unknown_filename-d6fc98.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Jetpack_MVP_MVVM.resources/2023/09/18/09-57-43-6ec15801a703f518686959a8277a89a7-unknown_filename.1-6cde7f.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Jetpack_MVP_MVVM.resources/2023/09/18/09-57-43-f23854ccb9496ddea602f5644b696961-unknown_filename.2-6fa95e.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Jetpack_MVP_MVVM.resources/2023/09/18/09-57-43-493925541a19f0768e86d5c03ef7ffa2-unknown_filename.3-b3aee8.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Jetpack_MVP_MVVM.resources/2023/09/18/09-57-43-7f7b90a3cb9df735d7671f236e0e8a12-Image.4-14666a.png">
+<meta property="article:published_time" content="2020-01-11T13:51:39.000Z">
+<meta property="article:modified_time" content="2023-12-26T02:56:17.226Z">
+<meta property="article:author" content="六月的雨">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Jetpack_MVP_MVVM.resources/2023/09/18/09-57-43-d7f74906a1a5c013af78bcd20d16185e-QQ%E6%88%AA%E5%9B%BE20191218104245-33c467.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>Jetpack MVP MVVM - 六月的雨的博客</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"peiniwan.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>六月的雨的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Jetpack MVP MVVM"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2020-01-11 21:51" pubdate>
+          2020年1月11日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.1k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          18 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Jetpack MVP MVVM</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="Jetpack-MVP-MVVM"><a href="#Jetpack-MVP-MVVM" class="headerlink" title="Jetpack MVP MVVM"></a>Jetpack MVP MVVM</h1><p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Jetpack_MVP_MVVM.resources/2023/09/18/09-57-43-d7f74906a1a5c013af78bcd20d16185e-QQ%E6%88%AA%E5%9B%BE20191218104245-33c467.png" srcset="/img/loading.gif" lazyload alt="QQ截图20191218104245"></p>
+<h2 id="MVC"><a href="#MVC" class="headerlink" title="MVC"></a>MVC</h2><p>(Model-View-Controller)<br>M是指逻辑模型，V是指视图模型，C则是控制器。通过controller的控制去操作model层的数据，并且返回给view层展示。一个逻辑模型可以对于多种视图模型。</p>
+<p>Android中也可以说采用了当前比较流行的MVC框架，在Android中： <br>　　1) 视图层（View）：一般采用XML文件进行界面的描述，使用的时候可以非常方便的引入，但是用xml编写了，又需要在Acitvity声明并且实例化。<br>　　2) 控制层（Controller）：控制层的通常落在了众多的Acitvity的肩上，要通过Activity交割Model业务逻辑层处理，并且activity还充当了view层职责。<br>　　3) 模型层（Model）：java bean、对数据库的操作、对网络等的操作都应该在Model里面处理，当然对业务计算等操作也是必须放在的该层的。</p>
+<p>另一种mvc，这里的M、V也没有关联，和MVP类似，一种写法</p>
+<pre><code class="hljs">public class MvcActivity extends AppCompatActivity &#123;
+    IView iView;
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) &#123;
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main_mvc);
+        iView = findViewById(R.id.dataView);
+        String[] data = DataCenter.getData();
+        iView.showData(data[0], data[1]);
+    &#125;
+    interface IView &#123;
+        void showData(String datum0, String datum1);
+    &#125;
+&#125;
+
+public class DataView extends LinearLayout implements MvcActivity.IView &#123;
+  EditText data0View;
+  EditText data1View;
+
+  public DataView(Context context, @Nullable AttributeSet attrs) &#123;
+    super(context, attrs);
+  &#125;
+
+
+  @Override
+  protected void onFinishInflate() &#123;
+    super.onFinishInflate();
+    data0View = findViewById(R.id.data0View);
+    data1View = findViewById(R.id.data1View);
+  &#125;
+
+  @Override
+  public void showData(String datum0, String datum1) &#123;
+    data0View.setText(datum0);
+    data1View.setText(datum1);
+  &#125;
+&#125;
+
+public class DataCenter &#123;
+    public static String[] getData() &#123;
+        return new String[] &#123;&quot;Hi&quot;, &quot;Author&quot;&#125;;
+    &#125;
+&#125;
+
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;com.hencoder.a36_arch.mvc.DataView xmlns:androxmlns:tools=&quot;http://schemas.android.com/tools&quot;
+    android:android:layout_width=&quot;match_parent&quot;
+    android:layout_height=&quot;match_parent&quot;
+    android:orientation=&quot;vertical&quot;
+    tools:context=&quot;.MainActivity&quot;&gt;
+
+    &lt;EditText
+        android:android:layout_width=&quot;match_parent&quot;
+        android:layout_height=&quot;wrap_content&quot; /&gt;
+
+    &lt;EditText
+        android:android:layout_width=&quot;match_parent&quot;
+        android:layout_height=&quot;wrap_content&quot; /&gt;
+
+    &lt;Button
+        android:android:layout_width=&quot;100dp&quot;
+        android:layout_height=&quot;wrap_content&quot;
+        android:text=&quot;Save&quot;/&gt;
+
+&lt;/com.hencoder.a36_arch.mvc.DataView&gt;
+</code></pre>
+<h2 id="MVP"><a href="#MVP" class="headerlink" title="MVP"></a>MVP</h2><p>MVP 就是基于MVC 的模式上的一个演化版本。在MVC模式中，Activity应该是属于View这一层。而实质上，它既承担了View，同时也包含一些Controller的东西在里面。随着项目的迭代更新，这对开发很不友好，耦合度也原来越高，项目越来越难维护，而MVP 就是解决这样的痛点。</p>
+<p>MVP的model层相对于MVC是一样的，而activity和fragment不再是controller层，而是纯粹的view层，所有关于用户事件的转发全部交由presenter层处理。<br>代理模式，交给另一个类做功能。</p>
+<ol>
+<li>view层: View 对应于Activity或者fragment，负责View的绘制以及与用户交互</li>
+<li>Presenter 负责完成View于Model间的交互<ul>
+<li>本地存储数据，如数据库，文件，SharedPreferences（本质也是文件）</li>
+<li>内存的缓存或临时数据</li>
+<li>通过各种网络协议获取的远程数据</li>
+</ul>
+</li>
+</ol>
+<h4 id="管理Presenter的生命周期"><a href="#管理Presenter的生命周期" class="headerlink" title="管理Presenter的生命周期"></a>管理Presenter的生命周期</h4><p>何时取消网络请求<br>如果acitivity已经关闭了,而网络操作又没走完.就会内存泄漏.view虽然持有p,但是也不能在Activity的onDestroy里面直接的将p&#x3D;null吧，对象&#x3D;null也只是断开引用而已,还并不是真的释放。<br>所以得有个接口告诉p,我要挂了,你也自杀吧，所以:</p>
+<pre><code class="hljs">interface BasePresenter &#123;
+  void onStart();
+   void onDestroy();
+&#125;
+</code></pre>
+<p>让所有的Presenter都继承BasePresenter,然后在activity（onDestory()）&#x2F;fragment（onDestoryview()）中相应的生命周期里面调用，在相应的方法里面,初始化,结束异步操作,释放资源,将view&#x3D;null;而在activity里面,由于Presenter并没有view的引用了,所以p随着activity的销毁也就跟着销毁了.不会造成泄漏等。<br>在MVP中我是在BaseActivity中统一把请求取消掉了</p>
+<h4 id="MVP优点"><a href="#MVP优点" class="headerlink" title="MVP优点"></a>MVP优点</h4><ol>
+<li>Model与View完全分离，彻底解耦</li>
+<li>Presenter复用，可以将一个Presenter用于多个视图，而不用改变Presenter的逻辑</li>
+<li>可以实现View接口进行逻辑测试（Presenter的单元测试）</li>
+</ol>
+<h4 id="MVP的缺点"><a href="#MVP的缺点" class="headerlink" title="MVP的缺点"></a>MVP的缺点</h4><ol>
+<li>Model层过大，做好模块划分，进行接口隔离，在内部进行分层。</li>
+<li>MVP额外的增加了很多类和接口,这个可以根据项目业务进行相应地优化。划分v&#x2F;p比较麻烦，一个activity引用了v以后，那得把v里面的方法都实现，即使没有用到.</li>
+<li>V层与P层还是有一定的耦合度。一旦V层某个UI元素更改，那么对应的接口就必须得改，数据如何映射到UI上、事件监听接口这些都需要转变，牵一发而动全身。如果这一层也能解耦就更好了。（其他mvc也可以做到，看上面的demo）</li>
+</ol>
+<h4 id="写一个MVP例子"><a href="#写一个MVP例子" class="headerlink" title="写一个MVP例子"></a>写一个MVP例子</h4><pre><code class="hljs">   public interface HomeView &#123;
+        //显示加载页
+        void showProgress();
+        //关闭加载页
+        void hideProgress();
+        //加载新数据
+        void newDatas(Book book);
+        //显示加载失败
+        void showLoadFailMsg();
+    &#125;
+
+
+    public class HomeFragment implements HomeView &#123;
+        private HomePresenter homePresenter;
+        protected void loadData() &#123;
+            homePresenter = new HomePresenter(this);
+            homePresenter.getDataResults(1);
+        &#125;
+
+        @Override
+        public void newDatas(Book book) &#123;&#125;
+
+        @Override
+        public void showProgress() &#123;&#125;
+
+        @Override
+        public void hideProgress() &#123;&#125;
+    &#125;
+
+
+    public class HomePresenter  implements OnLoadDataListListener&lt;Book&gt; &#123;
+        private HomeView mView;
+        private Model mModel;
+
+        public HomePresenter(HomeView mView) &#123;
+            this.mView = mView;
+            this.mModel=new Model();
+            mView.showProgress();
+        &#125;
+
+        public void getDataResults(int page) &#123;
+            mModel.loadData(page,this);
+        &#125;
+
+        @Override
+        public void onSuccess(Book book) &#123;
+            mView.newDatas(book);
+            mView.hideProgress();
+        &#125;
+
+        @Override
+        public void onFailure(Throwable e) &#123;
+            Log.e(&quot;onFailure&quot;,e.toString());
+            mView.showLoadFailMsg();
+        &#125;
+    &#125;
+
+
+    public class Model &#123;
+        public void loadData(final OnLoadDataListListener listener,int page) &#123;
+            HttpData.getInstance().getHomeInfo(page,new Observer&lt;BOKKK&gt;() &#123;
+                @Override
+                public void onError(Throwable e) &#123;
+                    listener.onFailure(e);
+                &#125;
+                
+                @Override
+                public void onResult(Book book) &#123;
+                    listener.onSuccess(book);
+                &#125;
+            &#125;);
+        &#125;
+    &#125;
+</code></pre>
+<h2 id="MVVM"><a href="#MVVM" class="headerlink" title="MVVM"></a>MVVM</h2><p>好文章</p>
+<p><a target="_blank" rel="noopener" href="https://tech.meituan.com/2016/11/11/android-mvvm.html">https://tech.meituan.com/2016/11/11/android-mvvm.html</a><br>官方图<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Jetpack_MVP_MVVM.resources/2023/09/18/09-57-43-91292531382e5905716b9d61adaca31b-unknown_filename.6-8672ee.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.6"></p>
+<ul>
+<li>MVVM 模式将 Presenter 改名为 ViewModel，基本上与 MVP 模式完全一致。</li>
+<li>图中所有的箭头都是单向的，比方说Activity指向了ViewModel，表示》Activity是依赖于ViewModel的，但是反过来ViewModel不能依赖于Activity。其他的几层也是一样的道理，一个箭头就表示一个依赖关系。<br>  依赖关系是不可以跨层的，比方说UI控制层不能和仓库层有依赖关系，每一层的组件都只能和它的相邻层交互。</li>
+</ul>
+<blockquote>
+<p>依赖注入<br>UI控制层当中，Activity是四大组件之一，它的实例创建是不用我们去操心的。<br>而ViewModel层当中，Google在Jetpack中提供了专门的API来获取ViewModel的实例，所以它的实例创建也是不用我们去操心的。<br>但是到了仓库层，一个尴尬的事情出现了，谁应该去负责创建仓库的实例呢？ViewModel吗？不对，<strong>ViewModel只是依赖了仓库而已，它不应该负责创建仓库的实例</strong>，并且其他不同的ViewModel也可能会依赖同一个仓库实例。Activity吗？这就更扯了，因为Activity和ViewModel通常都是一一对应的。</p>
+</blockquote>
+<p>由于livedata当更新viewmodel层的数据的时候，view层会相应的变动ui。</p>
+<pre><code class="hljs">UserModel model = ViewModelProviders.of(this).get(UserModel.class);
+</code></pre>
+<h2 id="Jetpack"><a href="#Jetpack" class="headerlink" title="Jetpack"></a>Jetpack</h2><p><a target="_blank" rel="noopener" href="https://github.com/android/sunflower">谷歌demo</a><br>Jetpack 是谷歌提供的一套库、工具和指南，可帮助我们构建高质量的APP。遵循Jetpack可以简化代码。</p>
+<p><strong>Jetpack核心组件介绍</strong></p>
+<ul>
+<li><p>LiveData</p>
+</li>
+<li><p>ViewModel</p>
+</li>
+<li><p>DataBinding</p>
+</li>
+<li><p>Lifecycles</p>
+</li>
+<li><p>Paging：分页库组件,能够自动化加载页面初始化和分页(向前分页,向后分页)数据。</p>
+</li>
+<li><p>CameraX:强大的基于生命周期的相机控制组件。轻松定制视频录制&amp;拍照功能。</p>
+</li>
+<li><p>Navigation</p>
+</li>
+<li><p>ViewPager2：支持了垂直，抖音切换</p>
+</li>
+<li><p>KTX：<br>   Kotlin 的扩展 API，有：<br>  扩展函数、扩展属性、Lambda、命名参数、参数默认值、协程。</p>
+<p>  view.viewTreeObserver.addOnPreDrawListener(<br>object : ViewTreeObserver.OnPreDrawListener {<br>  override fun onPreDraw(): Boolean {<br>    viewTreeObserver.removeOnPreDrawListener(this)<br>    actionToBeTriggered()<br>    return true<br>  }});<br><br><br>  view.doOnPreDraw { actionToBeTriggered() }</p>
+</li>
+</ul>
+<p>fragment-ktxfragment-ktx 提供了一些针对 Fragment 的 Kotlin 扩展方法，<br>比如 ViewModel 的创建：</p>
+<pre><code class="hljs">    private val homeViewModel : HomeViewModel by viewModels()
+</code></pre>
+<p><strong>Room</strong><br>数据库组件，对sqlite做了上层包装，无缝对接LiveData。<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Jetpack_MVP_MVVM.resources/2023/09/18/09-57-43-c472aca420de8048fa0235072178117c-unknown_filename.5-5fe015.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.5"></p>
+<p><strong>WorkManager</strong><br>强大的后台任务,异步任务管理组件，使用场景：<strong>可延迟的，但需保证执行的后台任务库</strong>（向服务器发送日志、备份图片）。注意<strong>后台任务</strong>不是后台线程，所以该用线程还得用线程，可以和workmanager配合使用。它不同版本包装了JobScheduler（23以后新的）和以前的广播+AlarmManager<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Jetpack_MVP_MVVM.resources/2023/09/18/09-57-43-fcf115459a973918ef2f621808bbfffa-unknown_filename-d6fc98.png" srcset="/img/loading.gif" lazyload alt="unknown_filename"><br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Jetpack_MVP_MVVM.resources/2023/09/18/09-57-43-6ec15801a703f518686959a8277a89a7-unknown_filename.1-6cde7f.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.1"><br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Jetpack_MVP_MVVM.resources/2023/09/18/09-57-43-f23854ccb9496ddea602f5644b696961-unknown_filename.2-6fa95e.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.2"><br>后台优化思路<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Jetpack_MVP_MVVM.resources/2023/09/18/09-57-43-493925541a19f0768e86d5c03ef7ffa2-unknown_filename.3-b3aee8.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.3"></p>
+<p><strong>Navigation</strong><br>APP导航组件,能够为Activity,Fragment,Dialog,FloatWindow提供导航</p>
+<pre><code class="hljs">   &lt;com.google.android.material.bottomnavigation.BottomNavigationView
+        android:app:menu=&quot;@menu/bottom_nav_menu&quot; /&gt;
+
+    &lt;fragment
+        android:app:navGraph=&quot;@navigation/mobile_navigation&quot; /&gt;  //把创建好的fragment写上
+        
+             NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+        NavigationUI.setupWithNavController(navView, navController);
+</code></pre>
+<h2 id="data-binding"><a href="#data-binding" class="headerlink" title="data binding"></a>data binding</h2><p>双向绑定<br>当我们对 输入框 进行编辑，EditText的UI发生了变更，但是LiveData内的数据却没有更新，当我们想要在ViewModel层请求登录的API接口时，我们就必须要去通过editText.getText()才能获取用户输入的密码。<br>于是我们希望，即使是EditText的内容发生了变更，但是LiveData内的数据也能和EditText保持内容的同步——这样我们就不需要让ViewModel层持有View层的引用，在请求接口时，直接从LiveData中取值即可：<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Jetpack_MVP_MVVM.resources/2023/09/18/09-57-43-7f7b90a3cb9df735d7671f236e0e8a12-Image.4-14666a.png" srcset="/img/loading.gif" lazyload alt="Image.4"></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Android/" class="category-chain-item">Android</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Jetpack MVP MVVM</div>
+      <div>http://peiniwan.github.io/2020/01/3002aa1d0099.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>六月的雨</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2020年1月11日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2020/01/50c5cadbbe31.html" title="图片glide优化">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">图片glide优化</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2020/01/f6d682f20ab0.html" title="网络相关知识">
+                        <span class="hidden-mobile">网络相关知识</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

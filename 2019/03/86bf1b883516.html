@@ -1,0 +1,938 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="六月的雨">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="自定义View总结Android 获得View宽高的几种方式https:&#x2F;&#x2F;www.jianshu.com&#x2F;p&#x2F;422ef0d75943  onWindowFocusChanged：View已经初始化完毕，宽高已经有了，需要注意onWindowFocusChanged会被调用多次，Activity得到焦点和失去焦点都会执行这个回调    @Override   public void onWind">
+<meta property="og:type" content="article">
+<meta property="og:title" content="自定义View总结">
+<meta property="og:url" content="http://peiniwan.github.io/2019/03/86bf1b883516.html">
+<meta property="og:site_name" content="六月的雨的博客">
+<meta property="og:description" content="自定义View总结Android 获得View宽高的几种方式https:&#x2F;&#x2F;www.jianshu.com&#x2F;p&#x2F;422ef0d75943  onWindowFocusChanged：View已经初始化完毕，宽高已经有了，需要注意onWindowFocusChanged会被调用多次，Activity得到焦点和失去焦点都会执行这个回调    @Override   public void onWind">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%87%AA%E5%AE%9A%E4%B9%89View%E6%80%BB%E7%BB%93.resources/2023/09/15/18-48-24-f7592775deae25107cfe75ab882b5768-unknown_filename.5-0fe60d.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%87%AA%E5%AE%9A%E4%B9%89View%E6%80%BB%E7%BB%93.resources/2023/09/15/18-48-24-81deb6acb507bf858387fbfeb6b370ee-unknown_filename.4-d22638.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%87%AA%E5%AE%9A%E4%B9%89View%E6%80%BB%E7%BB%93.resources/2023/09/15/18-48-24-0cb6ab3258a144f14a5ec83708167dd2-unknown_filename.6-1c8b01.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%87%AA%E5%AE%9A%E4%B9%89View%E6%80%BB%E7%BB%93.resources/2023/09/15/18-48-24-b6c011951dffbd24d8a1520b4cd4c420-unknown_filename.7-df640a.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%87%AA%E5%AE%9A%E4%B9%89View%E6%80%BB%E7%BB%93.resources/2023/09/15/18-48-24-fe76544d8d5d7e04760bfe8205f085dc-unknown_filename.8-18c4ec.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%87%AA%E5%AE%9A%E4%B9%89View%E6%80%BB%E7%BB%93.resources/2023/09/15/18-48-24-1d4b35cdd071a53970be316c73f1a667-5edce9c0581e4ecf7e5a0565e2d788c8-7404c3.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%87%AA%E5%AE%9A%E4%B9%89View%E6%80%BB%E7%BB%93.resources/2023/09/15/18-48-24-2fd6a100c25ad931749a969069a618ab-unknown_filename.3-6c1523.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%87%AA%E5%AE%9A%E4%B9%89View%E6%80%BB%E7%BB%93.resources/2023/09/15/18-48-24-8babb7778fa73ecc910b893b7ea362b2-unknown_filename.1-5b2033.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%87%AA%E5%AE%9A%E4%B9%89View%E6%80%BB%E7%BB%93.resources/2023/09/15/18-48-24-816b6ba1ef98f6a08e1fe1911ccc9175-c82ecb89-00f7-476b-bbe9-fba0ac818be1-cc14ef.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%87%AA%E5%AE%9A%E4%B9%89View%E6%80%BB%E7%BB%93.resources/2023/09/15/18-48-24-3aaa5a29073a017afa5e01be3f1f0b13-unknown_filename-07c278.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%87%AA%E5%AE%9A%E4%B9%89View%E6%80%BB%E7%BB%93.resources/2023/09/15/18-48-24-b73202fc1ce8e4c16fe67942b082bb7a-722549-43d324.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%87%AA%E5%AE%9A%E4%B9%89View%E6%80%BB%E7%BB%93.resources/2023/09/15/18-48-24-0c49e249319654f268cc47bcd208e651-6ffa7e36-0587-450e-946f-3f0cd60c6b82-ce8293.jpg">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%87%AA%E5%AE%9A%E4%B9%89View%E6%80%BB%E7%BB%93.resources/2023/09/15/18-48-24-e2f21bc194187a5f7fce4ec4b7bea389-unknown_filename.2-63c4be.png">
+<meta property="article:published_time" content="2019-03-10T10:23:09.000Z">
+<meta property="article:modified_time" content="2023-12-26T02:56:17.227Z">
+<meta property="article:author" content="六月的雨">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%87%AA%E5%AE%9A%E4%B9%89View%E6%80%BB%E7%BB%93.resources/2023/09/15/18-48-24-f7592775deae25107cfe75ab882b5768-unknown_filename.5-0fe60d.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>自定义View总结 - 六月的雨的博客</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"peiniwan.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>六月的雨的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="自定义View总结"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2019-03-10 18:23" pubdate>
+          2019年3月10日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          34 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">自定义View总结</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="自定义View总结"><a href="#自定义View总结" class="headerlink" title="自定义View总结"></a>自定义View总结</h1><h4 id="Android-获得View宽高的几种方式"><a href="#Android-获得View宽高的几种方式" class="headerlink" title="Android 获得View宽高的几种方式"></a>Android 获得View宽高的几种方式</h4><p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/422ef0d75943">https://www.jianshu.com/p/422ef0d75943</a></p>
+<ul>
+<li><p>onWindowFocusChanged：View已经初始化完毕，宽高已经有了，需要注意onWindowFocusChanged会被调用多次，Activity得到焦点和失去焦点都会执行这个回调</p>
+<p>   @Override<br>   public void onWindowFocusChanged(boolean hasFocus) {<br>   super.onWindowFocusChanged(hasFocus);<br>   if (hasFocus) {<br>       &#x2F;&#x2F;获得宽度<br>       int width &#x3D; view.getMeasuredWidth();<br>   }<br>   }</p>
+</li>
+<li><p>view.post(runnable)<br>  通过post可以将一个runnable投递到消息队列的尾部，等待Looper调用此runnable的时候，View也已经初始化好了</p>
+</li>
+<li><p>ViewTreeObserver</p>
+<p>  @Overrideprotected void onStart() {<br>  super.onStart();<br>  ViewTreeObserver observer&#x3D;view.getViewTreeObserver();<br>  observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {<br>      @Override<br>      public void onGlobalLayout() {<br>          view.getViewTreeObserver().removeOnGlobalLayoutListener(this);<br>          int width&#x3D;view.getMeasuredWidth();<br>      }<br>  });}</p>
+</li>
+</ul>
+<h4 id="实现一个自定义view的基本流程"><a href="#实现一个自定义view的基本流程" class="headerlink" title="实现一个自定义view的基本流程"></a>实现一个自定义view的基本流程</h4><ol>
+<li>明确需求，确定你想实现的效果。</li>
+<li>确定是使用组合控件的形式还是全新自定义的形式，组合控件即使用多个系统控件来合成一个新控件，你比如titilebar，这种形式相对简单。</li>
+<li>如果是完全自定义一个view的话，你首先需要考虑继承哪个类，是View呢，还是ImageView等子类。</li>
+<li>根据需要去复写View#onDraw、View#onMeasure、View#onLayout方法。</li>
+<li>根据需要去复写dispatchTouchEvent、onTouchEvent方法。</li>
+<li>根据需要为你的自定义view提供自定义属性，即编写attr.xml,然后在代码中通过TypedArray等类获取到自定义属性值。</li>
+<li>需要处理滑动冲突、像素转换等问题。</li>
+</ol>
+<p><strong>父view和自己都调了</strong>，onLayout onMeasure哪个为准，以onLayout为准，自己想什么样什么样设置 onLayout 就没用了</p>
+<h4 id="绘制流程"><a href="#绘制流程" class="headerlink" title="绘制流程"></a>绘制流程</h4><ul>
+<li>onMeasure测量view的大小，设置自己显示在屏幕上的宽高。</li>
+<li>onLayout确定view的位置，父view 会根据子view的需求，和自身的情况，来综合确定子view的位置(确定他的大小)。</li>
+<li>onDraw(Canvas)绘制 view 的内容。</li>
+<li>在主线程中 拿到view调用Invalide()方法，刷新当前视图，导致执行onDraw执行，如果是在子线程用postinvalidate，或者不需要一直刷新用postinvalidateDelayed(300)，每隔300毫秒刷新一次。</li>
+<li>如果希望视图的绘制流程(三步)可以完完整整地重新走一遍，就不能使用invalidate()方法，而应该调用requestLayout()了。</li>
+</ul>
+<h4 id="Canvas使用"><a href="#Canvas使用" class="headerlink" title="Canvas使用"></a>Canvas使用</h4><ul>
+<li>save：用来保存 Canvas 的状态。save 之后，可以调用 Canvas 的平移、放缩、旋转、错切、裁剪等操作。</li>
+<li>restore：用来恢复Canvas之前保存的状态。防止 save 后对 Canvas 执行的操作对后续的绘制有影响。</li>
+<li>save 和 restore 要配对使用( restore 可以比 save 少，但不能多)，如果 restore 调用次数比 save 多，会引发 Error 。save 和 restore 之间，往往夹杂的是对 Canvas 的特殊操作。</li>
+</ul>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%87%AA%E5%AE%9A%E4%B9%89View%E6%80%BB%E7%BB%93.resources/2023/09/15/18-48-24-f7592775deae25107cfe75ab882b5768-unknown_filename.5-0fe60d.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.5"><br>Canvas还提供了一系列位置转换的方法：rorate、scale、translate、skew(扭曲)等<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%87%AA%E5%AE%9A%E4%B9%89View%E6%80%BB%E7%BB%93.resources/2023/09/15/18-48-24-81deb6acb507bf858387fbfeb6b370ee-unknown_filename.4-d22638.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.4"><br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%87%AA%E5%AE%9A%E4%B9%89View%E6%80%BB%E7%BB%93.resources/2023/09/15/18-48-24-0cb6ab3258a144f14a5ec83708167dd2-unknown_filename.6-1c8b01.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.6"><br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%87%AA%E5%AE%9A%E4%B9%89View%E6%80%BB%E7%BB%93.resources/2023/09/15/18-48-24-b6c011951dffbd24d8a1520b4cd4c420-unknown_filename.7-df640a.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.7"><br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%87%AA%E5%AE%9A%E4%B9%89View%E6%80%BB%E7%BB%93.resources/2023/09/15/18-48-24-fe76544d8d5d7e04760bfe8205f085dc-unknown_filename.8-18c4ec.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.8"></p>
+<p><strong>View.inflate() 和 LayoutInflator.from().inflate() 有啥区别？</strong><br>调用 inflate() 方法的时候有时候传 null，有时候传 parent 是为啥？</p>
+<p>View#inflate 只是个简易的包装方法，实际上还是调用的 LayoutInflater#inflate ;<br>当 root 传空时，会直接返回要加载的 layoutId，<strong>返回的 View 没有父布局且没有 LayoutParams</strong>；<br>当 root 不传空时，又分为 attachToRoot 为真或者为假：</p>
+<p>attachToRoot &#x3D; true会为传入的 layoutId 直接设置参数，并将其添加到 root 中，<strong>然后将传入的 root 返回</strong>；<br>attachToRoot &#x3D; false会为传入的 layoutId 设置参数，但是不会添加到 root ，然后返回 layoutId 对应的 View；</p>
+<p>当我们不为子 View 的展示负责时，attachToRoot 必须为 false；否则就会出现对应的负责人，比如上面说的 Rv 或者 FragmentManager，已经把布局 id 添加到 ViewGroup 了，我们还继续设置 attachToRoot 为 true，想要手动 addView，那必然会发生 <strong>child already has parent</strong>的错误。</p>
+<pre><code class="hljs">public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) &#123;  
+      LayoutInflater inflater = LayoutInflater.from(getActivity());  
+      View view = inflater.inflate(R.layout.item, parent, false);  
+      return new ViewHolder(view);  
+&#125;
+
+
+public View onCreateView(LayoutInflater inflater, ViewGroup container, 
+                         Bundle savedInstanceState) &#123;
+    return inflater.inflate(R.layout.fragment_layout, parentViewGroup, false); 
+&#125;
+</code></pre>
+<hr>
+<h4 id="自定义控件有几个重要方法"><a href="#自定义控件有几个重要方法" class="headerlink" title="自定义控件有几个重要方法"></a>自定义控件有几个重要方法</h4><ol>
+<li>实现构造方法 。（三个构造方法）第二个是创建布局文件调用的构造函数</li>
+</ol>
+<p><strong>onMeasure测量view的大小。 设置自己显示在屏幕上的宽高。</strong><br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%87%AA%E5%AE%9A%E4%B9%89View%E6%80%BB%E7%BB%93.resources/2023/09/15/18-48-24-1d4b35cdd071a53970be316c73f1a667-5edce9c0581e4ecf7e5a0565e2d788c8-7404c3.png" srcset="/img/loading.gif" lazyload alt="5edce9c0581e4ecf7e5a0565e2d788c8"></p>
+<ul>
+<li>LayoutParams类是用于子view 向 父view传达自己的意愿的一个东西（孩子想变成什么样向其父亲说明）</li>
+<li>MeasureSpec有SpecMode和SpecSize俩个属性。</li>
+<li>SpecMode有三类</li>
+</ul>
+<ol>
+<li>unspecified:父View不对子View做任何限制，需要多大给多大，一般不关心这个模式</li>
+<li>exactly:view的大小就是SpecSize（父view的大小）指定的大小。相当于<strong>mach_parents</strong>，就是根据这个获取的测量模式</li>
+<li>at_most:父容器指定了一个specsize，view不能大于这个值。具体的值看view,相当于<strong>wrap_content</strong></li>
+</ol>
+<ul>
+<li>日常开发中我们接触最多的不是MeasureSpec而是LayoutParams，在View测量的时候，LayoutParams会和父View的MeasureSpec相结合被换算成View的MeasureSpec，进而决定View的大小。</li>
+</ul>
+<p>测量流程：从根 View 递归调用每一级子 View 的 measure() 方法，对它们进行测量<br>布局流程：从根 View 递归调用每一级子 View 的 layout() 方法，把测量过程得出的子 View 的位置和尺寸传给子 View，子 View 保存</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%87%AA%E5%AE%9A%E4%B9%89View%E6%80%BB%E7%BB%93.resources/2023/09/15/18-48-24-2fd6a100c25ad931749a969069a618ab-unknown_filename.3-6c1523.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.3"><br>通过 setMeasuredDimension()方法</p>
+<p>对自定义 View 完全进行自定义尺寸计算：重写 onMeasure()：CircleView</p>
+<ol>
+<li>重写 onMeasure()</li>
+<li>计算出自⼰的尺⼨</li>
+<li>用 <strong>resolveSize</strong>() 或者 resolveSizeAndState() 修正结果<br> (根据自己的尺寸和父view的模式和尺寸，综合计算自己的大小)<br> <strong>size是自己的</strong><br> <img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%87%AA%E5%AE%9A%E4%B9%89View%E6%80%BB%E7%BB%93.resources/2023/09/15/18-48-24-8babb7778fa73ecc910b893b7ea362b2-unknown_filename.1-5b2033.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.1"></li>
+</ol>
+<ul>
+<li>⾸先用 MeasureSpec.getMode(measureSpec) 和MeasureSpec.getSize(measureSpec)<strong>取出父 对自己的尺寸</strong> 限制类型和具体限制尺⼨；</li>
+<li>如果 MeasureSpec 的 mode 是 EXACTLY，表示⽗ View 对子 View的尺⼨寸做出了精确限制，所以就放弃计算出的 size，直接选用MeasureSpec 的 size；</li>
+<li>如果 MeasureSpec 的 mode 是 UNSPECIFIED，表示父 View 对子View 没有任何尺寸限制，所以直接选用计算出的 size，忽略 spec中的 size。</li>
+<li>at_most，最大不能超过父</li>
+</ul>
+<p>如果写的自定义View是直接继承View的，而且写了super.measure()，则会默认给这个View设置了一个测量宽和高，这个宽高是多少？</p>
+<ul>
+<li><p>如果View没有设置背景，那么返回android:minWidth这个属性的值，这个值可以为0</p>
+</li>
+<li><p>如果View设置了背景，那么返回android:minWidth和背景最小宽度两者中的最大值。</p>
+</li>
+<li><p>如果写的自定义View是继承现有控件的，而且写了super.measure()，则会默认使用那个现有控件的测量宽高，你可以在这个已经测量好的宽高上做修改，当然也可以全部重新测过再改掉。</p>
+</li>
+<li><p>如果我们的View直接继承ImageView，ImageView已经运行了一大堆已经写好的代码测出了相应的宽高。我们可以在它基础上更改即可。比如我们的Image2View是一个自定义的正方形的ImageView：</p>
+<p>  @Override<br>  protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {</p>
+<pre><code class="hljs">  //这里已经帮我们测好了ImageView的规则下的宽高，并且通过了setMeasuredDimension方法赋值进去了。
+  super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+
+   int measuredWidth = getMeasuredWidth();
+      int measuredHeight = getMeasuredHeight();
+      int size = Math.min(measuredWidth, measuredHeight);
+      setMeasuredDimension(size, size);
+</code></pre>
+<p>  }</p>
+</li>
+<li><p>setMeasuredDimension后才能getmeasure宽高，super里做了这步，因为这方法是用来设置view测量的宽和高。</p>
+</li>
+<li><p>完全自定义view：重写onMeasure方法的目的是为了能够给view一个warp_content属性下的默认大小，因为不重写onMeasure，那么系统就不知道该使用默认多大的尺寸。如果不处理，那wrap_content就相当于match_parent。所以自定义控件需要支持warp_content属性就重写onMeasure。</p>
+</li>
+<li><p>可以自己尝试一下自定义一个View，然后不重写onMeasure()方法，你会发现只有设置match_parent和wrap_content效果是一样的，事实上TextView、ImageView 等系统组件都在wrap_content上有自己的处理。</p>
+</li>
+</ul>
+<p><strong>onLayout</strong></p>
+<ul>
+<li><p>onLayout设置自己显示在屏幕上的位置(只有在自定义ViewGroup中才用到)，这个坐标是相对于当前视图的父视图而言的。view自身有一些建议权，决定权在 父view手中。</p>
+</li>
+<li><p>调用场景：在view需要给其孩子设置尺寸和位置时被调用。子view，包括孩子在内，必须重写onLayout(boolean, int, int, int, int)方法，并且调用各自的layout(int, int, int, int)方法。</p>
+<pre><code class="hljs">  protected void onLayout(boolean changed, int l, int t, int r, int b) &#123;
+      
+      for (int i = 0; i &lt; getChildCount(); i++) &#123;
+          View view = getChildAt(i); // 取得下标为I的子view
+          /**
+           * 父view 会根据子view的需求，和自身的情况，来综合确定子view的位置,(确定他的大小)
+           */
+          //指定子view的位置  ,  左，上，右，下，是指在viewGround坐标系中的位置
+          view.layout(0+i*getWidth(), 0, getWidth()+i*getWidth(), getHeight());	
+
+      &#125;	
+  &#125;
+</code></pre>
+</li>
+</ul>
+<p><strong>onDraw</strong><br>onDraw(Canvas)绘制 view 的内容。控制显示在屏幕上的样子(自定义viewgroup时不需要这个)</p>
+<pre><code class="hljs">/*
+* backgroundBitmap 要绘制的图片
+* left 图片的左边界
+* top 图片的上边界
+* paint 绘制图片要使用的画笔
+*/
+canvas.drawBitmap(backgroundBitmap, 0, 0, paint);
+</code></pre>
+<p><strong>View和ViewGroup的区别</strong></p>
+<ul>
+<li>ViewGroup需要控制子view如何摆放的时候需要实现onLayout。</li>
+<li>View没有子view，所以不需要onLayout方法，需要的话实现onDraw</li>
+<li>继承系统已有控件或容器,比如FrameLayou，它会帮我们去实现onMeasure方法中，不需要去实现onMeasure, 如果继承View或者ViewGroup的话需要warp_content属性的话需要实现onMeasure方法自定义ViewGroup大多时候是控制子view如何摆放，并且做相应的变化（滑动页面、切换页面等）。</li>
+<li>自定义view主要是通过onDraw画出一些形状，然后通过触摸事件去决定如何变化</li>
+</ul>
+<p><strong>scrollTo()和scrollBy()</strong></p>
+<ul>
+<li>scrollTo将当前视图的基准点移动到某个点（坐标点）；</li>
+<li>ScrollBy移动当前view内容 移动一段距离。</li>
+<li>为正时，图片向左移动，为负时，图片向右移动 （跟下面的坐标轴是反的）</li>
+</ul>
+<p><strong>MotionEvent中getRawX、getRawY与getX、getY以及View中的getScrollX、getScrollY</strong></p>
+<ul>
+<li>getRawX()、getRawY()返回的是触摸点相对于屏幕的位置，而getX()、getY()返回的则是触摸点相对于View的位置。</li>
+<li>getScrollX()与getScrollY()的值由调用View的scrollTo(int x, int y)或者scrollBy(int x, int y)产生，其中scrollTo是将View中的内容移动到指定的坐标x、y处，此x、y是相对于View的左上角，而不是屏幕的左上角。scrollBy(int x, int y)则是改变View中的相对位置，参数x、y为距离上一次的相对位置。</li>
+<li>当View中的内容向右移动时，getScrollX()的值为负数，同理，向scrollTo与scrollBy的x中传入负数，view中的内容向右移动，反之向左。</li>
+<li>当View中的内容向下移动时，getScrollY()的值为负数，同理，向scrollTo与scrollBy的y中传入负数，view中的内容向下移动，反之向上。</li>
+<li>把getScrollx的值看成坐标。比如view向右边移动20px。那么得到的值就是view.getScrollx()的值就是-20<br>  <img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%87%AA%E5%AE%9A%E4%B9%89View%E6%80%BB%E7%BB%93.resources/2023/09/15/18-48-24-816b6ba1ef98f6a08e1fe1911ccc9175-c82ecb89-00f7-476b-bbe9-fba0ac818be1-cc14ef.png" srcset="/img/loading.gif" lazyload alt="c82ecb89-00f7-476b-bbe9-fba0ac818be1"><br>  <img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%87%AA%E5%AE%9A%E4%B9%89View%E6%80%BB%E7%BB%93.resources/2023/09/15/18-48-24-3aaa5a29073a017afa5e01be3f1f0b13-unknown_filename-07c278.png" srcset="/img/loading.gif" lazyload alt="unknown_filename"></li>
+</ul>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%87%AA%E5%AE%9A%E4%B9%89View%E6%80%BB%E7%BB%93.resources/2023/09/15/18-48-24-b73202fc1ce8e4c16fe67942b082bb7a-722549-43d324.png" srcset="/img/loading.gif" lazyload alt="722549"></p>
+<p>三⻆函数的计算 横向的位移是 cos，纵向的位移是 sin</p>
+<p><strong>getHeight()和getMeasuredHeight()的区别</strong><br>有俩种方法可以获得控件的宽高</p>
+<ol>
+<li><p>getMeasuredHeight(): 控件实际的大小。获取测量完的高度，只要在onMeasure方法执行完，就可以用它获取到宽高，在自定义view内使用view.measure(0,0)方法可以主动通知系统去测量，然后就可以直接使用它获取宽高。measure里调用的onmeasure。</p>
+</li>
+<li><p>getHeight()：控件显示的大小,必须在onLayout方法执行完后，才能获得宽高。</p>
+<pre><code class="hljs"> view.getViewTreeObserver().addOnGlobalLayoutListener(new OnGlobalLayoutListener() &#123;
+                 @Override
+                 public void onGlobalLayout() &#123;
+                 headerView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                 int headerViewHeight = headerView.getHeight();
+                 //直接可以获取宽高
+         &#125;
+     &#125;);
+</code></pre>
+</li>
+</ol>
+<ul>
+<li>当屏幕可以包裹内容的时候，他们的值相等；当view的高度超出屏幕时，<strong>getMeasuredHeight()是实际View的大小，与屏幕无关，getHeight的大小此时则是屏幕的大小</strong>。此时，getMeasuredHeight() &#x3D; getHeight+超出部分。</li>
+<li>这俩个一般情况是一样的，但是在viewgroup里getWidth是父类给子view分配的空间：右边-左边。系统可能需要多次measure才能确定最终的测量宽高，很可能是不准确的，好习惯是在onlayout里获得测量宽高或最终宽高。</li>
+<li>还有一种获得控件宽高的方法：onSizeChanged：当该组件的大小被改变时回调此方法</li>
+<li>getWidth是右-左，在onMeasure里还没值了，所以在onMeasure里需要使用getMeasuredHeight</li>
+</ul>
+<p><strong>onFinishInflate</strong><br>当xml被填充完毕时调用，在自定义viewgroup中，可以通过这个方法获得子view对象</p>
+<pre><code class="hljs">protected void onFinishInflate() &#123;
+        super.onFinishInflate();
+        // 容错性检查 (至少有俩子View, 子View必须是ViewGroup的子类)
+        if(getChildCount() &lt; 2)&#123;
+            throw new IllegalStateException(&quot;布局至少有俩孩子. Your ViewGroup must have 2 children at least.&quot;);
+        &#125;
+        
+        mLeftContent = (ViewGroup) getChildAt(0);
+        mMainContent = (ViewGroup) getChildAt(1);
+    &#125;
+</code></pre>
+<p><strong>Rect成员变量为int类型，RectF为float类型</strong><br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%87%AA%E5%AE%9A%E4%B9%89View%E6%80%BB%E7%BB%93.resources/2023/09/15/18-48-24-0c49e249319654f268cc47bcd208e651-6ffa7e36-0587-450e-946f-3f0cd60c6b82-ce8293.jpg" srcset="/img/loading.gif" lazyload alt="6ffa7e36-0587-450e-946f-3f0cd60c6b82"></p>
+<ul>
+<li>view的位置参数有left、right、top、bottom（可以getXX获得），3.0后又增加了几个参数：x、y、translationX和translationY，其中x和y是view左上角的坐标，而<strong>translationX和translationY是view左上角相对于父容器的偏移量</strong>。这些参数都是相对于父容器的坐标，并且translationX和translationY的默认值是0，他们的换算关系是：x&#x3D;left+translationX   y&#x3D;top+ translationY。需要注意的是，view在平移的过程中，top和left表示的是原始左上角的位置信息，其值并不会发生改变，此时发生改变的是x、y、translationX和translationY这四个参数</li>
+<li>touchslop是系统所能识别出的被认为是滑动的最小距离，比如当俩次滑动事件的滑动距离小于这个值，我们就可以认为未达到滑动距离的临界值</li>
+</ul>
+<h4 id="四种滑动的方法"><a href="#四种滑动的方法" class="headerlink" title="四种滑动的方法"></a>四种滑动的方法</h4><ol>
+<li><p>使用scrollTo()或scrollBy()，坐标是反的</p>
+</li>
+<li><p>动画</p>
+</li>
+<li><p>实时改变layoutparams，重新布局</p>
+</li>
+<li><p>layout（）方法</p>
+<pre><code class="hljs"> public boolean onTouchEvent(MotionEvent event) &#123;
+     //获取到手指处的横坐标和纵坐标
+     int x = (int) event.getX();
+     int y = (int) event.getY();
+
+     switch (event.getAction()) &#123;
+         case MotionEvent.ACTION_DOWN:
+             lastX = x;
+             lastY = y;
+             break;
+         case MotionEvent.ACTION_MOVE:
+             //计算移动的距离
+             int offX = x - lastX;
+             int offY = y - lastY;
+             /**
+              * 第一种
+              * 调用layout方法来重新放置它的位置
+              */
+             layout(getLeft() + offX, getTop() + offY,
+                     getRight() + offX, getBottom() + offY);
+</code></pre>
+<p> &#x2F;&#x2F;                &#x2F;**<br> &#x2F;&#x2F;                 * 第二种<br> &#x2F;&#x2F;                 * 这两个方法分别是对左右移动和上下移动的封装，传入的就是 偏移量<br> &#x2F;&#x2F;                 <em>&#x2F;<br> &#x2F;&#x2F;                offsetLeftAndRight(offX);<br> &#x2F;&#x2F;                offsetTopAndBottom(offY);<br> &#x2F;&#x2F;                &#x2F;</em>*<br> &#x2F;&#x2F;                 * 第三种<br> &#x2F;&#x2F;                 <em>&#x2F;<br> &#x2F;&#x2F;                ViewGroup.MarginLayoutParams mlp &#x3D;<br> &#x2F;&#x2F;                        (ViewGroup.MarginLayoutParams) getLayoutParams();<br> &#x2F;&#x2F;                mlp.leftMargin &#x3D; getLeft() + offX;<br> &#x2F;&#x2F;                mlp.topMargin &#x3D; getTop() + offY;<br> &#x2F;&#x2F;                setLayoutParams(mlp);<br> &#x2F;&#x2F;                &#x2F;</em>*<br> &#x2F;&#x2F;                 * 第四种<br> &#x2F;&#x2F;                 * sceollTo(x,y)传入的应该是移动的终点坐标<br> &#x2F;&#x2F;                 * scrollBy(dx,dy)传入的是移动的增量。<br> &#x2F;&#x2F;                 * 通过scrollBy传入的值应该是你需要的那个增量的相反数<br> &#x2F;&#x2F;                 *&#x2F;<br> &#x2F;&#x2F;                ((View) getParent()).scrollBy(-offX, -offY);<br>             break;<br>     }<br>     return true;<br> }</p>
+</li>
+</ol>
+<p>如果让view在一段时间内移动到某个位置(不是快速滑动，弹性，有动画)方法：</p>
+<ol>
+<li><p>使用自定义动画(让view在一段时间内做某件事），extends Animation，<br> 总要修改的是translationx.y这俩个值(相对于父容器移动的距离)</p>
+</li>
+<li><p>使用Scoller，OverScroller。用于自动计算滑动的偏移<br> 模板(固定代码):</p>
+<pre><code class="hljs">  * @param startX	开始时的X坐标
+  * @param startY	开始时的Y坐标
+  * @param disX		X方向 要移动的距离
+  * @param disY		Y方向 要移动的距离
+</code></pre>
+<p> myScroller.startScroll(getScrollX(),0,distance,0,Math.abs(distance));&#x2F;&#x2F;持续的时间<br> &#x2F;**<br>  * Scroller不主动去调用这个方法<br>  * 而invalidate()可以掉这个方法<br>  * invalidate-&gt;draw-&gt;computeScroll<br>  *&#x2F;<br> @Override<br> public void computeScroll() {<br>     super.computeScroll();<br>     if(scroller.computeScrollOffset()){&#x2F;&#x2F;返回true,表示动画没结束<br>         scrollTo(scroller.getCurrX(), 0);<br>         invalidate();<br>     }<br> }</p>
+</li>
+</ol>
+<p><strong>scroller、OverScroller的工作原理</strong><br>scroller本身并不能实现view的滑动，它需要配合<code>view的的 computeScroll 方法才能完成弹性滑动的效果</code>，它不断的让view重绘，而每一次重绘距滑动起始时间会有一个时间间隔，通过这个时间间隔srcoller就可以得出view当前的滑动位置，知道了滑动位置就可以通过scrollTo方法来完成view的滑动，就这样，view的每一次重绘就会导致view进行小幅度的滑动，而多次的小幅度滑动就组成了弹性动画。</p>
+<p>scrollTo() 是瞬时方法，不会自动使用动画。如果要用动画，需要配合View.computeScroll() 方法<br>computeScroll() 在 View 重绘时被自动调用，使用方式：</p>
+<pre><code class="hljs">// onTouchEvent() 中：例如滑动等等
+overScroller.startScroll(startX, startY, dx, dy);
+postInvalidateOnAnimation();
+......
+// onTouchEvent() 外：
+@Override
+public void computeScroll() &#123;
+  if (overScroller.computeScrollOffset()) &#123; //
+   计算实时位置
+   scrollTo(overScroller.getCurrX(),
+    overScroller.getCurrY()); // 更新⾯面
+   postInvalidateOnAnimation(); // 下一帧继续
+&#125;
+&#125;
+</code></pre>
+<p><strong>VelocityTracker</strong><br>如果 GestureDetector 不能满⾜足需求，或者觉得 GestureDetector 过于复杂，可以自己处理 onTouchEvent() 的事件。但需要使用VelocityTracker 来计算手指移动速度。<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%87%AA%E5%AE%9A%E4%B9%89View%E6%80%BB%E7%BB%93.resources/2023/09/15/18-48-24-e2f21bc194187a5f7fce4ec4b7bea389-unknown_filename.2-63c4be.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.2"></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Android/" class="category-chain-item">Android</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>自定义View总结</div>
+      <div>http://peiniwan.github.io/2019/03/86bf1b883516.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>六月的雨</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2019年3月10日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2019/03/7bccc35910eb.html" title="长链接NIO">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">长链接NIO</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2019/03/ed99fd83cd3f.html" title="第三方框架源码">
+                        <span class="hidden-mobile">第三方框架源码</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

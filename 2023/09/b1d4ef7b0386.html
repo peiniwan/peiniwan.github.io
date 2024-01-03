@@ -1,0 +1,880 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="六月的雨">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="[toc] Activity进程启动流程ActivityThreadApp 的入口，启动 App 后，会调用 ActivityThread.main()，开启 Looper、MessageQueue，与 ActivityManagerService 配合完成对 Activity 的管理。就是主线程 冷启动：当启动应用时，后台没有该应用的进程。这是系统会创建一个新的进程分配给该应用。此时的app会创">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Activity进程启动流程">
+<meta property="og:url" content="http://peiniwan.github.io/2023/09/b1d4ef7b0386.html">
+<meta property="og:site_name" content="六月的雨的博客">
+<meta property="og:description" content="[toc] Activity进程启动流程ActivityThreadApp 的入口，启动 App 后，会调用 ActivityThread.main()，开启 Looper、MessageQueue，与 ActivityManagerService 配合完成对 Activity 的管理。就是主线程 冷启动：当启动应用时，后台没有该应用的进程。这是系统会创建一个新的进程分配给该应用。此时的app会创">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Activity%E8%BF%9B%E7%A8%8B%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B.resources/2023/09/15/18-34-41-d56b39c1b9bce8280350b20ca177f396-unknown_filename.5-bac00f.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Activity%E8%BF%9B%E7%A8%8B%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B.resources/2023/09/15/18-34-41-51ea737c26f17886b89be17097c0d78b-unknown_filename.6-6cb56f.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Activity%E8%BF%9B%E7%A8%8B%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B.resources/2023/09/15/18-34-41-155430bcadc03ce93d114047b4a63d85-unknown_filename.7-23198f.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Activity%E8%BF%9B%E7%A8%8B%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B.resources/2023/09/15/18-34-41-81fd0032ee230240c587cd5b2be21dd7-unknown_filename.8-d21f73.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Activity%E8%BF%9B%E7%A8%8B%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B.resources/2023/09/15/18-34-41-8c2fe6a21bd76b16791f70c03d6bffb7-unknown_filename.9-2d73fc.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Activity%E8%BF%9B%E7%A8%8B%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B.resources/2023/09/15/18-34-41-a2a0bb9857bc6e0e5ce13b879546d696-unknown_filename.10-42b69c.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Activity%E8%BF%9B%E7%A8%8B%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B.resources/2023/09/15/18-34-41-9dc4315bdf0d17dcbe8433a53c846b85-unknown_filename.11-5d2ef9.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Activity%E8%BF%9B%E7%A8%8B%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B.resources/2023/09/15/18-34-41-27b38029d68f8867bb9055f66953c809-unknown_filename.12-33049a.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Activity%E8%BF%9B%E7%A8%8B%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B.resources/2023/09/15/18-34-41-5616b9156c560f80e88940a8a069a16a-unknown_filename.13-384141.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Activity%E8%BF%9B%E7%A8%8B%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B.resources/2023/09/15/18-34-41-95449b20b6c9852922fb2d96b1cc2b3d-unknown_filename.14-ace3d6.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Activity%E8%BF%9B%E7%A8%8B%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B.resources/2023/09/15/18-34-41-67e0b45bba566013f3e9e592a3f63fce-unknown_filename.15-57bc32.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Activity%E8%BF%9B%E7%A8%8B%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B.resources/2023/09/15/18-34-41-55ea9c1b950c804b41df4be671d7ca9a-unknown_filename.16-04de74.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Activity%E8%BF%9B%E7%A8%8B%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B.resources/2023/09/15/18-34-41-7afbb3d57eb5a2accda45e8f8f25c850-unknown_filename-850f7c.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Activity%E8%BF%9B%E7%A8%8B%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B.resources/2023/09/15/18-34-41-3b4bfcfc5ab8d5feab918b3118b87235-unknown_filename.1-252c87.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Activity%E8%BF%9B%E7%A8%8B%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B.resources/2023/09/15/18-34-41-2f8c6283e6f2485e401a1b6fcbb9b786-unknown_filename.2-98e541.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Activity%E8%BF%9B%E7%A8%8B%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B.resources/2023/09/15/18-34-41-5fd879bbbbb96d6c600aa61fd0f3f477-unknown_filename.3-3d7842.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Activity%E8%BF%9B%E7%A8%8B%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B.resources/2023/09/15/18-34-41-2903794cba3ed8f5a2013bafdee5f318-unknown_filename.4-5bd448.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Activity%E8%BF%9B%E7%A8%8B%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B.resources/2023/09/15/18-34-41-2f8c6283e6f2485e401a1b6fcbb9b786-unknown_filename.2-98e541.png">
+<meta property="article:published_time" content="2023-09-01T02:41:26.000Z">
+<meta property="article:modified_time" content="2023-12-22T06:50:49.648Z">
+<meta property="article:author" content="六月的雨">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Activity%E8%BF%9B%E7%A8%8B%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B.resources/2023/09/15/18-34-41-d56b39c1b9bce8280350b20ca177f396-unknown_filename.5-bac00f.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>Activity进程启动流程 - 六月的雨的博客</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"peiniwan.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>六月的雨的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Activity进程启动流程"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-09-01 10:41" pubdate>
+          2023年9月1日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.5k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          30 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Activity进程启动流程</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>[toc]</p>
+<h1 id="Activity进程启动流程"><a href="#Activity进程启动流程" class="headerlink" title="Activity进程启动流程"></a>Activity进程启动流程</h1><h2 id="ActivityThread"><a href="#ActivityThread" class="headerlink" title="ActivityThread"></a>ActivityThread</h2><p>App 的入口，启动 App 后，会调用 ActivityThread.main()，开启 Looper、MessageQueue，与 ActivityManagerService 配合完成对 Activity 的管理。就是主线程</p>
+<p>冷启动：当启动应用时，后台没有该应用的进程。这是系统会创建一个新的进程分配给该应用。此时的app会创建Applocation,然后才回去创建MainActivity,最后显示在界面上。</p>
+<p> 创建好 UI 线程后，立刻进入 activityThread main 函数 ，接下来要做两件具有重大意义 事情</p>
+<ol>
+<li>创建一个主线程 Looper ，也就是 MainLooper</li>
+<li>创建 Application 注意Application 是在这里生成的</li>
+</ol>
+<p><strong>这是老源码了</strong><br>没有LAUNCH_ACTIVITY了<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Activity%E8%BF%9B%E7%A8%8B%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B.resources/2023/09/15/18-34-41-d56b39c1b9bce8280350b20ca177f396-unknown_filename.5-bac00f.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.5"></p>
+<h3 id="ActivityManagerService"><a href="#ActivityManagerService" class="headerlink" title="ActivityManagerService"></a>ActivityManagerService</h3><p>负责了系统中四大组件的启动、切换、应用进程管理（<code>创建进程</code>）和调度工作。（是一个system service进程，系统进程，和一个APP一样）</p>
+<p>activity相关都交给了ActivityTaskManagerService<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Activity%E8%BF%9B%E7%A8%8B%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B.resources/2023/09/15/18-34-41-51ea737c26f17886b89be17097c0d78b-unknown_filename.6-6cb56f.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.6"></p>
+<h3 id="ActivityTaskManagerService"><a href="#ActivityTaskManagerService" class="headerlink" title="ActivityTaskManagerService"></a>ActivityTaskManagerService</h3><pre><code class="hljs">    启动应用程序Activity已经走到 ActivityTaskManagerService 中，如果你熟悉前以往版本的Android源码，你肯定会知道ActivityManagerService，而在Android 10 中则将AMS用于管理Activity及其容器（任务，堆栈，显示等）的系统服务分离出来放到ATMS中，也许是谷歌不想让AMS的代码越来越膨胀吧(Android 10中AMS代码有一万九千行
+
+    ATMS 负责管理系统所有Activity，所以应用startActivity 最终会通过Binder调用到ATMS的startActivity方法，ATMS启动一个Activity之前会做一些检查，例如权限、是否在清单文件注册，是否需要创建新的进程等，然后就可以启动了，ATMS 是一个系统服务，又涉及到跨进程调用，这个跨进程同样采用Binder，媒介是通过ActivityThread的内部类ApplicationThread，AMS将生命周期跨进程传到ApplicationThread，然后ApplicationThread 再分发给ActivityThread内部的Handler，这时候生命周期已经回调到应用主线程了，回调Activity的各个生命周期方法。
+</code></pre>
+<hr>
+<h2 id="android10源码"><a href="#android10源码" class="headerlink" title="android10源码"></a>android10源码</h2><p><a target="_blank" rel="noopener" href="https://juejin.cn/post/6844904145191698439#heading-8">https://juejin.cn/post/6844904145191698439#heading-8</a><br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Activity%E8%BF%9B%E7%A8%8B%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B.resources/2023/09/15/18-34-41-155430bcadc03ce93d114047b4a63d85-unknown_filename.7-23198f.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.7"></p>
+<h3 id="第一步"><a href="#第一步" class="headerlink" title="第一步"></a>第一步</h3><p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Activity%E8%BF%9B%E7%A8%8B%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B.resources/2023/09/15/18-34-41-81fd0032ee230240c587cd5b2be21dd7-unknown_filename.8-d21f73.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.8"></p>
+<h3 id="第二步"><a href="#第二步" class="headerlink" title="第二步"></a>第二步</h3><p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Activity%E8%BF%9B%E7%A8%8B%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B.resources/2023/09/15/18-34-41-8c2fe6a21bd76b16791f70c03d6bffb7-unknown_filename.9-2d73fc.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.9"><br>如果进程没创建创建进程</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs java">   <span class="hljs-comment">//ActivityStackSupervisor.java</span><br>   <span class="hljs-keyword">void</span> <span class="hljs-title function_">startSpecificActivityLocked</span><span class="hljs-params">(ActivityRecord r, <span class="hljs-type">boolean</span> andResume, <span class="hljs-type">boolean</span> checkConfig)</span> &#123;<br>        <span class="hljs-keyword">final</span> <span class="hljs-type">WindowProcessController</span> <span class="hljs-variable">wpc</span> <span class="hljs-operator">=</span><br>                mService.getProcessController(r.processName, r.info.applicationInfo.uid);<br><br>        <span class="hljs-keyword">if</span> (wpc != <span class="hljs-literal">null</span> &amp;&amp; wpc.hasThread()) &#123;<br>            <span class="hljs-keyword">try</span> &#123;<br>                realStartActivityLocked(r, wpc, andResume, checkConfig); <span class="hljs-comment">//打开acitivty</span><br>                <span class="hljs-keyword">return</span>;<br>            &#125;<br>      ...<br>        &#125;<br>        <span class="hljs-keyword">try</span> &#123;<br>            <span class="hljs-comment">//startProcess  创建线程</span><br>            <span class="hljs-keyword">final</span> <span class="hljs-type">Message</span> <span class="hljs-variable">msg</span> <span class="hljs-operator">=</span> PooledLambda.obtainMessage(<br>                    ActivityManagerInternal::startProcess, mService.mAmInternal, r.processName,<br>                    r.info.applicationInfo, knownToBeDead, <span class="hljs-string">&quot;activity&quot;</span>, r.intent.getComponent());<br>            mService.mH.sendMessage(msg);<br>        &#125; <br>    &#125;<br><br><br><span class="hljs-comment">/** Target client. */</span><br>    <span class="hljs-keyword">private</span> IApplicationThread mClient;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">schedule</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> RemoteException &#123;<br>        mClient.scheduleTransaction(<span class="hljs-built_in">this</span>); <span class="hljs-comment">//1 </span><br>    &#125;<br></code></pre></td></tr></table></figure>
+<p>mClient则代表要启动的应用程序进程的IApplicationThread，而当前还处于ATMS服务的进程，也就是SystemServer进程，这时ATMS要与即将启动的应用程序进程通信则通过IApplicationThread来执行AIDL</p>
+<p>IApplicationThread实现为ApplicationThread，它是ActivityThread的内部类，所以前面也说过ApplicationThread为进程间通信的桥梁。</p>
+<p>注释1处则相当于是IApplicationThread.scheduleTransaction，并将包含要启动Activity信息的ClientTransaction传递到了应用程序进程</p>
+<h3 id="第三步"><a href="#第三步" class="headerlink" title="第三步"></a>第三步</h3><p>回到APP中的是这个消息：EXECUTE_TRANSACTION<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Activity%E8%BF%9B%E7%A8%8B%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B.resources/2023/09/15/18-34-41-a2a0bb9857bc6e0e5ce13b879546d696-unknown_filename.10-42b69c.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.10"><br>ActivityThread 关键方法 performLaunchActivity<br>注释1处获取了前面保存启动应用程序信息的ActivityClientRecord中的应用程序信息，包括应用程序在清单文件中注册了哪些四大组件，启动的根Activity是什么，<br>并在注释2处通过getPackageInfo方法获取LoadedApk描述对应Apk文件资源，<br>注释3处的ComponentName类获取则对应启动Activity的包名和类名，<br>注释4处则生成了启动应用程序的Base上下文环境Context，<br>注释5处通过注释3获取的类名，通过类加载器和Intent对象实例化了Activity对象，</p>
+<pre><code class="hljs">    public @NonNull Activity instantiateActivity(@NonNull ClassLoader cl, @NonNull String className,
+            @Nullable Intent intent)
+            throws InstantiationException, IllegalAccessException, ClassNotFoundException &#123;
+        return (Activity) cl.loadClass(className).newInstance();
+    &#125;
+</code></pre>
+<p>注释6则根据注释2处获取Apk描述对象LoadedApk创建了应用程序的Application对象，并在makeApplication方法中调用了它的OnCreate方法，所以应用程序最新启动的是Application才到根Activity，</p>
+<pre><code class="hljs">    public @NonNull Application instantiateApplication(@NonNull ClassLoader cl,
+            @NonNull String className)
+            throws InstantiationException, IllegalAccessException, ClassNotFoundException &#123;
+        return (Application) cl.loadClass(className).newInstance();
+    &#125;
+</code></pre>
+<p>注释7处则前面创建的Context、Application、Window对象与Activity关联来初始化Activity，</p>
+<pre><code class="hljs">final void attach(Context context, ActivityThread aThread,
+                      Instrumentation instr, IBinder token, int ident,
+                      Application application, Intent intent, ActivityInfo info,
+                      CharSequence title, Activity parent,...) &#123;
+        attachBaseContext(context);
+        ...
+        mWindow = new PhoneWindow(this, window, activityConfigCallback);
+        ...
+        if (mParent != null) &#123;
+            mWindow.setContainer(mParent.getWindow());
+        &#125;
+        mWindowManager = mWindow.getWindowManager();
+         ...
+    &#125;
+</code></pre>
+<p>最后注释8处还继续调用了Instrumentation对象的callActivityOnCreate方法。调用onCreate方法</p>
+<p><strong>四大组件主线程的消息模型</strong><br>重要<br>  主线程消息循环开始以后,ActivityThread还需要一个 handler来和消息队列进行交互,这个handler就是ActivityThread.H，它内部定义了一组消息类型，包括四大组件的启动和停止等过程。<br>   ActivityThread通过<strong>ApplicationThread和AMS进行进程通信</strong>，AMS以进程通信的方式完成ActivityThread的请求后回调ApplicationThread中的Binder方法，然后ApplicationThread会向H 发送消息（sendMessage）,H收到消息后会将ApplicationThread逻辑切换到 ActivityThread中去执行,即切换到主线程中执行,这就是主线程的消息模型（binder线程到主线程）。</p>
+<h3 id="ActivityManager"><a href="#ActivityManager" class="headerlink" title="ActivityManager"></a>ActivityManager</h3><p>ActivityManager是客户端用来管理系统中正在运行的所有Activity包括Task、Memory、Service等的一些信息。在ActivityManager中有大量的get()方法，他只是提供信息给AMS，由AMS去完成交互和调度工作。AMS和ActivityManager之间通信需要利用Binder来完成。<br>有这些方法：<br>getLargeMemoryClass、getTotalRam、getAppTasks、moveTaskToFront、getMemoryInfo<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Activity%E8%BF%9B%E7%A8%8B%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B.resources/2023/09/15/18-34-41-9dc4315bdf0d17dcbe8433a53c846b85-unknown_filename.11-5d2ef9.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.11"></p>
+<hr>
+<h2 id="应用的启动步骤"><a href="#应用的启动步骤" class="headerlink" title="应用的启动步骤"></a>应用的启动步骤</h2><p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Activity%E8%BF%9B%E7%A8%8B%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B.resources/2023/09/15/18-34-41-27b38029d68f8867bb9055f66953c809-unknown_filename.12-33049a.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.12"><br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Activity%E8%BF%9B%E7%A8%8B%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B.resources/2023/09/15/18-34-41-5616b9156c560f80e88940a8a069a16a-unknown_filename.13-384141.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.13"><br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Activity%E8%BF%9B%E7%A8%8B%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B.resources/2023/09/15/18-34-41-95449b20b6c9852922fb2d96b1cc2b3d-unknown_filename.14-ace3d6.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.14"></p>
+<ol>
+<li>点击图标后Launcher进程会通过Binder机制向AMS发起打开 Activity 的请求【IPC-&gt;Binder】</li>
+<li>AMS会通过ActivityStarter处理Intent和Flag启动模式等相关内容，然后通过Socket通知zygote进程【IPC-&gt;Socket】</li>
+<li>zygote进程会进行孵化(虚拟机和资源的复制)，然后fork出新进程（然后在新的进程里）</li>
+<li>然后zygote进程会通过invokeDynamicMain()方法调用到ActivityThread的main方法（也就是APP的入口）<ul>
+<li>主线程Looper和Handler的创建、开启主线程Looper的消息循环。</li>
+<li>ActivityThread.attach() ) 建立 Binder 通道</li>
+<li>ApplicationThread.bindApplication（通知AMS创建application）</li>
+<li>ActivityThread.<strong>performLaunchActivity</strong>()——activity.onCreate()，然后：<br>  Activity.onCreate() 调用 setContentView() 给 Activity 设置了 layout 布局。<br>  Activity.onResume() 完成了 Activity 中 Window 与 WindowManager 的关联，并对所有子 View 进行渲染并显示。</li>
+</ul>
+</li>
+</ol>
+<p>内部会创建属于Application的ContextImpl对象，并且创建Application对象，建立两者的联系创建</p>
+<h3 id="Socket通信方式"><a href="#Socket通信方式" class="headerlink" title="Socket通信方式"></a>Socket通信方式</h3><p>Socket 通信方式也是C&#x2F;S架构，在Android系统中采用Socket通信方式的主要有：</p>
+<ul>
+<li>zygote：用于孵化进程，system_server创建进程是通过socket向zygote进程发起请求；</li>
+<li>installd：用于安装App的守护进程，上层PackageManagerService很多实现最终都是交给它来完成；<br>  Socket方式更多的用于Android framework层与native层之间的通信.</li>
+</ul>
+<p><strong>ZygoteServer</strong><br>ZygoteServer 类负责创建和管理 Zygote 的服务器套接字。</p>
+<p>具体来说，通过调用 ServerSocket 类的构造函数创建一个服务器套接字 ServerSocket 对象，并绑定到指定的 端口上。然后使用 ServerSocket 对象的 accept() 方法监听客户端的连接请求。</p>
+<p>一旦有客户端发起连接请求，accept() 方法会返回一个新的 Socket 对象，表示与客户端建立的连接。然后，可以使用返回的 Socket 对象与客户端进行通信，发送和接收数据（getInputStream）。</p>
+<p>这里的 Zygote 服务器套接字负责监听并接受来自客户端的命令请求，然后根据请求的内容执行相应的操作，并将结果返回给客户端。在 zygoteServer.runSelectLoop(abiList) 中的循环中，不断接收和处理客户端的请求<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Activity%E8%BF%9B%E7%A8%8B%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B.resources/2023/09/15/18-34-41-67e0b45bba566013f3e9e592a3f63fce-unknown_filename.15-57bc32.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.15"></p>
+<h3 id="其他问题"><a href="#其他问题" class="headerlink" title="其他问题"></a>其他问题</h3><p><strong>为何Binder&#x2F;Socket用于进程间通信，能否用于线程间通信呢？</strong></p>
+<ul>
+<li>答案是肯定，对于两个具有独立地址空间的进程通信都可以，当然也能用于共享内存空间的两个线程间通信，这就好比杀鸡用牛刀。接着可能还有人会疑惑，那handler消息机制能否用于进程间通信？答案是不能，Handler只能用于共享内存地址空间的两个线程间通信，即同进程的两个线程间通信。</li>
+<li>Handler消息机制用于同进程的线程间通信，其核心是线程间共享内存空间，而不同进程拥有不同的地址空间</li>
+<li>Handler可以是UI线程向工作线程发送消息，也可以是多个工作线程之间通过handler发送消息</li>
+</ul>
+<p><strong>Application 是什么，什么时候创建的，每个应用程序有几个 Application？</strong><br>Application 是在 ActivityThread.handleBindApplication() 中创建的，一个进程只会创建一个 Application，但是一个应用如果有多个进程就会创建多个 Application 对象。</p>
+<p><strong>点击 Launcher 启动 Activity 和应用内部启动 Activity 的区别？</strong><br>点击 Launcher 时会创建一个新进程来开启 Activity，而应用内打开 Activity，如果 Activity 不指定新进程，将在原来进程打开，是否开启新进程实在 ActivityManagerService 进行控制的，上面分析得到，每次开启新进程时会保存进程信息，默认为 应用包名 + 应用UID，打开 Activity 时会检查请求方的信息来判断是否需要新开进程。Launcher 打开 Activity 默认 ACTIVITY_NEW_TASK，新开一个 Activity 栈来保存 Activity 的信息。</p>
+<p><strong>Instrumentation （ins追妹忒神）是什么？</strong><br>管理着组件Application,Activity，Service等的创建，生命周期调用。</p>
+<pre><code class="hljs">int = Process.start (“android . app . ActivityThread” , 
+mSimpleProcessManagement? app.processName : gid, debugFlags, null);
+</code></pre>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/freekiteyu/article/details/79318031">一篇文章看明白 Android 从点击应用图标到界面显示的过程</a></p>
+<p><strong>什么是actityrecord</strong><br>一个Activityrecord对应一个Activity,保存了一个Activity的所有信息;但是一个Activity可能会有多个Activityrecord,因为Activity可以被多次启动，这个主要取决于其启动模式，<br><strong>什么是Taskrecord</strong><br>Taskrecord,内部维护一个Arraylist<Activityrecord>用来保存Activityrecord.<br>一个Taskrecord由 一个或者多个Actvityrecord组成，这就是我们常说的任务栈，具有后进先出的特点。</p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/qijinglai/article/details/81163574">https://blog.csdn.net/qijinglai/article/details/81163574</a></p>
+<p><strong>AMS接收startActivity的请求</strong><br>打开ams的原因：就是接收打开activity的请求<br>做了哪些事情：<br>检查调用者的权限、处理了WindowManagerService之间的交互，目的是保证Activity对应的UI能正常显示、不同启动模式下的不同栈的处理。然后通过bindler调用了ApplicationThread。</p>
+<p><strong>handleLaunchActivity 方法都做哪些事呢？</strong></p>
+<ol>
+<li>通过 Instrumentation newActivity 方法，创建要启动的Activity 实例</li>
+<li>为这个 Activity 创建一个上下文 Context 对象，并与 Activity 进行关联</li>
+<li>通过 Instrumentation callActivityOnCreate 方法，执行 Activity on Create 方法，从而启动 Activity</li>
+</ol>
+<p><strong>收到消息开始启动</strong><br><strong>performLaunchActivity</strong> 里方法启动Activity。若Activity不为空，则调用handleResumeActivity方法，内部会调用Activity$onResume方法。当Activity为空就创建activity，调用oncreate。里面关联view。<br>获取要启动的Activity的ComponentName对象：里面包含了包名，类名相关的信息；<br>调用Instrumentation的newActivity方法——callActivityOnCreate方法——onCreate<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Activity%E8%BF%9B%E7%A8%8B%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B.resources/2023/09/15/18-34-41-55ea9c1b950c804b41df4be671d7ca9a-unknown_filename.16-04de74.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.16"></p>
+<hr>
+<h2 id="应用程序进程启动流程"><a href="#应用程序进程启动流程" class="headerlink" title="应用程序进程启动流程"></a>应用程序进程启动流程</h2><p><a target="_blank" rel="noopener" href="https://juejin.cn/post/6844904119803576333#comment">https://juejin.cn/post/6844904119803576333#comment</a><br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Activity%E8%BF%9B%E7%A8%8B%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B.resources/2023/09/15/18-34-41-7afbb3d57eb5a2accda45e8f8f25c850-unknown_filename-850f7c.png" srcset="/img/loading.gif" lazyload alt="unknown_filename"><br>frameworks&#x2F;base&#x2F;services&#x2F;core&#x2F;java&#x2F;com&#x2F;android&#x2F;server&#x2F;wm&#x2F;ActivityStackSupervisor.java<br>打开activity时发现应用没启动，就创建进程</p>
+<h3 id="ActivityManagerService到Zygote"><a href="#ActivityManagerService到Zygote" class="headerlink" title="ActivityManagerService到Zygote"></a>ActivityManagerService到Zygote</h3><p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Activity%E8%BF%9B%E7%A8%8B%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B.resources/2023/09/15/18-34-41-3b4bfcfc5ab8d5feab918b3118b87235-unknown_filename.1-252c87.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.1"><br>frameworks&#x2F;base&#x2F;core&#x2F;java&#x2F;android&#x2F;os&#x2F;ZygoteProcess.java</p>
+<pre><code class="hljs">    private void attemptConnectionToPrimaryZygote() throws IOException &#123;
+        if (primaryZygoteState == null || primaryZygoteState.isClosed()) &#123;
+            primaryZygoteState =
+                    ZygoteState.connect(mZygoteSocketAddress, mUsapPoolSocketAddress);//1
+
+            maybeSetApiBlacklistExemptions(primaryZygoteState, false);
+            maybeSetHiddenApiAccessLogSampleRate(primaryZygoteState);
+            maybeSetHiddenApiAccessStatslogSampleRate(primaryZygoteState);
+        &#125;
+    &#125;
+</code></pre>
+<p>由注释1调用ZygoteState的connect方法来打开Socket连接，mZygoteSocketAddress则是名称为zygote的 Socket 服务</p>
+<h3 id="Zygote启动应用程序进程"><a href="#Zygote启动应用程序进程" class="headerlink" title="Zygote启动应用程序进程"></a>Zygote启动应用程序进程</h3><p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Activity%E8%BF%9B%E7%A8%8B%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B.resources/2023/09/15/18-34-41-2f8c6283e6f2485e401a1b6fcbb9b786-unknown_filename.2-98e541.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.2"></p>
+<pre><code class="hljs"> String zygoteSocketName = &quot;zygote&quot;;//3
+</code></pre>
+<p>注释3出设置Socket连接名称为zygote</p>
+<pre><code class="hljs">  caller = zygoteServer.runSelectLoop(abiList);//8
+  if (caller != null) &#123;
+            caller.run(); //9
+        &#125;
+</code></pre>
+<p>注释8的 runSelectLoop 方法则是Zygote进程等待接收AMS请求启动应用程序进程的关键方法，如果获取到就执行</p>
+<pre><code class="hljs">    Runnable processOneCommand(ZygoteServer zygoteServer) &#123;
+        ...
+            args = Zygote.readArgumentList(mSocketReader);
+</code></pre>
+<p>传过来的参数有：进程ID、包名<br>frameworks&#x2F;base&#x2F;core&#x2F;java&#x2F;com&#x2F;android&#x2F;internal&#x2F;os&#x2F;ZygoteServer.java</p>
+<pre><code class="hljs">Runnable runSelectLoop(String abiList) &#123;
+        ......
+        while (true) &#123;
+   ...
+                    //   从Zygote服务器套接字接受会话套接字
+                    try &#123;
+                        ZygoteConnection connection = peers.get(pollIndex);
+                        final Runnable command = connection.processOneCommand(this); //1
+                        ......
+                            return command;
+                        &#125; 
+        .......                
+    &#125;
+</code></pre>
+<p>通过一个死循环等待接收请求,底层Native fork进程，if (pid &#x3D;&#x3D; 0) 就创建成功，创建成功后创建binder线程池、则当前应用程序就拥有了Binder通信的能力，通过反射创建android.app.ActivityThread，调用main方法</p>
+<pre><code class="hljs"> protected static Runnable findStaticMain(String className, String[] argv,
+            ClassLoader classLoader) &#123;
+        Class&lt;?&gt; cl;
+
+        try &#123;
+            cl = Class.forName(className, true, classLoader);//1
+        &#125; catch (ClassNotFoundException ex) &#123;
+            throw new RuntimeException(
+                    &quot;Missing class when invoking static main &quot; + className,
+                    ex);
+        &#125;
+
+        Method m;
+        try &#123;
+            m = cl.getMethod(&quot;main&quot;, new Class[] &#123; String[].class &#125;);//2
+        &#125; 
+        ......
+        return new MethodAndArgsCaller(m, argv);
+    &#125;
+</code></pre>
+<p>run 调用main方法</p>
+<pre><code class="hljs">    static class MethodAndArgsCaller implements Runnable &#123;
+        public void run() &#123;
+            try &#123;
+                mMethod.invoke(null, new Object[] &#123; mArgs &#125;); //1
+            &#125; 
+            ...
+        &#125;
+    &#125;
+</code></pre>
+<p>ActivityThread是每个应程序主线程的管理类，到此，应用程序进程启动完成，当ATMS与应用程序Binder通信通过IApplicationThread为ActivityThread的内部类，然后调用ActivityThread的performLaunchActivity方法来启动Activity。</p>
+<h3 id="ams-Zygote通信为什么用Socket"><a href="#ams-Zygote通信为什么用Socket" class="headerlink" title="ams-Zygote通信为什么用Socket"></a>ams-Zygote通信为什么用Socket</h3><p>Socket简单易用，性能开销更小，Zygote进程可以快速启动并与应用程序进程建立通信，Socket提供了快速、可靠的通信方式，并且使用Socket API也很容易实现。相比之下，Binder需要更多的配置和维护工作,每次通信都会去binder线程池里取一个线程，来执行逻辑<br>binder通信涉及到多个内核空间和用户空间的切换，以及数据的拷贝和转换，而socket通信只需要在用户空间进行数据传输<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Activity%E8%BF%9B%E7%A8%8B%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B.resources/2023/09/15/18-34-41-5fd879bbbbb96d6c600aa61fd0f3f477-unknown_filename.3-3d7842.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.3"><br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Activity%E8%BF%9B%E7%A8%8B%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B.resources/2023/09/15/18-34-41-2903794cba3ed8f5a2013bafdee5f318-unknown_filename.4-5bd448.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.4"></p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Activity%E8%BF%9B%E7%A8%8B%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B.resources/2023/09/15/18-34-41-2f8c6283e6f2485e401a1b6fcbb9b786-unknown_filename.2-98e541.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.2"></p>
+<hr>
+<h2 id="生命周期"><a href="#生命周期" class="headerlink" title="生命周期"></a>生命周期</h2><p>带 <code>i</code>开头的都是代理类，继承sub的才是真正的实现类</p>
+<figure class="highlight abnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs abnf">private IApplicationThread mClient<span class="hljs-comment">;</span><br></code></pre></td></tr></table></figure>
+
+<p>EXECUTE_TRANSACTION——&gt;execute</p>
+<p>TransactionExecutor.java</p>
+<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs scss">public void <span class="hljs-built_in">execute</span>(ClientTransaction transaction) &#123;          <br>    <span class="hljs-built_in">executeCallbacks</span>(transaction);<br>    <span class="hljs-comment">// 执行生命周期状态</span><br>    <span class="hljs-built_in">executeLifecycleState</span>(transaction);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>ActivityStackSupervisor类</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">final</span> <span class="hljs-type">boolean</span> <span class="hljs-title function_">realStartActivityLocked</span><span class="hljs-params">(ActivityRecord r, ProcessRecord app,</span><br><span class="hljs-params">                                          <span class="hljs-type">boolean</span> andResume, <span class="hljs-type">boolean</span> checkConfig)</span> <span class="hljs-keyword">throws</span> RemoteException &#123;<br><br>    ......<br><br>    <span class="hljs-comment">// 1. addCallback()</span><br>    <span class="hljs-keyword">final</span> <span class="hljs-type">ClientTransaction</span> <span class="hljs-variable">clientTransaction</span> <span class="hljs-operator">=</span> ClientTransaction.obtain(app.thread,<br>                r.appToken);<br>    clientTransaction.addCallback(LaunchActivityItem.obtain(<span class="hljs-keyword">new</span> ...<br><br><br>    <span class="hljs-comment">// 2. setLifecycleStateRequest</span><br>         <span class="hljs-keyword">final</span> ActivityLifecycleItem lifecycleItem;<br>     <span class="hljs-keyword">if</span> (andResume) &#123;<br>         lifecycleItem = ResumeActivityItem.obtain(mService.isNextTransitionForward());<br>    &#125; <span class="hljs-keyword">else</span> &#123;<br>        lifecycleItem = PauseActivityItem.obtain();<br>    &#125;<br>     clientTransaction.setLifecycleStateRequest(lifecycleItem);<br><br>    <span class="hljs-comment">// 3. 调用 ClientLifecycleManager.scheduleTransaction()</span><br>     mService.getLifecycleManager().scheduleTransaction(clientTransaction);<br>    ......<br>    <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<p><strong>addCallback()</strong> &gt;&gt;&gt; <strong>executeCallbacks()</strong><br><strong>setLifecycleStateRequest</strong> &gt;&gt;&gt; <strong>executeLifecycleState()</strong></p>
+<p><code>executeCallbacks()</code> 会执行 <code>addCallback()</code> 方法添加的生命周期回调。当前添加的是 <code>LaunchActivityItem</code> 。</p>
+<p><code>executeLifecycleState()</code> 方法会将当前生命周期同步到 <code>setLifecycleStateRequest()</code> 方法设置的生命周期状态。当前设置的是 <code>ResumeActivityItem</code> 。</p>
+<h3 id="executeCallbacks"><a href="#executeCallbacks" class="headerlink" title="executeCallbacks"></a>executeCallbacks</h3><figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs arduino">&gt; TransactionExecutor.<span class="hljs-function">java</span><br><span class="hljs-function"></span><br><span class="hljs-function">    <span class="hljs-keyword">public</span> <span class="hljs-type">void</span> <span class="hljs-title">executeCallbacks</span><span class="hljs-params">(ClientTransaction transaction)</span> </span>&#123;<br>        <span class="hljs-keyword">final</span> List&lt;ClientTransactionItem&gt; callbacks = transaction.<span class="hljs-built_in">getCallbacks</span>();<br><br>        ......<br><br>        <span class="hljs-keyword">final</span> <span class="hljs-type">int</span> size = callbacks.<span class="hljs-built_in">size</span>();<br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; size; ++i) &#123;<br>            <span class="hljs-keyword">final</span> ClientTransactionItem item = callbacks.<span class="hljs-built_in">get</span>(i);<br>            ......<br>            item.<span class="hljs-built_in">execute</span>(mTransactionHandler, token, mPendingActions);<br>            item.<span class="hljs-built_in">postExecute</span>(mTransactionHandler, token, mPendingActions);<br>            ......<br>        &#125;<br>    &#125;<br></code></pre></td></tr></table></figure>
+
+<p>调用 <code>XXXActivityItem</code> 的 <code>execute()</code> 和 <code>postExecute()</code> 方法。例如：LaunchActivityItem、ActivityResultItem等等，<code>execute()</code> 方法中会 Binder 调用 <code>ActivityThread</code> 中对应的 <code>handleXXXActivity()</code> 方法</p>
+<h3 id="cycleToPath"><a href="#cycleToPath" class="headerlink" title="cycleToPath"></a>cycleToPath</h3><p>正常的生命周期流程应该是 <code>onCreate() -&gt; onStart() -&gt; onResume()</code> ,但是代码中好像又没有显示调用。其实是在 <code>executeLifecycleState()</code> 中的 <code>cycleToPath()</code> 方法中做了生命周期的同步。简单说就是，当前处于 <code>onCreate()</code> 状态，<code>setLifecycleState()</code> 设置的 <strong>final state</strong> 是 <strong>onResume()</strong> ，就需要执行 onCreate 到 onResume 之间的状态，即 <code>onStart()</code> 。</p>
+<p><code>getLifecyclePath</code>计算出中间的生命周期</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%BA%90%E7%A0%81/" class="category-chain-item">源码</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Activity进程启动流程</div>
+      <div>http://peiniwan.github.io/2023/09/b1d4ef7b0386.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>六月的雨</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年9月1日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/09/4e33d620363a.html" title="打破Handler问到底">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">打破Handler问到底</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/08/05b5186b87e1.html" title="命令快捷键">
+                        <span class="hidden-mobile">命令快捷键</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

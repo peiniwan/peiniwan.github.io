@@ -1,0 +1,860 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="六月的雨">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Recycleview嵌套卡顿https:&#x2F;&#x2F;blog.csdn.net&#x2F;qq_30983519&#x2F;article&#x2F;details&#x2F;81280274 1.共用RecycledViewPool，holder.innerRecyclerView.setRecycledViewPool(viewPool)2. setInitialPrefetchItemCount(int) 来优化嵌套时预加载性能3. 设">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android其他优化">
+<meta property="og:url" content="http://peiniwan.github.io/2019/03/2319bb8ac7d1.html">
+<meta property="og:site_name" content="六月的雨的博客">
+<meta property="og:description" content="Recycleview嵌套卡顿https:&#x2F;&#x2F;blog.csdn.net&#x2F;qq_30983519&#x2F;article&#x2F;details&#x2F;81280274 1.共用RecycledViewPool，holder.innerRecyclerView.setRecycledViewPool(viewPool)2. setInitialPrefetchItemCount(int) 来优化嵌套时预加载性能3. 设">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android%E5%85%B6%E4%BB%96%E4%BC%98%E5%8C%96.resources/2023/09/15/18-49-35-37ba3ad4b94e35e194ad63e0fc8c6b99-unknown_filename.3-176d2f.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android%E5%85%B6%E4%BB%96%E4%BC%98%E5%8C%96.resources/2023/09/15/18-49-35-93885f320fefe236b76196fbcf6ad5a0-unknown_filename.7-ef69d2.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android%E5%85%B6%E4%BB%96%E4%BC%98%E5%8C%96.resources/2023/09/15/18-49-35-e95c9dd075233784e2ff4d3220a9a6a3-unknown_filename.8-c64873.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android%E5%85%B6%E4%BB%96%E4%BC%98%E5%8C%96.resources/2023/09/15/18-49-35-ad9f3136fa75fbec1b82e870e60add2d-unknown_filename.9-df167f.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android%E5%85%B6%E4%BB%96%E4%BC%98%E5%8C%96.resources/2023/09/15/18-49-35-246cacada30d0c628b8117abffb00621-unknown_filename.2-c8a0a9.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android%E5%85%B6%E4%BB%96%E4%BC%98%E5%8C%96.resources/2023/09/15/18-49-35-872a5a864c80580899de8a7dfe2e0c14-unknown_filename.4-092937.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android%E5%85%B6%E4%BB%96%E4%BC%98%E5%8C%96.resources/2023/09/15/18-49-35-72eb67eadf999b646d9508200bcb5fc9-unknown_filename.5-90cf7e.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android%E5%85%B6%E4%BB%96%E4%BC%98%E5%8C%96.resources/2023/09/15/18-49-35-ebc96f2a1e2e0ecb1297ffb4fb16c7f5-unknown_filename.6-c5af45.png">
+<meta property="article:published_time" content="2019-03-03T05:10:13.000Z">
+<meta property="article:modified_time" content="2023-12-26T02:56:17.230Z">
+<meta property="article:author" content="六月的雨">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android%E5%85%B6%E4%BB%96%E4%BC%98%E5%8C%96.resources/2023/09/15/18-49-35-37ba3ad4b94e35e194ad63e0fc8c6b99-unknown_filename.3-176d2f.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>Android其他优化 - 六月的雨的博客</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"peiniwan.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>六月的雨的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Android其他优化"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2019-03-03 13:10" pubdate>
+          2019年3月3日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          18k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          149 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Android其他优化</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="Recycleview嵌套卡顿"><a href="#Recycleview嵌套卡顿" class="headerlink" title="Recycleview嵌套卡顿"></a>Recycleview嵌套卡顿</h2><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_30983519/article/details/81280274">https://blog.csdn.net/qq_30983519/article/details/81280274</a></p>
+<p>1.共用RecycledViewPool，holder.innerRecyclerView.setRecycledViewPool(viewPool)<br>2. setInitialPrefetchItemCount(int) 来优化嵌套时预加载性能<br>3. 设置recycleview的子项缓存 rv.setItemViewCacheSize(200);<br>4. rv.setHasFixedSize(true);<br>5. recyclerview嵌套recyclerview的时候,adapter全局变量</p>
+<h2 id="ANR"><a href="#ANR" class="headerlink" title="ANR"></a>ANR</h2><p><strong>AsyncLayoutInflater</strong><br>异步布局加载<br>AsyncLayoutInflater的使用非常简单，就是把setContentView和一些view的初始化操作都放到了onInflateFinished回调中<br>有局限，所有构建的View中必须不能直接使用 Handler 或者是调用 Looper.myLooper()，因为异步线程默认没有调用 Looper.prepare ()，可以优化</p>
+<p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/wmFBPYkwGh8ijQMODF27Fw">https://mp.weixin.qq.com/s/wmFBPYkwGh8ijQMODF27Fw</a></p>
+<pre><code class="hljs"> @Override
+    protected void onCreate(Bundle savedInstanceState) &#123;
+        super.onCreate(savedInstanceState);
+        new AsyncLayoutInflater(this).inflate(R.layout.activity_main,null, new AsyncLayoutInflater.OnInflateFinishedListener()&#123;
+            @Override
+            public void onInflateFinished(View view, int resid, ViewGroup parent) &#123;
+                setContentView(view);
+                rv = findViewById(R.id.tv_right);
+            &#125;
+        &#125;);
+
+    &#125;
+</code></pre>
+<p><strong>什么是ANR</strong><br>ANR 全称 Applicatipon No Response；Android 设计 ANR 的用意，是系统通过与之交互的组件(Activity，Service，Receiver，Provider)以及用户交互(InputEvent)进行超时监控，以判断应用进程(主线程)是否存在卡死或响应过慢的问题，其实就是很多系统中看门狗(watchdog)的设计思想。</p>
+<p>Android在主线程是不能做阻塞耗时操作的，例如加载网络数据、数据库查询、文件读写，如果在应用中无响应的话会导致ANR(Application Not Response)<br>1)5s内没有响应用户输入事件<br>2)10s内广播接收器没有处理完毕<br>3)20s内服务没有处理完毕<br><strong>手机可分配的CPU占满也会发生ANR</strong></p>
+<p>没有在规定的时间内，干完要干的事情，就会发生ANR。也有可能不是自己应用的问题</p>
+<p>在客户端进程中，Binder 线程接收到 AMS 服务发送过来的广播消息之后，会将此消息进行封装成一个 Message，然后将 Message 发送到主线程消息队列<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android%E5%85%B6%E4%BB%96%E4%BC%98%E5%8C%96.resources/2023/09/15/18-49-35-37ba3ad4b94e35e194ad63e0fc8c6b99-unknown_filename.3-176d2f.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.3"></p>
+<p><strong>分析anr</strong><br>ANR产生时, 系统会生成一个traces.txt的文件放在&#x2F;data&#x2F;anr&#x2F;下. 可以通过adb命令将其导出到本地，这个文件里有ANR发生的进程pid, 时间, 以及进程名字(包名)，还有anr产生的位置和方法。最新的ANR信息在最开始部分。</p>
+<pre><code class="hljs">$adb pull data/anr/traces.txt .
+</code></pre>
+<p>有几类ANR<br>看堆栈、CPU占用时间，wait to lock main [xxx]搜索对应线程。<br>主要原因是主线程做了耗时操作（io、网络、数据库）<br>我的经验是，先看看主线程的堆栈，是否是因为锁等待导致。接着看看 ANR 日志中 iowait、CPU、GC、system server 等信息，进一步确定是 I&#x2F;O 问题，或是 CPU 竞争问题，还是由于大量 GC 导致卡死。</p>
+<p>看cpu使用率，如果CPU使用量很少，说明主线程可能阻塞。</p>
+<p><strong>ANR排查流程</strong><br>Log获取</p>
+<ol>
+<li>抓取 bugreport<br> adb shell bugreport &gt; bugreport.txt</li>
+<li>直接导出&#x2F;data&#x2F;anr&#x2F;traces.txt文件<br> adb pull &#x2F;data&#x2F;anr&#x2F;traces.txt trace.txt</li>
+<li>搜索“ANR in”处log关键点解读发生时间（可能会延时10-20s）pid：当pid&#x3D;0，说明在ANR之前，进程就被LMK杀死或出现了Crash，所以无法接受到系统的广播或者按键消息，因此会出现ANR.</li>
+<li>在bugreport.txt中根据pid和发生时间搜索到阻塞的log处</li>
+<li>往下翻找到“main”线程则可看到对应的阻塞log<br> 通过android proile</li>
+</ol>
+<p><strong>解决办法</strong></p>
+<ol>
+<li>不要在主线程(UI线程)里面做繁重的操作,增大VM内存, 使用largeHeap属性, 排查内存泄露</li>
+<li>Thread + Handler + Message ，Thread + Handler + post，AsyncTask，intentservice、runOnUiThread(Runnable)在子线程中直接使用该方法，可以更新UI</li>
+<li>handleThread<br> Android中结合Handler和Thread的一种方式, 默认情况下Handler的handleMessage是执行在主线程的, 但是如果我给这个Handler传入了子线程的looper, handleMessage就会执行在这个子线程中的. HandlerThread正是这样的一个结合体</li>
+<li><strong>没有使用子线程的looper的Handler的handleMessage</strong>, post(Runnable)是执行在主线程的.</li>
+<li>AsyncTask的回调中除了doInBackground, 其他都是执行在主线程的。View的post(Runnable)是执行在主线程的</li>
+</ol>
+<hr>
+<h2 id="Webview性能优化"><a href="#Webview性能优化" class="headerlink" title="Webview性能优化"></a>Webview性能优化</h2><ul>
+<li><p>在客户端刚启动时，就初始化一个全局的WebView待用，并隐藏；当用户访问了WebView时，直接使用这个WebView加载对应网页，并展示。这种方法可以比较有效的减少初始化WebView的时间。</p>
+</li>
+<li><p>主要的还是h5那边的优化</p>
+</li>
+<li><p>Android版本不同，采用了不同的内核，兼容性crash</p>
+</li>
+<li><p>oom：WebView 动态加载。就是不在xml中写WebView，写一个layout，然后把WebView add进去。</p>
+</li>
+<li><p>腾讯X5内核相对于系统webview好的多。</p>
+<p>  protected void onDestroy() {<br>    super.onDestroy();<br>    mWebView.removeAllViews();<br>    mWebView.destroy()<br>  }  </p>
+</li>
+<li><p>单&#x2F;多进程化：webView在独立的进程里面，那么WebView的进程崩溃不会影响到主进程运行；同时WebView的安 全漏洞也很难影响到主进程；如果是多进程的话，可以使用WebView的容器池，有二次秒开的作用；不过缺点就是需要你做好和WebView的跨进程通讯了。</p>
+</li>
+</ul>
+<blockquote>
+<p>开一个webview的多进程WebActivity ，里面放着另一个进程的 CommonWebFragment，完后把URL传过去就可以加载了。如果需要交互得用到aidl多进程通讯<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android%E5%85%B6%E4%BB%96%E4%BC%98%E5%8C%96.resources/2023/09/15/18-49-35-93885f320fefe236b76196fbcf6ad5a0-unknown_filename.7-ef69d2.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.7"></p>
+</blockquote>
+<ul>
+<li>网络优化：我们可以让WebView的host和客户端的host保持一致，那么就达到复用DNS缓存的效果；如果客户端有针对网络请求进行了优化，那么可以让WebView的全部网络请求托管给客户端</li>
+<li>H5离线包：这个是手Q的H5方案之一，让客户端提前去下载离线的H5数据包，WebView只需要加载本地H5数据包即可，这么做不仅可以避免一些http的劫持，而且跳过了WebView的建立TCP连接和H5、CCS等数据下载的过程，直接开始UI渲染，大大提高了WebView的效率</li>
+<li>用户体验方面，可以在顶部显示一个一个progress，显示网页加载进度，而不是一个白屏呈现给用户看。</li>
+<li>设置一个全局的WebView，减少WebView初始化的时间，避免后续操作的堵塞</li>
+</ul>
+<p>根本原因在于 WebView 在实例化的时候，需要先初始化 Chromium 引擎，而 Chromium 引擎又是一个重量级的组件，而且很多初始化的工作都需要在主线程中完成，这样就很容易造成主线程卡顿甚至 ANR。</p>
+<pre><code class="hljs">public class ShadowWebView &#123;
+
+    public static void preloadWebView(final Application app) &#123;
+        try &#123;
+            app.getMainLooper().getQueue().addIdleHandler(new MessageQueue.IdleHandler() &#123;
+                @Override
+                public boolean queueIdle() &#123;
+                    startChromiumEngine();
+                    return false;
+                &#125;
+            &#125;);
+        &#125; catch (final Throwable t) &#123;
+            Log.e(TAG, &quot;Oops!&quot;, t);
+        &#125;
+    &#125;
+
+    private static void startChromiumEngine() &#123;
+        try &#123;
+            final long t0 = SystemClock.uptimeMillis();
+            final Object provider = invokeStaticMethod(Class.forName(&quot;android.webkit.WebViewFactory&quot;), &quot;getProvider&quot;);
+            invokeMethod(provider, &quot;startYourEngines&quot;, new Class[]&#123;boolean.class&#125;, new Object[]&#123;true&#125;);
+            Log.i(TAG, &quot;Start chromium engine complete: &quot; + (SystemClock.uptimeMillis() - t0) + &quot; ms&quot;);
+        &#125; catch (final Throwable t) &#123;
+            Log.e(TAG, &quot;Start chromium engine error&quot;, t);
+        &#125;
+    &#125;
+&#125;
+</code></pre>
+<p>ShadowWebView 通过 WebViewTransformer 在 Application onCreate() 回调中注入 ShadowWebView.preloadWebView()，当主线程 IDLE 时，启动 Chromium 引擎。</p>
+<p>该方案的优点是无侵入、接入成本低，缺点是由于这种方式反射了非公开 API，可能存在兼容性问题。</p>
+<h2 id="APK体积优化大小"><a href="#APK体积优化大小" class="headerlink" title="APK体积优化大小"></a>APK体积优化大小</h2><p>删、缩、挪<br><strong>删</strong><br>保持良好的编程习惯，不要重复或者不用的代码，谨慎添加libs，移除使用不到的libs。 使用proguard混淆代码，它会对不用的代码做优化，并且混淆后也能够减少安装包的大小。 native code的部分，大多数情况下只需要支持armabi与x86的架构即可。如果非必须，可以考虑拿掉x86的部分。</p>
+<p><strong>缩</strong><br>使用Lint工具查找没有使用到的资源。去除不使用的图片，String，XML等等。 assets目录下的资源请确保没有用不上的文件。 生成APK的时候，aapt工具本身会对png做优化，但是在此之前还可以使用其他工具如tinypng对图片进行进一步的压缩预处理。 jpeg还是png，根据需要做选择，在某些时候jpeg可以减少图片的体积。可以使用webp图片。</p>
+<p>有选择性的提供hdpi，xhdpi，xxhdpi的图片资源。建议优先提供xhdpi的图片，对于mdpi，ldpi与xxxhdpi根据需要提供有差异的部分即可。</p>
+<p>尽可能的重用已有的图片资源。例如对称的图片，只需要提供一张，另外一张图片可以通过代码旋转的方式实现。<br>能用代码绘制实现的功能，尽量不要使用大量的图片。例如减少使用多张图片组成animate-list的AnimationDrawable，这种方式提供了多张图片很占空间。</p>
+<blockquote>
+<p>使用svg图片<br>(Scalable Vector Graphics)，可缩放矢量图。SVG不会像位图一样因为缩放而让图片质量下降。优点在于可以减小APK的尺寸。常用于简单小图标。<br>Android中只支持 <vector>，我们可以通过 vector 将svg的根节点 <svg> 转换为 <vector>。<br><strong>SVG批量转换</strong><br>java -jar svg2vector-cli-1.0.0.jar -d . -o a -h 20 -w 20<br>-d 指定svg文件所在目录<br>-o 输出android vector图像目录<br>-h 设置转换后svg的高<br>-w 设置转换后svg的宽<br>Android 5.0（API 21）之前的版本不支持矢量图，使用 Vector Asset Studio 有两种方式适配</p>
+</blockquote>
+<p>debug的时候不用混淆，因为会压缩，删除，编译变慢</p>
+<p><strong>挪</strong><br>assets目录下也可以挪<br>so动态下发有可能下载失败，毕竟是少部分用户，不可能一直下载不下来。另外所有用户都有收益，那这个就值得做。</p>
+<p>大多的X86设备除了支持X86类型的SO库，还兼容ARM类型的SO库，所以应用市场上大部分的APP只适配了ARM类型的SO库</p>
+<ol>
+<li>判断目录中是否存在so文件,存在则直接调用第三方sdk</li>
+<li>不存在SO文件从服务器下载相应的so库(大的话可以压缩)</li>
+<li>将so库复制到&#x2F;data&#x2F;datapackagename&#x2F;…（context.getDir(“libs”,Context.MODE_PRIVATE)）</li>
+<li>System.load(xx)</li>
+</ol>
+<p><strong>其他</strong><br>resource.arsc – &gt; Android Resource</p>
+<p>andresguard，路径变成了r&#x2F;d&#x2F;a，在 AndResGuard 中，我们支持针对 resources.arsc、PNG、JPG 以及 GIF 等文件的强制压缩。资源混淆，res下的图片名字也改了<br>用的7z，有着更好的压缩率<br>minifyEnabled true混淆<br>shrinkResources true<br>res变成了r<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android%E5%85%B6%E4%BB%96%E4%BC%98%E5%8C%96.resources/2023/09/15/18-49-35-e95c9dd075233784e2ff4d3220a9a6a3-unknown_filename.8-c64873.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.8"><br>原理：<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android%E5%85%B6%E4%BB%96%E4%BC%98%E5%8C%96.resources/2023/09/15/18-49-35-ad9f3136fa75fbec1b82e870e60add2d-unknown_filename.9-df167f.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.9"></p>
+<h2 id="过度绘制"><a href="#过度绘制" class="headerlink" title="过度绘制"></a>过度绘制</h2><ul>
+<li>Android系统每隔16ms发出VSYNC信号，触发对UI进行渲染， 如果每次渲染都成功，这样就能够达到流畅的画面所需要的60fps，为了能够实现60fps，这意味着程序的大多数操作都必须在16ms内完成。如果你的某个操作花费时间是24ms，系统在得到VSYNC信号的时候就无法进行正常渲染，这样就发生了丢帧现象。那么用户在32ms内看到的会是同一帧画面。</li>
+<li>用户容易在UI执行动画或者滑动ListView的时候感知到卡顿不流畅，是因为这里的操作相对复杂，容易发生丢帧的现象，从而感觉卡顿。<strong>有很多原 因可以导致丢帧，也许是因为你的layout太过复杂，无法在16ms内完成渲染，有可能是因为你的UI上有层叠太多的绘制单元，还有可能是因为动画执行 的次数过多</strong>。这些都会导致CPU或者GPU负载过重。</li>
+</ul>
+<p><strong>Overdraw(过度绘制)</strong><br>描述的是屏幕上的某个像素在同一帧的时间内被绘制了多次。在多层次的UI结构里面，如果不可见的UI也在做绘制的操作，这就会导致某些像素区域被绘制了多次，可能出现卡顿现象，浪费大量的CPU以及GPU资源。也会出现耗电的问题。调试GPU过渡绘制— 显示过渡绘制区域</p>
+<ul>
+<li>颜色标识: 从好到差:蓝-绿-淡红-红</li>
+<li>验收标准:</li>
+</ul>
+<ol>
+<li>控制过度绘制为2x（绿色）</li>
+<li>不允许存在4x（红色）过度绘制</li>
+<li>不允许存在面积超过屏幕1&#x2F;4区域的3x过度绘制（淡红色区域）</li>
+</ol>
+<p><strong>处理方案：布局的优化</strong></p>
+<ol>
+<li>尽量重用一个布局文件，使用include标签，多个相同的布局可以复用</li>
+<li>减少一个布局的不必要节点，减少层级，可以使用sdk提供的工具Hierarchy Viewer进行层级查看具体使用</li>
+<li>尽量使用view自身的参数，例如：Button,有一个可以把图绘制在左边的参数:android:drawableLeft</li>
+<li>使用&lt; ViewStub &#x2F;&gt;标签来加载一些不常用的布局（懒加载），多状态，有数据，空数据，加载失败，加载异常，网络异常等。</li>
+<li>使用&lt; merge &#x2F;&gt;标签减少布局的嵌套层次，根布局content就是个fragment，如果自己就是fragment，就可以使用merge。merge必须放在布局文件的根节点上。通常和include一起使用。</li>
+<li>减少多余的background</li>
+<li>使用约束布局</li>
+</ol>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android%E5%85%B6%E4%BB%96%E4%BC%98%E5%8C%96.resources/2023/09/15/18-49-35-246cacada30d0c628b8117abffb00621-unknown_filename.2-c8a0a9.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.2"><br>子view必须有个父view包裹</p>
+<pre><code class="hljs">var layout: View? = null
+if (viewStub3.parent != null) &#123;   
+layout = viewStub3?.inflate()    
+viewStub3.visibility = View.VISIBLE    
+var voiceView =        
+layout?.findViewById&lt;InteractionVoicePlayerView&gt;(R.id.voiceView)
+&#125;
+</code></pre>
+<p>【强制】<br>页面拥上的 View 越多， measure、 layout、 draw 所花费的时间就越久。要缩短这个时间，关键是保持 View 的树形结构尽量扁平，而且要移除所有不需要渲染的View。理想情况下，总共的 measure， layout， draw 时间应该被很好的控制在 16ms以内，以保证滑动屏幕时 UI 的流畅。</p>
+<h2 id="冷启动优化"><a href="#冷启动优化" class="headerlink" title="冷启动优化"></a>冷启动优化</h2><p>traceview检查耗时的方法<br>App进程的创建等环节我们是无法主动控制的。开发人员唯一能做的就是减少在Application 和 第一个 Activity 中的工作量，从而缩短冷启动的时间。</p>
+<p>Application 会执行多次，要只在主app的Application执行，加速启动<br>if (AppUtils.inMainProcess(getApplication()))</p>
+<p>Application<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android%E5%85%B6%E4%BB%96%E4%BC%98%E5%8C%96.resources/2023/09/15/18-49-35-872a5a864c80580899de8a7dfe2e0c14-unknown_filename.4-092937.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.4"><br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android%E5%85%B6%E4%BB%96%E4%BC%98%E5%8C%96.resources/2023/09/15/18-49-35-72eb67eadf999b646d9508200bcb5fc9-unknown_filename.5-90cf7e.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.5"><br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android%E5%85%B6%E4%BB%96%E4%BC%98%E5%8C%96.resources/2023/09/15/18-49-35-ebc96f2a1e2e0ecb1297ffb4fb16c7f5-unknown_filename.6-c5af45.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.6"></p>
+<p>方案：</p>
+<ul>
+<li>避免在启动时做密集耗时的初始化</li>
+<li>避免I&#x2F;O操作、网络操作、布局嵌套等考虑异步</li>
+<li><strong>初始化三方组件，不阻塞主线程</strong>，比如：图片选择库、日志上传模块、统计、推送、语音库等等</li>
+<li>使用Activity的windowBackground主题属性来为启动的Activity提供一个简单的drawable，让用户产生一种速度加快的感觉。</li>
+</ul>
+<p>热启动和冷启动</p>
+<ul>
+<li>冷启动 ：在启动应用前，系统还没有App的任何进程。冷启动流程就是app启动流程全过程，包括创建app进程、加载资源、启动主线程等等。这种启动耗时最长。</li>
+<li>热启动 ：app进程处于后台，系统只是把它从后台带到前台，展示给用户。相比冷启动，热启动过程时间更短。但启动时，系统依然会展示一个空白背景，直到第一个 Activity 的内容呈现为止。</li>
+</ul>
+<h2 id="电量优化"><a href="#电量优化" class="headerlink" title="电量优化"></a>电量优化</h2><p>耗电优化的第一个方向是优化应用的后台耗电。因为用户最容易感知这个，我明明没有怎么打开，为什么耗这么多？在后台不要做这些：长时间获取 WakeLock(及时释放)、WiFi 和蓝牙的扫描、GPS、video、audio</p>
+<ul>
+<li>减少cpu占用率</li>
+<li>网络传输：设备以最大的传输速率进行操作。</li>
+<li>数据压缩：缩减传输时间，降低电量消耗</li>
+<li>选择更快的传输方式：虽然4G芯片比Wifi芯片耗电低，但Wifi的速率可以让数据在较短时间内完成传输，从而降低电量消耗。</li>
+<li>请求集中发送</li>
+<li>gps的使用：不同的场景以及不同类型的App对定位更加需要个性化的区分。即时注销定位监听</li>
+<li>谨慎使用WakeLock：Wake Lock是一种锁的机制，只要有人拿着这个锁，系统就无法进入休眠。一些App为了能在后台持续做事情，就会持有一个WakeLock</li>
+<li>动态注册广播</li>
+<li>使用JobScheduler，一些任务通过JobScheduler来触发，例如可推迟的网络请求、下载、GPS等，可以在特定场景：连接Wifi、连接电源等场景触发。既完成了任务，也无需考虑由于一些任务导致的电量消耗。（监听网络环境改变）</li>
+</ul>
+<p>Android 最近几版的特色主要集中在省电和后台管理上，O的发布，对Service和Broadcast又近一步加强了管束。主要可概括为如下两点：</p>
+<ol>
+<li>后台应用不被允许创建后台服务，必须通过JobScheduler或者Context.startForegroundService()进行创建</li>
+<li>特定的隐式广播不再被允许启动，必须通过JobScheduler调用或者显式注册的方式才能启动</li>
+</ol>
+<p>JobSchedule的宗旨就是把一些不是特别紧急的任务放到更合适的时机批量处理。这样做有两个好处：避免频繁的唤醒硬件模块，造成不必要的电量消耗以及避免在不合适的时间(例如低电量情况下、弱网络或者移动网络情况下的)执行过多的任务消耗电量。</p>
+<ul>
+<li><p>使用 Battery History</p>
+<p>  adb kill-serveadb devices adb start-server<br>  adb shell dumpsys batterystats –enable full-wake-historyadb shell dumpsys batterystats –reset</p>
+<p>  adb bugreport &gt; bugreport.txtadb shell dumpsys batterystats &gt; batterystats.txt<br>  adb shell dumpsys batterystats &gt; com.example.android.demo.app &gt; batterystats.txt<br>  7.0以上<br>  adb bugreport bugreport.zip<br>  D:\PycharmProjects\goProjects\src\github.com\google\battery-historian<br>  go run cmd&#x2F;battery-historian&#x2F;battery-historian.go<a target="_blank" rel="noopener" href="http://localhost:9999/">http://localhost:9999/</a></p>
+</li>
+</ul>
+<p>%5Btoc%5D%0A%0A%23%23%20Recycleview%E5%B5%8C%E5%A5%97%E5%8D%A1%E9%A1%BF%0A%5Bhttps%3A%2F%2Fblog.csdn.net%2Fqq_30983519%2Farticle%2Fdetails%2F81280274%5D(https%3A%2F%2Fblog.csdn.net%2Fqq_30983519%2Farticle%2Fdetails%2F81280274)%0A%0A1.%E5%85%B1%E7%94%A8RecycledViewPool%EF%BC%8Cholder.innerRecyclerView.setRecycledViewPool(viewPool)%0A2.%C2%A0setInitialPrefetchItemCount(int)%20%E6%9D%A5%E4%BC%98%E5%8C%96%E5%B5%8C%E5%A5%97%E6%97%B6%E9%A2%84%E5%8A%A0%E8%BD%BD%E6%80%A7%E8%83%BD%0A3.%20%E8%AE%BE%E7%BD%AErecycleview%E7%9A%84%E5%AD%90%E9%A1%B9%E7%BC%93%E5%AD%98%C2%A0rv.setItemViewCacheSize(200)%3B%0A4.%20rv.setHasFixedSize(true)%3B%20%20%0A5.%20recyclerview%E5%B5%8C%E5%A5%97recyclerview%E7%9A%84%E6%97%B6%E5%80%99%2Cadapter%E5%85%A8%E5%B1%80%E5%8F%98%E9%87%8F%0A%0A%23%23%20ANR%0A**AsyncLayoutInflater**%0A%E5%BC%82%E6%AD%A5%E5%B8%83%E5%B1%80%E5%8A%A0%E8%BD%BD%0AAsyncLayoutInflater%E7%9A%84%E4%BD%BF%E7%94%A8%E9%9D%9E%E5%B8%B8%E7%AE%80%E5%8D%95%EF%BC%8C%E5%B0%B1%E6%98%AF%E6%8A%8AsetContentView%E5%92%8C%E4%B8%80%E4%BA%9Bview%E7%9A%84%E5%88%9D%E5%A7%8B%E5%8C%96%E6%93%8D%E4%BD%9C%E9%83%BD%E6%94%BE%E5%88%B0%E4%BA%86onInflateFinished%E5%9B%9E%E8%B0%83%E4%B8%AD%0A%E6%9C%89%E5%B1%80%E9%99%90%EF%BC%8C%E6%89%80%E6%9C%89%E6%9E%84%E5%BB%BA%E7%9A%84View%E4%B8%AD%E5%BF%85%E9%A1%BB%E4%B8%8D%E8%83%BD%E7%9B%B4%E6%8E%A5%E4%BD%BF%E7%94%A8%20Handler%20%E6%88%96%E8%80%85%E6%98%AF%E8%B0%83%E7%94%A8%20Looper.myLooper()%EF%BC%8C%E5%9B%A0%E4%B8%BA%E5%BC%82%E6%AD%A5%E7%BA%BF%E7%A8%8B%E9%BB%98%E8%AE%A4%E6%B2%A1%E6%9C%89%E8%B0%83%E7%94%A8%20Looper.prepare%20()%EF%BC%8C%E5%8F%AF%E4%BB%A5%E4%BC%98%E5%8C%96%0A%5Bhttps%3A%2F%2Fmp.weixin.qq.com%2Fs%2FwmFBPYkwGh8ijQMODF27Fw%5D(https%3A%2F%2Fmp.weixin.qq.com%2Fs%2FwmFBPYkwGh8ijQMODF27Fw)%0A%60%60%60%0A%20%40Override%0A%20%20%20%20protected%20void%20onCreate(Bundle%20savedInstanceState)%20%7B%0A%20%20%20%20%20%20%20%20super.onCreate(savedInstanceState)%3B%0A%20%20%20%20%20%20%20%20new%20AsyncLayoutInflater(this).inflate(R.layout.activity_main%2Cnull%2C%20new%20AsyncLayoutInflater.OnInflateFinishedListener()%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%40Override%0A%20%20%20%20%20%20%20%20%20%20%20%20public%20void%20onInflateFinished(View%20view%2C%20int%20resid%2C%20ViewGroup%20parent)%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20setContentView(view)%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20rv%20%3D%20findViewById(R.id.tv_right)%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%7D)%3B%0A%0A%20%20%20%20%7D%0A%60%60%60%0A**%E4%BB%80%E4%B9%88%E6%98%AFANR**%0AANR%20%E5%85%A8%E7%A7%B0%20Applicatipon%20No%20Response%EF%BC%9BAndroid%20%E8%AE%BE%E8%AE%A1%20ANR%20%E7%9A%84%E7%94%A8%E6%84%8F%EF%BC%8C%E6%98%AF%E7%B3%BB%E7%BB%9F%E9%80%9A%E8%BF%87%E4%B8%8E%E4%B9%8B%E4%BA%A4%E4%BA%92%E7%9A%84%E7%BB%84%E4%BB%B6(Activity%EF%BC%8CService%EF%BC%8CReceiver%EF%BC%8CProvider)%E4%BB%A5%E5%8F%8A%E7%94%A8%E6%88%B7%E4%BA%A4%E4%BA%92(InputEvent)%E8%BF%9B%E8%A1%8C%E8%B6%85%E6%97%B6%E7%9B%91%E6%8E%A7%EF%BC%8C%E4%BB%A5%E5%88%A4%E6%96%AD%E5%BA%94%E7%94%A8%E8%BF%9B%E7%A8%8B(%E4%B8%BB%E7%BA%BF%E7%A8%8B)%E6%98%AF%E5%90%A6%E5%AD%98%E5%9C%A8%E5%8D%A1%E6%AD%BB%E6%88%96%E5%93%8D%E5%BA%94%E8%BF%87%E6%85%A2%E7%9A%84%E9%97%AE%E9%A2%98%EF%BC%8C%E5%85%B6%E5%AE%9E%E5%B0%B1%E6%98%AF%E5%BE%88%E5%A4%9A%E7%B3%BB%E7%BB%9F%E4%B8%AD%E7%9C%8B%E9%97%A8%E7%8B%97(watchdog)%E7%9A%84%E8%AE%BE%E8%AE%A1%E6%80%9D%E6%83%B3%E3%80%82%0A%0AAndroid%E5%9C%A8%E4%B8%BB%E7%BA%BF%E7%A8%8B%E6%98%AF%E4%B8%8D%E8%83%BD%E5%81%9A%E9%98%BB%E5%A1%9E%E8%80%97%E6%97%B6%E6%93%8D%E4%BD%9C%E7%9A%84%EF%BC%8C%E4%BE%8B%E5%A6%82%E5%8A%A0%E8%BD%BD%E7%BD%91%E7%BB%9C%E6%95%B0%E6%8D%AE%E3%80%81%E6%95%B0%E6%8D%AE%E5%BA%93%E6%9F%A5%E8%AF%A2%E3%80%81%E6%96%87%E4%BB%B6%E8%AF%BB%E5%86%99%EF%BC%8C%E5%A6%82%E6%9E%9C%E5%9C%A8%E5%BA%94%E7%94%A8%E4%B8%AD%E6%97%A0%E5%93%8D%E5%BA%94%E7%9A%84%E8%AF%9D%E4%BC%9A%E5%AF%BC%E8%87%B4ANR(Application%20Not%20Response)%0A1)5s%E5%86%85%E6%B2%A1%E6%9C%89%E5%93%8D%E5%BA%94%E7%94%A8%E6%88%B7%E8%BE%93%E5%85%A5%E4%BA%8B%E4%BB%B6%0A2)10s%E5%86%85%E5%B9%BF%E6%92%AD%E6%8E%A5%E6%94%B6%E5%99%A8%E6%B2%A1%E6%9C%89%E5%A4%84%E7%90%86%E5%AE%8C%E6%AF%95%0A3)20s%E5%86%85%E6%9C%8D%E5%8A%A1%E6%B2%A1%E6%9C%89%E5%A4%84%E7%90%86%E5%AE%8C%E6%AF%95%0A**%E6%89%8B%E6%9C%BA%E5%8F%AF%E5%88%86%E9%85%8D%E7%9A%84CPU%E5%8D%A0%E6%BB%A1%E4%B9%9F%E4%BC%9A%E5%8F%91%E7%94%9FANR**%0A%0A%E6%B2%A1%E6%9C%89%E5%9C%A8%E8%A7%84%E5%AE%9A%E7%9A%84%E6%97%B6%E9%97%B4%E5%86%85%EF%BC%8C%E5%B9%B2%E5%AE%8C%E8%A6%81%E5%B9%B2%E7%9A%84%E4%BA%8B%E6%83%85%EF%BC%8C%E5%B0%B1%E4%BC%9A%E5%8F%91%E7%94%9FANR%E3%80%82%E4%B9%9F%E6%9C%89%E5%8F%AF%E8%83%BD%E4%B8%8D%E6%98%AF%E8%87%AA%E5%B7%B1%E5%BA%94%E7%94%A8%E7%9A%84%E9%97%AE%E9%A2%98%0A%0A%0A%E5%9C%A8%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%BF%9B%E7%A8%8B%E4%B8%AD%EF%BC%8CBinder%20%E7%BA%BF%E7%A8%8B%E6%8E%A5%E6%94%B6%E5%88%B0%20AMS%20%E6%9C%8D%E5%8A%A1%E5%8F%91%E9%80%81%E8%BF%87%E6%9D%A5%E7%9A%84%E5%B9%BF%E6%92%AD%E6%B6%88%E6%81%AF%E4%B9%8B%E5%90%8E%EF%BC%8C%E4%BC%9A%E5%B0%86%E6%AD%A4%E6%B6%88%E6%81%AF%E8%BF%9B%E8%A1%8C%E5%B0%81%E8%A3%85%E6%88%90%E4%B8%80%E4%B8%AA%20Message%EF%BC%8C%E7%84%B6%E5%90%8E%E5%B0%86%20Message%20%E5%8F%91%E9%80%81%E5%88%B0%E4%B8%BB%E7%BA%BF%E7%A8%8B%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%0A!%5B37ba3ad4b94e35e194ad63e0fc8c6b99.png%5D(en-resource%3A%2F%2Fdatabase%2F17942%3A1)%0A%0A%0A%0A**%E5%88%86%E6%9E%90anr**%0AANR%E4%BA%A7%E7%94%9F%E6%97%B6%2C%20%E7%B3%BB%E7%BB%9F%E4%BC%9A%E7%94%9F%E6%88%90%E4%B8%80%E4%B8%AAtraces.txt%E7%9A%84%E6%96%87%E4%BB%B6%E6%94%BE%E5%9C%A8%2Fdata%2Fanr%2F%E4%B8%8B.%20%E5%8F%AF%E4%BB%A5%E9%80%9A%E8%BF%87adb%E5%91%BD%E4%BB%A4%E5%B0%86%E5%85%B6%E5%AF%BC%E5%87%BA%E5%88%B0%E6%9C%AC%E5%9C%B0%EF%BC%8C%E8%BF%99%E4%B8%AA%E6%96%87%E4%BB%B6%E9%87%8C%E6%9C%89ANR%E5%8F%91%E7%94%9F%E7%9A%84%E8%BF%9B%E7%A8%8Bpid%2C%20%E6%97%B6%E9%97%B4%2C%20%E4%BB%A5%E5%8F%8A%E8%BF%9B%E7%A8%8B%E5%90%8D%E5%AD%97(%E5%8C%85%E5%90%8D)%EF%BC%8C%E8%BF%98%E6%9C%89anr%E4%BA%A7%E7%94%9F%E7%9A%84%E4%BD%8D%E7%BD%AE%E5%92%8C%E6%96%B9%E6%B3%95%E3%80%82%E6%9C%80%E6%96%B0%E7%9A%84ANR%E4%BF%A1%E6%81%AF%E5%9C%A8%E6%9C%80%E5%BC%80%E5%A7%8B%E9%83%A8%E5%88%86%E3%80%82%0A%60%60%60%0A%24adb%20pull%20data%2Fanr%2Ftraces.txt%20.%0A%60%60%60%0A%E6%9C%89%E5%87%A0%E7%B1%BBANR%0A%E7%9C%8B%E5%A0%86%E6%A0%88%E3%80%81CPU%E5%8D%A0%E7%94%A8%E6%97%B6%E9%97%B4%EF%BC%8Cwait%20to%20lock%20main%20%5Bxxx%5D%E6%90%9C%E7%B4%A2%E5%AF%B9%E5%BA%94%E7%BA%BF%E7%A8%8B%E3%80%82%0A%E4%B8%BB%E8%A6%81%E5%8E%9F%E5%9B%A0%E6%98%AF%E4%B8%BB%E7%BA%BF%E7%A8%8B%E5%81%9A%E4%BA%86%E8%80%97%E6%97%B6%E6%93%8D%E4%BD%9C%EF%BC%88io%E3%80%81%E7%BD%91%E7%BB%9C%E3%80%81%E6%95%B0%E6%8D%AE%E5%BA%93%EF%BC%89%0A%E6%88%91%E7%9A%84%E7%BB%8F%E9%AA%8C%E6%98%AF%EF%BC%8C%E5%85%88%E7%9C%8B%E7%9C%8B%E4%B8%BB%E7%BA%BF%E7%A8%8B%E7%9A%84%E5%A0%86%E6%A0%88%EF%BC%8C%E6%98%AF%E5%90%A6%E6%98%AF%E5%9B%A0%E4%B8%BA%E9%94%81%E7%AD%89%E5%BE%85%E5%AF%BC%E8%87%B4%E3%80%82%E6%8E%A5%E7%9D%80%E7%9C%8B%E7%9C%8B%20ANR%20%E6%97%A5%E5%BF%97%E4%B8%AD%20iowait%E3%80%81CPU%E3%80%81GC%E3%80%81system%20server%20%E7%AD%89%E4%BF%A1%E6%81%AF%EF%BC%8C%E8%BF%9B%E4%B8%80%E6%AD%A5%E7%A1%AE%E5%AE%9A%E6%98%AF%20I%2FO%20%E9%97%AE%E9%A2%98%EF%BC%8C%E6%88%96%E6%98%AF%20CPU%20%E7%AB%9E%E4%BA%89%E9%97%AE%E9%A2%98%EF%BC%8C%E8%BF%98%E6%98%AF%E7%94%B1%E4%BA%8E%E5%A4%A7%E9%87%8F%20GC%20%E5%AF%BC%E8%87%B4%E5%8D%A1%E6%AD%BB%E3%80%82%0A%0A%E7%9C%8Bcpu%E4%BD%BF%E7%94%A8%E7%8E%87%EF%BC%8C%E5%A6%82%E6%9E%9CCPU%E4%BD%BF%E7%94%A8%E9%87%8F%E5%BE%88%E5%B0%91%EF%BC%8C%E8%AF%B4%E6%98%8E%E4%B8%BB%E7%BA%BF%E7%A8%8B%E5%8F%AF%E8%83%BD%E9%98%BB%E5%A1%9E%E3%80%82%0A%0A%0A**ANR%E6%8E%92%E6%9F%A5%E6%B5%81%E7%A8%8B**%0ALog%E8%8E%B7%E5%8F%96%0A1.%20%E6%8A%93%E5%8F%96%20bugreport%0Aadb%20shell%20bugreport%20%3E%20bugreport.txt%0A2.%20%E7%9B%B4%E6%8E%A5%E5%AF%BC%E5%87%BA%2Fdata%2Fanr%2Ftraces.txt%E6%96%87%E4%BB%B6%0Aadb%20pull%20%2Fdata%2Fanr%2Ftraces.txt%20trace.txt%0A3.%20%E6%90%9C%E7%B4%A2%E2%80%9CANR%20in%E2%80%9D%E5%A4%84log%E5%85%B3%E9%94%AE%E7%82%B9%E8%A7%A3%E8%AF%BB%E5%8F%91%E7%94%9F%E6%97%B6%E9%97%B4%EF%BC%88%E5%8F%AF%E8%83%BD%E4%BC%9A%E5%BB%B6%E6%97%B610-20s%EF%BC%89pid%EF%BC%9A%E5%BD%93pid%3D0%EF%BC%8C%E8%AF%B4%E6%98%8E%E5%9C%A8ANR%E4%B9%8B%E5%89%8D%EF%BC%8C%E8%BF%9B%E7%A8%8B%E5%B0%B1%E8%A2%ABLMK%E6%9D%80%E6%AD%BB%E6%88%96%E5%87%BA%E7%8E%B0%E4%BA%86Crash%EF%BC%8C%E6%89%80%E4%BB%A5%E6%97%A0%E6%B3%95%E6%8E%A5%E5%8F%97%E5%88%B0%E7%B3%BB%E7%BB%9F%E7%9A%84%E5%B9%BF%E6%92%AD%E6%88%96%E8%80%85%E6%8C%89%E9%94%AE%E6%B6%88%E6%81%AF%EF%BC%8C%E5%9B%A0%E6%AD%A4%E4%BC%9A%E5%87%BA%E7%8E%B0ANR.%0A4.%20%E5%9C%A8bugreport.txt%E4%B8%AD%E6%A0%B9%E6%8D%AEpid%E5%92%8C%E5%8F%91%E7%94%9F%E6%97%B6%E9%97%B4%E6%90%9C%E7%B4%A2%E5%88%B0%E9%98%BB%E5%A1%9E%E7%9A%84log%E5%A4%84%0A5.%20%E5%BE%80%E4%B8%8B%E7%BF%BB%E6%89%BE%E5%88%B0%E2%80%9Cmain%E2%80%9D%E7%BA%BF%E7%A8%8B%E5%88%99%E5%8F%AF%E7%9C%8B%E5%88%B0%E5%AF%B9%E5%BA%94%E7%9A%84%E9%98%BB%E5%A1%9Elog%0A%E9%80%9A%E8%BF%87android%20proile%0A%0A**%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95**%0A1.%20%E4%B8%8D%E8%A6%81%E5%9C%A8%E4%B8%BB%E7%BA%BF%E7%A8%8B(UI%E7%BA%BF%E7%A8%8B)%E9%87%8C%E9%9D%A2%E5%81%9A%E7%B9%81%E9%87%8D%E7%9A%84%E6%93%8D%E4%BD%9C%2C%E5%A2%9E%E5%A4%A7VM%E5%86%85%E5%AD%98%2C%20%E4%BD%BF%E7%94%A8largeHeap%E5%B1%9E%E6%80%A7%2C%20%E6%8E%92%E6%9F%A5%E5%86%85%E5%AD%98%E6%B3%84%E9%9C%B2%0A2.%20Thread%20%2B%20Handler%20%2B%20Message%20%EF%BC%8CThread%20%2B%20Handler%20%2B%20post%EF%BC%8CAsyncTask%EF%BC%8Cintentservice%E3%80%81runOnUiThread(Runnable)%E5%9C%A8%E5%AD%90%E7%BA%BF%E7%A8%8B%E4%B8%AD%E7%9B%B4%E6%8E%A5%E4%BD%BF%E7%94%A8%E8%AF%A5%E6%96%B9%E6%B3%95%EF%BC%8C%E5%8F%AF%E4%BB%A5%E6%9B%B4%E6%96%B0UI%0A3.%20handleThread%0AAndroid%E4%B8%AD%E7%BB%93%E5%90%88Handler%E5%92%8CThread%E7%9A%84%E4%B8%80%E7%A7%8D%E6%96%B9%E5%BC%8F%2C%20%E9%BB%98%E8%AE%A4%E6%83%85%E5%86%B5%E4%B8%8BHandler%E7%9A%84handleMessage%E6%98%AF%E6%89%A7%E8%A1%8C%E5%9C%A8%E4%B8%BB%E7%BA%BF%E7%A8%8B%E7%9A%84%2C%20%E4%BD%86%E6%98%AF%E5%A6%82%E6%9E%9C%E6%88%91%E7%BB%99%E8%BF%99%E4%B8%AAHandler%E4%BC%A0%E5%85%A5%E4%BA%86%E5%AD%90%E7%BA%BF%E7%A8%8B%E7%9A%84looper%2C%20handleMessage%E5%B0%B1%E4%BC%9A%E6%89%A7%E8%A1%8C%E5%9C%A8%E8%BF%99%E4%B8%AA%E5%AD%90%E7%BA%BF%E7%A8%8B%E4%B8%AD%E7%9A%84.%20HandlerThread%E6%AD%A3%E6%98%AF%E8%BF%99%E6%A0%B7%E7%9A%84%E4%B8%80%E4%B8%AA%E7%BB%93%E5%90%88%E4%BD%93%0A4.%20**%E6%B2%A1%E6%9C%89%E4%BD%BF%E7%94%A8%E5%AD%90%E7%BA%BF%E7%A8%8B%E7%9A%84looper%E7%9A%84Handler%E7%9A%84handleMessage**%2C%20post(Runnable)%E6%98%AF%E6%89%A7%E8%A1%8C%E5%9C%A8%E4%B8%BB%E7%BA%BF%E7%A8%8B%E7%9A%84.%0A5.%20AsyncTask%E7%9A%84%E5%9B%9E%E8%B0%83%E4%B8%AD%E9%99%A4%E4%BA%86doInBackground%2C%20%E5%85%B6%E4%BB%96%E9%83%BD%E6%98%AF%E6%89%A7%E8%A1%8C%E5%9C%A8%E4%B8%BB%E7%BA%BF%E7%A8%8B%E7%9A%84%E3%80%82View%E7%9A%84post(Runnable)%E6%98%AF%E6%89%A7%E8%A1%8C%E5%9C%A8%E4%B8%BB%E7%BA%BF%E7%A8%8B%E7%9A%84%0A%0A—-%0A%23%23%20Webview%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%0A*%20%E5%9C%A8%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%88%9A%E5%90%AF%E5%8A%A8%E6%97%B6%EF%BC%8C%E5%B0%B1%E5%88%9D%E5%A7%8B%E5%8C%96%E4%B8%80%E4%B8%AA%E5%85%A8%E5%B1%80%E7%9A%84WebView%E5%BE%85%E7%94%A8%EF%BC%8C%E5%B9%B6%E9%9A%90%E8%97%8F%EF%BC%9B%E5%BD%93%E7%94%A8%E6%88%B7%E8%AE%BF%E9%97%AE%E4%BA%86WebView%E6%97%B6%EF%BC%8C%E7%9B%B4%E6%8E%A5%E4%BD%BF%E7%94%A8%E8%BF%99%E4%B8%AAWebView%E5%8A%A0%E8%BD%BD%E5%AF%B9%E5%BA%94%E7%BD%91%E9%A1%B5%EF%BC%8C%E5%B9%B6%E5%B1%95%E7%A4%BA%E3%80%82%E8%BF%99%E7%A7%8D%E6%96%B9%E6%B3%95%E5%8F%AF%E4%BB%A5%E6%AF%94%E8%BE%83%E6%9C%89%E6%95%88%E7%9A%84%E5%87%8F%E5%B0%91%E5%88%9D%E5%A7%8B%E5%8C%96WebView%E7%9A%84%E6%97%B6%E9%97%B4%E3%80%82%C2%A0%0A*%20%E4%B8%BB%E8%A6%81%E7%9A%84%E8%BF%98%E6%98%AFh5%E9%82%A3%E8%BE%B9%E7%9A%84%E4%BC%98%E5%8C%96%0A*%20Android%E7%89%88%E6%9C%AC%E4%B8%8D%E5%90%8C%EF%BC%8C%E9%87%87%E7%94%A8%E4%BA%86%E4%B8%8D%E5%90%8C%E7%9A%84%E5%86%85%E6%A0%B8%EF%BC%8C%E5%85%BC%E5%AE%B9%E6%80%A7crash%0A*%20oom%EF%BC%9AWebView%20%E5%8A%A8%E6%80%81%E5%8A%A0%E8%BD%BD%E3%80%82%E5%B0%B1%E6%98%AF%E4%B8%8D%E5%9C%A8xml%E4%B8%AD%E5%86%99WebView%EF%BC%8C%E5%86%99%E4%B8%80%E4%B8%AAlayout%EF%BC%8C%E7%84%B6%E5%90%8E%E6%8A%8AWebView%20add%E8%BF%9B%E5%8E%BB%E3%80%82%0A*%20%E8%85%BE%E8%AE%AFX5%E5%86%85%E6%A0%B8%E7%9B%B8%E5%AF%B9%E4%BA%8E%E7%B3%BB%E7%BB%9Fwebview%E5%A5%BD%E7%9A%84%E5%A4%9A%E3%80%82%C2%A0%0A%60%60%60%0Aprotected%20void%20onDestroy()%20%7B%20%20%0A%20%20%20%20%20%20super.onDestroy()%3B%20%20%0A%20%20%20%20%20%20mWebView.removeAllViews()%3B%20%20%0A%20%20%20%20%20%20mWebView.destroy()%20%20%0A%7D%20%20%0A%60%60%60%0A%0A*%20%E5%8D%95%2F%E5%A4%9A%E8%BF%9B%E7%A8%8B%E5%8C%96%EF%BC%9AwebView%E5%9C%A8%E7%8B%AC%E7%AB%8B%E7%9A%84%E8%BF%9B%E7%A8%8B%E9%87%8C%E9%9D%A2%EF%BC%8C%E9%82%A3%E4%B9%88WebView%E7%9A%84%E8%BF%9B%E7%A8%8B%E5%B4%A9%E6%BA%83%E4%B8%8D%E4%BC%9A%E5%BD%B1%E5%93%8D%E5%88%B0%E4%B8%BB%E8%BF%9B%E7%A8%8B%E8%BF%90%E8%A1%8C%EF%BC%9B%E5%90%8C%E6%97%B6WebView%E7%9A%84%E5%AE%89%20%E5%85%A8%E6%BC%8F%E6%B4%9E%E4%B9%9F%E5%BE%88%E9%9A%BE%E5%BD%B1%E5%93%8D%E5%88%B0%E4%B8%BB%E8%BF%9B%E7%A8%8B%EF%BC%9B%E5%A6%82%E6%9E%9C%E6%98%AF%E5%A4%9A%E8%BF%9B%E7%A8%8B%E7%9A%84%E8%AF%9D%EF%BC%8C%E5%8F%AF%E4%BB%A5%E4%BD%BF%E7%94%A8WebView%E7%9A%84%E5%AE%B9%E5%99%A8%E6%B1%A0%EF%BC%8C%E6%9C%89%E4%BA%8C%E6%AC%A1%E7%A7%92%E5%BC%80%E7%9A%84%E4%BD%9C%E7%94%A8%EF%BC%9B%E4%B8%8D%E8%BF%87%E7%BC%BA%E7%82%B9%E5%B0%B1%E6%98%AF%E9%9C%80%E8%A6%81%E4%BD%A0%E5%81%9A%E5%A5%BD%E5%92%8CWebView%E7%9A%84%E8%B7%A8%E8%BF%9B%E7%A8%8B%E9%80%9A%E8%AE%AF%E4%BA%86%E3%80%82%0A%3E%20%E5%BC%80%E4%B8%80%E4%B8%AAwebview%E7%9A%84%E5%A4%9A%E8%BF%9B%E7%A8%8BWebActivity%20%EF%BC%8C%E9%87%8C%E9%9D%A2%E6%94%BE%E7%9D%80%E5%8F%A6%E4%B8%80%E4%B8%AA%E8%BF%9B%E7%A8%8B%E7%9A%84%20CommonWebFragment%EF%BC%8C%E5%AE%8C%E5%90%8E%E6%8A%8AURL%E4%BC%A0%E8%BF%87%E5%8E%BB%E5%B0%B1%E5%8F%AF%E4%BB%A5%E5%8A%A0%E8%BD%BD%E4%BA%86%E3%80%82%E5%A6%82%E6%9E%9C%E9%9C%80%E8%A6%81%E4%BA%A4%E4%BA%92%E5%BE%97%E7%94%A8%E5%88%B0aidl%E5%A4%9A%E8%BF%9B%E7%A8%8B%E9%80%9A%E8%AE%AF%0A!%5B93885f320fefe236b76196fbcf6ad5a0.png%5D(en-resource%3A%2F%2Fdatabase%2F18728%3A1)%0A%0A%0A%0A*%20%E7%BD%91%E7%BB%9C%E4%BC%98%E5%8C%96%EF%BC%9A%E6%88%91%E4%BB%AC%E5%8F%AF%E4%BB%A5%E8%AE%A9WebView%E7%9A%84host%E5%92%8C%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%9A%84host%E4%BF%9D%E6%8C%81%E4%B8%80%E8%87%B4%EF%BC%8C%E9%82%A3%E4%B9%88%E5%B0%B1%E8%BE%BE%E5%88%B0%E5%A4%8D%E7%94%A8DNS%E7%BC%93%E5%AD%98%E7%9A%84%E6%95%88%E6%9E%9C%EF%BC%9B%E5%A6%82%E6%9E%9C%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%9C%89%E9%92%88%E5%AF%B9%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82%E8%BF%9B%E8%A1%8C%E4%BA%86%E4%BC%98%E5%8C%96%EF%BC%8C%E9%82%A3%E4%B9%88%E5%8F%AF%E4%BB%A5%E8%AE%A9WebView%E7%9A%84%E5%85%A8%E9%83%A8%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82%E6%89%98%E7%AE%A1%E7%BB%99%E5%AE%A2%E6%88%B7%E7%AB%AF%0A*%20H5%E7%A6%BB%E7%BA%BF%E5%8C%85%EF%BC%9A%E8%BF%99%E4%B8%AA%E6%98%AF%E6%89%8BQ%E7%9A%84H5%E6%96%B9%E6%A1%88%E4%B9%8B%E4%B8%80%EF%BC%8C%E8%AE%A9%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%8F%90%E5%89%8D%E5%8E%BB%E4%B8%8B%E8%BD%BD%E7%A6%BB%E7%BA%BF%E7%9A%84H5%E6%95%B0%E6%8D%AE%E5%8C%85%EF%BC%8CWebView%E5%8F%AA%E9%9C%80%E8%A6%81%E5%8A%A0%E8%BD%BD%E6%9C%AC%E5%9C%B0H5%E6%95%B0%E6%8D%AE%E5%8C%85%E5%8D%B3%E5%8F%AF%EF%BC%8C%E8%BF%99%E4%B9%88%E5%81%9A%E4%B8%8D%E4%BB%85%E5%8F%AF%E4%BB%A5%E9%81%BF%E5%85%8D%E4%B8%80%E4%BA%9Bhttp%E7%9A%84%E5%8A%AB%E6%8C%81%EF%BC%8C%E8%80%8C%E4%B8%94%E8%B7%B3%E8%BF%87%E4%BA%86WebView%E7%9A%84%E5%BB%BA%E7%AB%8BTCP%E8%BF%9E%E6%8E%A5%E5%92%8CH5%E3%80%81CCS%E7%AD%89%E6%95%B0%E6%8D%AE%E4%B8%8B%E8%BD%BD%E7%9A%84%E8%BF%87%E7%A8%8B%EF%BC%8C%E7%9B%B4%E6%8E%A5%E5%BC%80%E5%A7%8BUI%E6%B8%B2%E6%9F%93%EF%BC%8C%E5%A4%A7%E5%A4%A7%E6%8F%90%E9%AB%98%E4%BA%86WebView%E7%9A%84%E6%95%88%E7%8E%87%0A*%20%E7%94%A8%E6%88%B7%E4%BD%93%E9%AA%8C%E6%96%B9%E9%9D%A2%EF%BC%8C%E5%8F%AF%E4%BB%A5%E5%9C%A8%E9%A1%B6%E9%83%A8%E6%98%BE%E7%A4%BA%E4%B8%80%E4%B8%AA%E4%B8%80%E4%B8%AAprogress%EF%BC%8C%E6%98%BE%E7%A4%BA%E7%BD%91%E9%A1%B5%E5%8A%A0%E8%BD%BD%E8%BF%9B%E5%BA%A6%EF%BC%8C%E8%80%8C%E4%B8%8D%E6%98%AF%E4%B8%80%E4%B8%AA%E7%99%BD%E5%B1%8F%E5%91%88%E7%8E%B0%E7%BB%99%E7%94%A8%E6%88%B7%E7%9C%8B%E3%80%82%0A*%20%E8%AE%BE%E7%BD%AE%E4%B8%80%E4%B8%AA%E5%85%A8%E5%B1%80%E7%9A%84WebView%EF%BC%8C%E5%87%8F%E5%B0%91WebView%E5%88%9D%E5%A7%8B%E5%8C%96%E7%9A%84%E6%97%B6%E9%97%B4%EF%BC%8C%E9%81%BF%E5%85%8D%E5%90%8E%E7%BB%AD%E6%93%8D%E4%BD%9C%E7%9A%84%E5%A0%B5%E5%A1%9E%0A%0A%E6%A0%B9%E6%9C%AC%E5%8E%9F%E5%9B%A0%E5%9C%A8%E4%BA%8E%20WebView%20%E5%9C%A8%E5%AE%9E%E4%BE%8B%E5%8C%96%E7%9A%84%E6%97%B6%E5%80%99%EF%BC%8C%E9%9C%80%E8%A6%81%E5%85%88%E5%88%9D%E5%A7%8B%E5%8C%96%20Chromium%20%E5%BC%95%E6%93%8E%EF%BC%8C%E8%80%8C%20Chromium%20%E5%BC%95%E6%93%8E%E5%8F%88%E6%98%AF%E4%B8%80%E4%B8%AA%E9%87%8D%E9%87%8F%E7%BA%A7%E7%9A%84%E7%BB%84%E4%BB%B6%EF%BC%8C%E8%80%8C%E4%B8%94%E5%BE%88%E5%A4%9A%E5%88%9D%E5%A7%8B%E5%8C%96%E7%9A%84%E5%B7%A5%E4%BD%9C%E9%83%BD%E9%9C%80%E8%A6%81%E5%9C%A8%E4%B8%BB%E7%BA%BF%E7%A8%8B%E4%B8%AD%E5%AE%8C%E6%88%90%EF%BC%8C%E8%BF%99%E6%A0%B7%E5%B0%B1%E5%BE%88%E5%AE%B9%E6%98%93%E9%80%A0%E6%88%90%E4%B8%BB%E7%BA%BF%E7%A8%8B%E5%8D%A1%E9%A1%BF%E7%94%9A%E8%87%B3%20ANR%E3%80%82%0A%0A%60%60%60%0Apublic%20class%20ShadowWebView%20%7B%0A%0A%20%20%20%20public%20static%20void%20preloadWebView(final%20Application%20app)%20%7B%0A%20%20%20%20%20%20%20%20try%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20app.getMainLooper().getQueue().addIdleHandler(new%20MessageQueue.IdleHandler()%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%40Override%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20public%20boolean%20queueIdle()%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20startChromiumEngine()%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20return%20false%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D)%3B%0A%20%20%20%20%20%20%20%20%7D%20catch%20(final%20Throwable%20t)%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20Log.e(TAG%2C%20%22Oops!%22%2C%20t)%3B%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%0A%0A%20%20%20%20private%20static%20void%20startChromiumEngine()%20%7B%0A%20%20%20%20%20%20%20%20try%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20final%20long%20t0%20%3D%20SystemClock.uptimeMillis()%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20final%20Object%20provider%20%3D%20invokeStaticMethod(Class.forName(%22android.webkit.WebViewFactory%22)%2C%20%22getProvider%22)%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20invokeMethod(provider%2C%20%22startYourEngines%22%2C%20new%20Class%5B%5D%7Bboolean.class%7D%2C%20new%20Object%5B%5D%7Btrue%7D)%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20Log.i(TAG%2C%20%22Start%20chromium%20engine%20complete%3A%20%22%20%2B%20(SystemClock.uptimeMillis()%20-%20t0)%20%2B%20%22%20ms%22)%3B%0A%20%20%20%20%20%20%20%20%7D%20catch%20(final%20Throwable%20t)%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20Log.e(TAG%2C%20%22Start%20chromium%20engine%20error%22%2C%20t)%3B%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%0A%7D%0A%60%60%60%0AShadowWebView%20%E9%80%9A%E8%BF%87%20WebViewTransformer%20%E5%9C%A8%20Application%20onCreate()%20%E5%9B%9E%E8%B0%83%E4%B8%AD%E6%B3%A8%E5%85%A5%20ShadowWebView.preloadWebView()%EF%BC%8C%E5%BD%93%E4%B8%BB%E7%BA%BF%E7%A8%8B%20IDLE%20%E6%97%B6%EF%BC%8C%E5%90%AF%E5%8A%A8%20Chromium%20%E5%BC%95%E6%93%8E%E3%80%82%0A%0A%E8%AF%A5%E6%96%B9%E6%A1%88%E7%9A%84%E4%BC%98%E7%82%B9%E6%98%AF%E6%97%A0%E4%BE%B5%E5%85%A5%E3%80%81%E6%8E%A5%E5%85%A5%E6%88%90%E6%9C%AC%E4%BD%8E%EF%BC%8C%E7%BC%BA%E7%82%B9%E6%98%AF%E7%94%B1%E4%BA%8E%E8%BF%99%E7%A7%8D%E6%96%B9%E5%BC%8F%E5%8F%8D%E5%B0%84%E4%BA%86%E9%9D%9E%E5%85%AC%E5%BC%80%20API%EF%BC%8C%E5%8F%AF%E8%83%BD%E5%AD%98%E5%9C%A8%E5%85%BC%E5%AE%B9%E6%80%A7%E9%97%AE%E9%A2%98%E3%80%82%0A%0A%0A%0A%23%23%20APK%E4%BD%93%E7%A7%AF%E4%BC%98%E5%8C%96%E5%A4%A7%E5%B0%8F%0A%E5%88%A0%E3%80%81%E7%BC%A9%E3%80%81%E6%8C%AA%0A**%E5%88%A0**%0A%E4%BF%9D%E6%8C%81%E8%89%AF%E5%A5%BD%E7%9A%84%E7%BC%96%E7%A8%8B%E4%B9%A0%E6%83%AF%EF%BC%8C%E4%B8%8D%E8%A6%81%E9%87%8D%E5%A4%8D%E6%88%96%E8%80%85%E4%B8%8D%E7%94%A8%E7%9A%84%E4%BB%A3%E7%A0%81%EF%BC%8C%E8%B0%A8%E6%85%8E%E6%B7%BB%E5%8A%A0libs%EF%BC%8C%E7%A7%BB%E9%99%A4%E4%BD%BF%E7%94%A8%E4%B8%8D%E5%88%B0%E7%9A%84libs%E3%80%82%20%E4%BD%BF%E7%94%A8proguard%E6%B7%B7%E6%B7%86%E4%BB%A3%E7%A0%81%EF%BC%8C%E5%AE%83%E4%BC%9A%E5%AF%B9%E4%B8%8D%E7%94%A8%E7%9A%84%E4%BB%A3%E7%A0%81%E5%81%9A%E4%BC%98%E5%8C%96%EF%BC%8C%E5%B9%B6%E4%B8%94%E6%B7%B7%E6%B7%86%E5%90%8E%E4%B9%9F%E8%83%BD%E5%A4%9F%E5%87%8F%E5%B0%91%E5%AE%89%E8%A3%85%E5%8C%85%E7%9A%84%E5%A4%A7%E5%B0%8F%E3%80%82%20native%20code%E7%9A%84%E9%83%A8%E5%88%86%EF%BC%8C%E5%A4%A7%E5%A4%9A%E6%95%B0%E6%83%85%E5%86%B5%E4%B8%8B%E5%8F%AA%E9%9C%80%E8%A6%81%E6%94%AF%E6%8C%81armabi%E4%B8%8Ex86%E7%9A%84%E6%9E%B6%E6%9E%84%E5%8D%B3%E5%8F%AF%E3%80%82%E5%A6%82%E6%9E%9C%E9%9D%9E%E5%BF%85%E9%A1%BB%EF%BC%8C%E5%8F%AF%E4%BB%A5%E8%80%83%E8%99%91%E6%8B%BF%E6%8E%89x86%E7%9A%84%E9%83%A8%E5%88%86%E3%80%82%0A%0A**%E7%BC%A9**%0A%E4%BD%BF%E7%94%A8Lint%E5%B7%A5%E5%85%B7%E6%9F%A5%E6%89%BE%E6%B2%A1%E6%9C%89%E4%BD%BF%E7%94%A8%E5%88%B0%E7%9A%84%E8%B5%84%E6%BA%90%E3%80%82%E5%8E%BB%E9%99%A4%E4%B8%8D%E4%BD%BF%E7%94%A8%E7%9A%84%E5%9B%BE%E7%89%87%EF%BC%8CString%EF%BC%8CXML%E7%AD%89%E7%AD%89%E3%80%82%20assets%E7%9B%AE%E5%BD%95%E4%B8%8B%E7%9A%84%E8%B5%84%E6%BA%90%E8%AF%B7%E7%A1%AE%E4%BF%9D%E6%B2%A1%E6%9C%89%E7%94%A8%E4%B8%8D%E4%B8%8A%E7%9A%84%E6%96%87%E4%BB%B6%E3%80%82%20%E7%94%9F%E6%88%90APK%E7%9A%84%E6%97%B6%E5%80%99%EF%BC%8Caapt%E5%B7%A5%E5%85%B7%E6%9C%AC%E8%BA%AB%E4%BC%9A%E5%AF%B9png%E5%81%9A%E4%BC%98%E5%8C%96%EF%BC%8C%E4%BD%86%E6%98%AF%E5%9C%A8%E6%AD%A4%E4%B9%8B%E5%89%8D%E8%BF%98%E5%8F%AF%E4%BB%A5%E4%BD%BF%E7%94%A8%E5%85%B6%E4%BB%96%E5%B7%A5%E5%85%B7%E5%A6%82tinypng%E5%AF%B9%E5%9B%BE%E7%89%87%E8%BF%9B%E8%A1%8C%E8%BF%9B%E4%B8%80%E6%AD%A5%E7%9A%84%E5%8E%8B%E7%BC%A9%E9%A2%84%E5%A4%84%E7%90%86%E3%80%82%20jpeg%E8%BF%98%E6%98%AFpng%EF%BC%8C%E6%A0%B9%E6%8D%AE%E9%9C%80%E8%A6%81%E5%81%9A%E9%80%89%E6%8B%A9%EF%BC%8C%E5%9C%A8%E6%9F%90%E4%BA%9B%E6%97%B6%E5%80%99jpeg%E5%8F%AF%E4%BB%A5%E5%87%8F%E5%B0%91%E5%9B%BE%E7%89%87%E7%9A%84%E4%BD%93%E7%A7%AF%E3%80%82%E5%8F%AF%E4%BB%A5%E4%BD%BF%E7%94%A8webp%E5%9B%BE%E7%89%87%E3%80%82%0A%0A%E6%9C%89%E9%80%89%E6%8B%A9%E6%80%A7%E7%9A%84%E6%8F%90%E4%BE%9Bhdpi%EF%BC%8Cxhdpi%EF%BC%8Cxxhdpi%E7%9A%84%E5%9B%BE%E7%89%87%E8%B5%84%E6%BA%90%E3%80%82%E5%BB%BA%E8%AE%AE%E4%BC%98%E5%85%88%E6%8F%90%E4%BE%9Bxhdpi%E7%9A%84%E5%9B%BE%E7%89%87%EF%BC%8C%E5%AF%B9%E4%BA%8Emdpi%EF%BC%8Cldpi%E4%B8%8Exxxhdpi%E6%A0%B9%E6%8D%AE%E9%9C%80%E8%A6%81%E6%8F%90%E4%BE%9B%E6%9C%89%E5%B7%AE%E5%BC%82%E7%9A%84%E9%83%A8%E5%88%86%E5%8D%B3%E5%8F%AF%E3%80%82%20%0A%0A%E5%B0%BD%E5%8F%AF%E8%83%BD%E7%9A%84%E9%87%8D%E7%94%A8%E5%B7%B2%E6%9C%89%E7%9A%84%E5%9B%BE%E7%89%87%E8%B5%84%E6%BA%90%E3%80%82%E4%BE%8B%E5%A6%82%E5%AF%B9%E7%A7%B0%E7%9A%84%E5%9B%BE%E7%89%87%EF%BC%8C%E5%8F%AA%E9%9C%80%E8%A6%81%E6%8F%90%E4%BE%9B%E4%B8%80%E5%BC%A0%EF%BC%8C%E5%8F%A6%E5%A4%96%E4%B8%80%E5%BC%A0%E5%9B%BE%E7%89%87%E5%8F%AF%E4%BB%A5%E9%80%9A%E8%BF%87%E4%BB%A3%E7%A0%81%E6%97%8B%E8%BD%AC%E7%9A%84%E6%96%B9%E5%BC%8F%E5%AE%9E%E7%8E%B0%E3%80%82%0A%E8%83%BD%E7%94%A8%E4%BB%A3%E7%A0%81%E7%BB%98%E5%88%B6%E5%AE%9E%E7%8E%B0%E7%9A%84%E5%8A%9F%E8%83%BD%EF%BC%8C%E5%B0%BD%E9%87%8F%E4%B8%8D%E8%A6%81%E4%BD%BF%E7%94%A8%E5%A4%A7%E9%87%8F%E7%9A%84%E5%9B%BE%E7%89%87%E3%80%82%E4%BE%8B%E5%A6%82%E5%87%8F%E5%B0%91%E4%BD%BF%E7%94%A8%E5%A4%9A%E5%BC%A0%E5%9B%BE%E7%89%87%E7%BB%84%E6%88%90animate-list%E7%9A%84AnimationDrawable%EF%BC%8C%E8%BF%99%E7%A7%8D%E6%96%B9%E5%BC%8F%E6%8F%90%E4%BE%9B%E4%BA%86%E5%A4%9A%E5%BC%A0%E5%9B%BE%E7%89%87%E5%BE%88%E5%8D%A0%E7%A9%BA%E9%97%B4%E3%80%82%0A%0A%3E%20%E4%BD%BF%E7%94%A8svg%E5%9B%BE%E7%89%87%0A%3E%20(Scalable%20Vector%20Graphics)%EF%BC%8C%E5%8F%AF%E7%BC%A9%E6%94%BE%E7%9F%A2%E9%87%8F%E5%9B%BE%E3%80%82SVG%E4%B8%8D%E4%BC%9A%E5%83%8F%E4%BD%8D%E5%9B%BE%E4%B8%80%E6%A0%B7%E5%9B%A0%E4%B8%BA%E7%BC%A9%E6%94%BE%E8%80%8C%E8%AE%A9%E5%9B%BE%E7%89%87%E8%B4%A8%E9%87%8F%E4%B8%8B%E9%99%8D%E3%80%82%E4%BC%98%E7%82%B9%E5%9C%A8%E4%BA%8E%E5%8F%AF%E4%BB%A5%E5%87%8F%E5%B0%8FAPK%E7%9A%84%E5%B0%BA%E5%AF%B8%E3%80%82%E5%B8%B8%E7%94%A8%E4%BA%8E%E7%AE%80%E5%8D%95%E5%B0%8F%E5%9B%BE%E6%A0%87%E3%80%82%0AAndroid%E4%B8%AD%E5%8F%AA%E6%94%AF%E6%8C%81%20%3Cvector%3E%EF%BC%8C%E6%88%91%E4%BB%AC%E5%8F%AF%E4%BB%A5%E9%80%9A%E8%BF%87%20vector%20%E5%B0%86svg%E7%9A%84%E6%A0%B9%E8%8A%82%E7%82%B9%20%3Csvg%3E%20%E8%BD%AC%E6%8D%A2%E4%B8%BA%20%3Cvector%3E%E3%80%82%0A**SVG%E6%89%B9%E9%87%8F%E8%BD%AC%E6%8D%A2**%0Ajava%20-jar%20svg2vector-cli-1.0.0.jar%20-d%20.%20-o%20a%20-h%2020%20-w%2020%20%0A-d%20%E6%8C%87%E5%AE%9Asvg%E6%96%87%E4%BB%B6%E6%89%80%E5%9C%A8%E7%9B%AE%E5%BD%95%0A-o%20%E8%BE%93%E5%87%BAandroid%20vector%E5%9B%BE%E5%83%8F%E7%9B%AE%E5%BD%95%0A-h%20%E8%AE%BE%E7%BD%AE%E8%BD%AC%E6%8D%A2%E5%90%8Esvg%E7%9A%84%E9%AB%98%0A-w%20%E8%AE%BE%E7%BD%AE%E8%BD%AC%E6%8D%A2%E5%90%8Esvg%E7%9A%84%E5%AE%BD%0AAndroid%205.0%EF%BC%88API%2021%EF%BC%89%E4%B9%8B%E5%89%8D%E7%9A%84%E7%89%88%E6%9C%AC%E4%B8%8D%E6%94%AF%E6%8C%81%E7%9F%A2%E9%87%8F%E5%9B%BE%EF%BC%8C%E4%BD%BF%E7%94%A8%20Vector%20Asset%20Studio%20%E6%9C%89%E4%B8%A4%E7%A7%8D%E6%96%B9%E5%BC%8F%E9%80%82%E9%85%8D%0A%0Adebug%E7%9A%84%E6%97%B6%E5%80%99%E4%B8%8D%E7%94%A8%E6%B7%B7%E6%B7%86%EF%BC%8C%E5%9B%A0%E4%B8%BA%E4%BC%9A%E5%8E%8B%E7%BC%A9%EF%BC%8C%E5%88%A0%E9%99%A4%EF%BC%8C%E7%BC%96%E8%AF%91%E5%8F%98%E6%85%A2%0A%0A**%E6%8C%AA**%0Aassets%E7%9B%AE%E5%BD%95%E4%B8%8B%E4%B9%9F%E5%8F%AF%E4%BB%A5%E6%8C%AA%0Aso%E5%8A%A8%E6%80%81%E4%B8%8B%E5%8F%91%E6%9C%89%E5%8F%AF%E8%83%BD%E4%B8%8B%E8%BD%BD%E5%A4%B1%E8%B4%A5%EF%BC%8C%E6%AF%95%E7%AB%9F%E6%98%AF%E5%B0%91%E9%83%A8%E5%88%86%E7%94%A8%E6%88%B7%EF%BC%8C%E4%B8%8D%E5%8F%AF%E8%83%BD%E4%B8%80%E7%9B%B4%E4%B8%8B%E8%BD%BD%E4%B8%8D%E4%B8%8B%E6%9D%A5%E3%80%82%E5%8F%A6%E5%A4%96%E6%89%80%E6%9C%89%E7%94%A8%E6%88%B7%E9%83%BD%E6%9C%89%E6%94%B6%E7%9B%8A%EF%BC%8C%E9%82%A3%E8%BF%99%E4%B8%AA%E5%B0%B1%E5%80%BC%E5%BE%97%E5%81%9A%E3%80%82%0A%0A%E5%A4%A7%E5%A4%9A%E7%9A%84X86%E8%AE%BE%E5%A4%87%E9%99%A4%E4%BA%86%E6%94%AF%E6%8C%81X86%E7%B1%BB%E5%9E%8B%E7%9A%84SO%E5%BA%93%EF%BC%8C%E8%BF%98%E5%85%BC%E5%AE%B9ARM%E7%B1%BB%E5%9E%8B%E7%9A%84SO%E5%BA%93%EF%BC%8C%E6%89%80%E4%BB%A5%E5%BA%94%E7%94%A8%E5%B8%82%E5%9C%BA%E4%B8%8A%E5%A4%A7%E9%83%A8%E5%88%86%E7%9A%84APP%E5%8F%AA%E9%80%82%E9%85%8D%E4%BA%86ARM%E7%B1%BB%E5%9E%8B%E7%9A%84SO%E5%BA%93%0A%0A1.%20%E5%88%A4%E6%96%AD%E7%9B%AE%E5%BD%95%E4%B8%AD%E6%98%AF%E5%90%A6%E5%AD%98%E5%9C%A8so%E6%96%87%E4%BB%B6%2C%E5%AD%98%E5%9C%A8%E5%88%99%E7%9B%B4%E6%8E%A5%E8%B0%83%E7%94%A8%E7%AC%AC%E4%B8%89%E6%96%B9sdk%0A2.%20%E4%B8%8D%E5%AD%98%E5%9C%A8SO%E6%96%87%E4%BB%B6%E4%BB%8E%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8B%E8%BD%BD%E7%9B%B8%E5%BA%94%E7%9A%84so%E5%BA%93(%E5%A4%A7%E7%9A%84%E8%AF%9D%E5%8F%AF%E4%BB%A5%E5%8E%8B%E7%BC%A9)%0A3.%20%E5%B0%86so%E5%BA%93%E5%A4%8D%E5%88%B6%E5%88%B0%2Fdata%2Fdatapackagename%2F…%EF%BC%88context.getDir(%22libs%22%2CContext.MODE_PRIVATE)%EF%BC%89%0A4.%20System.load(xx)%0A%0A**%E5%85%B6%E4%BB%96**%0Aresource.arsc%20–%20%3E%20Android%20Resource%0A%0Aandresguard%EF%BC%8C%E8%B7%AF%E5%BE%84%E5%8F%98%E6%88%90%E4%BA%86r%2Fd%2Fa%EF%BC%8C%E5%9C%A8%20AndResGuard%20%E4%B8%AD%EF%BC%8C%E6%88%91%E4%BB%AC%E6%94%AF%E6%8C%81%E9%92%88%E5%AF%B9%20resources.arsc%E3%80%81PNG%E3%80%81JPG%20%E4%BB%A5%E5%8F%8A%20GIF%20%E7%AD%89%E6%96%87%E4%BB%B6%E7%9A%84%E5%BC%BA%E5%88%B6%E5%8E%8B%E7%BC%A9%E3%80%82%E8%B5%84%E6%BA%90%E6%B7%B7%E6%B7%86%EF%BC%8Cres%E4%B8%8B%E7%9A%84%E5%9B%BE%E7%89%87%E5%90%8D%E5%AD%97%E4%B9%9F%E6%94%B9%E4%BA%86%0A%E7%94%A8%E7%9A%847z%EF%BC%8C%E6%9C%89%E7%9D%80%E6%9B%B4%E5%A5%BD%E7%9A%84%E5%8E%8B%E7%BC%A9%E7%8E%87%0AminifyEnabled%20true%E6%B7%B7%E6%B7%86%20%20%20%0AshrinkResources%20true%20%0Ares%E5%8F%98%E6%88%90%E4%BA%86r%0A!%5Be95c9dd075233784e2ff4d3220a9a6a3.png%5D(en-resource%3A%2F%2Fdatabase%2F18830%3A1)%0A%E5%8E%9F%E7%90%86%EF%BC%9A%0A!%5Bad9f3136fa75fbec1b82e870e60add2d.png%5D(en-resource%3A%2F%2Fdatabase%2F18832%3A1)%0A%0A%0A%0A%23%23%20%E8%BF%87%E5%BA%A6%E7%BB%98%E5%88%B6%0A*%20Android%E7%B3%BB%E7%BB%9F%E6%AF%8F%E9%9A%9416ms%E5%8F%91%E5%87%BAVSYNC%E4%BF%A1%E5%8F%B7%EF%BC%8C%E8%A7%A6%E5%8F%91%E5%AF%B9UI%E8%BF%9B%E8%A1%8C%E6%B8%B2%E6%9F%93%EF%BC%8C%20%E5%A6%82%E6%9E%9C%E6%AF%8F%E6%AC%A1%E6%B8%B2%E6%9F%93%E9%83%BD%E6%88%90%E5%8A%9F%EF%BC%8C%E8%BF%99%E6%A0%B7%E5%B0%B1%E8%83%BD%E5%A4%9F%E8%BE%BE%E5%88%B0%E6%B5%81%E7%95%85%E7%9A%84%E7%94%BB%E9%9D%A2%E6%89%80%E9%9C%80%E8%A6%81%E7%9A%8460fps%EF%BC%8C%E4%B8%BA%E4%BA%86%E8%83%BD%E5%A4%9F%E5%AE%9E%E7%8E%B060fps%EF%BC%8C%E8%BF%99%E6%84%8F%E5%91%B3%E7%9D%80%E7%A8%8B%E5%BA%8F%E7%9A%84%E5%A4%A7%E5%A4%9A%E6%95%B0%E6%93%8D%E4%BD%9C%E9%83%BD%E5%BF%85%E9%A1%BB%E5%9C%A816ms%E5%86%85%E5%AE%8C%E6%88%90%E3%80%82%E5%A6%82%E6%9E%9C%E4%BD%A0%E7%9A%84%E6%9F%90%E4%B8%AA%E6%93%8D%E4%BD%9C%E8%8A%B1%E8%B4%B9%E6%97%B6%E9%97%B4%E6%98%AF24ms%EF%BC%8C%E7%B3%BB%E7%BB%9F%E5%9C%A8%E5%BE%97%E5%88%B0VSYNC%E4%BF%A1%E5%8F%B7%E7%9A%84%E6%97%B6%E5%80%99%E5%B0%B1%E6%97%A0%E6%B3%95%E8%BF%9B%E8%A1%8C%E6%AD%A3%E5%B8%B8%E6%B8%B2%E6%9F%93%EF%BC%8C%E8%BF%99%E6%A0%B7%E5%B0%B1%E5%8F%91%E7%94%9F%E4%BA%86%E4%B8%A2%E5%B8%A7%E7%8E%B0%E8%B1%A1%E3%80%82%E9%82%A3%E4%B9%88%E7%94%A8%E6%88%B7%E5%9C%A832ms%E5%86%85%E7%9C%8B%E5%88%B0%E7%9A%84%E4%BC%9A%E6%98%AF%E5%90%8C%E4%B8%80%E5%B8%A7%E7%94%BB%E9%9D%A2%E3%80%82%0A*%20%E7%94%A8%E6%88%B7%E5%AE%B9%E6%98%93%E5%9C%A8UI%E6%89%A7%E8%A1%8C%E5%8A%A8%E7%94%BB%E6%88%96%E8%80%85%E6%BB%91%E5%8A%A8ListView%E7%9A%84%E6%97%B6%E5%80%99%E6%84%9F%E7%9F%A5%E5%88%B0%E5%8D%A1%E9%A1%BF%E4%B8%8D%E6%B5%81%E7%95%85%EF%BC%8C%E6%98%AF%E5%9B%A0%E4%B8%BA%E8%BF%99%E9%87%8C%E7%9A%84%E6%93%8D%E4%BD%9C%E7%9B%B8%E5%AF%B9%E5%A4%8D%E6%9D%82%EF%BC%8C%E5%AE%B9%E6%98%93%E5%8F%91%E7%94%9F%E4%B8%A2%E5%B8%A7%E7%9A%84%E7%8E%B0%E8%B1%A1%EF%BC%8C%E4%BB%8E%E8%80%8C%E6%84%9F%E8%A7%89%E5%8D%A1%E9%A1%BF%E3%80%82**%E6%9C%89%E5%BE%88%E5%A4%9A%E5%8E%9F%20%E5%9B%A0%E5%8F%AF%E4%BB%A5%E5%AF%BC%E8%87%B4%E4%B8%A2%E5%B8%A7%EF%BC%8C%E4%B9%9F%E8%AE%B8%E6%98%AF%E5%9B%A0%E4%B8%BA%E4%BD%A0%E7%9A%84layout%E5%A4%AA%E8%BF%87%E5%A4%8D%E6%9D%82%EF%BC%8C%E6%97%A0%E6%B3%95%E5%9C%A816ms%E5%86%85%E5%AE%8C%E6%88%90%E6%B8%B2%E6%9F%93%EF%BC%8C%E6%9C%89%E5%8F%AF%E8%83%BD%E6%98%AF%E5%9B%A0%E4%B8%BA%E4%BD%A0%E7%9A%84UI%E4%B8%8A%E6%9C%89%E5%B1%82%E5%8F%A0%E5%A4%AA%E5%A4%9A%E7%9A%84%E7%BB%98%E5%88%B6%E5%8D%95%E5%85%83%EF%BC%8C%E8%BF%98%E6%9C%89%E5%8F%AF%E8%83%BD%E6%98%AF%E5%9B%A0%E4%B8%BA%E5%8A%A8%E7%94%BB%E6%89%A7%E8%A1%8C%20%E7%9A%84%E6%AC%A1%E6%95%B0%E8%BF%87%E5%A4%9A**%E3%80%82%E8%BF%99%E4%BA%9B%E9%83%BD%E4%BC%9A%E5%AF%BC%E8%87%B4CPU%E6%88%96%E8%80%85GPU%E8%B4%9F%E8%BD%BD%E8%BF%87%E9%87%8D%E3%80%82%0A%0A%0A**Overdraw(%E8%BF%87%E5%BA%A6%E7%BB%98%E5%88%B6)**%0A%E6%8F%8F%E8%BF%B0%E7%9A%84%E6%98%AF%E5%B1%8F%E5%B9%95%E4%B8%8A%E7%9A%84%E6%9F%90%E4%B8%AA%E5%83%8F%E7%B4%A0%E5%9C%A8%E5%90%8C%E4%B8%80%E5%B8%A7%E7%9A%84%E6%97%B6%E9%97%B4%E5%86%85%E8%A2%AB%E7%BB%98%E5%88%B6%E4%BA%86%E5%A4%9A%E6%AC%A1%E3%80%82%E5%9C%A8%E5%A4%9A%E5%B1%82%E6%AC%A1%E7%9A%84UI%E7%BB%93%E6%9E%84%E9%87%8C%E9%9D%A2%EF%BC%8C%E5%A6%82%E6%9E%9C%E4%B8%8D%E5%8F%AF%E8%A7%81%E7%9A%84UI%E4%B9%9F%E5%9C%A8%E5%81%9A%E7%BB%98%E5%88%B6%E7%9A%84%E6%93%8D%E4%BD%9C%EF%BC%8C%E8%BF%99%E5%B0%B1%E4%BC%9A%E5%AF%BC%E8%87%B4%E6%9F%90%E4%BA%9B%E5%83%8F%E7%B4%A0%E5%8C%BA%E5%9F%9F%E8%A2%AB%E7%BB%98%E5%88%B6%E4%BA%86%E5%A4%9A%E6%AC%A1%EF%BC%8C%E5%8F%AF%E8%83%BD%E5%87%BA%E7%8E%B0%E5%8D%A1%E9%A1%BF%E7%8E%B0%E8%B1%A1%EF%BC%8C%E6%B5%AA%E8%B4%B9%E5%A4%A7%E9%87%8F%E7%9A%84CPU%E4%BB%A5%E5%8F%8AGPU%E8%B5%84%E6%BA%90%E3%80%82%E4%B9%9F%E4%BC%9A%E5%87%BA%E7%8E%B0%E8%80%97%E7%94%B5%E7%9A%84%E9%97%AE%E9%A2%98%E3%80%82%E8%B0%83%E8%AF%95GPU%E8%BF%87%E6%B8%A1%E7%BB%98%E5%88%B6%E2%80%94%20%E6%98%BE%E7%A4%BA%E8%BF%87%E6%B8%A1%E7%BB%98%E5%88%B6%E5%8C%BA%E5%9F%9F%0A*%20%E9%A2%9C%E8%89%B2%E6%A0%87%E8%AF%86%3A%20%E4%BB%8E%E5%A5%BD%E5%88%B0%E5%B7%AE%3A%E8%93%9D-%E7%BB%BF-%E6%B7%A1%E7%BA%A2-%E7%BA%A2%0A*%20%E9%AA%8C%E6%94%B6%E6%A0%87%E5%87%86%3A%0A1.%20%E6%8E%A7%E5%88%B6%E8%BF%87%E5%BA%A6%E7%BB%98%E5%88%B6%E4%B8%BA2x%EF%BC%88%E7%BB%BF%E8%89%B2%EF%BC%89%0A2.%20%E4%B8%8D%E5%85%81%E8%AE%B8%E5%AD%98%E5%9C%A84x%EF%BC%88%E7%BA%A2%E8%89%B2%EF%BC%89%E8%BF%87%E5%BA%A6%E7%BB%98%E5%88%B6%0A3.%20%E4%B8%8D%E5%85%81%E8%AE%B8%E5%AD%98%E5%9C%A8%E9%9D%A2%E7%A7%AF%E8%B6%85%E8%BF%87%E5%B1%8F%E5%B9%951%2F4%E5%8C%BA%E5%9F%9F%E7%9A%843x%E8%BF%87%E5%BA%A6%E7%BB%98%E5%88%B6%EF%BC%88%E6%B7%A1%E7%BA%A2%E8%89%B2%E5%8C%BA%E5%9F%9F%EF%BC%89%0A%0A**%E5%A4%84%E7%90%86%E6%96%B9%E6%A1%88%EF%BC%9A%E5%B8%83%E5%B1%80%E7%9A%84%E4%BC%98%E5%8C%96**%0A1.%20%E5%B0%BD%E9%87%8F%E9%87%8D%E7%94%A8%E4%B8%80%E4%B8%AA%E5%B8%83%E5%B1%80%E6%96%87%E4%BB%B6%EF%BC%8C%E4%BD%BF%E7%94%A8include%E6%A0%87%E7%AD%BE%EF%BC%8C%E5%A4%9A%E4%B8%AA%E7%9B%B8%E5%90%8C%E7%9A%84%E5%B8%83%E5%B1%80%E5%8F%AF%E4%BB%A5%E5%A4%8D%E7%94%A8%0A2.%20%E5%87%8F%E5%B0%91%E4%B8%80%E4%B8%AA%E5%B8%83%E5%B1%80%E7%9A%84%E4%B8%8D%E5%BF%85%E8%A6%81%E8%8A%82%E7%82%B9%EF%BC%8C%E5%87%8F%E5%B0%91%E5%B1%82%E7%BA%A7%EF%BC%8C%E5%8F%AF%E4%BB%A5%E4%BD%BF%E7%94%A8sdk%E6%8F%90%E4%BE%9B%E7%9A%84%E5%B7%A5%E5%85%B7Hierarchy%20Viewer%E8%BF%9B%E8%A1%8C%E5%B1%82%E7%BA%A7%E6%9F%A5%E7%9C%8B%E5%85%B7%E4%BD%93%E4%BD%BF%E7%94%A8%0A3.%20%E5%B0%BD%E9%87%8F%E4%BD%BF%E7%94%A8view%E8%87%AA%E8%BA%AB%E7%9A%84%E5%8F%82%E6%95%B0%EF%BC%8C%E4%BE%8B%E5%A6%82%EF%BC%9AButton%2C%E6%9C%89%E4%B8%80%E4%B8%AA%E5%8F%AF%E4%BB%A5%E6%8A%8A%E5%9B%BE%E7%BB%98%E5%88%B6%E5%9C%A8%E5%B7%A6%E8%BE%B9%E7%9A%84%E5%8F%82%E6%95%B0%3Aandroid%3AdrawableLeft%0A4.%20%E4%BD%BF%E7%94%A8%26lt%3B%20ViewStub%20%2F%26gt%3B%E6%A0%87%E7%AD%BE%E6%9D%A5%E5%8A%A0%E8%BD%BD%E4%B8%80%E4%BA%9B%E4%B8%8D%E5%B8%B8%E7%94%A8%E7%9A%84%E5%B8%83%E5%B1%80%EF%BC%88%E6%87%92%E5%8A%A0%E8%BD%BD%EF%BC%89%EF%BC%8C%E5%A4%9A%E7%8A%B6%E6%80%81%EF%BC%8C%E6%9C%89%E6%95%B0%E6%8D%AE%EF%BC%8C%E7%A9%BA%E6%95%B0%E6%8D%AE%EF%BC%8C%E5%8A%A0%E8%BD%BD%E5%A4%B1%E8%B4%A5%EF%BC%8C%E5%8A%A0%E8%BD%BD%E5%BC%82%E5%B8%B8%EF%BC%8C%E7%BD%91%E7%BB%9C%E5%BC%82%E5%B8%B8%E7%AD%89%E3%80%82%0A5.%20%E4%BD%BF%E7%94%A8%26lt%3B%20merge%20%2F%26gt%3B%E6%A0%87%E7%AD%BE%E5%87%8F%E5%B0%91%E5%B8%83%E5%B1%80%E7%9A%84%E5%B5%8C%E5%A5%97%E5%B1%82%E6%AC%A1%EF%BC%8C%E6%A0%B9%E5%B8%83%E5%B1%80content%E5%B0%B1%E6%98%AF%E4%B8%AAfragment%EF%BC%8C%E5%A6%82%E6%9E%9C%E8%87%AA%E5%B7%B1%E5%B0%B1%E6%98%AFfragment%EF%BC%8C%E5%B0%B1%E5%8F%AF%E4%BB%A5%E4%BD%BF%E7%94%A8merge%E3%80%82merge%E5%BF%85%E9%A1%BB%E6%94%BE%E5%9C%A8%E5%B8%83%E5%B1%80%E6%96%87%E4%BB%B6%E7%9A%84%E6%A0%B9%E8%8A%82%E7%82%B9%E4%B8%8A%E3%80%82%E9%80%9A%E5%B8%B8%E5%92%8Cinclude%E4%B8%80%E8%B5%B7%E4%BD%BF%E7%94%A8%E3%80%82%0A6.%20%E5%87%8F%E5%B0%91%E5%A4%9A%E4%BD%99%E7%9A%84background%0A7.%20%E4%BD%BF%E7%94%A8%E7%BA%A6%E6%9D%9F%E5%B8%83%E5%B1%80%0A%0A!%5B246cacada30d0c628b8117abffb00621.png%5D(en-resource%3A%2F%2Fdatabase%2F655%3A1)%0A%E5%AD%90view%E5%BF%85%E9%A1%BB%E6%9C%89%E4%B8%AA%E7%88%B6view%E5%8C%85%E8%A3%B9%0A%60%60%60%0Avar%20layout%3A%20View%3F%20%3D%20null%0Aif%20(viewStub3.parent%20!%3D%20null)%20%7B%C2%A0%C2%A0%C2%A0%0Alayout%20%3D%20viewStub3%3F.inflate()%C2%A0%C2%A0%C2%A0%20%0AviewStub3.visibility%20%3D%20View.VISIBLE%C2%A0%C2%A0%C2%A0%20%0Avar%20voiceView%20%3D%C2%A0%C2%A0%C2%A0%C2%A0%C2%A0%C2%A0%C2%A0%20%0Alayout%3F.findViewById%3CInteractionVoicePlayerView%3E(R.id.voiceView)%0A%7D%0A%60%60%60%0A%0A%E3%80%90%E5%BC%BA%E5%88%B6%E3%80%91%0A%E9%A1%B5%E9%9D%A2%E6%8B%A5%E4%B8%8A%E7%9A%84%C2%A0View%C2%A0%E8%B6%8A%E5%A4%9A%EF%BC%8C%C2%A0measure%E3%80%81%C2%A0layout%E3%80%81%C2%A0draw%C2%A0%E6%89%80%E8%8A%B1%E8%B4%B9%E7%9A%84%E6%97%B6%E9%97%B4%E5%B0%B1%E8%B6%8A%E4%B9%85%E3%80%82%E8%A6%81%E7%BC%A9%E7%9F%AD%E8%BF%99%E4%B8%AA%E6%97%B6%E9%97%B4%EF%BC%8C%E5%85%B3%E9%94%AE%E6%98%AF%E4%BF%9D%E6%8C%81%C2%A0View%C2%A0%E7%9A%84%E6%A0%91%E5%BD%A2%E7%BB%93%E6%9E%84%E5%B0%BD%E9%87%8F%E6%89%81%E5%B9%B3%EF%BC%8C%E8%80%8C%E4%B8%94%E8%A6%81%E7%A7%BB%E9%99%A4%E6%89%80%E6%9C%89%E4%B8%8D%E9%9C%80%E8%A6%81%E6%B8%B2%E6%9F%93%E7%9A%84View%E3%80%82%E7%90%86%E6%83%B3%E6%83%85%E5%86%B5%E4%B8%8B%EF%BC%8C%E6%80%BB%E5%85%B1%E7%9A%84%C2%A0measure%EF%BC%8C%C2%A0layout%EF%BC%8C%C2%A0draw%C2%A0%E6%97%B6%E9%97%B4%E5%BA%94%E8%AF%A5%E8%A2%AB%E5%BE%88%E5%A5%BD%E7%9A%84%E6%8E%A7%E5%88%B6%E5%9C%A8%C2%A016ms%E4%BB%A5%E5%86%85%EF%BC%8C%E4%BB%A5%E4%BF%9D%E8%AF%81%E6%BB%91%E5%8A%A8%E5%B1%8F%E5%B9%95%E6%97%B6%C2%A0UI%C2%A0%E7%9A%84%E6%B5%81%E7%95%85%E3%80%82%C2%A0%C2%A0%20%20%20%20%0A%0A%23%23%20%E5%86%B7%E5%90%AF%E5%8A%A8%E4%BC%98%E5%8C%96%0Atraceview%E6%A3%80%E6%9F%A5%E8%80%97%E6%97%B6%E7%9A%84%E6%96%B9%E6%B3%95%0AApp%E8%BF%9B%E7%A8%8B%E7%9A%84%E5%88%9B%E5%BB%BA%E7%AD%89%E7%8E%AF%E8%8A%82%E6%88%91%E4%BB%AC%E6%98%AF%E6%97%A0%E6%B3%95%E4%B8%BB%E5%8A%A8%E6%8E%A7%E5%88%B6%E7%9A%84%E3%80%82%E5%BC%80%E5%8F%91%E4%BA%BA%E5%91%98%E5%94%AF%E4%B8%80%E8%83%BD%E5%81%9A%E7%9A%84%E5%B0%B1%E6%98%AF%E5%87%8F%E5%B0%91%E5%9C%A8Application%20%E5%92%8C%20%E7%AC%AC%E4%B8%80%E4%B8%AA%20Activity%20%E4%B8%AD%E7%9A%84%E5%B7%A5%E4%BD%9C%E9%87%8F%EF%BC%8C%E4%BB%8E%E8%80%8C%E7%BC%A9%E7%9F%AD%E5%86%B7%E5%90%AF%E5%8A%A8%E7%9A%84%E6%97%B6%E9%97%B4%E3%80%82%0A%0AApplication%20%E4%BC%9A%E6%89%A7%E8%A1%8C%E5%A4%9A%E6%AC%A1%EF%BC%8C%E8%A6%81%E5%8F%AA%E5%9C%A8%E4%B8%BBapp%E7%9A%84Application%E6%89%A7%E8%A1%8C%EF%BC%8C%E5%8A%A0%E9%80%9F%E5%90%AF%E5%8A%A8%0Aif%20(AppUtils.inMainProcess(getApplication()))%20%0A%0AApplication%0A!%5B872a5a864c80580899de8a7dfe2e0c14.png%5D(en-resource%3A%2F%2Fdatabase%2F18718%3A1)%0A!%5B72eb67eadf999b646d9508200bcb5fc9.png%5D(en-resource%3A%2F%2Fdatabase%2F18720%3A1)%0A!%5Bebc96f2a1e2e0ecb1297ffb4fb16c7f5.png%5D(en-resource%3A%2F%2Fdatabase%2F18722%3A1)%0A%0A%0A%E6%96%B9%E6%A1%88%EF%BC%9A%0A*%20%E9%81%BF%E5%85%8D%E5%9C%A8%E5%90%AF%E5%8A%A8%E6%97%B6%E5%81%9A%E5%AF%86%E9%9B%86%E8%80%97%E6%97%B6%E7%9A%84%E5%88%9D%E5%A7%8B%E5%8C%96%0A*%20%E9%81%BF%E5%85%8DI%2FO%E6%93%8D%E4%BD%9C%E3%80%81%E7%BD%91%E7%BB%9C%E6%93%8D%E4%BD%9C%E3%80%81%E5%B8%83%E5%B1%80%E5%B5%8C%E5%A5%97%E7%AD%89%E8%80%83%E8%99%91%E5%BC%82%E6%AD%A5%0A*%20**%E5%88%9D%E5%A7%8B%E5%8C%96%E4%B8%89%E6%96%B9%E7%BB%84%E4%BB%B6%EF%BC%8C%E4%B8%8D%E9%98%BB%E5%A1%9E%E4%B8%BB%E7%BA%BF%E7%A8%8B**%EF%BC%8C%E6%AF%94%E5%A6%82%EF%BC%9A%E5%9B%BE%E7%89%87%E9%80%89%E6%8B%A9%E5%BA%93%E3%80%81%E6%97%A5%E5%BF%97%E4%B8%8A%E4%BC%A0%E6%A8%A1%E5%9D%97%E3%80%81%E7%BB%9F%E8%AE%A1%E3%80%81%E6%8E%A8%E9%80%81%E3%80%81%E8%AF%AD%E9%9F%B3%E5%BA%93%E7%AD%89%E7%AD%89%0A*%20%E4%BD%BF%E7%94%A8Activity%E7%9A%84windowBackground%E4%B8%BB%E9%A2%98%E5%B1%9E%E6%80%A7%E6%9D%A5%E4%B8%BA%E5%90%AF%E5%8A%A8%E7%9A%84Activity%E6%8F%90%E4%BE%9B%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84drawable%EF%BC%8C%E8%AE%A9%E7%94%A8%E6%88%B7%E4%BA%A7%E7%94%9F%E4%B8%80%E7%A7%8D%E9%80%9F%E5%BA%A6%E5%8A%A0%E5%BF%AB%E7%9A%84%E6%84%9F%E8%A7%89%E3%80%82%0A%0A%E7%83%AD%E5%90%AF%E5%8A%A8%E5%92%8C%E5%86%B7%E5%90%AF%E5%8A%A8%0A*%20%E5%86%B7%E5%90%AF%E5%8A%A8%20%EF%BC%9A%E5%9C%A8%E5%90%AF%E5%8A%A8%E5%BA%94%E7%94%A8%E5%89%8D%EF%BC%8C%E7%B3%BB%E7%BB%9F%E8%BF%98%E6%B2%A1%E6%9C%89App%E7%9A%84%E4%BB%BB%E4%BD%95%E8%BF%9B%E7%A8%8B%E3%80%82%E5%86%B7%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B%E5%B0%B1%E6%98%AFapp%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B%E5%85%A8%E8%BF%87%E7%A8%8B%EF%BC%8C%E5%8C%85%E6%8B%AC%E5%88%9B%E5%BB%BAapp%E8%BF%9B%E7%A8%8B%E3%80%81%E5%8A%A0%E8%BD%BD%E8%B5%84%E6%BA%90%E3%80%81%E5%90%AF%E5%8A%A8%E4%B8%BB%E7%BA%BF%E7%A8%8B%E7%AD%89%E7%AD%89%E3%80%82%E8%BF%99%E7%A7%8D%E5%90%AF%E5%8A%A8%E8%80%97%E6%97%B6%E6%9C%80%E9%95%BF%E3%80%82%0A*%20%E7%83%AD%E5%90%AF%E5%8A%A8%20%EF%BC%9Aapp%E8%BF%9B%E7%A8%8B%E5%A4%84%E4%BA%8E%E5%90%8E%E5%8F%B0%EF%BC%8C%E7%B3%BB%E7%BB%9F%E5%8F%AA%E6%98%AF%E6%8A%8A%E5%AE%83%E4%BB%8E%E5%90%8E%E5%8F%B0%E5%B8%A6%E5%88%B0%E5%89%8D%E5%8F%B0%EF%BC%8C%E5%B1%95%E7%A4%BA%E7%BB%99%E7%94%A8%E6%88%B7%E3%80%82%E7%9B%B8%E6%AF%94%E5%86%B7%E5%90%AF%E5%8A%A8%EF%BC%8C%E7%83%AD%E5%90%AF%E5%8A%A8%E8%BF%87%E7%A8%8B%E6%97%B6%E9%97%B4%E6%9B%B4%E7%9F%AD%E3%80%82%E4%BD%86%E5%90%AF%E5%8A%A8%E6%97%B6%EF%BC%8C%E7%B3%BB%E7%BB%9F%E4%BE%9D%E7%84%B6%E4%BC%9A%E5%B1%95%E7%A4%BA%E4%B8%80%E4%B8%AA%E7%A9%BA%E7%99%BD%E8%83%8C%E6%99%AF%EF%BC%8C%E7%9B%B4%E5%88%B0%E7%AC%AC%E4%B8%80%E4%B8%AA%20Activity%20%E7%9A%84%E5%86%85%E5%AE%B9%E5%91%88%E7%8E%B0%E4%B8%BA%E6%AD%A2%E3%80%82%0A%0A%0A%23%23%20%E7%94%B5%E9%87%8F%E4%BC%98%E5%8C%96%0A%E8%80%97%E7%94%B5%E4%BC%98%E5%8C%96%E7%9A%84%E7%AC%AC%E4%B8%80%E4%B8%AA%E6%96%B9%E5%90%91%E6%98%AF%E4%BC%98%E5%8C%96%E5%BA%94%E7%94%A8%E7%9A%84%E5%90%8E%E5%8F%B0%E8%80%97%E7%94%B5%E3%80%82%E5%9B%A0%E4%B8%BA%E7%94%A8%E6%88%B7%E6%9C%80%E5%AE%B9%E6%98%93%E6%84%9F%E7%9F%A5%E8%BF%99%E4%B8%AA%EF%BC%8C%E6%88%91%E6%98%8E%E6%98%8E%E6%B2%A1%E6%9C%89%E6%80%8E%E4%B9%88%E6%89%93%E5%BC%80%EF%BC%8C%E4%B8%BA%E4%BB%80%E4%B9%88%E8%80%97%E8%BF%99%E4%B9%88%E5%A4%9A%EF%BC%9F%E5%9C%A8%E5%90%8E%E5%8F%B0%E4%B8%8D%E8%A6%81%E5%81%9A%E8%BF%99%E4%BA%9B%EF%BC%9A%E9%95%BF%E6%97%B6%E9%97%B4%E8%8E%B7%E5%8F%96%20WakeLock(%E5%8F%8A%E6%97%B6%E9%87%8A%E6%94%BE)%E3%80%81WiFi%20%E5%92%8C%E8%93%9D%E7%89%99%E7%9A%84%E6%89%AB%E6%8F%8F%E3%80%81GPS%E3%80%81video%E3%80%81audio%0A*%20%E5%87%8F%E5%B0%91cpu%E5%8D%A0%E7%94%A8%E7%8E%87%0A*%20%E7%BD%91%E7%BB%9C%E4%BC%A0%E8%BE%93%EF%BC%9A%E8%AE%BE%E5%A4%87%E4%BB%A5%E6%9C%80%E5%A4%A7%E7%9A%84%E4%BC%A0%E8%BE%93%E9%80%9F%E7%8E%87%E8%BF%9B%E8%A1%8C%E6%93%8D%E4%BD%9C%E3%80%82%0A*%20%E6%95%B0%E6%8D%AE%E5%8E%8B%E7%BC%A9%EF%BC%9A%E7%BC%A9%E5%87%8F%E4%BC%A0%E8%BE%93%E6%97%B6%E9%97%B4%EF%BC%8C%E9%99%8D%E4%BD%8E%E7%94%B5%E9%87%8F%E6%B6%88%E8%80%97%0A*%20%E9%80%89%E6%8B%A9%E6%9B%B4%E5%BF%AB%E7%9A%84%E4%BC%A0%E8%BE%93%E6%96%B9%E5%BC%8F%EF%BC%9A%E8%99%BD%E7%84%B64G%E8%8A%AF%E7%89%87%E6%AF%94Wifi%E8%8A%AF%E7%89%87%E8%80%97%E7%94%B5%E4%BD%8E%EF%BC%8C%E4%BD%86Wifi%E7%9A%84%E9%80%9F%E7%8E%87%E5%8F%AF%E4%BB%A5%E8%AE%A9%E6%95%B0%E6%8D%AE%E5%9C%A8%E8%BE%83%E7%9F%AD%E6%97%B6%E9%97%B4%E5%86%85%E5%AE%8C%E6%88%90%E4%BC%A0%E8%BE%93%EF%BC%8C%E4%BB%8E%E8%80%8C%E9%99%8D%E4%BD%8E%E7%94%B5%E9%87%8F%E6%B6%88%E8%80%97%E3%80%82%0A*%20%E8%AF%B7%E6%B1%82%E9%9B%86%E4%B8%AD%E5%8F%91%E9%80%81%0A*%20gps%E7%9A%84%E4%BD%BF%E7%94%A8%EF%BC%9A%E4%B8%8D%E5%90%8C%E7%9A%84%E5%9C%BA%E6%99%AF%E4%BB%A5%E5%8F%8A%E4%B8%8D%E5%90%8C%E7%B1%BB%E5%9E%8B%E7%9A%84App%E5%AF%B9%E5%AE%9A%E4%BD%8D%E6%9B%B4%E5%8A%A0%E9%9C%80%E8%A6%81%E4%B8%AA%E6%80%A7%E5%8C%96%E7%9A%84%E5%8C%BA%E5%88%86%E3%80%82%E5%8D%B3%E6%97%B6%E6%B3%A8%E9%94%80%E5%AE%9A%E4%BD%8D%E7%9B%91%E5%90%AC%0A*%20%E8%B0%A8%E6%85%8E%E4%BD%BF%E7%94%A8WakeLock%EF%BC%9AWake%20Lock%E6%98%AF%E4%B8%80%E7%A7%8D%E9%94%81%E7%9A%84%E6%9C%BA%E5%88%B6%EF%BC%8C%E5%8F%AA%E8%A6%81%E6%9C%89%E4%BA%BA%E6%8B%BF%E7%9D%80%E8%BF%99%E4%B8%AA%E9%94%81%EF%BC%8C%E7%B3%BB%E7%BB%9F%E5%B0%B1%E6%97%A0%E6%B3%95%E8%BF%9B%E5%85%A5%E4%BC%91%E7%9C%A0%E3%80%82%E4%B8%80%E4%BA%9BApp%E4%B8%BA%E4%BA%86%E8%83%BD%E5%9C%A8%E5%90%8E%E5%8F%B0%E6%8C%81%E7%BB%AD%E5%81%9A%E4%BA%8B%E6%83%85%EF%BC%8C%E5%B0%B1%E4%BC%9A%E6%8C%81%E6%9C%89%E4%B8%80%E4%B8%AAWakeLock%0A*%20%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C%E5%B9%BF%E6%92%AD%0A*%20%E4%BD%BF%E7%94%A8JobScheduler%EF%BC%8C%E4%B8%80%E4%BA%9B%E4%BB%BB%E5%8A%A1%E9%80%9A%E8%BF%87JobScheduler%E6%9D%A5%E8%A7%A6%E5%8F%91%EF%BC%8C%E4%BE%8B%E5%A6%82%E5%8F%AF%E6%8E%A8%E8%BF%9F%E7%9A%84%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82%E3%80%81%E4%B8%8B%E8%BD%BD%E3%80%81GPS%E7%AD%89%EF%BC%8C%E5%8F%AF%E4%BB%A5%E5%9C%A8%E7%89%B9%E5%AE%9A%E5%9C%BA%E6%99%AF%EF%BC%9A%E8%BF%9E%E6%8E%A5Wifi%E3%80%81%E8%BF%9E%E6%8E%A5%E7%94%B5%E6%BA%90%E7%AD%89%E5%9C%BA%E6%99%AF%E8%A7%A6%E5%8F%91%E3%80%82%E6%97%A2%E5%AE%8C%E6%88%90%E4%BA%86%E4%BB%BB%E5%8A%A1%EF%BC%8C%E4%B9%9F%E6%97%A0%E9%9C%80%E8%80%83%E8%99%91%E7%94%B1%E4%BA%8E%E4%B8%80%E4%BA%9B%E4%BB%BB%E5%8A%A1%E5%AF%BC%E8%87%B4%E7%9A%84%E7%94%B5%E9%87%8F%E6%B6%88%E8%80%97%E3%80%82%EF%BC%88%E7%9B%91%E5%90%AC%E7%BD%91%E7%BB%9C%E7%8E%AF%E5%A2%83%E6%94%B9%E5%8F%98%EF%BC%89%0A%0AAndroid%C2%A0%E6%9C%80%E8%BF%91%E5%87%A0%E7%89%88%E7%9A%84%E7%89%B9%E8%89%B2%E4%B8%BB%E8%A6%81%E9%9B%86%E4%B8%AD%E5%9C%A8%E7%9C%81%E7%94%B5%E5%92%8C%E5%90%8E%E5%8F%B0%E7%AE%A1%E7%90%86%E4%B8%8A%EF%BC%8CO%E7%9A%84%E5%8F%91%E5%B8%83%EF%BC%8C%E5%AF%B9Service%E5%92%8CBroadcast%E5%8F%88%E8%BF%91%E4%B8%80%E6%AD%A5%E5%8A%A0%E5%BC%BA%E4%BA%86%E7%AE%A1%E6%9D%9F%E3%80%82%E4%B8%BB%E8%A6%81%E5%8F%AF%E6%A6%82%E6%8B%AC%E4%B8%BA%E5%A6%82%E4%B8%8B%E4%B8%A4%E7%82%B9%EF%BC%9A%0A%201.%20%E5%90%8E%E5%8F%B0%E5%BA%94%E7%94%A8%E4%B8%8D%E8%A2%AB%E5%85%81%E8%AE%B8%E5%88%9B%E5%BB%BA%E5%90%8E%E5%8F%B0%E6%9C%8D%E5%8A%A1%EF%BC%8C%E5%BF%85%E9%A1%BB%E9%80%9A%E8%BF%87JobScheduler%E6%88%96%E8%80%85Context.startForegroundService()%E8%BF%9B%E8%A1%8C%E5%88%9B%E5%BB%BA%0A%202.%20%E7%89%B9%E5%AE%9A%E7%9A%84%E9%9A%90%E5%BC%8F%E5%B9%BF%E6%92%AD%E4%B8%8D%E5%86%8D%E8%A2%AB%E5%85%81%E8%AE%B8%E5%90%AF%E5%8A%A8%EF%BC%8C%E5%BF%85%E9%A1%BB%E9%80%9A%E8%BF%87JobScheduler%E8%B0%83%E7%94%A8%E6%88%96%E8%80%85%E6%98%BE%E5%BC%8F%E6%B3%A8%E5%86%8C%E7%9A%84%E6%96%B9%E5%BC%8F%E6%89%8D%E8%83%BD%E5%90%AF%E5%8A%A8%0A%0AJobSchedule%E7%9A%84%E5%AE%97%E6%97%A8%E5%B0%B1%E6%98%AF%E6%8A%8A%E4%B8%80%E4%BA%9B%E4%B8%8D%E6%98%AF%E7%89%B9%E5%88%AB%E7%B4%A7%E6%80%A5%E7%9A%84%E4%BB%BB%E5%8A%A1%E6%94%BE%E5%88%B0%E6%9B%B4%E5%90%88%E9%80%82%E7%9A%84%E6%97%B6%E6%9C%BA%E6%89%B9%E9%87%8F%E5%A4%84%E7%90%86%E3%80%82%E8%BF%99%E6%A0%B7%E5%81%9A%E6%9C%89%E4%B8%A4%E4%B8%AA%E5%A5%BD%E5%A4%84%EF%BC%9A%E9%81%BF%E5%85%8D%E9%A2%91%E7%B9%81%E7%9A%84%E5%94%A4%E9%86%92%E7%A1%AC%E4%BB%B6%E6%A8%A1%E5%9D%97%EF%BC%8C%E9%80%A0%E6%88%90%E4%B8%8D%E5%BF%85%E8%A6%81%E7%9A%84%E7%94%B5%E9%87%8F%E6%B6%88%E8%80%97%E4%BB%A5%E5%8F%8A%E9%81%BF%E5%85%8D%E5%9C%A8%E4%B8%8D%E5%90%88%E9%80%82%E7%9A%84%E6%97%B6%E9%97%B4(%E4%BE%8B%E5%A6%82%E4%BD%8E%E7%94%B5%E9%87%8F%E6%83%85%E5%86%B5%E4%B8%8B%E3%80%81%E5%BC%B1%E7%BD%91%E7%BB%9C%E6%88%96%E8%80%85%E7%A7%BB%E5%8A%A8%E7%BD%91%E7%BB%9C%E6%83%85%E5%86%B5%E4%B8%8B%E7%9A%84)%E6%89%A7%E8%A1%8C%E8%BF%87%E5%A4%9A%E7%9A%84%E4%BB%BB%E5%8A%A1%E6%B6%88%E8%80%97%E7%94%B5%E9%87%8F%E3%80%82%0A%0A*%20%E4%BD%BF%E7%94%A8%C2%A0Battery%20History%0A%60%60%60%0Aadb%20kill-serveadb%20devices%20adb%20start-server%0Aadb%20shell%20dumpsys%20batterystats%20–enable%20full-wake-historyadb%20shell%20dumpsys%20batterystats%20–reset%0A%0Aadb%20bugreport%20%3E%20bugreport.txtadb%20shell%20dumpsys%20batterystats%20%3E%20batterystats.txt%0Aadb%20shell%20dumpsys%20batterystats%20%3E%20com.example.android.demo.app%20%3E%20batterystats.txt%0A7.0%E4%BB%A5%E4%B8%8A%0Aadb%20bugreport%20bugreport.zip%0AD%3A%5CPycharmProjects%5CgoProjects%5Csrc%5Cgithub.com%5Cgoogle%5Cbattery-historian%5C%0Ago%20run%20cmd%2Fbattery-historian%2Fbattery-historian.gohttp%3A%2F%2Flocalhost%3A9999%2F%0A%60%60%60</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Android/" class="category-chain-item">Android</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Android其他优化</div>
+      <div>http://peiniwan.github.io/2019/03/2319bb8ac7d1.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>六月的雨</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2019年3月3日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2019/03/ed99fd83cd3f.html" title="第三方框架源码">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">第三方框架源码</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2019/03/7266a39bd8cf.html" title="Java基础">
+                        <span class="hidden-mobile">Java基础</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

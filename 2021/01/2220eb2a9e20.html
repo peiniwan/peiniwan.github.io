@@ -1,0 +1,1488 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="六月的雨">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="数据结构和算法部分内容来自极客时间课程 数据结构与算法之美 数据结构和算法 举个例子：图书管理员会将书籍分门别类进行“存储”，按照一定规律编号，这就是书籍这种“数据”的存储结构。 那我们如何来查找一本书呢？有很多种办法，你当然可以一本一本地找，也可以先根据书籍类别的编号，是人文，还是科学、计算机，来定位书架，然后再依次查找。笼统地说，这些查找方法都是算法。 数据结构和算法是相辅相成的。数据结构是为">
+<meta property="og:type" content="article">
+<meta property="og:title" content="数据结构和算法分享">
+<meta property="og:url" content="http://peiniwan.github.io/2021/01/2220eb2a9e20.html">
+<meta property="og:site_name" content="六月的雨的博客">
+<meta property="og:description" content="数据结构和算法部分内容来自极客时间课程 数据结构与算法之美 数据结构和算法 举个例子：图书管理员会将书籍分门别类进行“存储”，按照一定规律编号，这就是书籍这种“数据”的存储结构。 那我们如何来查找一本书呢？有很多种办法，你当然可以一本一本地找，也可以先根据书籍类别的编号，是人文，还是科学、计算机，来定位书架，然后再依次查找。笼统地说，这些查找方法都是算法。 数据结构和算法是相辅相成的。数据结构是为">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.resources/2023/09/15/17-55-49-913e0ababe43a2d57267df5c5f0832a7-unknown_filename-aaca32.jpeg">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.resources/2023/09/15/17-55-49-6ea770ad3989b3998f2e62a572332352-unknown_filename.1-54151b.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.resources/2023/09/15/17-55-49-594a537e65a8390b2d77b67e45fe7371-unknown_filename.2-ecf278.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.resources/2023/09/15/17-55-49-8d830b4333fcfdf2d8f572f790be3594-unknown_filename.3-c397e9.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.resources/2023/09/15/17-55-49-f67fc8ab7ab08d935633ff708a7cd96b-unknown_filename.4-62fb8d.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.resources/2023/09/15/17-55-49-6f0bc75c9d512a528079f9e166b3677a-unknown_filename.5-159634.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.resources/2023/09/15/17-55-49-c1e8eee85c6083a1334765e29b16d960-unknown_filename.6-85be82.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.resources/2023/09/15/17-55-49-46b847c856e6e5194cb1311980456aa5-unknown_filename.7-41e650.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.resources/2023/09/15/17-55-49-b2d628d2e2c9c72a272c81423fd1cf78-unknown_filename.27-05b86f.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.resources/2023/09/15/17-55-49-9980d7c417ac55883bd7346741561c5a-unknown_filename.28-d6bbf8.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.resources/2023/09/15/17-55-49-3366dcd99ebcb6946e18577cd3b274ae-unknown_filename.29-c28727.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.resources/2023/09/15/17-55-49-c14b4f66b44fdfeb4fe0502ae9b924c2-unknown_filename.30-6f669b.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.resources/2023/09/15/17-55-49-419bef62a53c1b1fe1f68822e75f3ddf-unknown_filename.31-93ba4d.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.resources/2023/09/15/17-55-49-24fb39feac68ae2a9211a753c972771a-unknown_filename.32-bb53aa.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.resources/2023/09/15/17-55-49-cca968c669ec908aeeec646ad8dca686-unknown_filename.33-98f2a5.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.resources/2023/09/15/17-55-49-f9050ec7b157d7e1bc0c2528f1dcd1dd-unknown_filename.36-72b8f0.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.resources/2023/09/15/17-55-49-bfc3eaa6c0d6a52a2cc6a9e58afc5587-unknown_filename.8-e2fb3e.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.resources/2023/09/15/17-55-49-b6bf9679b06824b205a40d2b8f81ad1a-unknown_filename.22-fb6282.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.resources/2023/09/15/17-55-49-c1d6cb5ff6dfd01437c1ffcea0da30d8-unknown_filename.23-428743.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.resources/2023/09/15/17-55-49-afb95d03b8f2db09a02d2e556a6b293e-unknown_filename.24-1812bf.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.resources/2023/09/15/17-55-49-8a66b846201e0dd5c84b8dd43783efe7-unknown_filename.25-659e04.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.resources/2023/09/15/17-55-49-527ef8ed60841f9cf804782e64bbbc88-unknown_filename.26-b88b50.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.resources/2023/09/15/17-55-49-bfed5278e366a402fff717fada9f8067-unknown_filename.9-5afd9f.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.resources/2023/09/15/17-55-49-88a3aa0c2067bab8a02383193d65e4c5-unknown_filename.10-e098a8.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.resources/2023/09/15/17-55-49-35b76771b8d43bda5b82e3d56ae1e3f2-unknown_filename.11-680e28.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.resources/2023/09/15/17-55-49-28beb1ac33817bd7859a4ed3badb1552-unknown_filename.12-cfd905.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.resources/2023/09/15/17-55-49-cdd8391de3b255c586fbaa8e68ec2771-unknown_filename.13-6e755c.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.resources/2023/09/15/17-55-49-c0a44b5a6e54ede043bb2545918e3fb8-unknown_filename.14-c40e99.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.resources/2023/09/15/17-55-49-94687aaf1caac16dc5a797c2c46aa17a-unknown_filename.15-fecc40.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.resources/2023/09/15/17-55-49-922ca6645fa9e501b2cecd88624323b8-unknown_filename.16-dfd58c.jpeg">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.resources/2023/09/15/17-55-49-52ad18a770a87d06b0a39105fc4ac5b0-unknown_filename.17-3bdc26.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.resources/2023/09/15/17-55-49-3da7dab2f05b2409df3272d033e36baa-unknown_filename.18-993f6a.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.resources/2023/09/15/17-55-49-9af7c74d3b81e2ee04cf6f020f0a7ebd-unknown_filename.19-ccd461.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.resources/2023/09/15/17-55-49-a966114c395188070f806c2b8404f080-unknown_filename.20-6633a7.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.resources/2023/09/15/17-55-49-618f5ab76e27f0e944c2e5030cf58ee6-unknown_filename.35-fc61a8.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.resources/2023/09/15/17-55-49-3eda38f0cafd5a7b370ff5c556601822-unknown_filename.34-c322ef.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.resources/2023/09/15/17-55-49-365392b696aa0ea1bf2b656b99e76b8b-unknown_filename.21-f48b53.png">
+<meta property="article:published_time" content="2021-01-04T07:06:07.000Z">
+<meta property="article:modified_time" content="2023-12-22T06:50:49.645Z">
+<meta property="article:author" content="六月的雨">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.resources/2023/09/15/17-55-49-913e0ababe43a2d57267df5c5f0832a7-unknown_filename-aaca32.jpeg">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>数据结构和算法分享 - 六月的雨的博客</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"peiniwan.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>六月的雨的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="数据结构和算法分享"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2021-01-04 15:06" pubdate>
+          2021年1月4日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          15k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          129 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">数据结构和算法分享</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="数据结构和算法"><a href="#数据结构和算法" class="headerlink" title="数据结构和算法"></a>数据结构和算法</h1><p>部分内容来自极客时间课程</p>
+<p><a target="_blank" rel="noopener" href="https://time.geekbang.org/column/intro/126">数据结构与算法之美</a></p>
+<h1 id="数据结构和算法-1"><a href="#数据结构和算法-1" class="headerlink" title="数据结构和算法"></a>数据结构和算法</h1><ul>
+<li>举个例子：图书管理员会将书籍分门别类进行“存储”，按照一定规律编号，这就是书籍这种“数据”的存储结构。</li>
+<li>那我们如何来查找一本书呢？有很多种办法，你当然可以一本一本地找，也可以先根据书籍类别的编号，是人文，还是科学、计算机，来定位书架，然后再依次查找。笼统地说，这些查找方法都是算法。</li>
+<li>数据结构和算法是相辅相成的。数据结构是为算法服务的，算法要作用在特定的数据结构之上。 因此，我们无法孤立数据结构来讲算法，也无法孤立算法来讲数据结构</li>
+<li>“存储”需要的就是数据结构，“计算”需要的就是算法</li>
+</ul>
+<h3 id="常用数据结构与算法"><a href="#常用数据结构与算法" class="headerlink" title="常用数据结构与算法"></a>常用数据结构与算法</h3><p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.resources/2023/09/15/17-55-49-913e0ababe43a2d57267df5c5f0832a7-unknown_filename-aaca32.jpeg" srcset="/img/loading.gif" lazyload alt="unknown_filename"></p>
+<ul>
+<li>20 个最常用的、最基础数据结构与算法<br>  10 个数据结构：数组、链表、栈、队列、散列表、二叉树、堆、跳表、图、Trie 树；</li>
+<li>10 个算法：递归、排序、二分查找、搜索、哈希算法、贪心算法、分治算法、回溯算法、动态规划、字符串匹配算法。</li>
+<li>在学习数据结构和算法的过程中，你也要注意，不要只是死记硬背，不要为了学习而学习，而是要学习它的“来历”“自身的特点”“适合解决的问题”以及“实际的应用场景”</li>
+<li><strong>基础的数据结构就是数组和链表， 而后面更加复杂的 树 队列 图 等等 都可以通过数组和链表等方式存储， 出现树 队列 图 等数据结构的原因 就是为了解决 部分问题处理过程中时间复杂度过高的问题， 所以数据结构就是为了算法而生的！</strong></li>
+</ul>
+<p>数据结构是相互之间存在一种或多种关系的数据元素的集合。逻辑结构有4种：<br>集合结构（数据元素之间仅以集合的方式体现，元素之间没有别的关系）<br>线性结构（数据元素之间存在一对一的关系）<br>树（数据元素之间为一对多或多对一的关系）<br>图（数据元素之间为多对多的关系）</p>
+<h2 id="复杂度"><a href="#复杂度" class="headerlink" title="复杂度"></a>复杂度</h2><h3 id="时间复杂度"><a href="#时间复杂度" class="headerlink" title="时间复杂度"></a>时间复杂度</h3><p>所有代码的执行时间 T(n) 与每行代码的执行次数成正比。<br>T(n) &#x3D;O( f(n) )</p>
+<pre><code class="hljs"> int cal(int n) &#123;
+   int sum = 0;
+   int i = 1;
+   for (; i &lt;= n; ++i) &#123;
+     sum = sum + i;
+   &#125;
+   return sum;
+ &#125;
+</code></pre>
+<ul>
+<li>其中第 2、3 行代码都是常量级的执行时间，与 n 的大小无关，所以对于复杂度并没有影响。当 n 无限大的时候，就可以忽略。</li>
+<li>循环执行次数最多的是第 4、5 行代码，所以这块代码要重点分析。前面我们也讲过，这两行代码被执行了 n 次，所以总的时间复杂度就是 O(n)。</li>
+</ul>
+<h4 id="经验"><a href="#经验" class="headerlink" title="经验"></a>经验</h4><ul>
+<li><code>总的时间复杂度就等于量级最大的那段代码的时间复杂度</code></li>
+<li>如果 T1(n)&#x3D;O(f(n))，T2(n)&#x3D;O(g(n))；那么 T(n)&#x3D;T1(n)+T2(n)&#x3D;max(O(f(n)), O(g(n))) &#x3D;O(max(f(n), g(n))).</li>
+<li>假设 T1(n) &#x3D; O(n)，T2(n) &#x3D; O(n2)，则 T1(n) * T2(n) &#x3D; O(n3)<br>  <img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.resources/2023/09/15/17-55-49-6ea770ad3989b3998f2e62a572332352-unknown_filename.1-54151b.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.1"></li>
+</ul>
+<h4 id="O-1"><a href="#O-1" class="headerlink" title="O(1)"></a>O(1)</h4><p>int i &#x3D; 8;<br>int j &#x3D; 6;<br>int sum &#x3D; i + j;<br>只要代码的执行时间不随 n 的增大而增长，这样代码的时间复杂度我们都记作 O(1)。或者说，一般情况下，只要算法中不存在循环语句、递归语句，即使有成千上万行的代码，其时间复杂度也是Ο(1)。<br>跟数据规模 n 没有关系，都可忽略</p>
+<h4 id="O-logn-、O-nlogn"><a href="#O-logn-、O-nlogn" class="headerlink" title="O(logn)、O(nlogn)"></a>O(logn)、O(nlogn)</h4><pre><code class="hljs"> i=1;
+ while (i &lt;= n)   &#123;   
+     i = i * 2; 
+   &#125;
+</code></pre>
+<p>从代码中可以看出，变量 i 的值从 1 开始取，每循环一次就乘以 2。当大于 n 时，循环结束。还记得我们高中学过的等比数列吗？实际上，变量 i 的取值就是一个等比数列。如果我把它一个一个列出来，就应该是这个样子的：<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.resources/2023/09/15/17-55-49-594a537e65a8390b2d77b67e45fe7371-unknown_filename.2-ecf278.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.2"><br>2x&#x3D;n<br>x&#x3D;log2n</p>
+<pre><code class="hljs"> i=1; 
+ while (i &lt;= n)  
+ &#123;   i = i * 3; &#125;
+</code></pre>
+<p>这段代码的时间复杂度为 O(log3n)。<br>但是实际上，不管是以 2 为底、以 3 为底，还是以 10 为底，我们可以把所有对数阶的时间复杂度都记为 O(logn)</p>
+<p>O(nlogn)<br>如果一段代码的时间复杂度是 O(logn)，我们循环执行 n 遍，时间复杂度就是 O(nlogn) 了。而且，O(nlogn) 也是一种非常常见的算法时间复杂度。比如，归并排序、快速排序的时间复杂度都是 O(nlogn)</p>
+<h4 id="O-m-n-、O-m-n"><a href="#O-m-n-、O-m-n" class="headerlink" title="O(m+n)、O(m* n)"></a>O(m+n)、O(m* n)</h4><p>代码的复杂度由两个数据的规模来决定</p>
+<pre><code class="hljs">int cal(int m, int n) &#123;
+  int sum_1 = 0;
+  int i = 1;
+  for (; i &lt; m; ++i) &#123;
+    sum_1 = sum_1 + i;
+  &#125;
+
+  int sum_2 = 0;
+  int j = 1;
+  for (; j &lt; n; ++j) &#123;
+    sum_2 = sum_2 + j;
+  &#125;
+
+  return sum_1 + sum_2;
+&#125;
+</code></pre>
+<p>从代码中可以看出，m 和 n 是表示两个数据规模。我们无法事先评估 m 和 n 谁的量级大，所以我们在表示复杂度的时候，就不能简单地利用加法法则，省略掉其中一个。所以，上面代码的时间复杂度就是 O(m+n)。针对这种情况，原来的加法法则就不正确了<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.resources/2023/09/15/17-55-49-8d830b4333fcfdf2d8f572f790be3594-unknown_filename.3-c397e9.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.3"></p>
+<h3 id="空间复杂度分析"><a href="#空间复杂度分析" class="headerlink" title="空间复杂度分析"></a>空间复杂度分析</h3><ul>
+<li>如果时间复杂度表示<strong>算法的执行时间与数据规模之间的增长关系</strong>。那么，空间复杂度表示<strong>算法的存储空间与数据规模之间的增长关系</strong>。</li>
+<li>我们常见的空间复杂度就是 <strong>O(1)、O(n)、O(n2)</strong> ，像 O(logn)、O(nlogn) 这样的对数阶复杂度平时都用不到。而且，空间复杂度分析比时间复杂度分析要简单很多。</li>
+</ul>
+<h2 id="数组"><a href="#数组" class="headerlink" title="数组"></a>数组</h2><p>数组（Array）是一种线性表数据结构。它用一组连续的内存空间，来存储一组具有相同类型的数据。<br>线性表（Linear List）。顾名思义，线性表就是数据排成像一条线一样的结构。每个线性表上的数据最多只有前和后两个方向。其实除了数组，链表、队列、栈等也是线性表结构。<br>而与它相对立的概念是非线性表，比如二叉树、堆、图等。之所以叫非线性，是因为，在非线性表中，数据之间并不是简单的前后关系。</p>
+<h4 id="为什么数组从0开始"><a href="#为什么数组从0开始" class="headerlink" title="为什么数组从0开始"></a>为什么数组从0开始</h4><p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.resources/2023/09/15/17-55-49-f67fc8ab7ab08d935633ff708a7cd96b-unknown_filename.4-62fb8d.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.4"><br>计算机会给每个内存单元分配一个地址，计算机通过地址来访问内存中的数据。当计算机需要随机访问数组中的某个元素时，它会首先通过下面的寻址公式，计算出该元素存储的内存地址：</p>
+<pre><code class="hljs">a[i]_address = base_address + i * data_type_size
+</code></pre>
+<p>其中 base_address 是首地址，data_type_size 表示数组中每个元素的大小。我们举的这个例子里，数组中存储的是 int 类型数据，所以 data_type_size 就为 4 个字节。根据首地址和下标，通过寻址公式就能直接计算出对应的内存地址。<br>但是，如果数组从 1 开始计数，那我们计算数组元素 a[k] 的内存地址就会变为：</p>
+<pre><code class="hljs">a[k]_address = base_address + (k-1)*type_size
+</code></pre>
+<p>对比两个公式，我们不难发现，从 1 开始编号，每次随机访问数组元素都多了一次减法运算，对于 CPU 来说，就是多了一次减法指令。所以数组从0开始。</p>
+<blockquote>
+<p>一个错误：<br>很多人说，“链表适合插入、删除，时间复杂度 O(1)；数组适合查找，查找时间复杂度为 O(1)”。<br>实际上，这种表述是不准确的。数组是适合查找操作，但是查找的时间复杂度并不为 O(1)。即便是排好序的数组，你用二分查找，时间复杂度也是 O(logn)（k在第几个位置）。所以，正确的表述应该是，数组支持随机访问，根据下标随机访问的时间复杂度为 O(1)。</p>
+</blockquote>
+<p><strong>数组和ArrayList</strong></p>
+<ul>
+<li>ArrayList最大的优势就是可以将很多数组操作的细节封装起来。<strong>支持动态扩容</strong>。</li>
+<li>如果使用 ArrayList，我们就完全不需要关心底层的扩容逻辑，ArrayList 已经帮我们实现好了。每次存储空间不够的时候，它都会将空间自动扩容为 1.5 倍大小。</li>
+<li>Java ArrayList 无法存储基本类型，比如 int、long，需要封装为 Integer、Long 类，所以如果特别关注性能，或者希望使用基本类型，就可以选用数组。</li>
+</ul>
+<h2 id="链表"><a href="#链表" class="headerlink" title="链表"></a>链表</h2><p>从图中看到，数组需要一块连续的内存空间来存储，对内存的要求比较高。如果我们申请一个 100MB 大小的数组，当内存中没有连续的、足够大的存储空间时，即便内存的剩余总可用空间大于 100MB，仍然会申请失败。<br>而链表恰恰相反，它并不需要一块连续的内存空间，它通过“指针”将<strong>一组零散的内存</strong>块串联起来使用，所以如果我们申请的是 100MB 大小的链表，根本不会有问题。<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.resources/2023/09/15/17-55-49-6f0bc75c9d512a528079f9e166b3677a-unknown_filename.5-159634.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.5"><br>针对链表的插入和删除操作，只需要考虑相邻结点的指针改变，所以对应的时间复杂度是 O(1)。<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.resources/2023/09/15/17-55-49-c1e8eee85c6083a1334765e29b16d960-unknown_filename.6-85be82.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.6"></p>
+<h4 id="数组和链表对比"><a href="#数组和链表对比" class="headerlink" title="数组和链表对比"></a>数组和链表对比</h4><p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.resources/2023/09/15/17-55-49-46b847c856e6e5194cb1311980456aa5-unknown_filename.7-41e650.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.7"><br><strong>数组的缺点是大小固定，一经声明就要占用整块连续内存空间</strong>。如果声明的数组过大，系统可能没有足够的连续内存空间分配给它，导致“内存不足（out of memory）”。如果声明的数组过小，则可能出现不够用的情况。这时只能再申请一个更大的内存空间，把原数组拷贝进去，非常费时。链表本身没有大小的限制，天然地支持动态扩容，我觉得这也是它与数组最大的区别。<br>如果你的代码对内存的使用非常苛刻，那数组就更适合你。因为链表中的每个结点都需要消耗额外的存储空间去存储一份指向下一个结点的指针，所以内存消耗会翻倍。而且，对链表进行频繁的插入、删除操作，还会导致频繁的内存申请和释放，容易造成内存碎片，如果是 Java 语言，就有可能会导致频繁的 GC（Garbage Collection，垃圾回收）。</p>
+<h2 id="栈"><a href="#栈" class="headerlink" title="栈"></a>栈</h2><p>当某个数据集合只涉及在一端插入和删除数据，并且满足后进先出、先进后出的特性，我们就应该首选“栈”这种数据结构。</p>
+<h4 id="实现一个栈"><a href="#实现一个栈" class="headerlink" title="实现一个栈"></a>实现一个栈</h4><p>栈既可以用数组来实现，也可以用链表来实现。用数组实现的栈，我们叫作顺序栈，用链表实现的栈，我们叫作链式栈。</p>
+<pre><code class="hljs">// 基于数组实现的顺序栈
+public class ArrayStack &#123;
+  private String[] items;  // 数组
+  private int count;       // 栈中元素个数
+  private int n;           //栈的大小
+
+  // 初始化数组，申请一个大小为n的数组空间
+  public ArrayStack(int n) &#123;
+    this.items = new String[n];
+    this.n = n;
+    this.count = 0;
+  &#125;
+
+  // 入栈操作
+  public boolean push(String item) &#123;
+    // 数组空间不够了，直接返回false，入栈失败。
+    if (count == n) return false;
+    // 将item放到下标为count的位置，并且count加一
+    items[count] = item;
+    ++count;
+    return true;
+  &#125;
+  
+  // 出栈操作
+  public String pop() &#123;
+    // 栈为空，则直接返回null
+    if (count == 0) return null;
+    // 返回下标为count-1的数组元素，并且栈中元素个数count减一
+    String tmp = items[count-1];
+    --count;
+    return tmp;
+  &#125;
+&#125;
+</code></pre>
+<p>不管是顺序栈还是链式栈，我们存储数据只需要一个大小为 n 的数组就够了。在入栈和出栈过程中，只需要一两个临时变量存储空间，所以空间复杂度是 O(1)。<br>这里存储数据需要一个大小为 n 的数组，并不是说空间复杂度就是 O(n)。因为，这 n 个空间是必须的，无法省掉。<br>所以我们说空间复杂度的时候，是指除了原本的数据存储空间外，算法运行还需要额外的存储空间。空间复杂度分析是不是很简单？<br>时间复杂度也不难。不管是顺序栈还是链式栈，入栈、出栈只涉及栈顶个别数据的操作，所以时间复杂度都是 O(1)。</p>
+<p>如果要实现一个支持动态扩容的栈，我们只需要底层依赖一个支持动态扩容的数组就可以了。当栈满了之后，我们就申请一个更大的数组，将原来的数据搬移到新数组中。</p>
+<h2 id="队列"><a href="#队列" class="headerlink" title="队列"></a>队列</h2><p>先进者先出，这就是典型的“队列”。队列跟栈一样，也是一种操作受限的线性表数据结构。<br>队列的应用也非常广泛，特别是一些具有某些额外特性的队列，比如循环队列、阻塞队列、并发队列。</p>
+<h4 id="实现队列"><a href="#实现队列" class="headerlink" title="实现队列"></a>实现队列</h4><p>跟栈一样，队列可以用数组来实现，也可以用链表来实现。用数组实现的栈叫作顺序栈，用链表实现的栈叫作链式栈。同样，用数组实现的队列叫作顺序队列，用链表实现的队列叫作链式队列。</p>
+<pre><code class="hljs">  /**
+     * 用数组实现的队列
+     */
+    public class ArrayQueue &#123;
+        // 数组：items，数组大小：n
+        private String[] items;
+        private int n = 0;
+        // head表示队头下标，tail表示队尾下标
+        private int head = 0;
+        private int tail = 0;
+
+        // 申请一个大小为capacity的数组
+        public ArrayQueue(int capacity) &#123;
+            items = new String[capacity];
+            n = capacity;
+        &#125;
+
+        // 入队
+        public boolean enqueue(String item) &#123;
+            // 如果tail == n 表示队列已经满了
+            if (tail == n) return false;
+            items[tail] = item;
+            ++tail;
+            return true;
+        &#125;
+
+        // 出队
+        public String dequeue() &#123;
+            // 如果head == tail 表示队列为空
+            if (head == tail) return null;
+            // 为了让其他语言的同学看的更加明确，把--操作放到单独一行来写了
+            String ret = items[head];
+            ++head;
+            return ret;
+        &#125;
+    &#125;
+</code></pre>
+<h2 id="树"><a href="#树" class="headerlink" title="树"></a>树</h2><p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.resources/2023/09/15/17-55-49-b2d628d2e2c9c72a272c81423fd1cf78-unknown_filename.27-05b86f.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.27"><br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.resources/2023/09/15/17-55-49-9980d7c417ac55883bd7346741561c5a-unknown_filename.28-d6bbf8.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.28"><br>“高度”这个概念，其实就是<code>从下往上度量</code>，比如我们要度量第 10 层楼的高度、第 13 层楼的高度，起点都是地面。所以，树这种数据结构的高度也是一样，从最底层开始计数，并且计数的起点是 0。<br>“深度”这个概念在生活中是<code>从上往下度量</code>的，比如水中鱼的深度，是从水平面开始度量的。所以，树这种数据结构的深度也是类似的，从根结点开始度量，并且计数起点也是 0。<br>“层数”跟深度的计算类似，不过，计数起点是 1，也就是说根节点的位于第 1 层。</p>
+<h3 id="二叉树"><a href="#二叉树" class="headerlink" title="二叉树"></a>二叉树</h3><h4 id="如何表示（或者存储）一棵二叉树"><a href="#如何表示（或者存储）一棵二叉树" class="headerlink" title="如何表示（或者存储）一棵二叉树"></a>如何表示（或者存储）一棵二叉树</h4><p>一种是基于指针或者引用的二叉链式存储法<br>一种是基于数组的顺序存储法。</p>
+<pre><code class="hljs">   public class TreeNode &#123;
+        int val;
+        //左孩子
+        TreeNode left;
+        //右孩子
+        TreeNode right;
+    &#125;
+</code></pre>
+<p><strong>链式存储法</strong><br>每个节点有三个字段，其中一个存储数据，另外两个是指向左右子节点的指针。我们只要拎住根节点，就可以通过左右子节点的指针，把整棵树都串起来。这种存储方式我们比较常用。<strong>大部分二叉树代码都是通过这种结构来实现的</strong>。<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.resources/2023/09/15/17-55-49-3366dcd99ebcb6946e18577cd3b274ae-unknown_filename.29-c28727.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.29"><br>基于数组的<strong>顺序存储法</strong><br>把根节点存储在下标 i &#x3D; 1 的位置，那左子节点存储在下标 2 * i &#x3D; 2 的位置，右子节点存储在 2 * i + 1 &#x3D; 3 的位置。以此类推，B 节点的左子节点存储在 2 * i &#x3D; 2 * 2 &#x3D; 4 的位置，右子节点存储在 2 * i + 1 &#x3D; 2 * 2 + 1 &#x3D; 5 的位置。<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.resources/2023/09/15/17-55-49-c14b4f66b44fdfeb4fe0502ae9b924c2-unknown_filename.30-6f669b.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.30"></p>
+<h4 id="二叉树的遍历"><a href="#二叉树的遍历" class="headerlink" title="二叉树的遍历"></a>二叉树的遍历</h4><p>前序遍历、中序遍历和后序遍历<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.resources/2023/09/15/17-55-49-419bef62a53c1b1fe1f68822e75f3ddf-unknown_filename.31-93ba4d.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.31"><br>写递归代码的关键，就是看能不能写出递推公式，而写递推公式的关键就是，如果要解决问题 A，就假设子问题 B、C 已经解决，然后再来看如何利用 B、C 来解决 A。所以，我们可以把前、中、后序遍历的递推公式都写出来。</p>
+<p><strong>二叉树遍历的时间复杂度</strong><br>从我前面画的前、中、后序遍历的顺序图，可以看出来，每个节点最多会被访问两次，所以遍历操作的时间复杂度，跟节点的个数 n 成正比，也就是说二叉树遍历的时间复杂度是 O(n)。</p>
+<h3 id="二叉查找树（Binary-Search-Tree）"><a href="#二叉查找树（Binary-Search-Tree）" class="headerlink" title="二叉查找树（Binary Search Tree）"></a>二叉查找树（Binary Search Tree）</h3><p>二叉查找树要求，在树中的任意一个节点，其左子树中的每个节点的值，都要小于这个节点的值，而右子树节点的值都大于这个节点的值。<br>叉查找树最大的特点就是，<strong>支持动态数据集合的快速插入、删除、查找操作</strong>。不需要有序</p>
+<p><strong>1. 二叉查找树的查找操作</strong></p>
+<pre><code class="hljs">public class BinarySearchTree &#123;
+  private Node tree;
+
+  public Node find(int data) &#123;
+    Node p = tree;
+    while (p != null) &#123;
+      if (data &lt; p.data) p = p.left;
+      else if (data &gt; p.data) p = p.right;
+      else return p;
+    &#125;
+    return null;
+  &#125;
+&#125;
+</code></pre>
+<p><strong>2. 二叉查找树的插入操作</strong><br>二叉查找树的插入过程有点类似查找操作。新插入的数据一般都是在叶子节点上，所以我们只需要从根节点开始，依次比较要插入的数据和节点的大小关系。</p>
+<pre><code class="hljs">public void insert(int data) &#123;
+  if (tree == null) &#123;
+    tree = new Node(data);
+    return;
+  &#125;
+
+  Node p = tree;
+  while (p != null) &#123;
+    if (data &gt; p.data) &#123;
+      if (p.right == null) &#123;
+        p.right = new Node(data);
+        return;
+      &#125;
+      p = p.right;
+    &#125; else &#123; // data &lt; p.data
+      if (p.left == null) &#123;
+        p.left = new Node(data);
+        return;
+      &#125;
+      p = p.left;
+    &#125;
+  &#125;
+&#125;
+</code></pre>
+<h4 id="二叉查找树的时间复杂度分析"><a href="#二叉查找树的时间复杂度分析" class="headerlink" title="二叉查找树的时间复杂度分析"></a>二叉查找树的时间复杂度分析</h4><p><strong>中序遍历二叉查找树，可以输出有序的数据序列，时间复杂度是 O(n)，非常高效。因此，二叉查找树也叫作二叉排序树。</strong><br><strong>查找、插入、删除等很多操作的时间复杂度都跟树的高度成正比</strong><br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.resources/2023/09/15/17-55-49-24fb39feac68ae2a9211a753c972771a-unknown_filename.32-bb53aa.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.32"><br>图中第一种二叉查找树，根节点的左右子树极度不平衡，已经退化成了链表，所以查找的时间复杂度就变成了 O(n)。</p>
+<p>我们现在来分析一个最理想的情况，二叉查找树是一棵完全二叉树（或满二叉树）。这个时候，插入、删除、查找的时间复杂度是多少呢？<br>不管操作是插入、删除还是查找，时间复杂度其实都跟树的高度成正比，也就是 O(height)。既然这样，现在问题就转变成另外一个了，也就是，<strong>如何求一棵包含 n 个节点的完全二叉树的高度？</strong><br>树的高度就等于最大层数减一，为了方便计算，我们转换成层来表示。从图中可以看出，包含 n 个节点的完全二叉树中，第一层包含 1 个节点，第二层包含 2 个节点，第三层包含 4 个节点，依次类推，下面一层节点个数是上一层的 2 倍，第 K 层包含的节点个数就是 2^(K-1)。<br><strong>平衡二叉查找树的高度接近 logn，所以插入、删除、查找操作的时间复杂度也比较稳定，是 O(logn)。</strong></p>
+<h3 id="红黑树"><a href="#红黑树" class="headerlink" title="红黑树"></a>红黑树</h3><p>红黑树是一种平衡二叉查找树。它是为了解决普通二叉查找树在数据更新的过程中，复杂度退化的问题而产生的。</p>
+<h4 id="平衡二叉查找树"><a href="#平衡二叉查找树" class="headerlink" title="平衡二叉查找树"></a>平衡二叉查找树</h4><p>平衡二叉树的严格定义是这样的：二叉树中任意一个节点的左右子树的高度相差不能大于 1。从这个定义来看，上一节我们讲的完全二叉树、满二叉树其实都是平衡二叉树，但是非完全二叉树也有可能是平衡二叉树。<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.resources/2023/09/15/17-55-49-cca968c669ec908aeeec646ad8dca686-unknown_filename.33-98f2a5.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.33"><br>很多平衡二叉查找树其实并没有严格符合上面的定义（树中任意一个节点的左右子树的高度相差不能大于 1），比如我们下面要讲的红黑树，它从根节点到各个叶子节点的最长路径，有可能会比最短路径大一倍。</p>
+<p>平衡二叉查找树中“平衡”的意思，其实就是让整棵树左右看起来比较“对称”、比较“平衡”，不要出现左子树很高、右子树很矮的情况。这样就能让整棵树的高度相对来说低一些，相应的插入、删除、查找等操作的效率高一些。</p>
+<p>AVL树不存在变色的问题，只有左旋转、右旋转这两种操作。</p>
+<h4 id="如何定义一棵“红黑树”？"><a href="#如何定义一棵“红黑树”？" class="headerlink" title="如何定义一棵“红黑树”？"></a>如何定义一棵“红黑树”？</h4><p>新加入的就是红节点</p>
+<p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=MzIxMjE5MTE1Nw==&mid=2653204996&idx=2&sn=ecf932d2db8cb6e4fcb841a2b6a5bfba&chksm=8c99c0debbee49c86dc8e82a2d195389a93e81d8e5ca8af7d4dd2eec5c7fe209038c91444964&scene=21#wechat_redirect">漫话</a><br>红黑树的英文是“Red-Black Tree”，简称 R-B Tree。<br>顾名思义，红黑树中的节点，一类被标记为黑色，一类被标记为红色。除此之外，一棵红黑树还需要满足这样几个要求：</p>
+<ul>
+<li>根节点是黑色的；</li>
+<li>每个叶子节点都是黑色的空节点（NIL），也就是说，叶子节点不存储数据；</li>
+<li>任何相邻的节点都不能同时为红色，也就是说，红色节点是被黑色节点隔开的；</li>
+<li>每个节点，从该节点到达其可达叶子节点的所有路径，都包含相同数目的黑色节点；<br>  <img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.resources/2023/09/15/17-55-49-f9050ec7b157d7e1bc0c2528f1dcd1dd-unknown_filename.36-72b8f0.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.36"></li>
+</ul>
+<p><strong>为什么工程中都喜欢用红黑树，而不是其他平衡二叉查找树呢？</strong><br>AVL 树是一种高度平衡的二叉树，所以查找的效率非常高，但是，有利就有弊，AVL 树为了维持这种高度的平衡，就要付出更多的代价。每次插入、删除都要做调整，就比较复杂、耗时。所以，对于有频繁的插入、删除操作的数据集合，使用 AVL 树的代价就有点高了。<br>红黑树只是做到了近似平衡，并不是严格的平衡，所以在维护平衡的成本上，要比 AVL 树要低。<br>红黑树是一种平衡二叉查找树。它是为了解决普通二叉查找树在数据更新的过程中，复杂度退化的问题而产生的。红黑树的高度近似 logn，所以它是近似平衡，插入、删除、查找操作的时间复杂度都是 O(logn)。</p>
+<hr>
+<h1 id="算法"><a href="#算法" class="headerlink" title="算法"></a>算法</h1><h2 id="递归"><a href="#递归" class="headerlink" title="递归"></a>递归</h2><p>周末你带着女朋友去电影院看电影，女朋友问你，咱们现在坐在第几排啊？电影院里面太黑了，看不清，没法数，现在你怎么办？别忘了你是程序员，这个可难不倒你，递归就开始排上用场了。<br>于是你就问前面一排的人他是第几排，你想只要在他的数字上加一，就知道自己在哪一排了。但是，前面的人也看不清啊，所以他也问他前面的人。就这样一排一排往前问，直到问到第一排的人，说我在第一排，然后再这样一排一排再把数字传回来。直到你前面的人告诉你他在哪一排，于是你就知道答案了。<br>我们用递推公式将它表示出来就是这样的：</p>
+<pre><code class="hljs">f(n)=f(n-1)+1 其中，f(1)=1
+</code></pre>
+<p>f(n) 表示你想知道自己在哪一排，f(n-1) 表示前面一排所在的排数，f(1)&#x3D;1 表示第一排的人知道自己在第一排。有了这个递推公式，我们就可以很轻松地将它改为递归代码，如下：</p>
+<pre><code class="hljs">int f(int n) &#123;
+  if (n == 1) return 1;
+  return f(n-1) + 1;
+&#125;
+</code></pre>
+<h4 id="递归需要满足的三个条件"><a href="#递归需要满足的三个条件" class="headerlink" title="递归需要满足的三个条件"></a>递归需要满足的三个条件</h4><ol>
+<li>一个问题的解可以分解为几个子问题的解</li>
+<li>这个问题与分解之后的子问题，除了数据规模不同，求解思路完全一样</li>
+<li>存在递归终止条件<br> 第一排的人不需要再继续询问任何人，就知道自己在哪一排，也就是 f(1)&#x3D;1，这就是递归的终止条件。</li>
+</ol>
+<h4 id="如何编写递归代码？"><a href="#如何编写递归代码？" class="headerlink" title="如何编写递归代码？"></a>如何编写递归代码？</h4><p>写递归代码最关键的是写出递推公式，找到终止条件</p>
+<pre><code class="hljs">public class Recursion &#123;
+    /**
+     * 求和
+     */
+    public static int summation(int num) &#123;
+        if (num == 1) &#123;
+            return 1;
+        &#125;
+        return num + summation(num - 1);
+    &#125;
+
+
+    /**
+     * 求二进制
+     */
+    public static int summation(int num) &#123;
+        StringBuilder sb = new StringBuilder();
+        if (num &gt; 0) &#123;
+            summation(num / 2);
+            int i = num % 2;
+            sb.append(i);
+        &#125;
+        System.out.println(sb.toString());
+        return -1;
+    &#125;
+
+    /**
+     * 求n的阶乘
+     */
+    public int f(int n) &#123;
+        if (n == 1) &#123;
+            return n;
+        &#125; else &#123;
+            return n * f(n - 1);
+        &#125;
+    &#125;
+&#125;
+</code></pre>
+<p><strong>写递归代码的关键就是找到如何将大问题分解为小问题的规律，并且基于此写出递推公式，然后再推敲终止条件，最后将递推公式和终止条件翻译成代码。</strong><br>人脑几乎没办法把整个“递”和“归”的过程一步一步都想清楚。计算机擅长做重复的事情，所以递归正和它的胃口。<br>对于递归代码，这种试图想清楚整个递和归过程的做法，实际上是进入了一个思维误区。很多时候，我们理解起来比较吃力，主要原因就是自己给自己制造了这种理解障碍。那正确的思维方式应该是怎样的呢？</p>
+<p><strong>如果一个问题 A 可以分解为若干子问题 B、C、D，你可以假设子问题 B、C、D 已经解决，在此基础上思考如何解决问题 A。而且，你只需要思考问题 A 与子问题 B、C、D 两层之间的关系即可，不需要一层一层往下思考子问题与子子问题，子子问题与子子子问题之间的关系。屏蔽掉递归细节，这样子理解起来就简单多了。</strong><br>因此，<strong>编写递归代码的关键是，只要遇到递归，我们就把它抽象成一个递推公式，不用想一层层的调用关系，不要试图用人脑去分解递归的每个步骤。</strong><br>不要陷入思维误区。</p>
+<h4 id="递归代码要警惕堆栈溢出"><a href="#递归代码要警惕堆栈溢出" class="headerlink" title="递归代码要警惕堆栈溢出"></a>递归代码要警惕堆栈溢出</h4><p><strong>函数调用会使用栈来保存临时变量。每调用一个函数，都会将临时变量封装为栈帧压入内存栈，等函数执行完成返回时，才出栈。系统栈或者虚拟机栈空间一般都不大。如果递归求解的数据规模很大，调用层次很深，一直压入栈，就会有堆栈溢出的风险</strong>。</p>
+<p>那么，如何避免出现堆栈溢出呢？</p>
+<pre><code class="hljs">// 全局变量，表示递归的深度。
+int depth = 0;
+
+int f(int n) &#123;
+  ++depth；
+  if (depth &gt; 1000) throw exception;
+  
+  if (n == 1) return 1;
+  return f(n-1) + 1;
+&#125;
+</code></pre>
+<p>但这种做法并不能完全解决问题，因为最大允许的递归深度跟当前线程剩余的栈空间大小有关，事先无法计算。如果实时计算，代码过于复杂，就会影响代码的可读性。所以，如果最大深度比较小，比如 10、50，就可以用这种方法，否则这种方法并不是很实用。</p>
+<h4 id="递归代码要警惕重复计算"><a href="#递归代码要警惕重复计算" class="headerlink" title="递归代码要警惕重复计算"></a>递归代码要警惕重复计算</h4><p><a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000015944750">爬楼梯</a></p>
+<blockquote>
+<p>有一座高度是10级台阶的楼梯，从下往上走，每跨一步只能向上1级或者2级台阶。求出一共有多少种走法。<br>比如，每次走1级台阶，一共走10步，这是其中一种走法。<br>再比如，每次走2级台阶，一共走5步，这是另一种走法。</p>
+</blockquote>
+<pre><code class="hljs">int f(int n) &#123;
+  if (n == 1) return 1;
+  if (n == 2) return 2;
+  return f(n-1) + f(n-2);
+&#125;
+</code></pre>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.resources/2023/09/15/17-55-49-bfc3eaa6c0d6a52a2cc6a9e58afc5587-unknown_filename.8-e2fb3e.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.8"><br>为了避免重复计算，我们可以通过一个数据结构（比如散列表）来<code>保存已经求解过的 f(k)</code>。当递归调用到 f(k) 时，先看下是否已经求解过了。如果是，则直接从散列表中取值返回，不需要重复计算，这样就能避免刚讲的问题了。</p>
+<pre><code class="hljs">public int f(int n) &#123;
+  if (n == 1) return 1;
+  if (n == 2) return 2;
+  
+  // hasSolvedList可以理解成一个Map，key是n，value是f(n)
+  if (hasSolvedList.containsKey(n)) &#123;
+    return hasSolvedList.get(n);
+  &#125;
+  
+  int ret = f(n-1) + f(n-2);
+  hasSolvedList.put(n, ret);
+  return ret;
+&#125;
+</code></pre>
+<h4 id="怎么将递归代码改写为非递归代码？"><a href="#怎么将递归代码改写为非递归代码？" class="headerlink" title="怎么将递归代码改写为非递归代码？"></a>怎么将递归代码改写为非递归代码？</h4><p>递归有利有弊，利是递归代码的表达力很强，写起来非常简洁；而弊就是空间复杂度高、有堆栈溢出的风险、存在重复计算、过多的函数调用会耗时较多等问题</p>
+<p>电影院修改</p>
+<pre><code class="hljs">int f(int n) &#123;
+  int ret = 1;
+  for (int i = 2; i &lt;= n; ++i) &#123;
+    ret = ret + 1;
+  &#125;
+  return ret;
+&#125;
+</code></pre>
+<p>爬楼梯修改</p>
+<pre><code class="hljs"> public int getWays3(int n) &#123;
+        if (n == 1) return 1;
+        if (n == 2) return 2;
+
+        // a保存倒数第二个子状态数据，b保存倒数第一个子状态数据， temp 保存当前状态的数据
+        int a = 1, b = 2;
+        int temp = a + b;
+        for (int i = 3; i &lt;= n; i++) &#123;
+            temp = a + b;
+            a = b;
+            b = temp;
+        &#125;
+        return temp;
+    &#125;
+</code></pre>
+<p>但是这种思路实际上是将递归改为了“手动”递归，本质并没有变，而且也并没有解决前面讲到的某些问题，徒增了实现的复杂度。</p>
+<h4 id="如何找到“最终推荐人”？"><a href="#如何找到“最终推荐人”？" class="headerlink" title="如何找到“最终推荐人”？"></a>如何找到“最终推荐人”？</h4><p>推荐注册返佣金的这个功能我想你应该不陌生吧？现在很多 App 都有这个功能。这个功能中，用户 A 推荐用户 B 来注册，用户 B 又推荐了用户 C 来注册。我们可以说，用户 C 的“最终推荐人”为用户 A，用户 B 的“最终推荐人”也为用户 A，而用户 A 没有“最终推荐人”。</p>
+<pre><code class="hljs">long findRootReferrerId(long actorId) &#123;
+  Long referrerId = select referrer_id from [table] where actor_id = actorId;
+  if (referrerId == null) return actorId;
+  return findRootReferrerId(referrerId);
+&#125;
+</code></pre>
+<p>不过在实际项目中，上面的代码并不能工作，为什么呢？这里面有两个问题。<br>第一，如果递归很深，可能会有堆栈溢出的问题。<br>第二，如果数据库里存在脏数据，我们还需要处理由此产生的无限递归问题。比如 demo 环境下数据库中，测试工程师为了方便测试，会人为地插入一些数据，就会出现脏数据。如果 A 的推荐人是 B，B 的推荐人是 C，C 的推荐人是 A，这样就会发生死循环。</p>
+<p>第一个问题，我前面已经解答过了，可以用限制递归深度来解决。第二个问题，也可以用限制递归深度来解决。不过，还有一个更高级的处理方法，就是自动检测 A-B-C-A 这种“环”的存在。</p>
+<pre><code class="hljs">   public boolean hasCycle(ListNode head) &#123;
+        Set&lt;ListNode&gt; nodesSeen = new HashSet&lt;&gt;();
+        while (head != null) &#123;
+            if (nodesSeen.contains(head)) &#123;
+                return true;
+            &#125; else &#123;
+                nodesSeen.add(head);
+            &#125;
+            head = head.next;
+        &#125;
+        return false;
+    &#125;
+</code></pre>
+<p><strong>调试递归</strong><br>我们平时调试代码喜欢使用 IDE 的单步跟踪功能，像规模比较大、递归层次很深的递归代码，几乎无法使用这种调试方式。<br>调试递归:</p>
+<ol>
+<li>打印日志发现，递归值。</li>
+<li>结合条件断点进行调试。</li>
+</ol>
+<h2 id="二分查找"><a href="#二分查找" class="headerlink" title="二分查找"></a>二分查找</h2><p>底层必须依赖数组，并且还要求数据是有序的。二分查找更适合处理静态数据，也就是没有频繁的数据插入、删除操作。<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.resources/2023/09/15/17-55-49-b6bf9679b06824b205a40d2b8f81ad1a-unknown_filename.22-fb6282.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.22"><br>这是一个等比数列。其中 n&#x2F;2k&#x3D;1 时，k 的值就是总共缩小的次数。而每一次缩小操作只涉及两个数据的大小比较，所以，经过了 k 次区间缩小操作，时间复杂度就是 O(k)。通过 n&#x2F;2k&#x3D;1，我们可以求得 k&#x3D;log2n，所以时间复杂度就是 O(logn)。</p>
+<pre><code class="hljs">    public int binarySearch(int[] arr, int k) &#123;
+        if (arr.length == 0) &#123;
+            return -1;
+        &#125;
+        if (arr[0] == k) &#123;
+            return 0;
+        &#125;
+        int a = 0;
+        int b = arr.length - 1;
+        while (a &lt;= b) &#123;
+            int m = a + (b - a) / 2;
+            if (k &lt; arr[m]) &#123;
+                b = m-1;
+            &#125; else if (k &gt; arr[m]) &#123;
+                a = m + 1;
+            &#125; else &#123;
+                return m;
+            &#125;
+        &#125;
+        return -1;
+    &#125;
+</code></pre>
+<p>二分查找除了用循环来实现，还可以用递归来实现</p>
+<pre><code class="hljs">// 二分查找的递归实现
+public int bsearch(int[] a, int n, int val) &#123;
+  return bsearchInternally(a, 0, n - 1, val);
+&#125;
+
+private int bsearchInternally(int[] a, int low, int high, int value) &#123;
+  if (low &gt; high) return -1;
+
+  int mid =  low + ((high - low) &gt;&gt; 1);
+  if (a[mid] == value) &#123;
+    return mid;
+  &#125; else if (a[mid] &lt; value) &#123;
+    return bsearchInternally(a, mid+1, high, value);
+  &#125; else &#123;
+    return bsearchInternally(a, low, mid-1, value);
+  &#125;
+&#125;
+</code></pre>
+<h4 id="二分查找应用场景的局限性"><a href="#二分查找应用场景的局限性" class="headerlink" title="二分查找应用场景的局限性"></a>二分查找应用场景的局限性</h4><p><strong>首先，二分查找依赖的是顺序表结构，简单点说就是数组</strong>。<br>数组按照下标随机访问数据的时间复杂度是 O(1)，而链表随机访问的时间复杂度是 O(n)。所以，如果数据使用链表存储，二分查找的时间复杂就会变得很高。<br><strong>其次，二分查找针对的是有序数据。</strong><br>数据必须是有序的。如果数据没有序，我们需要先排序<br>如果我们的数据集合有频繁的插入和删除操作，要想用二分查找，要么每次插入、删除操作之后保证数据仍然有序，要么在每次二分查找之前都先进行排序。针对这种动态数据集合，无论哪种方法，维护有序的成本都是很高的。<br>所以，二分查找只能用在插入、删除操作不频繁，一次排序多次查找的场景中。针对动态变化的数据集合，二分查找将不再适用。那针对动态数据集合，如何在其中快速查找某个数据呢？ 二叉树！<br><strong>再次，数据量太小不适合二分查找。</strong><br>如果要处理的数据量很小，完全没有必要用二分查找，顺序遍历就足够了。比如我们在一个大小为 10 的数组中查找一个元素，不管用二分查找还是顺序遍历，查找速度都差不多。只有数据量比较大的时候，二分查找的优势才会比较明显。<br><strong>最后，数据量太大也不适合二分查找。</strong><br>二分查找的底层需要依赖数组这种数据结构，而数组为了支持随机访问的特性，要求内存空间连续，对内存的要求比较苛刻。比如，我们有 1GB 大小的数据，如果希望用数组来存储，那就需要 1GB 的连续内存空间。</p>
+<h4 id="二分查找变形"><a href="#二分查找变形" class="headerlink" title="二分查找变形"></a>二分查找变形</h4><p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.resources/2023/09/15/17-55-49-c1d6cb5ff6dfd01437c1ffcea0da30d8-unknown_filename.23-428743.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.23"></p>
+<p><strong>变体一：查找第一个值等于给定值的元素</strong><br>如下面这样一个有序数组，其中，a[5]，a[6]，a[7] 的值都等于 8，是重复的数据。我们希望查找第一个等于 8 的数据，也就是下标是 5 的元素。<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.resources/2023/09/15/17-55-49-afb95d03b8f2db09a02d2e556a6b293e-unknown_filename.24-1812bf.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.24"><br>如果我们用上一节课讲的二分查找的代码实现，首先拿 8 与区间的中间值 a[4] 比较，8 比 6 大，于是在下标 5 到 9 之间继续查找。下标 5 和 9 的中间位置是下标 7，a[7] 正好等于 8，所以代码就返回了。<br>尽管 a[7] 也等于 8，但它并不是我们想要找的第一个等于 8 的元素，因为第一个值等于 8 的元素是数组下标为 5 的元素。</p>
+<pre><code class="hljs">public int bsearch(int[] a, int n, int value) &#123;
+  int low = 0;
+  int high = n - 1;
+  while (low &lt;= high) &#123;
+    int mid =  low + ((high - low) &gt;&gt; 1);
+    if (a[mid] &gt; value) &#123;
+      high = mid - 1;
+    &#125; else if (a[mid] &lt; value) &#123;
+      low = mid + 1;
+    &#125; else &#123;
+      if ((mid == 0) || (a[mid - 1] != value)) return mid;
+      else high = mid - 1;
+    &#125;
+  &#125;
+  return -1;
+&#125;
+</code></pre>
+<p><strong>变体二：查找最后一个值等于给定值的元素</strong><br>前面的问题是查找第一个值等于给定值的元素，我现在把问题稍微改一下，查找最后一个值等于给定值的元素，又该如何做呢？</p>
+<pre><code class="hljs">public int bsearch(int[] a, int n, int value) &#123;
+  int low = 0;
+  int high = n - 1;
+  while (low &lt;= high) &#123;
+    int mid =  low + ((high - low) &gt;&gt; 1);
+    if (a[mid] &gt; value) &#123;
+      high = mid - 1;
+    &#125; else if (a[mid] &lt; value) &#123;
+      low = mid + 1;
+    &#125; else &#123;
+      if ((mid == n - 1) || (a[mid + 1] != value)) return mid;
+      else low = mid + 1;
+    &#125;
+  &#125;
+  return -1;
+&#125;
+</code></pre>
+<p><strong>变体三：查找第一个大于等于给定值的元素</strong><br>在有序数组中，查找第一个大于等于给定值的元素。比如，数组中存储的这样一个序列：3，4，6，7，10。如果查找第一个大于等于 5 的元素，那就是 6。</p>
+<pre><code class="hljs">public int bsearch(int[] a, int n, int value) &#123;
+  int low = 0;
+  int high = n - 1;
+  while (low &lt;= high) &#123;
+    int mid =  low + ((high - low) &gt;&gt; 1);
+    if (a[mid] &gt;= value) &#123;
+      if ((mid == 0) || (a[mid - 1] &lt; value)) return mid;
+      else high = mid - 1;
+    &#125; else &#123;
+      low = mid + 1;
+    &#125;
+  &#125;
+  return -1;
+&#125;
+</code></pre>
+<p><strong>变体四：查找最后一个小于等于给定值的元素</strong><br>我们来看最后一种二分查找的变形问题，查找最后一个小于等于给定值的元素。比如，数组中存储了这样一组数据：3，5，6，8，9，10。最后一个小于等于 7 的元素就是 6。</p>
+<pre><code class="hljs">public int bsearch7(int[] a, int n, int value) &#123;
+  int low = 0;
+  int high = n - 1;
+  while (low &lt;= high) &#123;
+    int mid =  low + ((high - low) &gt;&gt; 1);
+    if (a[mid] &gt; value) &#123;
+      high = mid - 1;
+    &#125; else &#123;
+      if ((mid == n - 1) || (a[mid + 1] &gt; value)) return mid;
+      else low = mid + 1;
+    &#125;
+  &#125;
+  return -1;
+&#125;
+</code></pre>
+<h4 id="跳表（Skip-list"><a href="#跳表（Skip-list" class="headerlink" title="跳表（Skip list)"></a>跳表（Skip list)</h4><p>还可以优化链表，空间换时间，加索引<br>因为<strong>二分查找底层依赖的是数组随机访问的特性</strong>，所以只能用数组来实现。如果数据存储在链表中，就真的没法用二分查找算法了吗？<br>Redis 中的有序集合（Sorted Set）就是用跳表来实现的。如果你有一定基础，应该知道红黑树也可以实现快速的插入、删除和查找操作。那 Redis 为什么会选择用跳表来实现有序集合呢？</p>
+<p>对于一个单链表来讲，即便链表中存储的数据是有序的，如果我们要想在其中查找某个数据，也只能从头到尾遍历链表。这样查找效率就会很低，时间复杂度会很高，是 O(n)。</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.resources/2023/09/15/17-55-49-8a66b846201e0dd5c84b8dd43783efe7-unknown_filename.25-659e04.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.25"><br>如果我们现在要查找某个结点，比如 16。我们可以先在索引层遍历，当遍历到索引层中值为 13 的结点时，我们发现下一个结点是 17，那要查找的结点 16 肯定就在这两个结点之间。然后我们通过索引层结点的 down 指针，下降到原始链表这一层，继续遍历。这个时候，我们只需要再遍历 2 个结点，就可以找到值等于 16 的这个结点了。这样，原来如果要查找 16，需要遍历 10 个结点，现在只需要遍历 7 个结点。<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.resources/2023/09/15/17-55-49-527ef8ed60841f9cf804782e64bbbc88-unknown_filename.26-b88b50.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.26"></p>
+<p><strong>这种链表加多级索引的结构，就是跳表</strong></p>
+<h2 id="排序"><a href="#排序" class="headerlink" title="排序"></a>排序</h2><p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.resources/2023/09/15/17-55-49-bfed5278e366a402fff717fada9f8067-unknown_filename.9-5afd9f.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.9"></p>
+<p>我们知道，时间复杂度反应的是数据规模 n 很大的时候的一个增长趋势，所以它表示的时候会忽略系数、常数、低阶。但是实际的软件开发中，我们排序的可能是 10 个、100 个、1000 个这样规模很小的数据，所以，在对同一阶时间复杂度的排序算法性能对比的时候，我们就要把系数、常数、低阶也考虑进来。</p>
+<p>基于比较的排序算法的执行过程，会涉及两种操作，一种是元素比较大小，另一种是元素交换或移动。所以，如果我们在分析排序算法的执行效率的时候，应该把比较次数和交换（或移动）次数也考虑进去。</p>
+<p><strong>排序算法的内存消耗</strong><br><code>原地排序算法，就是特指空间复杂度是 O(1) 的排序算法。冒泡、插入、选择，都是原地排序算法</code>。</p>
+<p><strong>排序算法的稳定性</strong><br>针对排序算法，我们还有一个重要的度量指标，稳定性。这个概念是说，如果待排序的序列中存在值相等的元素，经过排序之后，相等元素之间原有的先后顺序不变。<br>我通过一个例子来解释一下。比如我们有一组数据 2，9，3，4，8，3，按照大小排序之后就是 2，3，3，4，8，9。这组数据里有两个 3。<br>经过某种排序算法排序之后，如果两个 3 的前后顺序没有改变，那我们就把这种排序算法叫作稳定的排序算法；如果前后顺序发生变化，那对应的排序算法就叫作不稳定的排序算法。</p>
+<p>稳定排序算法可以保持金额相同的两个对象，在排序之后的前后顺序不变</p>
+<ul>
+<li>稳定排序有：插入排序，基数排序，归并排序 ，冒泡排序 ，基数排序。</li>
+<li>不稳定的排序算法有：快速排序，希尔排序，简单选择排序，堆排序。</li>
+</ul>
+<h3 id="冒泡排序（Bubble-Sort）"><a href="#冒泡排序（Bubble-Sort）" class="headerlink" title="冒泡排序（Bubble Sort）"></a>冒泡排序（Bubble Sort）</h3><p>稳定、原地排序<br>我们要对一组数据 4，5，6，3，2，1，从小到大进行排序。经过一次冒泡操作之后，6 这个元素已经存储在正确的位置上。要想完成所有数据的排序，我们只要进行 6 次这样的冒泡操作就行了。<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.resources/2023/09/15/17-55-49-88a3aa0c2067bab8a02383193d65e4c5-unknown_filename.10-e098a8.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.10"><br>实际上，刚讲的冒泡过程还可以优化。<strong>当某次冒泡操作已经没有数据交换时，说明已经达到完全有序</strong>，不用再继续执行后续的冒泡操作。我这里还有另外一个例子，这里面给 6 个元素排序，只需要 4 次冒泡操作就可以了。<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.resources/2023/09/15/17-55-49-35b76771b8d43bda5b82e3d56ae1e3f2-unknown_filename.11-680e28.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.11"></p>
+<pre><code class="hljs">// 冒泡排序，a表示数组，n表示数组大小
+public void bubbleSort(int[] a, int n) &#123;
+  if (n &lt;= 1) return;
+ 
+ for (int i = 0; i &lt; n; ++i) &#123;
+    // 提前退出冒泡循环的标志位
+    boolean flag = false;
+    for (int j = 0; j &lt; n - i - 1; ++j) &#123; //-i：比较元素减少，-1：避免角标越界  
+      if (a[j] &gt; a[j+1]) &#123; // 交换
+        int tmp = a[j];
+        a[j] = a[j+1];
+        a[j+1] = tmp;
+        flag = true;  // 表示有数据交换      
+      &#125;
+    &#125;
+    if (!flag) break;  // 没有数据交换，提前退出
+  &#125;
+&#125;
+</code></pre>
+<h3 id="插入排序（Insertion-Sort）"><a href="#插入排序（Insertion-Sort）" class="headerlink" title="插入排序（Insertion Sort）"></a>插入排序（Insertion Sort）</h3><p>稳定、原地排序<br>基本思想是每一步将一个待排序的记录，插入到前面已经排好序的有序序列中去，直到插完所有元素为止。</p>
+<p>一个有序的数组，我们往里面添加一个新的数据后，如何继续保持数据有序呢？很简单，我们只要遍历数组，找到数据应该插入的位置将其插入即可。<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.resources/2023/09/15/17-55-49-28beb1ac33817bd7859a4ed3badb1552-unknown_filename.12-cfd905.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.12"><br>这是一个动态排序的过程，即动态地往有序集合中添加数据，我们可以通过这种方法保持集合中的数据一直有序。而对于一组静态数据，我们也可以借鉴上面讲的插入方法，来进行排序，于是就有了插入排序算法。</p>
+<p><strong>插入排序具体是如何借助上面的思想来实现排序的呢？</strong><br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.resources/2023/09/15/17-55-49-cdd8391de3b255c586fbaa8e68ec2771-unknown_filename.13-6e755c.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.13"><br>首先，我们将数组中的数据分为两个区间，已排序区间和未排序区间。初始已排序区间只有一个元素，就是数组的第一个元素。插入算法的核心思想是取未排序区间中的元素，在已排序区间中找到合适的插入位置将其插入，并保证已排序区间数据一直有序。重复这个过程，直到未排序区间中元素为空，算法结束。</p>
+<p>要排序的数据是 4，5，6，1，3，2，其中左侧为已排序区间，右侧是未排序区间。<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.resources/2023/09/15/17-55-49-c0a44b5a6e54ede043bb2545918e3fb8-unknown_filename.14-c40e99.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.14"><br>插入排序也包含两种操作，一种是元素的比较，一种是元素的移动。<br>当我们需要将一个数据 a 插入到已排序区间时，需要拿 a 与已排序区间的元素依次比较大小，找到合适的插入位置。找到插入点之后，我们还需要将插入点之后的元素顺序往后移动一位，这样才能腾出位置给元素 a 插入。</p>
+<pre><code class="hljs">// 插入排序，a表示数组，n表示数组大小
+//int[] a = &#123;5,4,6,1,3,2&#125;;
+   public void insertionSort(int[] a, int n) &#123;
+        if (n &lt;= 1) return;
+
+        for (int i = 1; i &lt; n; ++i) &#123;
+            //待插入元素
+            int value = a[i];
+            int j = i - 1;
+            // 查找插入的位置
+            for (; j &gt;= 0; --j) &#123;
+                if (a[j] &gt; value) &#123;//5&gt;4
+                    // 4的位置改成5,数据移动，将大于temp的往后移动一位
+                    a[j + 1] = a[j];
+                &#125; else &#123;
+                    break;
+                &#125;
+            &#125;
+            a[j + 1] = value; // 插入数据
+        &#125;
+    &#125;
+</code></pre>
+<p><strong>插入排序和冒泡排序的时间复杂度相同，都是 O(n2)，在实际的软件开发里，为什么我们更倾向于使用插入排序算法而不是冒泡排序算法呢？</strong><br>冒泡排序的数据交换要比插入排序的数据移动要复杂，冒泡排序需要 3 个赋值操作，而插入排序只需要 1 个。我们来看这段操作：冒泡排序中数据的交换操作：</p>
+<pre><code class="hljs">冒泡排序中数据的交换操作：
+if (a[j] &gt; a[j+1]) &#123; // 交换
+   int tmp = a[j];
+   a[j] = a[j+1];
+   a[j+1] = tmp;
+   flag = true;
+&#125;
+
+插入排序中数据的移动操作：
+if (a[j] &gt; value) &#123;
+  a[j+1] = a[j];  // 数据移动
+&#125; else &#123;
+  break;
+&#125;
+</code></pre>
+<p>我们把执行一个赋值语句的时间粗略地计为单位时间（unit_time），然后分别用冒泡排序和插入排序对同一个逆序度是 K 的数组进行排序。用冒泡排序，需要 K 次交换操作，每次需要 3 个赋值语句，所以交换操作总耗时就是 3* K 单位时间。而插入排序中数据移动操作只需要 K 个单位时间。</p>
+<h3 id="选择排序（Selection-Sort）"><a href="#选择排序（Selection-Sort）" class="headerlink" title="选择排序（Selection Sort）"></a>选择排序（Selection Sort）</h3><p><strong>基本思想为每一趟从待排序的数据元素中选择最小（或最大）的一个元素作为首元素，直到所有元素排完为止</strong><br>选择排序算法的实现思路有点类似插入排序，也分已排序区间和未排序区间。但是选择排序每次会从未排序区间中找到最小的元素，将其放到已排序区间的末尾。<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.resources/2023/09/15/17-55-49-94687aaf1caac16dc5a797c2c46aa17a-unknown_filename.15-fecc40.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.15"><br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.resources/2023/09/15/17-55-49-922ca6645fa9e501b2cecd88624323b8-unknown_filename.16-dfd58c.jpeg" srcset="/img/loading.gif" lazyload alt="unknown_filename.16"></p>
+<p>那选择排序是稳定的排序算法吗？<br>比如 5，8，5，2，9 这样一组数据，使用选择排序算法来排序的话，第一次找到最小元素 2，与第一个 5 交换位置，那第一个 5 和中间的 5 顺序就变了，所以就不稳定了。正是因此，相对于冒泡排序和插入排序，选择排序就稍微逊色了。</p>
+<pre><code class="hljs">    public void selectSort(int[] array) &#123;
+        int min;
+        int tmp;
+        for (int i = 0; i &lt; array.length; i++) &#123;
+            min = array[i];
+            //里面for第一次出来0，并且排在最前面，然后从i=1开始遍历
+            for (int j = i; j &lt; array.length; j++) &#123;
+                if (array[j] &lt; min) &#123;
+                    min = array[j];//记录最小值  3
+                    tmp = array[i];//9
+                    array[i] = min;//3
+                    array[j] = tmp;//9
+                &#125;
+            &#125;
+        &#125;
+        for (int num : array) &#123;
+            System.out.println(num);
+        &#125;
+    &#125;
+</code></pre>
+<h3 id="归并排序（Merge-Sort）"><a href="#归并排序（Merge-Sort）" class="headerlink" title="归并排序（Merge Sort）"></a>归并排序（Merge Sort）</h3><p>冒泡排序、插入排序、选择排序这三种排序算法，它们的时间复杂度都是 O(n2)，比较高，适合小规模数据的排序。今天，我讲两种时间复杂度为 <strong>O(nlogn)</strong> 的排序算法，归并排序和快速排序。这两种排序算法适合大规模的数据排序</p>
+<p>稳定，但是，归并排序并没有像快排那样，应用广泛，这是为什么呢？因为它有一个致命的“弱点”，那就是归并排序不是原地排序算法。<br>这是因为归并排序的合并函数，在合并两个有序数组为一个有序数组时，需要借助额外的存储空间。</p>
+<h4 id="归并排序的原理：分治法"><a href="#归并排序的原理：分治法" class="headerlink" title="归并排序的原理：分治法"></a>归并排序的原理：分治法</h4><p>归并排序和快速排序都用到了分治思想，非常巧妙。我们可以借鉴这个思想，来解决非排序的问题，比如：如何在 O(n) 的时间复杂度内查找一个无序数组中的第 K 大元素？</p>
+<p>如果要排序一个数组，我们先把数组从中间分成前后两部分，然后对前后两部分分别排序，再将排好序的两部分合并在一起，这样整个数组就都有序了。<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.resources/2023/09/15/17-55-49-52ad18a770a87d06b0a39105fc4ac5b0-unknown_filename.17-3bdc26.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.17"></p>
+<p>归并排序使用的就是分治思想。分治，顾名思义，就是分而治之，<strong>将一个大问题分解成小的子问题来解决。小的子问题解决了，大问题也就解决了。</strong><br>分治法的基本思想是：将原问题分解为若干个规模更小但结构与原问题相似的子问题。递归地解这些子问题，然后将这些子问题的解组合为原问题的解。</p>
+<p><strong>分治思想跟我们前面讲的递归思想很像。是的，分治算法一般都是用递归来实现的。分治是一种解决问题的处理思想，递归是一种编程技巧，这两者并不冲突</strong>。</p>
+<h4 id="如何用递归代码来实现归并排序"><a href="#如何用递归代码来实现归并排序" class="headerlink" title="如何用递归代码来实现归并排序"></a>如何用递归代码来实现归并排序</h4><p>写递归代码的技巧就是，分析得出递推公式，然后找到终止条件，最后将递推公式翻译成递归代码。所以，要想写出归并排序的代码，我们先写出归并排序的递推公式。</p>
+<pre><code class="hljs">递推公式：
+merge_sort(p…r) = merge(merge_sort(p…q), merge_sort(q+1…r))
+
+终止条件：
+p &gt;= r 不用再继续分解
+</code></pre>
+<p>merge_sort(p…r) 表示，给下标从 p 到 r 之间的数组排序。我们将这个排序问题转化为了两个子问题，merge_sort(p…q) 和 merge_sort(q+1…r)，其中下标 q 等于 p 和 r 的中间位置，也就是 (p+r)&#x2F;2。当下标从 p 到 q 和从 q+1 到 r 这两个子数组都排好序之后，我们再将两个有序的子数组合并在一起，这样下标从 p 到 r 之间的数据就也排好序了。</p>
+<pre><code class="hljs">public class MergeSort &#123;
+    public void mergeSort(int[] a, int left, int right) &#123;
+        if (left &lt; right) &#123;
+            int middle = (left + right) / 2;
+            mergeSort(a, left, middle);//左边归并排序，使得左子序列有序
+            mergeSort(a, middle + 1, right);//右边归并排序，使得右子序列有序
+            merge(a, left, middle, right);//将两个有序子数组合并操作
+        &#125;
+    &#125;
+
+    private void merge(int[] a, int left, int middle, int right) &#123;//left0,mid0,right1
+        //在排序前，先建好一个长度等于原数组长度的临时数组，避免递归中频繁开辟空间
+        int[] tmpArray = new int[a.length];
+        int rightStart = middle + 1;//右序列指针
+        int leftStart = left;//左序列指针
+        int temp = left;//临时数组指针
+        //比较两个小数组相应下标位置的数组大小，小的先放进新数组
+        while (left &lt;= middle &amp;&amp; rightStart &lt;= right) &#123;
+            if (a[left] &lt;= a[rightStart]) &#123;
+                //相当于tmpArray[third]=a[left];third++;left++三步合一步
+                tmpArray[temp++] = a[left++];
+            &#125; else &#123;
+                tmpArray[temp++] = a[rightStart++];
+            &#125;
+        &#125;
+        //如果左边还有数据需要拷贝，把左边数组剩下的拷贝到新数组
+        while (left &lt;= middle) &#123;
+            tmpArray[temp++] = a[left++];
+        &#125;
+        //如果右边还有数据......
+        while (rightStart &lt;= right) &#123;
+            tmpArray[temp++] = a[rightStart++];
+        &#125;
+        //将temp中的元素全部拷贝到原数组中
+        while (leftStart &lt;= right) &#123;
+            a[leftStart] = tmpArray[leftStart++];
+        &#125;
+    &#125;
+
+    public static void main(String[] args) &#123;
+        MergeSort mergeSort = new MergeSort();
+        int[] a = new int[]&#123;9, 7, 6, 5, 4, 3, 2, 1&#125;;
+        mergeSort.mergeSort(a, 0, a.length - 1);
+        for (int n : a) &#123;
+            System.out.print(&quot; &quot; + n);
+        &#125;
+    &#125;
+&#125;
+</code></pre>
+<p>我们需要将两个已经有序的子序列合并成一个有序序列，比如上图中的最后一次合并，要将[4,5,7,8]和[1,2,3,6]两个已经有序的子序列，合并为最终序列[1,2,3,4,5,6,7,8]，来看下实现步骤。</p>
+<h3 id="快速排序（Quicksort）"><a href="#快速排序（Quicksort）" class="headerlink" title="快速排序（Quicksort）"></a>快速排序（Quicksort）</h3><p>快排是一种原地、不稳定的排序算法。<br>快排利用的也是分治思想。乍看起来，它有点像归并排序，但是思路其实完全不一样。我们待会会讲两者的区别。现在，我们先来看下快排的核心思想。<br>基本思想是：通过一趟排序将要排序的数据分割成独立的两部分，其中一部分的所有数据都比另外一部分的所有数据都要小，然后再按此方法对这两部分数据分别进行快速排序，整个排序过程可以递归进行，以此达到整个数据变成有序序列。利用分治法可将快速排序的分为三步：</p>
+<ol>
+<li>在数据集之中，选择一个元素作为”基准”（pivot）。</li>
+<li>所有小于”基准”的元素，都移到”基准”的左边；所有大于”基准”的元素，都移到”基准”的右边。这个操作称为分区 (partition) 操作，分区操作结束后，基准元素所处的位置就是最终排序后它的位置。</li>
+<li>对”基准”左边和右边的两个子集，不断重复第一步和第二步，直到所有子集只剩下一个元素为止。<br> <img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.resources/2023/09/15/17-55-49-3da7dab2f05b2409df3272d033e36baa-unknown_filename.18-993f6a.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.18"></li>
+</ol>
+<p><strong>快速排序和归并排序对比</strong><br>归并排序的处理过程是由下到上的，先处理子问题，然后再合并。而快排正好相反，它的处理过程是由上到下的，先分区，然后再处理子问题。归并排序虽然是稳定的、时间复杂度为 O(nlogn) 的排序算法，但是它是非原地排序算法。我们前面讲过，归并之所以是非原地排序算法，主要原因是合并函数无法在原地执行。快速排序通过设计巧妙的原地分区函数，可以实现原地排序，解决了归并排序占用太多内存的问题。</p>
+<pre><code class="hljs">public class QuickSort &#123;
+
+    public void quick(int[] a) &#123;
+        if (a.length &gt; 0) &#123;
+            quickSort(a, 0, a.length - 1);
+        &#125;
+    &#125;
+
+    /**
+     * 快速排序
+     * @param a
+     * @param low  低位
+     * @param high 高位
+     */
+    private void quickSort(int[] a, int low, int high) &#123;
+        if (low &lt; high) &#123;
+            int middle = getMiddle(a, low, high);
+            //递归排比第一个基数小的数和大的数
+            quickSort(a, 0, middle - 1);
+            quickSort(a, middle + 1, high);
+        &#125;
+    &#125;
+
+    /**
+     *
+     * @param a
+     * @param low
+     * @param high
+     * @return
+     */
+    private int getMiddle(int[] a, int low, int high) &#123;
+        int temp = a[low];//基准元素
+        while (low &lt; high) &#123;//第二次3，9
+            while (low &lt; high &amp;&amp; a[high] &gt;= temp) &#123;
+                high--;
+            &#125;
+            a[low] = a[high];//将比基数小的数放到基数前面///用个数字想一下就明白了
+            while (low &lt; high &amp;&amp; a[low] &lt;= temp) &#123;
+                low++;
+            &#125;
+            a[high] = a[low];//将比基数大的数放到基数后面
+        &#125;
+        a[low] = temp;//插入到排序后正确的位置，low就是基数应该在的位置
+        return low;
+    &#125;
+&#125;
+</code></pre>
+<h4 id="O-n-时间复杂度内求无序数组中的第-K-大元素"><a href="#O-n-时间复杂度内求无序数组中的第-K-大元素" class="headerlink" title="O(n) 时间复杂度内求无序数组中的第 K 大元素"></a>O(n) 时间复杂度内求无序数组中的第 K 大元素</h4><p>快排核心思想就是分治和分区，我们可以利用分区的思想，来解答开篇的问题：O(n) 时间复杂度内求无序数组中的第 K 大元素。比如，4， 2， 5， 12， 3 这样一组数据，第 3 大元素就是 4。<br>我们选择数组区间 A[0…n-1] 的最后一个元素 A[n-1] 作为 pivot，对数组 A[0…n-1] 原地分区，这样数组就分成了三部分，A[0…p-1]、A[p]、A[p+1…n-1]。</p>
+<p>如果 p+1&#x3D;K，那 A[p] 就是要求解的元素；如果 K&gt;p+1, 说明第 K 大元素出现在 A[p+1…n-1] 区间，我们再按照上面的思路递归地在 A[p+1…n-1] 这个区间内查找。同理，如果 K&lt;p+1，那我们就在 A[0…p-1] 区间查找。<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.resources/2023/09/15/17-55-49-9af7c74d3b81e2ee04cf6f020f0a7ebd-unknown_filename.19-ccd461.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.19"></p>
+<pre><code class="hljs">int kthLargest = leetCode.findKthLargest(new int[]&#123;4, 2, 5, 12, 3&#125;, 3);
+//倒数
+class Solution &#123;
+    public int findKthLargest(int[] nums, int k) &#123;
+        int len = nums.length;
+        int left = 0, right = len - 1;
+        int pivot = 0;
+        while (len - k != (pivot = partition(nums, left, right))) &#123;
+        //4所在的问题就是2，那就找到了
+        //第k大应该在第K位，找每个数字应该在的位置，正好第0个4就是第K位，就找到了
+            if (pivot &lt; len - k) &#123;//在后面
+                left = pivot + 1;
+                right = len - 1;
+            &#125; else &#123;
+                left = 0;
+                right = pivot - 1;
+            &#125;
+        &#125;
+        return nums[pivot];
+    &#125;
+    private int partition(int[] nums, int left, int right) &#123;
+        int pivot = nums[left];
+        while (left &lt; right) &#123;
+            while (left &lt; right &amp;&amp; nums[right] &gt;= pivot)
+                right--;
+            nums[left] = nums[right];
+            while (left &lt; right &amp;&amp; nums[left] &lt;= pivot)
+                left++;
+            nums[right] = nums[left];
+        &#125;
+        nums[left] = pivot;
+        return left;
+    &#125;
+&#125;
+</code></pre>
+<p><strong>为什么上述解决思路的时间复杂度是 O(n)？</strong><br>第一次分区查找，我们需要对大小为 n 的数组执行分区操作，需要遍历 n 个元素。第二次分区查找，我们只需要对大小为 n&#x2F;2 的数组执行分区操作，需要遍历 n&#x2F;2 个元素。依次类推，分区遍历元素的个数分别为、n&#x2F;2、n&#x2F;4、n&#x2F;8、n&#x2F;16.……直到区间缩小为 1。<br>如果我们把每次分区遍历的元素个数加起来，就是：n+n&#x2F;2+n&#x2F;4+n&#x2F;8+…+1。这是一个等比数列求和，最后的和等于 2n-1。所以，上述解决思路的时间复杂度就为 O(n)。</p>
+<h3 id="桶排序（Bucket-sort）"><a href="#桶排序（Bucket-sort）" class="headerlink" title="桶排序（Bucket sort）"></a>桶排序（Bucket sort）</h3><p>时间复杂度是 O(n) 的排序算法：桶排序、计数排序、基数排序。因为这些排序算法的时间复杂度是线性的，所以我们把这类排序算法叫作<strong>线性排序（Linear sort）</strong>。之所以能做到线性的时间复杂度，主要原因是，这三个算法是非基于比较的排序算法，都不涉及元素之间的比较操作。</p>
+<p>按照惯例，我先给你出一道思考题：如何根据年龄给 100 万用户排序？ 你可能会说，我用上一节课讲的归并、快排就可以搞定啊！是的，它们也可以完成功能，但是时间复杂度最低也是 O(nlogn)。有没有更快的排序方法呢？让我们一起进入今天的内容！</p>
+<p>桶排序，顾名思义，会用到“桶”，核心思想是将要排序的数据分到几个有序的桶里，每个桶里的数据再单独进行排序。桶内排完序之后，再把每个桶里的数据按照顺序依次取出，组成的序列就是有序的了。<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.resources/2023/09/15/17-55-49-a966114c395188070f806c2b8404f080-unknown_filename.20-6633a7.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.20"></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/afei__/article/details/82965834">https://blog.csdn.net/afei__/article/details/82965834</a></p>
+<p><strong>桶排序的时间复杂度为什么是 O(n) 呢</strong><br>如果要排序的数据有 n 个，我们把它们均匀地划分到 m 个桶内，每个桶里就有 k&#x3D;n&#x2F;m 个元素。每个桶内部使用快速排序，时间复杂度为 O(k * logk)。m 个桶排序的时间复杂度就是 O(m * k * logk)，因为 k&#x3D;n&#x2F;m，所以整个桶排序的时间复杂度就是 O(n* log(n&#x2F;m))。当桶的个数 m 接近数据个数 n 时，log(n&#x2F;m) 就是一个非常小的常量，这个时候桶排序的时间复杂度接近 O(n)。</p>
+<p><strong>桶排序看起来很优秀，那它是不是可以替代我们之前讲的排序算法呢？</strong><br>要排序的数据需要很容易就能划分成 m 个桶，并且，桶与桶之间有着天然的大小顺序。这样每个桶内的数据都排序完之后，桶与桶之间的数据不需要再进行排序。<br><strong>桶排序比较适合用在外部排序中</strong>。所谓的外部排序就是数据存储在外部磁盘中，数据量比较大，内存有限，无法将数据全部加载到内存中。</p>
+<h3 id="计数排序（Counting-sort）"><a href="#计数排序（Counting-sort）" class="headerlink" title="计数排序（Counting sort）"></a>计数排序（Counting sort）</h3><p>我个人觉得，计数排序其实是桶排序的一种特殊情况。当要排序的 n 个数据，所处的范围并不大的时候，比如最大值是 k，我们就可以把数据划分成 k 个桶。每个桶内的数据值都是相同的，省掉了桶内排序的时间。<br>我们都经历过高考，高考查分数系统你还记得吗？我们查分数的时候，系统会显示我们的成绩以及所在省的排名。如果你所在的省有 50 万考生，如何通过成绩快速排序得出名次呢？<br>考生的满分是 900 分，最小是 0 分，这个数据的范围很小，所以我们可以分成 901 个桶，对应分数从 0 分到 900 分。根据考生的成绩，我们将这 50 万考生划分到这 901 个桶里。桶内的数据都是分数相同的考生，所以并不需要再进行排序。我们只需要依次扫描每个桶，将桶内的考生依次输出到一个数组中，就实现了 50 万考生的排序。因为只涉及扫描遍历操作，所以时间复杂度是 O(n)。</p>
+<p>计数排序的算法思想就是这么简单，<strong>跟桶排序非常类似，只是桶的大小粒度不一样</strong></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/csdnnews/article/details/8300577">漫画：什么是计数排序？</a><br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.resources/2023/09/15/17-55-49-618f5ab76e27f0e944c2e5030cf58ee6-unknown_filename.35-fc61a8.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.35"></p>
+<pre><code class="hljs">   public void countSort0(int[] array) &#123;
+        //找出最大值
+        int max = array[0];
+        for (int i = 1; i &lt; array.length; i++) &#123;
+            if (array[i] &gt; max) &#123;
+                max = array[i];
+            &#125;
+        &#125;//o(n)
+
+        //开辟内存空间，存储每个整数出现的次数
+        int[] counts = new int[1 + max];
+        //统计每个整数出现的次数
+        for (int i = 0; i &lt; array.length; i++) &#123;
+            counts[array[i]]++;
+        &#125;//o(n)
+
+        //根据整数的出现次数，对整数进行排序
+        int index = 0;
+        for (int i = 0; i &lt; counts.length; i++) &#123;
+            while (counts[i]-- &gt; 0) &#123;
+                array[index++] = i;
+            &#125;
+        &#125;//o(n)
+    &#125;
+</code></pre>
+<h3 id="基数排序"><a href="#基数排序" class="headerlink" title="基数排序"></a>基数排序</h3><p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.resources/2023/09/15/17-55-49-3eda38f0cafd5a7b370ff5c556601822-unknown_filename.34-c322ef.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.34"></p>
+<h3 id="如何实现一个通用的、高性能的排序函数？"><a href="#如何实现一个通用的、高性能的排序函数？" class="headerlink" title="如何实现一个通用的、高性能的排序函数？"></a>如何实现一个通用的、高性能的排序函数？</h3><p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95.resources/2023/09/15/17-55-49-365392b696aa0ea1bf2b656b99e76b8b-unknown_filename.21-f48b53.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.21"><br>如果对小规模数据进行排序，可以选择时间复杂度是 O(n2) 的算法；如果对大规模数据进行排序，时间复杂度是 O(nlogn) 的算法更加高效。所以，为了兼顾任意规模数据的排序，一般都会首选时间复杂度是 O(nlogn) 的排序算法来实现排序函数。<br>Java 语言采用堆排序实现排序函数，C 语言使用快速排序实现排序函数。</p>
+<p>我们知道，快排在最坏情况下的时间复杂度是 O(n2)，而归并排序可以做到平均情况、最坏情况下的时间复杂度都是 O(nlogn)，从这点上看起来很诱人，那为什么它还是没能得到“宠信”呢？</p>
+<p>归并排序并不是原地排序算法，空间复杂度是 O(n)。所以，粗略点、夸张点讲，<strong>如果要排序 100MB 的数据，除了数据本身占用的内存之外，排序算法还要额外再占用 100MB 的内存空间</strong>，空间耗费就翻倍了。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E7%AE%97%E6%B3%95/" class="category-chain-item">算法</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>数据结构和算法分享</div>
+      <div>http://peiniwan.github.io/2021/01/2220eb2a9e20.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>六月的雨</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2021年1月4日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/06/29ce328dfb2c.html" title="LiveData、ViewModel">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">LiveData、ViewModel</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2020/11/0fb422826e9e.html" title="Flutter学习">
+                        <span class="hidden-mobile">Flutter学习</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
