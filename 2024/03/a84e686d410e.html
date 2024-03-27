@@ -1,0 +1,866 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="六月的雨">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Flutter简介Flutter 是 Google 推出并开源的移动应用开发框架，帮助开发者通过一套代码库高效构建多平台应用，支持 iOS、Android、Web、Windows、macOS、Linux、Fuchsia 优点 跨平台：增加代码复用，降低开发成本 性能：Flutter直接将Dart代码编译为本地代码运行，再调用skia绘图引擎代码，和原生一样，这就少了像reactnative和wee">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Flutter分享">
+<meta property="og:url" content="http://peiniwan.github.io/2024/03/a84e686d410e.html">
+<meta property="og:site_name" content="六月的雨的笔记">
+<meta property="og:description" content="Flutter简介Flutter 是 Google 推出并开源的移动应用开发框架，帮助开发者通过一套代码库高效构建多平台应用，支持 iOS、Android、Web、Windows、macOS、Linux、Fuchsia 优点 跨平台：增加代码复用，降低开发成本 性能：Flutter直接将Dart代码编译为本地代码运行，再调用skia绘图引擎代码，和原生一样，这就少了像reactnative和wee">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Flutter%E5%88%86%E4%BA%AB.resources/2023/09/18/16-04-29-e8d2e77f520506b752d8a9130e7640d7-unknown_filename.3-1a3545.jpeg">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Flutter%E5%88%86%E4%BA%AB.resources/2023/09/18/16-04-29-c7f897332af05e9f9fa1136e521e8bc1-unknown_filename.4-6722b6.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Flutter%E5%88%86%E4%BA%AB.resources/2023/09/18/16-04-29-8fe31970ce55e497a9a4087c2b09bb7c-unknown_filename.5-40a021.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Flutter%E5%AD%A6%E4%B9%A0.resources/2023/09/15/18-47-49-ead77516e1c791a5516474cb6dd618a4-unknown_filename.3-50dbda.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Flutter%E5%88%86%E4%BA%AB.resources/2023/09/18/16-04-29-725fd7b1edf17b0af4da1c2abb2c2729-unknown_filename.6-d3375e.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Flutter%E5%88%86%E4%BA%AB.resources/2023/09/18/16-04-29-cf4f336024517a44ecb86357136209e5-unknown_filename.9-bc25d6.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Flutter%E5%88%86%E4%BA%AB.resources/2023/09/18/16-04-29-982887bf79e874c365e0e976d9b65cfb-unknown_filename-cd3c15.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Flutter%E5%88%86%E4%BA%AB.resources/2023/09/18/16-04-29-70dcdae8bb2ab83b9caf4a479903142d-unknown_filename.1-7c4e32.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Flutter%E5%88%86%E4%BA%AB.resources/2023/09/18/16-04-29-33a45fb9c21b02a3c3d426222e90433c-unknown_filename.2-f5e831.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Flutter%E5%88%86%E4%BA%AB.resources/2023/09/18/16-04-29-603dea0f15cbf2b8f4276c93a057db06-unknown_filename.8-395c38.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Flutter%E5%88%86%E4%BA%AB.resources/2023/09/18/16-04-29-ee8e403c6ab9790340a9eba9a168b4c9-unknown_filename.7-4c0965.png">
+<meta property="article:published_time" content="2024-03-27T06:59:25.274Z">
+<meta property="article:modified_time" content="2024-03-26T14:41:00.000Z">
+<meta property="article:author" content="六月的雨">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Flutter%E5%88%86%E4%BA%AB.resources/2023/09/18/16-04-29-e8d2e77f520506b752d8a9130e7640d7-unknown_filename.3-1a3545.jpeg">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>Flutter分享 - 六月的雨的笔记</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"peiniwan.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>六月的雨的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Flutter分享"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-03-27 14:59" pubdate>
+          2024年3月27日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.9k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          33 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Flutter分享</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="Flutter简介"><a href="#Flutter简介" class="headerlink" title="Flutter简介"></a>Flutter简介</h2><p>Flutter 是 Google 推出并开源的移动应用开发框架，帮助开发者通过一套代码库高效构建多平台应用，支持 iOS、Android、Web、Windows、macOS、Linux、Fuchsia</p>
+<h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ol>
+<li>跨平台：增加代码复用，降低开发成本</li>
+<li>性能：Flutter直接将Dart代码编译为本地代码运行，再调用skia绘图引擎代码，和原生一样，这就少了像reactnative和weex等先转为原生控件，再系统渲染的步骤</li>
+<li>热重载：修改完代码后 Ctrl+S 就能实时展现在真机界面上，不需要重新安装 apk 包，提高开发效率<br> <img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Flutter%E5%88%86%E4%BA%AB.resources/2023/09/18/16-04-29-e8d2e77f520506b752d8a9130e7640d7-unknown_filename.3-1a3545.jpeg" srcset="/img/loading.gif" lazyload alt="unknown_filename.3"><br> <img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Flutter%E5%88%86%E4%BA%AB.resources/2023/09/18/16-04-29-c7f897332af05e9f9fa1136e521e8bc1-unknown_filename.4-6722b6.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.4"><br> <img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Flutter%E5%88%86%E4%BA%AB.resources/2023/09/18/16-04-29-8fe31970ce55e497a9a4087c2b09bb7c-unknown_filename.5-40a021.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.5"></li>
+</ol>
+<h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><p>1.脱离不开原生，一些功能不支持，需要原生开发<br>2.适配问题，可能会有各种各样的适配问题<br>3.基础库不完善，需要自己写</p>
+<p>在现阶段，开始尝试探索和积累沉淀 Flutter 技术能力，逐步的完善，flutter还是值得尝试一下的，毕竟研发效率就是竞争力。</p>
+<h2 id="现状"><a href="#现状" class="headerlink" title="现状"></a>现状</h2><p>现在的很多 app 都有进行 flutter 的功能，这是“国内大厂应用在移动端 Flutter 框架使用分析”，地址链接：<a target="_blank" rel="noopener" href="https://juejin.cn/post/7012382656578977806">https://juejin.cn/post/7012382656578977806</a>。</p>
+<h2 id="常用网址"><a href="#常用网址" class="headerlink" title="常用网址"></a>常用网址</h2><p><a target="_blank" rel="noopener" href="https://flutter.cn/docs">Flutter 开发文档</a></p>
+<p><a target="_blank" rel="noopener" href="https://book.flutterchina.club/">Flutter实战</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.dartcn.com/guides/language/language-tour">Dart 编程语言概览</a></p>
+<p><a target="_blank" rel="noopener" href="https://pub.flutter-io.cn/">pub仓库</a></p>
+<h2 id="Widget"><a href="#Widget" class="headerlink" title="Widget"></a>Widget</h2><p>Activity、Fragment、view 在 Flutter 中等价于 Widget.</p>
+<p><strong>与 Android view 区别</strong></p>
+<ul>
+<li>Android 中 View 是可变的，当用户交互或数据更新时，可直接调用 View 的 invalidate 方法重绘，达到更新 UI 的目的。</li>
+<li>Flutter 的 widget 是不可改变的因此不能直接更新，而必须使用 Widget 的状态。Flutter 的 widget 分为有状态和无状态两种。它们的核心特性是相同的, 每一帧它们都会重新构建，不同之处在于<em>有状态的 Widget 有一个 State 对象，它可以跨帧存储状态数据并恢复它</em>。</li>
+</ul>
+<h4 id="Stateful-widgets"><a href="#Stateful-widgets" class="headerlink" title="Stateful widgets"></a>Stateful widgets</h4><p>Stateless widgets 是不可变的, 这意味着它们的属性不能改变，<strong>所有的值都是最终的.</strong><br>Stateful widgets（有状态的部件） 持有的状态可能在 widget 生命周期中发生变化. 实现一个 stateful widget 至少需要两个类:</p>
+<ol>
+<li>一个 StatefulWidget 类。</li>
+<li>一个 State 类。 StatefulWidget 类本身是不变的，但是 <em>State 类在 widget 生命周期中始终存在</em>.</li>
+</ol>
+<p>stateful widget 将自身的构建委托给 State 对象，<em>State 对象的 build 函数负责构建该 Widget</em>，当用户交互或数据发生变化时，Widget 状态发生改变，调用 State 的 <code>setState</code> 方法通知它，而后 State 根据当前的状态信息，重新构建 Widget tree</p>
+<ul>
+<li>在 Android 中，您可以从父级控件调用 addChild 或 removeChild 以动态添加或删除 View。在 Flutter 中，因为 widget 是不可变的，所以没有 addChild。相反，您可以传入一个函数，该函数返回一个 widget 给父项，并通过 <em>布尔值控制该 widget 的创建</em></li>
+<li>在 Flutter 中，一个自定义 widget 通常是通过组合其它 widget 来实现的，而不是继承</li>
+<li>某些 widget 属性需要单个 widget（child），而其它一些属性，如 action，需要一组 widgets (children），用方括号[]表示。</li>
+</ul>
+<h4 id="生命周期"><a href="#生命周期" class="headerlink" title="生命周期"></a>生命周期</h4><ul>
+<li>initState () 表示当前 State 将和一个 BuildContext 产生关联，但是此时 BuildContext 没有完全装载完成，如果你需要在该方法中获取 BuildContext ，可以 new Future.delayed (const Duration (seconds: 0, (){&#x2F;&#x2F;context}); 一下。</li>
+<li>didChangeDependencies () 在 initState () 之后调用，当 State 对象的依赖关系发生变化时，该方法被调用，初始化时也会调用。</li>
+<li>deactivate () 当 State 被暂时从视图树中移除时，会调用这个方法，同时页面切换时，也会调用。onPause 差不多。（已经消失在新版本中）</li>
+<li>dispose () Widget 销毁了，在调用这个方法之前，总会先调用 deactivate ()。</li>
+<li>didUpdateWidge 当 widget 状态发生变化时，会调用。</li>
+</ul>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Flutter%E5%AD%A6%E4%B9%A0.resources/2023/09/15/18-47-49-ead77516e1c791a5516474cb6dd618a4-unknown_filename.3-50dbda.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.3"></p>
+<h3 id="常用Widget和属性"><a href="#常用Widget和属性" class="headerlink" title="常用Widget和属性"></a>常用Widget和属性</h3><ul>
+<li><p>Container：父 view，宽高、背景色、圆角、margin</p>
+</li>
+<li><p>Padding：EdgeInsets. fromLTRB</p>
+</li>
+<li><p>Center：居中</p>
+</li>
+<li><p>TextField：输入框（TextEditingController）</p>
+</li>
+<li><p>Expanded：填充剩余布局，组件有个参数 flex, 可以实现比例分配。<br>  height 如果不设置界面显示会有问题，如果要设置，又不能准确的计算出结果, 可以使用 Expanded</p>
+</li>
+<li><p>BoxDecoration: 圆角，需要放在 Container 里，实现边框、圆角、阴影、形状、渐变、背景图像</p>
+</li>
+<li><p>ShapeDecoration: 实现四个边分别指定颜色和宽度、底部线、矩形边色、圆形边色、体育场（竖向椭圆）、角形（八边角）边色</p>
+</li>
+<li><p>UnderlineTabindicator: 下划线</p>
+</li>
+<li><p>EdgeInsets. only<br>  symmetric ({vertical, horizontal})：用于设置对称方向的填充，vertical 指 top 和 bottom，horizontal 指 left 和 right。</p>
+</li>
+<li><p>Flutter 中官方提供 CustomScrollView，让我们能够作何 Appbar 折叠的效果，并且很容易就能实现下拉刷新和加载更多。</p>
+</li>
+<li><p>dialog 高度设置不生效将 showBottomsheet 更换成 showAdjustableBottomSheet</p>
+</li>
+<li><p>MediaQuery. removePadding 可以移除组件的边距，有些组件自带有边距</p>
+</li>
+<li><p>expenand 必须和 colum 或 row 一起用，否则 debug 能运行，release 报错。</p>
+</li>
+</ul>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs less"><span class="hljs-selector-tag">RichText</span>(<span class="hljs-attribute">text</span>: <span class="hljs-built_in">TextSpan</span>(<br>                <span class="hljs-attribute">children</span>: [<br>                   <span class="hljs-built_in">TextSpan</span>(<br>                     <span class="hljs-attribute">text</span>:<span class="hljs-string">&quot;*&quot;</span>,<br>                     <span class="hljs-attribute">style</span>: <span class="hljs-built_in">TextStyle</span>(<span class="hljs-attribute">color</span>: <span class="hljs-attribute">Color</span>.colorAuxRedColor, <span class="hljs-attribute">fontSize</span>: <span class="hljs-number">15</span>)<br>                   ),<br>                  <span class="hljs-built_in">TextSpan</span>(<br>                      <span class="hljs-attribute">text</span>:<span class="hljs-string">&quot;你好&quot;</span>,<br>                      <span class="hljs-attribute">style</span>: <span class="hljs-built_in">TextStyle</span>(<span class="hljs-attribute">color</span>: <span class="hljs-attribute">Color</span>.colorText222<span class="hljs-attribute">Color</span>, <span class="hljs-attribute">fontSize</span>: <span class="hljs-number">15</span>)<br>                  )<br>                ]<br>            )),<br>           <br><br><br> <span class="hljs-selector-tag">Visibility</span>(<br>   <span class="hljs-attribute">visible</span>: true,<br>   <span class="hljs-comment">//是否保持占位</span><br>   <span class="hljs-attribute">maintainState</span>: false,<br>   <span class="hljs-attribute">child</span>: <span class="hljs-built_in">Text</span>(<span class="hljs-string">&quot;显示&quot;</span>),<br> ),<br></code></pre></td></tr></table></figure>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Flutter%E5%88%86%E4%BA%AB.resources/2023/09/18/16-04-29-725fd7b1edf17b0af4da1c2abb2c2729-unknown_filename.6-d3375e.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.6"></p>
+<h4 id="点击"><a href="#点击" class="headerlink" title="点击"></a>点击</h4><ul>
+<li>在 Flutter 中，添加触摸监听器有两种方法: 如果 Widget 支持事件监听，则可以将一个函数传递给它并进行处理。例如，RaisedButton 有一个 onPressed 参数</li>
+<li>如果 Widget 不支持事件监听，则可以将该 Widget 包装到 GestureDetector 中，并将处理函数传递给 onTap 参数。</li>
+<li>InkWell：点击，和 GestureDetector区别，即使 InkWell 没有子控件，它仍然可以响应点击操作并执行相应的操作或触发回调函数。</li>
+</ul>
+<h4 id="MaterialApp"><a href="#MaterialApp" class="headerlink" title="MaterialApp"></a>MaterialApp</h4><p>MaterialApp 是我们使用 Flutter 开发中最常用的符合 Material Design 设计理念的入口 Widget。你可以将它类比成为网页中的</html></html>，且它自带路由、主题色，&lt;\title&gt;等功能。</p>
+<h4 id="banner-list-三种实现方式"><a href="#banner-list-三种实现方式" class="headerlink" title="banner+list 三种实现方式"></a>banner+list 三种实现方式</h4><p>listView  <br>CustomScrollView <br>ScrollView<br>SingleChildScrollView</p>
+<h4 id="Scaffold"><a href="#Scaffold" class="headerlink" title="Scaffold"></a>Scaffold</h4><p>Scaffold通常被用作MaterialApp的子Widget，它会填充可用空间，占据整个窗口或设备屏幕。Scaffold提供了大多数应用程序都应该具备的功能，例如顶部的appBar，底部的bottomNavigationBar，隐藏的侧边栏drawer等。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs kotlin"><span class="hljs-keyword">const</span> Scaffold(&#123;<br>  Key key,<br>  <span class="hljs-keyword">this</span>.appBar, <span class="hljs-comment">// 标题栏</span><br>  <span class="hljs-keyword">this</span>.body,  <span class="hljs-comment">// 用于显示当前界面主要内容的Widget</span><br>  <span class="hljs-keyword">this</span>.floatingActionButton, <span class="hljs-comment">// 一个悬浮在body上的按钮，默认显示在右下角</span><br>  <span class="hljs-keyword">this</span>.floatingActionButtonLocation, <span class="hljs-comment">// 用于设置floatingActionButton显示的位置</span><br>  <span class="hljs-keyword">this</span>.floatingActionButtonAnimator, <span class="hljs-comment">// floatingActionButton移动到一个新的位置时的动画</span><br>  <span class="hljs-keyword">this</span>.persistentFooterButtons, <span class="hljs-comment">// 多状态按钮</span><br>  <span class="hljs-keyword">this</span>.drawer, <span class="hljs-comment">// 左侧的抽屉菜单</span><br>  <span class="hljs-keyword">this</span>.endDrawer, <span class="hljs-comment">//  右&#x27;侧的抽屉菜单</span><br>  <span class="hljs-keyword">this</span>.bottomNavigationBar,<span class="hljs-comment">// 底部导航栏。</span><br>  <span class="hljs-keyword">this</span>.bottomSheet, <span class="hljs-comment">// 显示在底部的工具栏</span><br>  <span class="hljs-keyword">this</span>.backgroundColor,<span class="hljs-comment">// 内容的背景颜色</span><br>  <span class="hljs-keyword">this</span>.resizeToAvoidBottomPadding = <span class="hljs-literal">true</span>, <span class="hljs-comment">// 控制界面内容 body 是否重新布局来避免底部被覆盖，比如当键盘显示的时候，重新布局避免被键盘盖住内容。</span><br>  <span class="hljs-keyword">this</span>.primary = <span class="hljs-literal">true</span>,<span class="hljs-comment">// Scaffold是否显示在页面的顶部</span><br>&#125;) <br><br></code></pre></td></tr></table></figure>
+
+<h4 id="SizedBox"><a href="#SizedBox" class="headerlink" title="SizedBox"></a>SizedBox</h4><ul>
+<li>一般是用来限制孩子控件的大小。</li>
+<li>还有这么一种场景也可以使用SizeBox，就是可以代替padding和container，然后 用来设置两个控件之间的间距，比如在行或列中就可以设置两个控件之间的间距 主要是可以比使用一个padding或者container简单方便 （在Flutter中可能用不同的控件可以实现到相同的目的，尽量使用越简单的widget来实现）</li>
+<li>控件在整个手机屏幕中间对齐：ConstrainedBox、SizedBox、Center</li>
+</ul>
+<h3 id="布局"><a href="#布局" class="headerlink" title="布局"></a>布局</h3><p>Flutter 中通过 Row 和 Column 来实现线性布局，类似于 Android 中的 LinearLayout 控件<br><strong>row 水平，Column 竖直</strong></p>
+<ul>
+<li>对于线性布局，有主轴和纵轴之分，如果布局是沿水平方向，那么主轴就是指水平方向，而纵轴即垂直方向；如果布局沿垂直方向，那么主轴就是指垂直方向，而纵轴就是水平方向。在线性布局中，有两个定义对齐方式的枚举类 MainAxisAlignment 和 CrossAxisAlignment，分别代表主轴对齐和纵轴对齐。</li>
+<li>mainAxisSize：表示 Row 在主轴 (水平) 方向占用的空间，默认是 MainAxisSize. max，表示尽可能多的占用水平方向的空间，此时无论子 widgets 实际占用多少水平空间，Row 的宽度始终等于水平方向的最大宽度；</li>
+<li>而 MainAxisSize. min 表示尽可能少的占用水平空间，<em>当子组件没有占满水平剩余空间，则 Row 的实际宽度等于所有子组件占用的的水平空间</em></li>
+<li>Row 和 Column 都只会在主轴方向占用尽可能大的空间，而纵轴的长度则取决于他们最大子元素的长度</li>
+<li>如果 Row 里面嵌套 Row，或者 Column 里面再嵌套 Column，那么<em>只有最外面的 Row 或 Column 会占用尽可能大的空间，里面 Row 或 Column 所占用的空间为实际大小</em></li>
+</ul>
+<p>Stack 类似 FrameLayout 很像，都是可以叠加的现实 View<br>flutter 中默认组件尺寸单位都是<em>dp</em><br>double. infinity，可以使宽度占用尽可能多的空间</p>
+<p>当我们使用行（row）的时候，子组件常常因为高度的不同，导致各个子组件里面的内容不能对齐。这个时候我们可以使用 <strong>IntrinsicHeight</strong> 来保持 row 中各个子组件高度一致，从而便于纵向居中对齐。</p>
+<figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs arduino"><span class="hljs-keyword">enum</span> <span class="hljs-title class_">MainAxisAlignment</span> &#123;<br> <span class="hljs-comment">//将子控件放在主轴的开始位置</span><br>  start,  <br>   <span class="hljs-comment">//将子控件放在主轴的结束位置</span><br>  end,<br>  <span class="hljs-comment">//将子控件放在主轴的中间位置</span><br>  center,<br>  <span class="hljs-comment">//将主轴空白位置进行均分，排列子元素，手尾没有空隙</span><br>  spaceBetween,<br>  <span class="hljs-comment">//将主轴空白区域均分，使中间各个子控件间距相等，首尾子控件间距为中间子控件间距的一半</span><br>  spaceAround,<br>  <span class="hljs-comment">//将主轴空白区域均分，使各个子控件间距相等</span><br>  spaceEvenly,<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<h2 id="Dart语法"><a href="#Dart语法" class="headerlink" title="Dart语法"></a>Dart语法</h2><p>main函数使用了(&#x3D;&gt;)符号, 这是Dart中单行函数或方法的简写。</p>
+<figure class="highlight coq"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs coq">// =&gt;是<span class="hljs-keyword">return</span>语句的简写<br>add3(a, b) =&gt; a + b; <br></code></pre></td></tr></table></figure>
+<p>变量以下划线（_）开头，在Dart语言中使用下划线前缀标识符，会强制其变成私有的。</p>
+<h3 id="异步"><a href="#异步" class="headerlink" title="异步"></a>异步</h3><ul>
+<li>flutter没有UI线程，也没有子线程。也就是说，无论是网络请求，数据处理，页面渲染，都是在同一个线程里面，那怎么保障页面渲染不会anr呢？</li>
+<li>Dart是一个单线程的语言，遇到有延迟的运算（比如IO操作、延时执行）时，线程中按顺序执行的运算就会阻塞，用户就会感觉到卡顿，于是通常用异步处理来解决这个问题。当遇到有需要延迟的运算（async）时，将其放入到延迟运算的队列（await）中去，把不需要延迟运算的部分先执行掉，最后再来处理延迟运算的部分。( <code>延迟队列</code>)</li>
+</ul>
+<p><a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000014396421">异步async、await和Future的使用技巧</a></p>
+<p>用 async，await，Future 三兄弟来进行处理异步。<br>async ，它是一个延迟计算的标志，标志了把这个任务放到了延迟运算的队列（await）中，通过Future进行返回。</p>
+<p>在Dart中，有await标记的运算，其结果值都是一个Future对象，Future不是String类型<br>Dart规定有async标记的函数，只能由await来调用，比如这样：<br>String data &#x3D; await getData();</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">//get请求，请求返回值为Future&lt;String&gt;类型，即其返回值未来是一个String类型的值</span><br> getData() async &#123;    <br>    <span class="hljs-comment">//async关键字声明该函数内部有代码需要延迟执行</span><br>   <span class="hljs-keyword">return</span> await http.get(Uri.encodeFull(url), headers: &#123;<span class="hljs-string">&quot;Accept&quot;</span>: <span class="hljs-string">&quot;application/json&quot;</span>&#125;); <span class="hljs-comment">//await关键字声明运算为延迟执行，然后return运算结果</span><br> &#125;<br></code></pre></td></tr></table></figure>
+<p>async用于标明函数是一个异步函数，其返回值类型是Future类型<br>await用来等待耗时操作的返回结果，这个操作会阻塞到后面的代码</p>
+<p><strong>await关键字必须在async函数内部使用<br>调用async函数必须使用await关键字</strong></p>
+<p><strong>then</strong><br>await 会阻塞流程，等待紧跟着的的 Future 执行完毕之后，再执行下一条语句，而如果用了 Future. then 这个 api，那么就不会等待，直接执行下面的语句，等 Future 执行完了，再调用 then 这个方法。</p>
+<h3 id="JSON-转-Bean"><a href="#JSON-转-Bean" class="headerlink" title="JSON 转 Bean"></a>JSON 转 Bean</h3><p><a target="_blank" rel="noopener" href="https://app.quicktype.io/">自动生成实体类</a></p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span><br>  <span class="hljs-attr">&quot;greeting&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Welcome to quicktype!&quot;</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">&quot;instructions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><br>    <span class="hljs-string">&quot;Type or paste JSON here&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-string">&quot;Or choose a sample above&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-string">&quot;quicktype will generate code in your&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-string">&quot;chosen language to parse the sample data&quot;</span><br>  <span class="hljs-punctuation">]</span><br><span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure>
+
+<p><em>fromJson</em> map 转对象<br><em>toJson</em> 对象转 map</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">import</span> <span class="hljs-string">&#x27;dart:convert&#x27;</span>;<br><br>Welcome <span class="hljs-title function_">welcomeFromJson</span><span class="hljs-params">(String str)</span> =&gt; Welcome.fromJson(json.decode(str));<br><br>String <span class="hljs-title function_">welcomeToJson</span><span class="hljs-params">(Welcome data)</span> =&gt; json.encode(data.toJson());<br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Welcome</span> &#123;<br>    String greeting;<br>    List&lt;String&gt; instructions;<br><br>    Welcome(&#123;<br>        required <span class="hljs-built_in">this</span>.greeting,<br>        required <span class="hljs-built_in">this</span>.instructions,<br>    &#125;);<br><br>    factory Welcome.fromJson(Map&lt;String, dynamic&gt; json) =&gt; Welcome(<br>        greeting: json[<span class="hljs-string">&quot;greeting&quot;</span>],<br>        instructions: List&lt;String&gt;.from(json[<span class="hljs-string">&quot;instructions&quot;</span>].map((x) =&gt; x)),<br>    );<br><br>    Map&lt;String, dynamic&gt; <span class="hljs-title function_">toJson</span><span class="hljs-params">()</span> =&gt; &#123;<br>        <span class="hljs-string">&quot;greeting&quot;</span>: greeting,<br>        <span class="hljs-string">&quot;instructions&quot;</span>: List&lt;dynamic&gt;.from(instructions.map((x) =&gt; x)),<br>    &#125;;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><h3 id="状态管理框架"><a href="#状态管理框架" class="headerlink" title="状态管理框架"></a>状态管理框架</h3><p>[[Flutter 状态管理框架]]</p>
+<h3 id="集成成-Android-项目："><a href="#集成成-Android-项目：" class="headerlink" title="集成成 Android 项目："></a>集成成 Android 项目：</h3><p>android:exported&#x3D;”true”</p>
+<ol>
+<li>flutter create -t module flutter_module</li>
+<li>打开 android 项目 settings. gradle，将<br> module 才有这个文件：include_flutter. groovy</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs java">rootProject.name = <span class="hljs-string">&quot;NativeInFlutter&quot;</span><br>include <span class="hljs-string">&#x27;:app&#x27;</span><br>include <span class="hljs-string">&#x27;:flutter_module&#x27;</span><br>setBinding(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Binding</span>([gradle: <span class="hljs-built_in">this</span>]))<br>evaluate(<span class="hljs-keyword">new</span> <span class="hljs-title class_">File</span>(settingsDir.parentFile, <span class="hljs-string">&#x27;NativeInFlutter/flutter_module/.android/include_flutter.groovy&#x27;</span><br>))<br></code></pre></td></tr></table></figure>
+<p>这也得改 allprojects</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs java">buildscript &#123;<br>    repositories &#123;<br>        google()<br>        jcenter()<br>    &#125;<br>    dependencies &#123;<br>        classpath <span class="hljs-string">&quot;com.android.tools.build:gradle:7.0.0&quot;</span><br>    &#125;<br>&#125;<br>allprojects &#123;<br>    repositories &#123;<br>        google()<br>        jcenter()<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>app 下 build 加：implementation project (‘: flutter’)</li>
+</ol>
+<h3 id="项目如何使用"><a href="#项目如何使用" class="headerlink" title="项目如何使用"></a>项目如何使用</h3><p>flutter仓库地址：<br>代码clone到与Android工程同级目录</p>
+<p>Android目前有两种依赖方式：<br>本地依赖（适用于开发调试阶段）<br>配置文件repo_projects.xml中，打开下面这行<br><project name="publication/app\_ta\_flutter.git" path="/app\_ta\_flutter" /></p>
+<p>远程依赖（适用打包或flutter功能稳定阶段）<br>配置repo_projects.xml中，注释下面这行<br><project name="publication/app\_ta\_flutter.git" path="/app\_ta\_flutter" /></p>
+<h3 id="打包"><a href="#打包" class="headerlink" title="打包"></a>打包</h3><p>开发完后，提测或者上线，需要将 flutter 代码打包。目前已经支持了 jenkins 上自动打包 flutter，上传 maven，然后修改配置仓库，增加版本号，接着 push 代码，自动化打包。</p>
+<p>jenkins打包地址：<a target="_blank" rel="noopener" href="http://10.14.200.4:8880/jenkins_app/view/%E5%9B%BE%E4%B9%A6%E5%87%BA%E7%89%88/job/android/job/lib/job/app_ta_flutter/build?delay=0sec">http://10.14.200.4:8880/jenkins_app&#x2F;view&#x2F;图书出版&#x2F;job&#x2F;android&#x2F;job&#x2F;lib&#x2F;job&#x2F;app_ta_flutter&#x2F;build?delay&#x3D;0sec</a></p>
+<p>红框必选，其他不用写，选择完后点build<br>BUSINESS_BRANCH：选自己的开发的flutter功能对应的分支<br>PROPERTIES_BRANCH：要更新到哪个配置仓库的分支<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Flutter%E5%88%86%E4%BA%AB.resources/2023/09/18/16-04-29-cf4f336024517a44ecb86357136209e5-unknown_filename.9-bc25d6.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.9"></p>
+<h3 id="调试"><a href="#调试" class="headerlink" title="调试"></a>调试</h3><p>先把 APP 杀死，在启动过程中 attach，可以先点这个</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Flutter%E5%88%86%E4%BA%AB.resources/2023/09/18/16-04-29-982887bf79e874c365e0e976d9b65cfb-unknown_filename-cd3c15.png" srcset="/img/loading.gif" lazyload alt="unknown_filename"><br>出现下面这个就可以调试了<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Flutter%E5%88%86%E4%BA%AB.resources/2023/09/18/16-04-29-70dcdae8bb2ab83b9caf4a479903142d-unknown_filename.1-7c4e32.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.1"></p>
+<h3 id="使用‘尾随逗号’"><a href="#使用‘尾随逗号’" class="headerlink" title="使用‘尾随逗号’"></a>使用‘尾随逗号’</h3><p>Flutter代码通常涉及构建相当深的树状数据结构，例如在一个build方法中。 为了获得良好的自动格式化，我们建议您采用可选的尾部逗号。添加尾随逗号很简单：始终在函数、方法和构造函数的参数列表末尾添加尾随逗号，以便保留您的编码格式。 这将有助于自动格式化程序为Flutter样式代码插入适当的换行符。<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Flutter%E5%88%86%E4%BA%AB.resources/2023/09/18/16-04-29-33a45fb9c21b02a3c3d426222e90433c-unknown_filename.2-f5e831.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.2"></p>
+<h3 id="两个好用的图片插件"><a href="#两个好用的图片插件" class="headerlink" title="两个好用的图片插件"></a>两个好用的图片插件</h3><p>FlutterQuickLocateAsset<br>FlutterAssetAutoCompletion</p>
+<h3 id="使用自定义模板"><a href="#使用自定义模板" class="headerlink" title="使用自定义模板"></a>使用自定义模板</h3><p>提高开发效率<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Flutter%E5%88%86%E4%BA%AB.resources/2023/09/18/16-04-29-603dea0f15cbf2b8f4276c93a057db06-unknown_filename.8-395c38.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.8"><br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Flutter%E5%88%86%E4%BA%AB.resources/2023/09/18/16-04-29-ee8e403c6ab9790340a9eba9a168b4c9-unknown_filename.7-4c0965.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.7"></p>
+<h2 id="Flutter与原生通信"><a href="#Flutter与原生通信" class="headerlink" title="Flutter与原生通信"></a>Flutter与原生通信</h2><p><a target="_blank" rel="noopener" href="https://flutter.cn/docs/development/add-to-app">将 Flutter 集成到现有应用</a></p>
+<p><a target="_blank" rel="noopener" href="https://learnku.com/articles/32448">Flutter 与 Android 的相互通信</a></p>
+<p>可以从Native层调用flutter层的dart代码，也可以在flutter层调用Native的代码，而作为通讯桥梁就是MethodChannel，这个类在初始化的时候需要注册一个渠道值。这个值必须是唯一的，并且在使用到的Native层和Flutter层互相对应。</p>
+<p><strong>flutter调用Android</strong><br>注册</p>
+<figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs aspectj"><span class="hljs-keyword">static</span> <span class="hljs-keyword">const</span> nativeChannel =<br>      <span class="hljs-function"><span class="hljs-keyword">const</span> <span class="hljs-title">MethodChannel</span><span class="hljs-params">(<span class="hljs-string">&#x27;com.example.flutter/native&#x27;</span>)</span></span>;<br></code></pre></td></tr></table></figure>
+<p>flutter</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs dart"><span class="hljs-built_in">Map</span>&lt;<span class="hljs-built_in">String</span>, <span class="hljs-built_in">dynamic</span>&gt; result = &#123;<span class="hljs-string">&#x27;message&#x27;</span>: <span class="hljs-string">&#x27;我从Flutter页面回来了&#x27;</span>&#125;;<br>              nativeChannel.invokeMethod(<span class="hljs-string">&#x27;goBackWithResult&#x27;</span>, result);<br></code></pre></td></tr></table></figure>
+<p>Android</p>
+<figure class="highlight livescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs livescript">MethodChannel nativeChannel = <span class="hljs-keyword">new</span> MethodChannel(flutterEngine.getDartExecutor(), CHANNEL_NATIVE);<br>       nativeChannel.setMethodCallHandler<span class="hljs-function"><span class="hljs-params">((methodCall, result) -&gt; &#123;</span></span><br><span class="hljs-params"><span class="hljs-function">           <span class="hljs-keyword">switch</span> (methodCall.method) &#123;</span></span><br><span class="hljs-params"><span class="hljs-function">               <span class="hljs-regexp">//回调</span></span></span><br><span class="hljs-regexp"><span class="hljs-params"><span class="hljs-function">           case &quot;goBackWithResult&quot;:</span></span></span><br><span class="hljs-regexp"><span class="hljs-params"><span class="hljs-function">                   //</span> 返回上一页，携带数据</span></span><br><span class="hljs-params"><span class="hljs-function">                   ActivityManager.getInstance().finishActivity(FlutterActivity.<span class="hljs-keyword">class</span>);</span></span><br><span class="hljs-params"><span class="hljs-function">                   Toast.makeText(this, (<span class="hljs-built_in">String</span>) methodCall.argument(<span class="hljs-string">&quot;message&quot;</span>), Toast.LENGTH_SHORT).show();</span></span><br><span class="hljs-params"><span class="hljs-function">                   <span class="hljs-keyword">break</span>;</span></span><br><span class="hljs-params"><span class="hljs-function">               <span class="hljs-keyword">case</span> <span class="hljs-string">&quot;getSendParams&quot;</span>:</span></span><br><span class="hljs-params"><span class="hljs-function">                   result.success(getSendParams());</span></span><br><span class="hljs-params"><span class="hljs-function">                   <span class="hljs-keyword">break</span>;</span></span><br><span class="hljs-params"><span class="hljs-function">               <span class="hljs-keyword">default</span>:</span></span><br><span class="hljs-params"><span class="hljs-function">                   result.notImplemented();</span></span><br><span class="hljs-params"><span class="hljs-function">                   <span class="hljs-keyword">break</span>;</span></span><br><span class="hljs-params"><span class="hljs-function">           &#125;</span></span><br><span class="hljs-params"><span class="hljs-function">       &#125;)</span>;</span><br><span class="hljs-function">    </span><br></code></pre></td></tr></table></figure>
+
+<p>异步</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs csharp"><span class="hljs-function">Future <span class="hljs-title">getSendParams</span>() <span class="hljs-keyword">async</span></span> &#123;<br>   String <span class="hljs-keyword">params</span> = <span class="hljs-keyword">await</span> _SendFeedBackState.nativeChannel<br>       .invokeMethod(<span class="hljs-string">&#x27;getSendParams&#x27;</span>, <span class="hljs-string">&quot;&quot;</span>);<br>   print(<span class="hljs-string">&quot;getSendParams：&quot;</span> + <span class="hljs-keyword">params</span>);<br> &#125;<br></code></pre></td></tr></table></figure>
+<p><strong>Android调用flutter</strong><br>Android</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs dart"><span class="hljs-built_in">Map</span>&lt;<span class="hljs-built_in">String</span>, <span class="hljs-built_in">Object</span>&gt; result = <span class="hljs-keyword">new</span> HashMap&lt;&gt;();<br>result.put(<span class="hljs-string">&quot;message&quot;</span>, message);<br><span class="hljs-comment">// 创建MethodChannel</span><br>MethodChannel flutterChannel = <span class="hljs-keyword">new</span> MethodChannel(flutterEngine.getDartExecutor(), CHANNEL_FLUTTER);<br>flutterChannel.invokeMethod(<span class="hljs-string">&quot;onActivityResult&quot;</span>, result);<br></code></pre></td></tr></table></figure>
+<p>flutter<br>setMethodCallHandler</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs csharp">@override<br><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">initState</span>()</span> &#123;<br>  super.initState();<br>  <span class="hljs-function">Future&lt;<span class="hljs-built_in">dynamic</span>&gt; <span class="hljs-title">handler</span>(<span class="hljs-params">MethodCall call</span>) <span class="hljs-keyword">async</span></span> &#123;<br>    <span class="hljs-keyword">switch</span> (call.method) &#123;<br>      <span class="hljs-keyword">case</span> <span class="hljs-string">&#x27;onActivityResult&#x27;</span>:<br>        Fluttertoast.showToast(<br>          msg: call.arguments[<span class="hljs-string">&#x27;message&#x27;</span>],<br>          toastLength: Toast.LENGTH_SHORT,<br>        );<br>        <span class="hljs-keyword">break</span>;<br>      <span class="hljs-keyword">case</span> <span class="hljs-string">&#x27;goBack&#x27;</span>:<br>        <span class="hljs-comment">// 返回上一页</span><br>        <span class="hljs-keyword">if</span> (Navigator.canPop(context)) &#123;<br>          Navigator.of(context).pop();<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>          nativeChannel.invokeMethod(<span class="hljs-string">&#x27;goBack&#x27;</span>);<br>        &#125;<br>        <span class="hljs-keyword">break</span>;<br>    &#125;<br>  &#125;<br>    <br>  flutterChannel.setMethodCallHandler(handler);<br>&#125;<br>    <br></code></pre></td></tr></table></figure>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%85%B6%E4%BB%96%E8%AF%AD%E8%A8%80/" class="category-chain-item">其他语言</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E5%85%B6%E4%BB%96%E8%AF%AD%E8%A8%80/flutter/" class="category-chain-item">flutter</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Flutter分享</div>
+      <div>http://peiniwan.github.io/2024/03/a84e686d410e.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>六月的雨</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年3月27日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/03/007ae791338f.html" title="flutter基础知识">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">flutter基础知识</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/03/0755d2474793.html" title="Flutter上传Maven">
+                        <span class="hidden-mobile">Flutter上传Maven</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"OwNIdaopOn1rwNhtotGOGC0B-gzGzoHsz","appKey":"eadytQ2XqWmxuvAKeg08XX83","path":"window.location.pathname","placeholder":null,"avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":true,"recordIP":false,"serverURLs":"https://ownidaop.lc-cn-n1-shared.com","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
