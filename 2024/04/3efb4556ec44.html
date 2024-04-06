@@ -1,0 +1,748 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="六月的雨">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="协程概念协程就是一个线程。协程原理：https:&#x2F;&#x2F;juejin.cn&#x2F;post&#x2F;7212311942613385253#heading-15 速通协程，一步到位！ 协程就像非常轻量级的线程。线程是由系统调度的，线程切换或线程阻塞的开销都比较大。而协程依赖于线程，但是协程挂起时不需要阻塞线程，几乎是无代价的，协程是由开发者控制的。所以协程也像用户态的线程，非常轻量级，一个线程中可以创建任意个协程。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Kotlin 协程总结">
+<meta property="og:url" content="http://peiniwan.github.io/2024/04/3efb4556ec44.html">
+<meta property="og:site_name" content="六月的雨的笔记">
+<meta property="og:description" content="协程概念协程就是一个线程。协程原理：https:&#x2F;&#x2F;juejin.cn&#x2F;post&#x2F;7212311942613385253#heading-15 速通协程，一步到位！ 协程就像非常轻量级的线程。线程是由系统调度的，线程切换或线程阻塞的开销都比较大。而协程依赖于线程，但是协程挂起时不需要阻塞线程，几乎是无代价的，协程是由开发者控制的。所以协程也像用户态的线程，非常轻量级，一个线程中可以创建任意个协程。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/picgo/picgo-clipboard-images/2023-11-02-15-31-f3a0ffa7b6019db988a83b77f74413a5-20231102153132-1cbeac.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/picgo/picgo-clipboard-images/2024-02-27-10-33-7bed385d8dfc63049957bd0f6cdab6bf-2023-11-02-15-31-7bed385d8dfc63049957bd0f6cdab6bf-20231102153105-ee1de2-8440a7.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/picgo/picgo-clipboard-images/2023-11-02-15-14-da635fd5d098d7b09773a389da90ca66-20231102151441-5b46bf.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/picgo/picgo-clipboard-images/2023-11-02-15-14-9feb2c5557b78e9b8ca7195a7ee4f857-20231102151456-63b0a3.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/picgo/picgo-clipboard-images/2023-11-02-15-15-c1d0fb9b56e09b5a885e9a01ad0b2dcb-20231102151508-7ff5af.png">
+<meta property="article:published_time" content="2024-04-06T08:42:06.376Z">
+<meta property="article:modified_time" content="2024-03-13T06:23:00.000Z">
+<meta property="article:author" content="六月的雨">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/picgo/picgo-clipboard-images/2023-11-02-15-31-f3a0ffa7b6019db988a83b77f74413a5-20231102153132-1cbeac.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>Kotlin 协程总结 - 六月的雨的笔记</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"peiniwan.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>六月的雨的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Kotlin 协程总结"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-04-06 16:42" pubdate>
+          2024年4月6日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.5k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          13 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Kotlin 协程总结</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="协程概念"><a href="#协程概念" class="headerlink" title="协程概念"></a>协程概念</h2><p>协程就是一个线程。<br>协程原理：<br><a target="_blank" rel="noopener" href="https://juejin.cn/post/7212311942613385253#heading-15">https://juejin.cn/post/7212311942613385253#heading-15</a> <br><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/KOdJ4IHpa874nyJgOeqG7Q">速通协程，一步到位！</a></p>
+<p>协程就像非常轻量级的线程。线程是由系统调度的，线程切换或线程阻塞的开销都比较大。而协程依赖于线程，但是协程挂起时不需要阻塞线程，几乎是无代价的，协程是由开发者控制的。所以协程也像用户态的线程，非常轻量级，一个线程中可以创建任意个协程。</p>
+<p>协程很重要的一点就是当它挂起的时候，它不会阻塞其他线程。<em>协程底层库也是异步处理阻塞任务，但是这些复杂的操作被底层库封装起来</em>，协程代码的程序流是顺序的，不再需要一堆的回调函数，就像同步代码一样，也便于理解、调试和开发。它是可控的，线程的执行和结束是由操作系统调度的，而协程可以手动控制它的执行和结束。其实就是协程自己加了回调</p>
+<p>协程可以理解为协程各自在各自的线程上，且线程不同。其实<em>如果多个协程共用一个线程，其实它们之间也就没有线程并发</em>问题了</p>
+<h2 id="为什么需要-Kotlin-协程"><a href="#为什么需要-Kotlin-协程" class="headerlink" title="为什么需要 Kotlin 协程"></a>为什么需要 Kotlin 协程</h2><p>提供方便的线程操作API，编写逻辑清晰且简洁的线程代码。<br>协程是Google在 Android 上进行异步编程的推荐解决方案。具有如下特点：</p>
+<p>轻量：您可以在单个线程上运行多个协程，因为协程支持挂起，不会使正在运行协程的线程阻塞。挂起比阻塞节省内存，且支持多个并行操作。</p>
+<p>内存泄漏更少：使用结构化并发机制在一个作用域内执行多项操作。<br>内置取消支持：取消操作会自动在运行中的整个协程层次结构内传播。<br>Jetpack 集成：许多 Jetpack 库都包含提供全面协程支持的扩展。某些库还提供自己的协程作用域，可供您用于结构化并发</p>
+<p>好文章：<a target="_blank" rel="noopener" href="https://blog.csdn.net/poorkick/article/details/112131961?spm=1001.2014.3001.5501">https://blog.csdn.net/poorkick/article/details/112131961?spm=1001.2014.3001.5501</a></p>
+<h2 id="什么时候用协程"><a href="#什么时候用协程" class="headerlink" title="什么时候用协程"></a>什么时候用协程</h2><p>当你需要切线程或者指定线程的时候。你要在后台执行任务<br>好处：有回调，像同步的方式写异步代码</p>
+<ol>
+<li>并发实现方便</li>
+<li>没有回调嵌套发生, 代码结构清晰</li>
+</ol>
+<h2 id="suspend"><a href="#suspend" class="headerlink" title="suspend"></a>suspend</h2><p><em>挂起函数在执行完成之后，协程会重新切回它原先的线程</em>。<br>挂起，挂起函数在执行完成之后一个稍后会被自动切回来的线程调度操作。</p>
+<p>代码执行到 suspend 函数的时候会『挂起』，并且这个『挂起』是非阻塞式的，它不会阻塞你当前的线程<br>「切回来」就类似于协程会帮我再 post 一个 Runnable，让我剩下的代码继续回到主线程去执行。<br>这个函数实质上并没有发生挂起，那你这个 <em>suspend 关键字只有一个效果：就是限制这个函数只能在协程里被调用</em>，如果在非协程的代码中调用，就会编译不通过。</p>
+<p>正确用法：给函数加上 suspend 关键字，然后在 withContext 把函数的内容包住就可以了。</p>
+<h3 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h3><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs kotlin">GlobalScope.launch(Dispatchers.Main) &#123;<br>  <span class="hljs-keyword">val</span> image = suspendingGetImage(imageId)  <span class="hljs-comment">// 获取图片</span><br>  avatarIv.setImageBitmap(image)           <span class="hljs-comment">// 显示出来</span><br>&#125;<br>  <br><span class="hljs-keyword">suspend</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">suspendingGetImage</span><span class="hljs-params">(id: <span class="hljs-type">String</span>)</span></span> = withContext(Dispatchers.IO) &#123; ...&#125;<br></code></pre></td></tr></table></figure>
+
+
+<h2 id="await"><a href="#await" class="headerlink" title="await"></a>await</h2><p>await() 不会阻塞主线程，只是会挂起协程，当requestData()执行完返回结果后，processData()的逻辑会恢复执行</p>
+<h2 id="withContext"><a href="#withContext" class="headerlink" title="withContext"></a>withContext</h2><p>这个函数可以切换到指定的线程，并在闭包内的逻辑执行结束之后，自动把线程切回去继续执行<br>withContext 会阻塞上下文线程</p>
+<h2 id="二种启动"><a href="#二种启动" class="headerlink" title="二种启动"></a>二种启动</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/launch.html">launch</a> 可启动新协程而不将结果返回给调用方。任何被视为“一劳永逸”的工作都可以使用 launch 来启动。    </li>
+<li><a target="_blank" rel="noopener" href="https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/async.html">async</a>会启动一个新的协程，并允许您使用一个名为 await 的暂停函数返回结果。</li>
+</ul>
+<h2 id="串行并行"><a href="#串行并行" class="headerlink" title="串行并行"></a>串行并行</h2><p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/picgo/picgo-clipboard-images/2023-11-02-15-31-f3a0ffa7b6019db988a83b77f74413a5-20231102153132-1cbeac.png" srcset="/img/loading.gif" lazyload alt="image.png|600"></p>
+<h1 id="Job"><a href="#Job" class="headerlink" title="Job"></a>Job</h1><p><a target="_blank" rel="noopener" href="https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/-job/index.html">Job</a> 是协程的句柄。使用 launch 或 async 创建的每个协程都会返回一个 Job 实例，<strong>该实例唯一标识协程并管理其生命周期</strong>。您还可以将 Job 传递给 CoroutineScope 以进一步管理其生命周期 (关闭)</p>
+<h2 id="SupervisorJob"><a href="#SupervisorJob" class="headerlink" title="SupervisorJob"></a>SupervisorJob</h2><p>用 SupervisorJob 替代 Job，SupervisorJob 与 Job 基本类似，<strong>区别在于不会被子协程的异常所影响</strong>。</p>
+<h3 id="处理协程异常"><a href="#处理协程异常" class="headerlink" title="处理协程异常"></a>处理协程异常</h3><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/sunluyao_/article/details/106233575">如何优雅的处理协程的异常？</a><br> 不会影响其他，SupervisorJob 让协程自己处理异常。与之相反的，<strong>Job 会传播异常，所以 catch 代码块不会被调用</strong>。</p>
+<figure class="highlight isbl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs isbl"><span class="hljs-variable">launch</span> &#123;<br>    <span class="hljs-variable">supervisorScope</span> &#123;<br>        <span class="hljs-variable">val</span> <span class="hljs-variable">task</span> = <span class="hljs-variable">async</span> &#123;<br>            <span class="hljs-function"><span class="hljs-title">methodThatThrowsException</span>()</span><br>        &#125;<br>        <span class="hljs-variable"><span class="hljs-keyword">try</span></span> &#123;<br>            <span class="hljs-function"><span class="hljs-title">updateUI</span>(<span class="hljs-string">&quot;Ok $&#123;task.await()&#125;&quot;</span>)</span><br>        &#125; <span class="hljs-variable">catch</span> (<span class="hljs-variable">e</span>: <span class="hljs-variable">Throwable</span>) &#123;<br>            <span class="hljs-function"><span class="hljs-title">showError</span>(<span class="hljs-string">&quot;Erro! $&#123;e.message&#125;&quot;</span>)</span><br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/picgo/picgo-clipboard-images/2024-02-27-10-33-7bed385d8dfc63049957bd0f6cdab6bf-2023-11-02-15-31-7bed385d8dfc63049957bd0f6cdab6bf-20231102153105-ee1de2-8440a7.png" srcset="/img/loading.gif" lazyload alt="image.png|800|600"></p>
+<h2 id="Coroutine"><a href="#Coroutine" class="headerlink" title="Coroutine"></a>Coroutine</h2><p>Coroutine Scope    &#x2F;ˈkəʊruːˌtiːn&#x2F; <br>CoroutineScope是<strong>协程作用域，其内部本身就含有一个CoroutineContext线程，默认是主线程</strong>。</p>
+<p>而CoroutineContext则是在协程作用域中执行的线程切换。<br><a target="_blank" rel="noopener" href="https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/-coroutine-scope/">CoroutineScope</a> 会跟踪它使用 launch 或 async 创建的所有协程。您可以随时调用 scope.cancel() 以取消正在进行的工作（即正在运行的协程）。</p>
+<h3 id="viewModelScope"><a href="#viewModelScope" class="headerlink" title="viewModelScope"></a>viewModelScope</h3><figure class="highlight fsharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs fsharp">   <span class="hljs-keyword">private</span> <span class="hljs-keyword">val</span> viewModelScope<span class="hljs-operator">:</span> CoroutineScope by <span class="hljs-keyword">lazy</span> &#123;<br>        CoroutineScope(SupervisorJob() <span class="hljs-operator">+</span> Dispatchers.Main)<br>    &#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="Dispatchers"><a href="#Dispatchers" class="headerlink" title="Dispatchers"></a>Dispatchers</h3><ul>
+<li>Dispatchers.Main：Android 中的主线程</li>
+<li>Dispatchers.IO：针对磁盘和网络 IO 进行了优化，适合 IO 密集型的任务，比如：读写文件，操作数据库以及网络请求</li>
+<li>Dispatchers.Default：适合 CPU 密集型的任务，比如计算</li>
+</ul>
+<h2 id="不阻塞怎么实现"><a href="#不阻塞怎么实现" class="headerlink" title="不阻塞怎么实现"></a>不阻塞怎么实现</h2><p>我们要保证不阻塞,同时又要是同步式写法，该怎样做呢？异步回调callback是一种不阻塞的方式，或许协程底层也是这种实现方式（除此之外我不知道有什么不阻塞的底层实现方式），只不过外层帮我们封装成现在的同步式写法了。</p>
+<h2 id="普通接口回调改成协程"><a href="#普通接口回调改成协程" class="headerlink" title="普通接口回调改成协程"></a>普通接口回调改成协程</h2><p>在 await 函数的挂起结束以后，它会调用 continuation 参数的 resumeWith 函数，来恢复执行 await 函数后面的代码。</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/picgo/picgo-clipboard-images/2023-11-02-15-14-da635fd5d098d7b09773a389da90ca66-20231102151441-5b46bf.png" srcset="/img/loading.gif" lazyload alt="image.png|600"><br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/picgo/picgo-clipboard-images/2023-11-02-15-14-9feb2c5557b78e9b8ca7195a7ee4f857-20231102151456-63b0a3.png" srcset="/img/loading.gif" lazyload alt="image.png|600"><br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/picgo/picgo-clipboard-images/2023-11-02-15-15-c1d0fb9b56e09b5a885e9a01ad0b2dcb-20231102151508-7ff5af.png" srcset="/img/loading.gif" lazyload alt="image.png|600"></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%85%B6%E4%BB%96%E8%AF%AD%E8%A8%80/" class="category-chain-item">其他语言</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E5%85%B6%E4%BB%96%E8%AF%AD%E8%A8%80/kotlin/" class="category-chain-item">kotlin</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Kotlin 协程总结</div>
+      <div>http://peiniwan.github.io/2024/04/3efb4556ec44.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>六月的雨</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年4月6日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/04/1fb25707496d.html" title="kotlin、Lambda">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">kotlin、Lambda</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/04/f4681759db4b.html" title="Jetpack">
+                        <span class="hidden-mobile">Jetpack</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"OwNIdaopOn1rwNhtotGOGC0B-gzGzoHsz","appKey":"eadytQ2XqWmxuvAKeg08XX83","path":"window.location.pathname","placeholder":null,"avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":true,"recordIP":false,"serverURLs":"https://ownidaop.lc-cn-n1-shared.com","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

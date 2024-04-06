@@ -1,0 +1,936 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="六月的雨">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="【教程】从gitee或者github，下载单个文件或文件夹命令_gitee如何只下载仓库中的一个文件夹-CSDN博客 中央式 Git是分布式：不用网也能提交。在家提交HEAD 也是引用，但它不是 branch，它代表了当前所处的位置git checkout -b  feature&#x2F;修复bug-1.4  c6076c30  恢复删除的分支 https:&#x2F;&#x2F;pcottle.github.co">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Git 命令清单">
+<meta property="og:url" content="http://peiniwan.github.io/2024/04/dadf0d29bcdb.html">
+<meta property="og:site_name" content="六月的雨的笔记">
+<meta property="og:description" content="【教程】从gitee或者github，下载单个文件或文件夹命令_gitee如何只下载仓库中的一个文件夹-CSDN博客 中央式 Git是分布式：不用网也能提交。在家提交HEAD 也是引用，但它不是 branch，它代表了当前所处的位置git checkout -b  feature&#x2F;修复bug-1.4  c6076c30  恢复删除的分支 https:&#x2F;&#x2F;pcottle.github.co">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/picgo/picgo-clipboard-images/2023/09/18/10-52-26-a96395664d5dee35419a3d9175c5e0da-20230918105225-1219f0.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/picgo/picgo-clipboard-images/2023/09/18/10-52-51-b9e48fe6cd76b3294632860763e7b8be-20230918105250-e9795f.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/picgo/picgo-clipboard-images/2023/09/18/10-53-08-9b7bd1a829b090dadc9b02251394e025-20230918105306-eab726.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/picgo/picgo-clipboard-images/2023/09/18/10-53-24-b8ee55330af081ef7ddcf45d07c4e788-20230918105322-953087.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/picgo/picgo-clipboard-images/2023/09/18/15-13-29-526697dc99452183549c71c8e0fb24a7-20230918151327-d80d2e.png">
+<meta property="article:published_time" content="2024-04-06T08:42:06.836Z">
+<meta property="article:modified_time" content="2024-03-13T06:59:00.000Z">
+<meta property="article:author" content="六月的雨">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/picgo/picgo-clipboard-images/2023/09/18/10-52-26-a96395664d5dee35419a3d9175c5e0da-20230918105225-1219f0.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>Git 命令清单 - 六月的雨的笔记</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"peiniwan.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>六月的雨的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Git 命令清单"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-04-06 16:42" pubdate>
+          2024年4月6日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.1k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          18 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Git 命令清单</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_62848089/article/details/135208087">【教程】从gitee或者github，下载单个文件或文件夹命令_gitee如何只下载仓库中的一个文件夹-CSDN博客</a></p>
+<p>中央式</p>
+<p>Git是分布式：不用网也能提交。在家提交<br>HEAD 也是引用，但它不是 branch，它代表了当前所处的位置<br>git checkout -b  feature&#x2F;修复bug-1.4  c6076c30  恢复删除的分支</p>
+<p><a target="_blank" rel="noopener" href="https://pcottle.github.com/learnGitBranching/">https://pcottle.github.com/learnGitBranching/</a><br>git clone慢可以关联到码云上边，然后修改<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/picgo/picgo-clipboard-images/2023/09/18/10-52-26-a96395664d5dee35419a3d9175c5e0da-20230918105225-1219f0.png" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<p>带origin &#x2F;mater都是远程的，head指向不同的本地分支，指不了origin</p>
+<p>代码审查<br>使用 github：先创建 pull request，在同事审阅完成之后，通过按钮实现在线merge<br>pull request 是什么：是开发者对远端仓库的提出的「拉取某个 branch」的请求</p>
+<h2 id="Git常用命令"><a href="#Git常用命令" class="headerlink" title="Git常用命令"></a>Git常用命令</h2><p>git status<br>$ git config –global <a target="_blank" rel="noopener" href="http://user.name/">user.name</a> liuyu  设置本地名字<br>git merge dev<br>git fetch  刷新远程分支</p>
+<h2 id="管理远程仓库"><a href="#管理远程仓库" class="headerlink" title="管理远程仓库"></a>管理远程仓库</h2><p>git init<br>git remote add origin <a target="_blank" rel="noopener" href="https://github.com/peiniwan/framework.git">https://github.com/peiniwan/framework.git</a><br>git push -u origin master</p>
+<blockquote>
+<p>    git config –global user.email “<a href="mailto:liuyu@alli.cn">liu@allinmd.cn</a>“<br>    git config –global user.name “liu”</p>
+</blockquote>
+<p>Cherry pick 把某一条commit合到另一个分支</p>
+<h2 id="git-merge-与-git-rebase-的区别"><a href="#git-merge-与-git-rebase-的区别" class="headerlink" title="git merge 与 git rebase 的区别"></a>git merge 与 git rebase 的区别</h2><p>merge<br>切换到其他分支，合并到某个分支</p>
+<p>当 Git 不知道怎么合并某两处冲突的修改时，会中断自动合并，并对冲突文件进行标<br>记。解决方法：</p>
+<ol>
+<li>把文件手动修改好</li>
+<li>把修改的内容使用 add 来添加进暂存区</li>
+<li>用 git merge –continue 来继续自动合并流程</li>
+</ol>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/picgo/picgo-clipboard-images/2023/09/18/10-52-51-b9e48fe6cd76b3294632860763e7b8be-20230918105250-e9795f.png" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<p>rebase<br><strong>在当前分支里可以，合并到某个分支</strong><br>把当前 commit（以及它之前的 commits）放应用到指定的需要 rebase 的 commit上。<br>Git 中的每一个 commit 都是不会改变的，所以 rebase 之后的每个 commit 都是新产生的，而不是对原先的 commit 进行「修改」rebase 冲突</p>
+<p>rebase 的冲突解决方法和 merge 冲突一样，只是把 git merge –continue 改成 git rebase –continue 就行了<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/picgo/picgo-clipboard-images/2023/09/18/10-53-08-9b7bd1a829b090dadc9b02251394e025-20230918105306-eab726.png" srcset="/img/loading.gif" lazyload alt="image.png"><br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/picgo/picgo-clipboard-images/2023/09/18/10-53-24-b8ee55330af081ef7ddcf45d07c4e788-20230918105322-953087.png" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<p>git push –tags  推送tag<br>回滚<br>git reset –hard &lt;版本号&gt; </p>
+<p>&#x2F;&#x2F; 注意使用 –hard 参数会抛弃当前工作区的修改 &#x2F;&#x2F; 使用 –soft 参数的话会回退到之前的版本，但是保留当前工作区的修改，可以重新提交</p>
+<p>git push origin &lt;分支名&gt;<br>git push origin &lt;分支名&gt; –force</p>
+<h1 id="常用-Git-命令清单"><a href="#常用-Git-命令清单" class="headerlink" title="常用 Git 命令清单"></a>常用 Git 命令清单</h1><p>我每天使用 Git ，但是很多命令记不住。</p>
+<p>一般来说，日常使用只要记住下图6个命令，就可以了。但是熟练使用，恐怕要记住60～100个命令。</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/picgo/picgo-clipboard-images/2023/09/18/15-13-29-526697dc99452183549c71c8e0fb24a7-20230918151327-d80d2e.png" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<p>下面是我整理的常用 Git 命令清单。几个专用名词的译名如下。</p>
+<blockquote>
+<ul>
+<li><p>Workspace：工作区</p>
+</li>
+<li><p>Index &#x2F; Stage：暂存区</p>
+</li>
+<li><p>Repository：仓库区（或本地仓库）</p>
+</li>
+<li><p>Remote：远程仓库</p>
+</li>
+</ul>
+</blockquote>
+<h2 id="一、新建代码库"><a href="#一、新建代码库" class="headerlink" title="一、新建代码库"></a>一、新建代码库</h2><blockquote>
+<p><code># 在当前目录新建一个Git代码库</code></p>
+<p>$ git init</p>
+<p><code># 新建一个目录，将其初始化为Git代码库</code></p>
+<p>$ git init [project-name]</p>
+<p><code># 下载一个项目和它的整个代码历史</code></p>
+<p>$ git clone [url]</p>
+</blockquote>
+<h2 id="二、配置"><a href="#二、配置" class="headerlink" title="二、配置"></a>二、配置</h2><p>Git的设置文件为.gitconfig，它可以在用户主目录下（全局配置），也可以在项目目录下（项目配置）。</p>
+<blockquote>
+<p><code># 显示当前的Git配置</code></p>
+<p>$ git config –list</p>
+<p><code># 编辑Git配置文件</code></p>
+<p>$ git config -e [–global]</p>
+<p><code># 设置提交代码时的用户信息</code></p>
+<p>$ git config [–global] user.name “[name]”</p>
+<p>$ git config [–global] user.email “[email address]”</p>
+</blockquote>
+<h2 id="三、增加-删除文件"><a href="#三、增加-删除文件" class="headerlink" title="三、增加&#x2F;删除文件"></a>三、增加&#x2F;删除文件</h2><blockquote>
+<p><code># 添加指定文件到暂存区</code></p>
+<p>$ git add [file1] [file2] …</p>
+<p><code># 添加指定目录到暂存区，包括子目录</code></p>
+<p>$ git add [dir]</p>
+<p><code># 添加当前目录的所有文件到暂存区</code></p>
+<p>$ git add .</p>
+<p><code># 添加每个变化前，都会要求确认</code></p>
+<p><code># 对于同一个文件的多处变化，可以实现分次提交</code></p>
+<p>$ git add -p</p>
+<p><code># 删除工作区文件，并且将这次删除放入暂存区</code></p>
+<p>$ git rm [file1] [file2] …</p>
+<p><code># 停止追踪指定文件，但该文件会保留在工作区</code></p>
+<p>$ git rm –cached [file]</p>
+<p><code># 改名文件，并且将这个改名放入暂存区</code></p>
+<p>$ git mv [file-original] [file-renamed]</p>
+</blockquote>
+<h2 id="四、代码提交"><a href="#四、代码提交" class="headerlink" title="四、代码提交"></a>四、代码提交</h2><blockquote>
+<p><code># 提交暂存区到仓库区</code></p>
+<p>$ git commit -m [message]</p>
+<p><code># 提交暂存区的指定文件到仓库区</code></p>
+<p>$ git commit [file1] [file2] … -m [message]</p>
+<p><code># 提交工作区自上次commit之后的变化，直接到仓库区</code></p>
+<p>$ git commit -a</p>
+<p><code># 提交时显示所有diff信息</code></p>
+<p>$ git commit -v</p>
+<p><code># 使用一次新的commit，替代上一次提交</code></p>
+<p><code># 如果代码没有任何新变化，则用来改写上一次commit的提交信息</code></p>
+<p>$ git commit –amend -m [message]</p>
+<p><code># 重做上一次commit，并包括指定文件的新变化</code></p>
+<p>$ git commit –amend [file1] [file2] …</p>
+</blockquote>
+<h2 id="五、分支"><a href="#五、分支" class="headerlink" title="五、分支"></a>五、分支</h2><blockquote>
+<p><code># 列出所有本地分支</code></p>
+<p>$ git branch</p>
+<p><code># 列出所有远程分支</code></p>
+<p>$ git branch -r</p>
+<p><code># 列出所有本地分支和远程分支</code></p>
+<p>$ git branch -a</p>
+<p><code># 新建一个分支，但依然停留在当前分支</code></p>
+<p>$ git branch [branch-name]</p>
+<p><code># 新建一个分支，并切换到该分支</code></p>
+<p>$ git checkout -b [branch]</p>
+<p><code># 新建一个分支，指向指定commit</code></p>
+<p>$ git branch [branch] [commit]</p>
+<p><code># 新建一个分支，与指定的远程分支建立追踪关系</code></p>
+<p>$ git branch –track [branch] [remote-branch]</p>
+<p><code># 切换到指定分支，并更新工作区</code></p>
+<p>$ git checkout [branch-name]</p>
+<p><code># 切换到上一个分支</code></p>
+<p>$ git checkout -</p>
+<p><code># 建立追踪关系，在现有分支与指定的远程分支之间</code></p>
+<p>$ git branch –set-upstream [branch] [remote-branch]</p>
+<p><code># 合并指定分支到当前分支</code></p>
+<p>$ git merge [branch]</p>
+<p><code># 选择一个commit，合并进当前分支</code></p>
+<p>$ git cherry-pick [commit]</p>
+<p><code># 删除分支</code></p>
+<p>$ git branch -d [branch-name]</p>
+<p><code># 删除远程分支</code></p>
+<p>$ git push origin –delete [branch-name]</p>
+<p>$ git branch -dr [remote&#x2F;branch]</p>
+</blockquote>
+<h2 id="六、标签"><a href="#六、标签" class="headerlink" title="六、标签"></a>六、标签</h2><blockquote>
+<p><code># 列出所有tag</code></p>
+<p>$ git tag</p>
+<p><code># 新建一个tag在当前commit</code></p>
+<p>$ git tag [tag]</p>
+<p><code># 新建一个tag在指定commit</code></p>
+<p>$ git tag [tag] [commit]</p>
+<p><code># 删除本地tag</code></p>
+<p>$ git tag -d [tag]</p>
+<p><code># 删除远程tag</code></p>
+<p>$ git push origin :refs&#x2F;tags&#x2F;[tagName]</p>
+<p><code># 查看tag信息</code></p>
+<p>$ git show [tag]</p>
+<p><code># 提交指定tag</code></p>
+<p>$ git push [remote] [tag]</p>
+<p><code># 提交所有tag</code></p>
+<p>$ git push [remote] –tags</p>
+<p><code># 新建一个分支，指向某个tag</code></p>
+<p>$ git checkout -b [branch] [tag]</p>
+</blockquote>
+<h2 id="七、查看信息"><a href="#七、查看信息" class="headerlink" title="七、查看信息"></a>七、查看信息</h2><blockquote>
+<p><code># 显示有变更的文件</code></p>
+<p>$ git status</p>
+<p><code># 显示当前分支的版本历史</code></p>
+<p>$ git log</p>
+<p><code># 显示commit历史，以及每次commit发生变更的文件</code></p>
+<p>$ git log –stat</p>
+<p><code># 搜索提交历史，根据关键词</code></p>
+<p>$ git log -S [keyword]</p>
+<p><code># 显示某个commit之后的所有变动，每个commit占据一行</code></p>
+<p>$ git log [tag] HEAD –pretty&#x3D;format:%s</p>
+<p><code># 显示某个commit之后的所有变动，其&quot;提交说明&quot;必须符合搜索条件</code></p>
+<p>$ git log [tag] HEAD –grep feature</p>
+<p><code># 显示某个文件的版本历史，包括文件改名</code></p>
+<p>$ git log –follow [file]</p>
+<p>$ git whatchanged [file]</p>
+<p><code># 显示指定文件相关的每一次diff</code></p>
+<p>$ git log -p [file]</p>
+<p><code># 显示过去5次提交</code></p>
+<p>$ git log -5 –pretty –oneline</p>
+<p><code># 显示所有提交过的用户，按提交次数排序</code></p>
+<p>$ git shortlog -sn</p>
+<p><code># 显示指定文件是什么人在什么时间修改过</code></p>
+<p>$ git blame [file]</p>
+<p><code># 显示暂存区和工作区的差异</code></p>
+<p>$ git diff</p>
+<p><code># 显示暂存区和上一个commit的差异</code></p>
+<p>$ git diff –cached [file]</p>
+<p><code># 显示工作区与当前分支最新commit之间的差异</code></p>
+<p>$ git diff HEAD</p>
+<p><code># 显示两次提交之间的差异</code></p>
+<p>$ git diff [first-branch]…[second-branch]</p>
+<p><code># 显示今天你写了多少行代码</code></p>
+<p>$ git diff –shortstat “@{0 day ago}”</p>
+<p><code># 显示某次提交的元数据和内容变化</code></p>
+<p>$ git show [commit]</p>
+<p><code># 显示某次提交发生变化的文件</code></p>
+<p>$ git show –name-only [commit]</p>
+<p><code># 显示某次提交时，某个文件的内容</code></p>
+<p>$ git show [commit]:[filename]</p>
+<p><code># 显示当前分支的最近几次提交</code></p>
+<p>$ git reflog</p>
+</blockquote>
+<h2 id="八、远程同步"><a href="#八、远程同步" class="headerlink" title="八、远程同步"></a>八、远程同步</h2><blockquote>
+<p><code># 下载远程仓库的所有变动</code></p>
+<p>$ git fetch [remote]</p>
+<p><code># 显示所有远程仓库</code></p>
+<p>$ git remote -v</p>
+<p><code># 显示某个远程仓库的信息</code></p>
+<p>$ git remote show [remote]</p>
+<p><code># 增加一个新的远程仓库，并命名</code></p>
+<p>$ git remote add [shortname] [url]</p>
+<p><code># 取回远程仓库的变化，并与本地分支合并</code></p>
+<p>$ git pull [remote] [branch]</p>
+<p><code># 上传本地指定分支到远程仓库</code></p>
+<p>$ git push [remote] [branch]</p>
+<p><code># 强行推送当前分支到远程仓库，即使有冲突</code></p>
+<p>$ git push [remote] –force</p>
+<p><code># 推送所有分支到远程仓库</code></p>
+<p>$ git push [remote] –all</p>
+</blockquote>
+<h2 id="九、撤销"><a href="#九、撤销" class="headerlink" title="九、撤销"></a>九、撤销</h2><blockquote>
+<p><code># 恢复暂存区的指定文件到工作区</code></p>
+<p>$ git checkout [file]</p>
+<p><code># 恢复某个commit的指定文件到暂存区和工作区</code></p>
+<p>$ git checkout [commit] [file]</p>
+<p><code># 恢复暂存区的所有文件到工作区</code></p>
+<p>$ git checkout .</p>
+<p><code># 重置暂存区的指定文件，与上一次commit保持一致，但工作区不变</code></p>
+<p>$ git reset [file]</p>
+<p><code># 重置暂存区与工作区，与上一次commit保持一致</code></p>
+<p>$ git reset –hard</p>
+<p><code># 重置当前分支的指针为指定commit，同时重置暂存区，但工作区不变</code></p>
+<p>$ git reset [commit]</p>
+<p><code># 重置当前分支的HEAD为指定commit，同时重置暂存区和工作区，与指定commit一致</code></p>
+<p>$ git reset –hard [commit]</p>
+<p><code># 重置当前HEAD为指定commit，但保持暂存区和工作区不变</code></p>
+<p>$ git reset –keep [commit]</p>
+<p><code># 新建一个commit，用来撤销指定commit</code></p>
+<p><code># 后者的所有变化都将被前者抵消，并且应用到当前分支</code></p>
+<p>$ git revert [commit]</p>
+<p><code># 暂时将未提交的变化移除，稍后再移入</code></p>
+<p>$ git stash</p>
+<p>$ git stash pop</p>
+</blockquote>
+<h2 id="十、其他"><a href="#十、其他" class="headerlink" title="十、其他"></a>十、其他</h2><blockquote>
+<p><code># 生成一个可供发布的压缩包</code></p>
+<p>$ git archive</p>
+</blockquote>
+<p>（完）</p>
+<h3 id="文档信息"><a href="#文档信息" class="headerlink" title="文档信息"></a>文档信息</h3><ul>
+<li><p>版权声明：自由转载-非商用-非衍生-保持署名（<a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc-nd/3.0/deed.zh">创意共享3.0许可证</a>）</p>
+</li>
+<li><p>发表日期： 2015年12月 9日</p>
+</li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%9C%AA%E5%88%86%E7%B1%BB/" class="category-chain-item">未分类</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Git 命令清单</div>
+      <div>http://peiniwan.github.io/2024/04/dadf0d29bcdb.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>六月的雨</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年4月6日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/04/762a08c6a935.html" title="hexo博客">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">hexo博客</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/04/7657a96dbbcd.html" title="数据结构和算法分享">
+                        <span class="hidden-mobile">数据结构和算法分享</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"OwNIdaopOn1rwNhtotGOGC0B-gzGzoHsz","appKey":"eadytQ2XqWmxuvAKeg08XX83","path":"window.location.pathname","placeholder":null,"avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":true,"recordIP":false,"serverURLs":"https://ownidaop.lc-cn-n1-shared.com","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

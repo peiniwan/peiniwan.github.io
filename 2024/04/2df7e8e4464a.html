@@ -1,0 +1,755 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="六月的雨">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="怎么排查 日志打点怕打太多也怕太少，担心出现问题没有足够丰富的信息去定位分析问题。应该打多少日志，如何去打日志并没有一个非常严格的准则，这需要整个团队在长期实践中慢慢去摸索。在最开始的时候，可能大家都不重视也不愿意去增加关键代码的日志，但是当我们通过日志平台解决了一些疑难问题以后，团队内部的成功案例越来越多的时候，这种习惯也就慢慢建立起来了。 使用 Mars 的 xlog，Java 实现写日志，G">
+<meta property="og:type" content="article">
+<meta property="og:title" content="线上问题排查">
+<meta property="og:url" content="http://peiniwan.github.io/2024/04/2df7e8e4464a.html">
+<meta property="og:site_name" content="六月的雨的笔记">
+<meta property="og:description" content="怎么排查 日志打点怕打太多也怕太少，担心出现问题没有足够丰富的信息去定位分析问题。应该打多少日志，如何去打日志并没有一个非常严格的准则，这需要整个团队在长期实践中慢慢去摸索。在最开始的时候，可能大家都不重视也不愿意去增加关键代码的日志，但是当我们通过日志平台解决了一些疑难问题以后，团队内部的成功案例越来越多的时候，这种习惯也就慢慢建立起来了。 使用 Mars 的 xlog，Java 实现写日志，G">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-04-06T08:42:06.030Z">
+<meta property="article:modified_time" content="2024-04-06T06:12:00.000Z">
+<meta property="article:author" content="六月的雨">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>线上问题排查 - 六月的雨的笔记</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"peiniwan.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>六月的雨的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="线上问题排查"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-04-06 16:42" pubdate>
+          2024年4月6日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          25 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">线上问题排查</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="怎么排查"><a href="#怎么排查" class="headerlink" title="怎么排查"></a>怎么排查</h2><ul>
+<li>日志打点怕打太多也怕太少，担心出现问题没有足够丰富的信息去定位分析问题。应该打多少日志，如何去打日志并没有一个非常严格的准则，这需要整个团队在长期实践中慢慢去摸索。在最开始的时候，可能大家都不重视也不愿意去增加关键代码的日志，但是当我们通过日志平台解决了一些疑难问题以后，团队内部的成功案例越来越多的时候，这种习惯也就慢慢建立起来了。</li>
+<li>使用 Mars 的 xlog，Java 实现写日志，GC 频繁，而 C 实现并不会出现这种情况，因为它不会占用 Java 的堆内存。</li>
+<li>使用阿里云日志采集服务</li>
+<li>俩种方式上报日志：push 上报，主动上报（在用户出现奔溃，反馈问题时主动上报日志（可以重启了上报））</li>
+<li>正因为反复“痛过”，才会有了微信的用户日志和点击流平台，才会有美团的 <strong>Logan</strong> 和 <strong>Homles</strong>（看看） 统一日志系统。所谓团队的“提质增效”，就是寻找团队中这些痛点，思考如何去改进。无论是流程的自动化，还是开发新的工具、新的平台，都是朝着这个目标前进。</li>
+</ul>
+<h3 id="永不崩溃"><a href="#永不崩溃" class="headerlink" title="永不崩溃"></a>永不崩溃</h3><p>CrashProtectManager.getInstance (this). init ();<br>可以重写 thread 的 UncaughtExceptionHandler，在这里进行全局捕获异常，正常情况崩溃了 APP 会杀死进程，捕获了就不会了。<br>点击崩溃的地方会没有响应，这是因为发生异常后，looper 退出了，而 Android 打开关闭页面、服务的开启绑定、取消等很多操作都是通过 looper 的，可以在捕获的地方发生异常后调用 Looper.loop (); 这样就不会没有响应了。可以写入文件、或者发送给服务端</p>
+<h3 id="Android-混淆后还怎么看错误"><a href="#Android-混淆后还怎么看错误" class="headerlink" title="Android 混淆后还怎么看错误"></a>Android 混淆后还怎么看错误</h3><p>保留关键信息：在混淆配置文件（通常是 <code>proguard-rules.pro</code>）中，您可以添加规则来保留某些类、方法或字段的名称，以便在混淆后的应用程序中仍然能够识别它们。例如：</p>
+<figure class="highlight axapta"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs axapta"><br>-keep <span class="hljs-keyword">class</span> <span class="hljs-title class_">android</span>.** &#123; *; &#125; <span class="hljs-comment">// 保留 android 包及其子包下的所有类和成员</span><br>-keep <span class="hljs-keyword">class</span> <span class="hljs-title class_">androidx</span>.** &#123; *; &#125; <span class="hljs-comment">// 保留 androidx 包及其子包下的所有类和成员</span><br><br>-keep <span class="hljs-keyword">class</span> <span class="hljs-title class_">com</span>.example.MyClass &#123; *; &#125; <span class="hljs-comment">// 保留 MyClass 及其成员</span><br>-keepclassmembers <span class="hljs-keyword">class</span> <span class="hljs-title class_">com</span>.example.MyClass &#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> myMethod(); <span class="hljs-comment">// 保留 MyClass 中的 myMethod 方法</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><strong>注解混淆</strong></p>
+<p>不想混淆的类需要一个个添加到 proguard-rules. pro (或 proguard. cfg) 中吗？这样会导致 proguard 配置文件变得杂乱无章，同时需要团队所有成员对其语法有所了解。<br>解决方法1：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">//新建表示统一标识的注解 NotProguard</span><br><span class="hljs-meta">@Retention(RetentionPolicy.CLASS)</span><br><span class="hljs-meta">@Target(&#123;ElementType.TYPE, ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.FIELD&#125;)</span><br><span class="hljs-keyword">public</span> <span class="hljs-meta">@interface</span> NotProguard &#123;<br> <br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<p>NotProguard 是个编译时注解，不会对运行时性能有任何影响。可修饰类、方法、构造函数、属性。<br>然后在 Proguard 配置文件中过滤被这个注解修饰的元素，表示不混淆被 NotProguard 修饰的类、属性和方法。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs java"># Keep annotated by NotProguard<br>-keep <span class="hljs-meta">@cn</span>.trinea.android.lib.annotation.NotProguard class * &#123;*;&#125;<br>-keep,allowobfuscation <span class="hljs-meta">@interface</span> cn.trinea.android.lib.annotation.NotProguard<br>-keepclassmembers class * &#123;<br>    <span class="hljs-meta">@cn</span>.trinea.android.lib.annotation.NotProguard *;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>解决方法2：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs java">## keep 不想要混淆的类<br>-keep <span class="hljs-keyword">class</span> <span class="hljs-title class_">com</span>.utils.ProguardKeep &#123;*;&#125;<br>-keep class * <span class="hljs-keyword">implements</span> <span class="hljs-title class_">com</span>.utils.ProguardKeep &#123;*;&#125;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 实现这个接口的类不会进行混淆</span><br><span class="hljs-comment"> *  proguard keep</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">interface</span> <span class="hljs-title class_">ProguardKeep</span>  &#123;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<h3 id="问题不是自己-app，怎么解决"><a href="#问题不是自己-app，怎么解决" class="headerlink" title="问题不是自己 app，怎么解决"></a>问题不是自己 app，怎么解决</h3><p>bugly 报的很多问题不是自己 app 的类，怎么解决</p>
+<ol>
+<li><p>第三方库或依赖项：Bugly 可以报告与您的应用程序相关的第三方库或依赖项中出现的问题。这可能是由于库本身的 bug、版本不兼容或配置错误等原因引起的。在这种情况下，您可以尝试更新相关的库版本，查看是否已经发布了修复此问题的更新版本。另外，您还可以尝试搜索相关问题的解决方案或在开发者社区中提问以获得帮助。</p>
+</li>
+<li><p>系统组件或操作系统问题：有时 Bugly 报告的问题可能涉及到 Android 系统组件或操作系统本身的问题。这可能是由于特定设备、Android 版本或其他环境因素导致的。在这种情况下，您可以尝试查看 Bugly 提供的详细信息，例如堆栈跟踪、设备信息等，以了解问题发生的背景。然后，您可以尝试在 Bugly 或其他社区中搜索相关问题，看是否有其他开发者遇到过类似问题，并找到解决方案或工作回避方法。</p>
+</li>
+<li><p>混淆和符号化：如果您在应用程序中使用了代码混淆（如 ProGuard）并启用了符号化配置，Bugly 报告的问题可能显示的是混淆后的类名或方法名。在这种情况下，您可以尝试使用<em>符号化映射文件</em>（mapping file）将混淆后的类名还原为原始的类名，以便更好地理解问题出现的位置和上下文。您可以通过在 Bugly 控制台中上传符号化映射文件来实现这一点。</p>
+</li>
+</ol>
+<h3 id="符号化映射文件"><a href="#符号化映射文件" class="headerlink" title="符号化映射文件"></a>符号化映射文件</h3><p>将应用程序的崩溃堆栈信息转换为可读形式的文件。它包含了应用程序的符号表（Symbol Table）信息，将编译后的函数和变量名映射回原始的源代码符号，使得崩溃日志更易于理解和分析。</p>
+<p>符号化映射文件通常在应用程序构建过程中生成，并与应用程序的发布版本一起打包。在 Android 开发中，常用的构建工具如 ProGuard 或 R8 可以生成符号化映射文件。该文件通常具有 “. mapping” 或 “. txt” 的扩展名。</p>
+<p>需要注意的是，符号化映射文件包含敏感信息，<em>如函数名和行号</em>等。因此，为了保护应用程序的安全，符号化映射文件应妥善管理，并不应该随意公开或共享。</p>
+<p>Mapping 文件的默认位置为 <code>app/build/outputs/mapping/release/mapping.txt</code></p>
+<h2 id="线上问题"><a href="#线上问题" class="headerlink" title="线上问题"></a>线上问题</h2><h3 id="RecyclerView-IndexOutOfBoundsException"><a href="#RecyclerView-IndexOutOfBoundsException" class="headerlink" title="RecyclerView IndexOutOfBoundsException"></a>RecyclerView IndexOutOfBoundsException</h3><p>java. lang. IndexOutOfBoundsException: Inconsistency detected.</p>
+<p>重现的方法是：使用 RecyclerView 加官方下拉刷新的时候，如果绑定的 List 对象在更新数据之前进行了 clear，而这时用户紧接着迅速上滑 RV，就会造成崩溃，而且异常不会报到你的代码上，属于 RV 内部错误。初次猜测是，当你 clear 了 list 之后，这时迅速上滑，而新数据还没到来，导致 RV 要更新加载下面的 Item 时候，找不到数据源了，造成 crash.<br>内外数据不一致<br>解决方法: 就是在刷新，也就是 clear 的同时，让 RecyclerView 暂时不能够滑动，之后再允许滑动即可。代码就是在 RecyclerView 初始化的时候加上是否在刷新进而拦截手势：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs java">mRecyclerView.setOnTouchListener(<br>        <span class="hljs-keyword">new</span> <span class="hljs-title class_">View</span>.OnTouchListener() &#123;<br>            <span class="hljs-meta">@Override</span><br>            <span class="hljs-keyword">public</span> <span class="hljs-type">boolean</span> <span class="hljs-title function_">onTouch</span><span class="hljs-params">(View v, MotionEvent event)</span> &#123;<br>                <span class="hljs-keyword">if</span> (mIsRefreshing) &#123;<br>                    <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;<br>                &#125; <span class="hljs-keyword">else</span> &#123;<br>                    <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;<br>                &#125;<br>            &#125;<br>        &#125;<br>);<br></code></pre></td></tr></table></figure>
+<p>有多种解决方式<br><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/073031d4b9e0">https://www.jianshu.com/p/073031d4b9e0</a><br><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/30220771/recyclerview-inconsistency-detected-invalid-item-position">https://stackoverflow.com/questions/30220771/recyclerview-inconsistency-detected-invalid-item-position</a></p>
+<p>复现步骤是，对有数据的列表刷新操作，在还未刷出数据的时候，不断的滑动，Crash。很容易理解，也就是在 Recyclerview 滑动的时候，执行 notifyDataSetChanged () 导致的。</p>
+<h3 id="IllegalStateException-Can-not-perform-this-action-after-onSaveInstanceState"><a href="#IllegalStateException-Can-not-perform-this-action-after-onSaveInstanceState" class="headerlink" title="IllegalStateException : Can not perform this action after onSaveInstanceState"></a>IllegalStateException : Can not perform this action after onSaveInstanceState</h3><p>Fragment 在显示或者隐藏，移除是出现 Can not perform this action after onSaveInstanceState  解决办法：onSaveInstanceState 方法是在该 Activity 即将被销毁前调用，来保存 Activity 数据的，如果在保存玩状态后再给它添加 Fragment 就会出错。解决办法就是把 commit（）方法替换成 commitAllowingStateLoss ()<br>commit () 和 commitAllowingStateLoss () 在实现上唯一的不同就是当你调用 commit () 的时候, FragmentManger 会检查是否已经存储了它自己的状态, 如果已经存了, 就抛出 IllegalStateException.</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs csharp">YourDialogFragment dialogFragment = <span class="hljs-keyword">new</span> YourDialogFragment(); <br>fragmentManager.beginTransaction().<span class="hljs-keyword">add</span>(dialogFragment, YourDialogFragment.TAG_FRAGMENT).<br>commitAllowingStateLoss();<br></code></pre></td></tr></table></figure>
+<h3 id="BadTokenException"><a href="#BadTokenException" class="headerlink" title="BadTokenException"></a>BadTokenException</h3><p>异常的原因都有很多种<br>UI 线程发生阻塞，导致 TN.show () 没有及时执行，当 NotificationManager 的检测超时后便会删除 WMS 中的该 token，即造成 token 失效。<br>Google 在 API26中修复了这个问题，即增加了 try-catch:<br>因此对于8.0之前的我们也需要做相同的处理。DToast 是通过反射完成这个动作，具体看下方实现：<br>对 dispatchMessage try-catch</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><code class="hljs java">    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">showToast</span><span class="hljs-params">(Context context, CharSequence cs, <span class="hljs-type">int</span> length)</span> &#123;<br>        <span class="hljs-type">Toast</span> <span class="hljs-variable">toast</span> <span class="hljs-operator">=</span> Toast.makeText(context,cs,length);<br>        hook(toast);<br>        toast.show();<br>    &#125;<br><br><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">hook</span><span class="hljs-params">(Toast toast)</span> &#123;<br>         <span class="hljs-keyword">try</span> &#123;<br>             <span class="hljs-type">Field</span> <span class="hljs-variable">sField_TN</span> <span class="hljs-operator">=</span> Toast.class.getDeclaredField(<span class="hljs-string">&quot;mTN&quot;</span>);<br>             sField_TN.setAccessible(<span class="hljs-literal">true</span>);<br>             <span class="hljs-type">Field</span> <span class="hljs-variable">sField_TN_Handler</span> <span class="hljs-operator">=</span> sField_TN.getType().getDeclaredField(<span class="hljs-string">&quot;mHandler&quot;</span>);<br>             sField_TN_Handler.setAccessible(<span class="hljs-literal">true</span>);<br><br>             <span class="hljs-type">Object</span> <span class="hljs-variable">tn</span> <span class="hljs-operator">=</span> sField_TN.get(toast);<br>             <span class="hljs-type">Handler</span> <span class="hljs-variable">preHandler</span> <span class="hljs-operator">=</span> (Handler) sField_TN_Handler.get(tn);<br>             sField_TN_Handler.set(tn, <span class="hljs-keyword">new</span> <span class="hljs-title class_">SafelyHandlerWrapper</span>(preHandler));<br>         &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;<br>             e.printStackTrace();<br>         &#125;<br>     &#125;<br><br><br>     <span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">SafelyHandlerWrapper</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Handler</span> &#123;<br>         <span class="hljs-keyword">private</span> Handler impl;<br><br>         <span class="hljs-keyword">public</span> <span class="hljs-title function_">SafelyHandlerWrapper</span><span class="hljs-params">(Handler impl)</span> &#123;<br>             <span class="hljs-built_in">this</span>.impl = impl;<br>         &#125;<br><br>         <span class="hljs-meta">@Override</span><br>         <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">dispatchMessage</span><span class="hljs-params">(Message msg)</span> &#123;<br>             <span class="hljs-keyword">try</span> &#123;<br>                 impl.dispatchMessage(msg);<br>             &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;<br>             &#125;<br>         &#125;<br><br>         <span class="hljs-meta">@Override</span><br>         <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">handleMessage</span><span class="hljs-params">(Message msg)</span> &#123;<br>             impl.handleMessage(msg);<span class="hljs-comment">//需要委托给原Handler执行</span><br>         &#125;<br>     &#125;<br><br></code></pre></td></tr></table></figure>
+
+<p><strong>另一种 BadTokenException</strong></p>
+<ul>
+<li>不能在 Activity 没有完全显示时显示 PopupWindow 和 Dialog。例如在 activity 的 onCreate 方法里面调用 popupwindow 的 show 方法，有可能由于 activity 没有完全初始化导致程序异常（android. view. WindowManager$BadTokenException: Unable to add window – token null is not valid），如果非要在一进 activity 就显示 popupwindow，用 handler. post、View. postDelay 来处理。<br>  或者获取宽高获取不到</li>
+</ul>
+<blockquote>
+<p>内部执行是通过 handler 去执行的， View. post 调用时会把 Runnable 保存到一个缓存数组中，等到 View 加载到 Window 时会调用 dispatchAttachedToWindow 方法，然后通过 handler 执行 Runnable 方法，就可以获取到他的宽高。</p>
+</blockquote>
+<p>在弹窗前先判断好当前界面是已经否被结束掉了：  if (! isFinishing ()) {  mDialog.show ();  }</p>
+<h3 id="TimeoutException"><a href="#TimeoutException" class="headerlink" title="TimeoutException"></a>TimeoutException</h3><p>在 GC 时，为了减少应用程序的停顿，会启动四个 GC 相关的守护线程，FinalizerDaemon：析构守护线程。对于重写了成员函数 finalize 的对象，它们被 GC 决定回收时，并没有马上被回收，而是被放入到一个队列中，等待 FinalizerDaemon 守护线程去调用它们的成员函数 finalize，然后再被回收。一旦检测到执行成员函数 finalize 时超出一定的时间，那么就会退出 VM。我们可以理解为 GC 超时了。这个时间默认为10s<br>解决方法：通过反射最终将 FinalizerWatchdogDaemon 中的 thread 置空，这样也就不会执行此线程，所以不会再有超时异常发生</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">final</span> <span class="hljs-type">Class</span> <span class="hljs-variable">clazz</span> <span class="hljs-operator">=</span> Class.forName(<span class="hljs-string">&quot;java.lang.Daemons$FinalizerWatchdogDaemon&quot;</span>);<br>            <span class="hljs-keyword">final</span> <span class="hljs-type">Field</span> <span class="hljs-variable">field</span> <span class="hljs-operator">=</span> clazz.getDeclaredField(<span class="hljs-string">&quot;INSTANCE&quot;</span>);<br>            field.setAccessible(<span class="hljs-literal">true</span>);<br>            <span class="hljs-keyword">final</span> <span class="hljs-type">Object</span> <span class="hljs-variable">watchdog</span> <span class="hljs-operator">=</span> field.get(<span class="hljs-literal">null</span>);<br>            <span class="hljs-keyword">try</span> &#123;<br>                <span class="hljs-keyword">final</span> <span class="hljs-type">Field</span> <span class="hljs-variable">thread</span> <span class="hljs-operator">=</span> clazz.getSuperclass().getDeclaredField(<span class="hljs-string">&quot;thread&quot;</span>);<br>                thread.setAccessible(<span class="hljs-literal">true</span>);<br>                thread.set(watchdog, <span class="hljs-literal">null</span>);**<br>            &#125; <br><br></code></pre></td></tr></table></figure>
+
+<p>许多 Android 开发者可能经常遇到这样的情况：测试的时候好好的，一上线，各种系统的 crash 就报上来了，而且很多是偶现的，比如：</p>
+<figure class="highlight lasso"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs lasso">DeadObjectException<br>RuntimeException<br>WindowManager$BadTokenException<br>Resources. NotFoundException<br>NullPointerException<br>SecurityException<br>IllegalArgumentException<br><span class="hljs-params">...</span><span class="hljs-params">...</span><br></code></pre></td></tr></table></figure>
+<p>很多情况下，这些异常崩溃并不是由 APP 导致的，而且堆栈中也没有半点 APP 的影子，就拿 DeadObjectException 来说，一般都是由于提供远程服务的进程挂掉导致，如果是 APP 代码逻辑的问题，很容易就能在堆栈中发现，那如果是因为系统导致的崩溃，我们难道就无能为力了？</p>
+<p><a target="_blank" rel="noopener" href="https://booster.johnsonlee.io/feature/bugfix/prevent-crash-from-system-bug.html#%E8%8E%AB%E5%90%8D%E5%85%B6%E5%A6%99%E7%9A%84%E5%B4%A9%E6%BA%83">https://booster.johnsonlee.io/feature/bugfix/prevent-crash-from-system-bug.html#莫名其妙的崩溃</a></p>
+<h3 id="https-页面加载-http-图片不显示"><a href="#https-页面加载-http-图片不显示" class="headerlink" title="https 页面加载 http 图片不显示"></a>https 页面加载 http 图片不显示</h3><p>https 页面加载 http 图片或者 http 页面加载 https 图片时图片显示不出来，原因是因为在 Android 5.0开始 WebView 默认不允许加载 http 与 https 混合页面，当然最好还是不要混合，保持统一。<br>解决办法：</p>
+<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs scss"><span class="hljs-comment">//https与http混合资源处理</span><br>if (Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.LOLLIPOP) &#123;<br>    webSettings<span class="hljs-selector-class">.setMixedContentMode</span>(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="SIGBUS-相关问题"><a href="#SIGBUS-相关问题" class="headerlink" title="SIGBUS 相关问题"></a>SIGBUS 相关问题</h3><p>so 包就是 c++的库，类似 jar 包<br>主要集中在集成的极光推送<br>为了瘦身我们的 apk 文件，我只添加了 armeabi-v7a 架构的相关 so 文件。结果在 oppo 的这些手机上没有兼容，或者说更加的严格，导致了未对齐的数据访问。为什么这么说，因为后来有观察再升级极光的 sdk 后，发现这类问题有所下降。当然如果你直接添加上 arm64-v8a，则不会有这个问题。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Android/" class="category-chain-item">Android</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>线上问题排查</div>
+      <div>http://peiniwan.github.io/2024/04/2df7e8e4464a.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>六月的雨</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年4月6日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/04/f34bd957d469.html" title="Android端代码规范">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Android端代码规范</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/04/502127e875f1.html" title="图片、glide优化">
+                        <span class="hidden-mobile">图片、glide优化</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"OwNIdaopOn1rwNhtotGOGC0B-gzGzoHsz","appKey":"eadytQ2XqWmxuvAKeg08XX83","path":"window.location.pathname","placeholder":null,"avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":true,"recordIP":false,"serverURLs":"https://ownidaop.lc-cn-n1-shared.com","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

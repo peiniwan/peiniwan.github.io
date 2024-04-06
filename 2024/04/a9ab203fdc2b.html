@@ -1,0 +1,783 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="六月的雨">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="文章[[Flow学习]] MVVM 进阶版：MVI 架构了解一下 MVI 架构更佳实践：Mavericks 响应式编程 MVI 是在响应式编程的前提下，通过 “将页面状态聚合” 来统一消除上述 2 个问题，也即原先分散在各个 LiveData 中的 String、Boolean 等状态，现全部聚合到一个 JavaBean &#x2F; data class 中，由唯一的粘性观察者回推，所有控件都在">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MVI学习">
+<meta property="og:url" content="http://peiniwan.github.io/2024/04/a9ab203fdc2b.html">
+<meta property="og:site_name" content="六月的雨的笔记">
+<meta property="og:description" content="文章[[Flow学习]] MVVM 进阶版：MVI 架构了解一下 MVI 架构更佳实践：Mavericks 响应式编程 MVI 是在响应式编程的前提下，通过 “将页面状态聚合” 来统一消除上述 2 个问题，也即原先分散在各个 LiveData 中的 String、Boolean 等状态，现全部聚合到一个 JavaBean &#x2F; data class 中，由唯一的粘性观察者回推，所有控件都在">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/MVI%E5%AD%A6%E4%B9%A0.resources/2023/09/15/17-54-24-7256f73dfbc44cf9009a4e36bb0dc56f-unknown_filename.2-20144d.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/MVI%E5%AD%A6%E4%B9%A0.resources/2023/09/15/17-54-24-11967c835f0c1b4f07e6b4685c4b2024-unknown_filename-5f81eb.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/picgo/picgo-clipboard-images/2024-01-23-14-44-12801848c8e876fb0db0401a8f990c97-20240123144421-1c2e73.png">
+<meta property="article:published_time" content="2024-04-06T08:42:06.075Z">
+<meta property="article:modified_time" content="2024-03-21T02:55:00.000Z">
+<meta property="article:author" content="六月的雨">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/MVI%E5%AD%A6%E4%B9%A0.resources/2023/09/15/17-54-24-7256f73dfbc44cf9009a4e36bb0dc56f-unknown_filename.2-20144d.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>MVI学习 - 六月的雨的笔记</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"peiniwan.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>六月的雨的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="MVI学习"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-04-06 16:42" pubdate>
+          2024年4月6日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.6k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          22 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">MVI学习</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="文章"><a href="#文章" class="headerlink" title="文章"></a>文章</h2><p>[[Flow学习]]</p>
+<p><a target="_blank" rel="noopener" href="https://juejin.cn/post/7022624191723601928">MVVM 进阶版：MVI 架构了解一下</a></p>
+<p><a target="_blank" rel="noopener" href="https://juejin.cn/post/7025222741322121223">MVI 架构更佳实践：Mavericks</a></p>
+<h2 id="响应式编程"><a href="#响应式编程" class="headerlink" title="响应式编程"></a>响应式编程</h2><p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/MVI%E5%AD%A6%E4%B9%A0.resources/2023/09/15/17-54-24-7256f73dfbc44cf9009a4e36bb0dc56f-unknown_filename.2-20144d.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.2|600"></p>
+<p>MVI 是在响应式编程的前提下，通过 “将页面状态聚合” 来统一消除上述 2 个问题，<br>也即原先分散在各个 LiveData 中的 String、Boolean 等状态，<em>现全部聚合到一个 JavaBean &#x2F; data class 中</em>，由唯一的粘性观察者回推，所有控件都在该观察者中响应数据的变化。</p>
+<p>MVI 架构为了解决 MVVM 在逻辑复杂时需要写多个 LiveData (可变+不可变) 的问题,<em>使用 ViewState 对 State 集中管理</em>，只需要订阅一个 ViewState 便可获取页面的所有状态</p>
+<p>通过集中管理 ViewState，只需对外暴露一个 LiveData，解决了 MVVM 模式下 LiveData 膨胀的问题</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs kotlin"><span class="hljs-comment">// 定义ViewState类</span><br><span class="hljs-keyword">data</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">CounterViewState</span>(<span class="hljs-keyword">val</span> count: <span class="hljs-built_in">Int</span>)<br></code></pre></td></tr></table></figure>
+
+<p>但页面的所有状态都通过一个 LiveData 来管理，也带来了一个严重的问题，即页面不支持局部刷新</p>
+<p>虽说如果是 RecyclerView 可以通过 DifferUtil 来解决，但毕竟不是所有页面都是通过 RecyclerView 写的，支持 DifferUtil 也有一定的开发成本</p>
+<p>因此直接使用 MVI 架构会带来一定的性能损耗，相信这是很多人不愿意用 MVI 架构的原因之一</p>
+<h3 id="MVI"><a href="#MVI" class="headerlink" title="MVI"></a>MVI</h3><p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/MVI%E5%AD%A6%E4%B9%A0.resources/2023/09/15/17-54-24-11967c835f0c1b4f07e6b4685c4b2024-unknown_filename-5f81eb.png" srcset="/img/loading.gif" lazyload alt="unknown_filename|500"><br>由于没有明确的状态管理标准，随着应用程序的增长或添加功能或事先没有计划的功能，视图渲染和业务逻辑可能会变得有点混乱，并且这种情况经常发生在 Android 应用开发过程中。可能你经常遇到状态管理导致<strong>业务逻辑和 UI 渲染的分工不明确</strong>，最终导致应用架构的混乱。而新提出的 MVI 架构，提倡一种单向数据流的设计思想，非常适合数据驱动型的 UI 展示项目。MVI 的架构思想来源于前端，由于 Model、View 和 Intent 三部分组成。</p>
+<p>Model: 与其他 MVVM 中的 Model 不同的是，MVI 的 Model 主要指 UI 状态（State）。当前界面展示的内容无非就是 UI 状态的一个快照：例如数据加载过程、控件位置等都是一种 UI 状态</p>
+<p>View: 与 MVvM 中的 View 一致，可能是一个 Activity、Fragment 或者任意 UI 承载单元。MVI 中的 View 通过订阅 Intent 的变化实现界面刷新</p>
+<p>Intent: 此 Intent 不是 Activity 的 Intent，<em>用户的任何操作都被包装成 Intent 后发送给 Model 进行数据请求</em></p>
+<p>运用函数式编程思想将需求翻译成业务意图（I）、数据（M）、界面状态（V）间的函数关系，再用响应式编程的方式将其串联成数据流的过程。</p>
+<p>个人感觉 mvi 和 mvvm 的区别就是 mvi 把 viewmodel 的方法改成了一个来统一处理，通过它的参数 intent 来区分不同调用。v 层也是一样，原来每个业务都有自己的 livedata，v 层需要对每一个 livedata 单独监听。<em>如果使用 mvi 只需要使用一个 livedata 就可以了，利用 state 来区分不同的业务</em>。</p>
+<h3 id="单向数据流"><a href="#单向数据流" class="headerlink" title="单向数据流"></a>单向数据流</h3><p>&#x3D;&#x3D;MVI 强调数据的单向流动，主要分为以下几步&#x3D;&#x3D;</p>
+<p>&#x3D;&#x3D;Intent 和 action 类似&#x3D;&#x3D;</p>
+<ol>
+<li>用户操作以 <code>Intent</code> 的形式通知 <code>Model</code></li>
+<li><code>Model</code> 基于 <code>Intent</code> 更新 <code>State</code></li>
+<li><code>View</code> 接收到 <code>State</code> 变化刷新 UI。<br>数据永远在一个环形结构中单向流动，不能反向流动</li>
+</ol>
+<p>我们使用 <code>ViewModel</code> 来承载 <code>MVI</code> 的 <code>Model</code> 层，总体结构也与 <code>MVVM</code> 类似, 主要区别在于 <code>Model</code> 与 <code>View</code> 层交互的部分</p>
+<ol>
+<li><code>Model</code> 层承载 <code>UI</code> 状态，并暴露出 <code>ViewState</code> 供 <code>View</code> 订阅，<code>ViewState</code> 是个 <code>data class</code>,包含所有页面状态</li>
+<li><code>View</code> 层通过 <code>Action</code> 更新 <code>ViewState</code>，替代 <code>MVVM</code> 通过调用 <code>ViewModel</code> 方法交互的方式。（Action 可以理解成 intent）<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/picgo/picgo-clipboard-images/2024-01-23-14-44-12801848c8e876fb0db0401a8f990c97-20240123144421-1c2e73.png" srcset="/img/loading.gif" lazyload alt="image.png|600"></li>
+</ol>
+<h3 id="实例"><a href="#实例" class="headerlink" title="实例"></a>实例</h3><ul>
+<li>大型页面使用，很多 liveData, 一俩个 liveData 不需要 MVi</li>
+<li>用户的任何操作都被包装成 Intent 发送给 Model 进行数据请求</li>
+</ul>
+<p>大方向流程：</p>
+<ol>
+<li>view 点击调 viewModle 方法，把 intent（意图）发过去</li>
+<li>通过 intent 更新 state（Model）</li>
+<li>view 接收到 <code>State</code> 变化刷新 UI。</li>
+</ol>
+<p>Action 这一层可以加也可以不加, <code>Mavericks</code> 中 <code>View</code> 层与 <code>Model</code> 层的交互，也并没有包装成 <code>Action</code>，而是直接暴露的方法<br>上篇文章也的确有很多同学说使用 <code>Action</code> 交互比较麻烦，看起来 <code>Action</code> 这层的确可要可不要</p>
+<p><a target="_blank" rel="noopener" href="https://juejin.cn/post/7289662055183155235?utm_source=gold_browser_extension">尘埃落地 😛 遍历全网Android-MVI架构，学习总结一波 - 掘金</a></p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs kotlin"><span class="hljs-keyword">class</span> <span class="hljs-title class_">MainActivity</span> : <span class="hljs-type">AppCompatActivity</span>() &#123;<br>	<span class="hljs-keyword">private</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">initView</span><span class="hljs-params">()</span></span> &#123;<br>        fabStar.setOnClickListener &#123;<br>            viewModel.dispatch(MainViewAction.FabClicked)<br>        &#125;<br>    &#125;<br>&#125;<br><span class="hljs-keyword">class</span> <span class="hljs-title class_">MainViewModel</span> : <span class="hljs-type">ViewModel</span>() &#123;<br>    <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">dispatch</span><span class="hljs-params">(action: <span class="hljs-type">MainViewAction</span>)</span></span> =<br>        reduce(viewStates.value, action)<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">reduce</span><span class="hljs-params">(state: <span class="hljs-type">MainViewState</span>?, viewAction: <span class="hljs-type">MainViewAction</span>)</span></span> &#123;<br>        <span class="hljs-keyword">when</span> (viewAction) &#123;<br>            <span class="hljs-keyword">is</span> MainViewAction.NewsItemClicked -&gt; newsItemClicked(viewAction.newsItem)<br>            MainViewAction.FabClicked -&gt; fabClicked()<br>            MainViewAction.OnSwipeRefresh -&gt; fetchNews(state)<br>            MainViewAction.FetchNews -&gt; fetchNews(state)<br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p><code>View</code> 通过 <code>Action</code> 与 <code>ViewModel</code> 交互，通过 <code>Action</code> 通信，有利于 <code>View</code> 与 <code>ViewModel</code> 之间的进一步解耦，同时所有调用以 <code>Action</code> 的形式汇总到一处，也有利于对行为的集中分析和监控</p>
+<h2 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h2><p><code>MVI</code> 也有一些缺点，比如</p>
+<ol>
+<li>所有的操作最终都会转换成 <code>State</code>，所以当复杂页面的 <code>State</code> 容易膨胀</li>
+<li><code>state</code> 是不变的，因此每当 <code>state</code> 需要更新时都要创建新对象替代老对象，这会带来一定内存开销</li>
+</ol>
+<p>软件开发中没有银弹，所有架构都不是完美的，有自己的适用场景, 读者可根据自己的需求选择使用。</p>
+<ul>
+<li>使用 <code>ViewState</code> 对 <code>State</code> 集中管理，只需要订阅一个 <code>ViewState</code> 便可获取页面的所有状态  </li>
+<li>通过集中管理 <code>ViewState</code>，只需对外暴露一个 <code>LiveData</code>，解决了 <code>MVVM</code> 模式下 <code>LiveData</code> 膨胀的问题</li>
+</ul>
+<p>但页面的所有状态都通过一个 <code>LiveData</code> 来管理，也带来了一个严重的问题，即<strong>页面不支持局部刷新</strong><br>虽说如果是 <code>RecyclerView</code> 可以通过 <code>DifferUtil</code> 来解决，但毕竟不是所有页面都是通过 <code>RecyclerView</code> 写的，支持 <code>DifferUtil</code> 也有一定的开发成本<br>因此直接使用 <code>MVI</code> 架构会带来一定的性能损耗，相信这是很多人不愿意用 <code>MVI</code> 架构的原因之一</p>
+<h2 id="规范"><a href="#规范" class="headerlink" title="规范"></a>规范</h2><figure class="highlight fsharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs fsharp"><span class="hljs-keyword">private</span> <span class="hljs-keyword">val</span> _viewStates<span class="hljs-operator">:</span> MutableLiveData<span class="hljs-operator">&lt;</span>MainViewState<span class="hljs-operator">&gt;</span> <span class="hljs-operator">=</span> MutableLiveData() <br><span class="hljs-keyword">val</span> viewStates <span class="hljs-operator">=</span> _viewStates.asLiveData()<br></code></pre></td></tr></table></figure>
+<p>这段代码是在使用 MVI（Model-View-Intent）架构模式时常见的一种写法。</p>
+<p>首先，<code>_viewStates</code> 是一个私有的 <code>MutableLiveData</code> 对象，用于保存界面的状态。<code>MutableLiveData</code> 是 Android Jetpack 中的一个组件，用于在组件之间进行数据通信。</p>
+<p>接着，<code>viewStates</code> 是一个公开的只读属性，它通过调用 <code>_viewStates</code> 的 <code>asLiveData()</code> 方法返回一个不可变的 <code>LiveData</code> 对象。<code>LiveData</code> 是一个被观察的数据持有者，可以通知观察者有关数据的变化。</p>
+<p>在 MVI 架构中，<code>viewStates</code> 属性通常用于将界面的状态暴露给视图层（View Layer）。通过观察 <code>viewStates</code> 属性，视图层可以及时地获取最新的界面状态，并相应地更新用户界面。</p>
+<p>为什么要使用这样的写法呢？MVI 架构的一个关键思想是<em>单向数据流，即将界面的状态作为单一的源头</em>，通过派发意图（Intents）和处理器（Reducers）来改变状态。通过将 <code>_viewStates</code> 声明为私有的 <code>MutableLiveData</code>，可以确保只有该类内部才能修改界面状态，而外部只能观察状态的变化。</p>
+<p>此外，将 <code>_viewStates</code> 转换为不可变的 <code>LiveData</code> 对象可以保护数据的封装性，防止外部组件直接修改内部状态。</p>
+<p>总结起来，这段代码的作用是在 MVI 架构中定义一个用于保存界面状态的私有 <code>MutableLiveData</code> 对象 <code>_viewStates</code>，并通过公开的只读属性 <code>viewStates</code> 将其暴露给视图层。这样可以确保界面状态的封装性和单向数据流的规范性。</p>
+<h2 id="密封类-sealed"><a href="#密封类-sealed" class="headerlink" title="密封类 sealed"></a>密封类 sealed</h2><p><em>Kotlin 中的 sealed 类是一种特殊类型的类，用于限制继承关系</em>。当一个类被声明为 sealed 类时，它只能被其所在文件中的类继承，这意味着你无法在其他文件中继承它。</p>
+<p>sealed 类常用于建模一组有限的类型，比如表示某个状态或者某个特定类型的集合。通过将这些相关的类型定义为 sealed 类的子类，可以在编译期间对所有可能的类型进行静态检查。</p>
+<p>sealed 类与普通类的区别在于，必须将其所有可能的子类定义在同一文件中，且这些子类必须是 sealed 类的直接子类。这样做的好处是，在编译器能够检查出所有可能的子类，并且可以在 when 表达式中使用密封类作为分支条件，而不需要添加 else 分支。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs kotlin"><span class="hljs-keyword">sealed</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Result</span><br><span class="hljs-keyword">data</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Success</span> (<span class="hljs-keyword">val</span> message: String) : Result ()<br><span class="hljs-keyword">data</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Error</span> (<span class="hljs-keyword">val</span> code: <span class="hljs-built_in">Int</span>, <span class="hljs-keyword">val</span> message: String) : Result ()<br><br><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">processResult</span> <span class="hljs-params">(result: <span class="hljs-type">Result</span>)</span></span> &#123;<br>    <span class="hljs-keyword">when</span> (result) &#123;<br>        <span class="hljs-keyword">is</span> Success -&gt; println (<span class="hljs-string">&quot;Success: <span class="hljs-subst">$&#123;result. message&#125;</span>&quot;</span>)<br>        <span class="hljs-keyword">is</span> Error -&gt; println (<span class="hljs-string">&quot;Error: <span class="hljs-subst">$&#123;result. code&#125;</span> - <span class="hljs-subst">$&#123;result. message&#125;</span>&quot;</span>)<br>    &#125;<br>&#125;<br><br><span class="hljs-keyword">val</span> success = Success (<span class="hljs-string">&quot;Operation completed successfully&quot;</span>)<br><span class="hljs-keyword">val</span> error = Error (<span class="hljs-number">404</span>, <span class="hljs-string">&quot;Resource not found&quot;</span>)<br><br>processResult (success)<br>processResult (error)<br><br></code></pre></td></tr></table></figure>
+<p>在上述示例中，我们定义了一个 sealed 类 Result，并将它的两个可能的子类 Success 和 Error 定义在同一文件中。然后我们编写了一个函数 processResult，根据传入的 Result 对象进行处理。通过使用 when 表达式，我们能够对 Result 类型的不同子类进行分支处理。</p>
+<p>总而言之，Kotlin 中的 sealed 类提供了一种方便的方式来建模有限类型集合，并在编译期间进行类型检查，使代码更加安全和可靠。</p>
+<hr>
+<h2 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h2><p>下面是 chatGPT 给的例子</p>
+<h3 id="1-创建一个-Model-类："><a href="#1-创建一个-Model-类：" class="headerlink" title="1. 创建一个 Model 类："></a>1. 创建一个 Model 类：</h3><figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs angelscript">data <span class="hljs-keyword">class</span> <span class="hljs-symbol">CounterModel</span> (<span class="hljs-symbol">val</span> <span class="hljs-symbol">count: <span class="hljs-symbol">Int</span></span>)<br></code></pre></td></tr></table></figure>
+
+
+<h3 id="2-创建一个-Intent-类："><a href="#2-创建一个-Intent-类：" class="headerlink" title="2. 创建一个 Intent 类："></a>2. 创建一个 Intent 类：</h3><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs kotlin"><span class="hljs-keyword">sealed</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">CounterIntent</span> &#123;<br>    <span class="hljs-keyword">object</span> IncrementIntent : CounterIntent ()<br>    <span class="hljs-keyword">object</span> DecrementIntent : CounterIntent ()<br>&#125;<br><br></code></pre></td></tr></table></figure>
+<h3 id="3-创建一个-ViewState-类："><a href="#3-创建一个-ViewState-类：" class="headerlink" title="3. 创建一个 ViewState 类："></a>3. 创建一个 ViewState 类：</h3><figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs angelscript">data <span class="hljs-keyword">class</span> <span class="hljs-symbol">CounterViewState</span> (<span class="hljs-symbol">val</span> <span class="hljs-symbol">count: <span class="hljs-symbol">Int</span></span>)<br><br></code></pre></td></tr></table></figure>
+<h3 id="4-创建一个-ViewModel-类："><a href="#4-创建一个-ViewModel-类：" class="headerlink" title="4. 创建一个 ViewModel 类："></a>4. 创建一个 ViewModel 类：</h3><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs kotlin"><span class="hljs-keyword">class</span> <span class="hljs-title class_">CounterViewModel</span> : <span class="hljs-type">ViewModel</span> () &#123;<br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">val</span> _state = MutableLiveData&lt;CounterViewState&gt;()<br>    <span class="hljs-keyword">val</span> state: LiveData&lt;CounterViewState&gt;<br>        <span class="hljs-keyword">get</span> () = _state<br><br>    <span class="hljs-keyword">init</span> &#123;<br>        _state. value = CounterViewState (<span class="hljs-number">0</span>)<br>    &#125;<br><br>    <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">processIntent</span> <span class="hljs-params">(intent: <span class="hljs-type">CounterIntent</span>)</span></span> &#123;<br>        <span class="hljs-keyword">val</span> currentState = _state. value ?: CounterViewState (<span class="hljs-number">0</span>)<br><br>        <span class="hljs-keyword">when</span> (intent) &#123;<br>            <span class="hljs-keyword">is</span> CounterIntent. IncrementIntent -&gt; &#123;<br>                _state. value = currentState.copy (count = currentState. count + <span class="hljs-number">1</span>)<br>            &#125;<br>            <span class="hljs-keyword">is</span> CounterIntent. DecrementIntent -&gt; &#123;<br>                _state. value = currentState.copy (count = currentState. count - <span class="hljs-number">1</span>)<br>            &#125;<br>        &#125;<br>    &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+<h3 id="5-在-Activity-或-Fragment-中使用-ViewModel："><a href="#5-在-Activity-或-Fragment-中使用-ViewModel：" class="headerlink" title="5. 在 Activity 或 Fragment 中使用 ViewModel："></a>5. 在 Activity 或 Fragment 中使用 ViewModel：</h3><figure class="highlight pf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><code class="hljs pf">class CounterActivity : AppCompatActivity () &#123;<br><br>    private lateinit var viewModel: CounterViewModel<br><br>    override fun <span class="hljs-keyword">on</span>Create (savedInstanceState: Bundle?) &#123;<br>        super.<span class="hljs-keyword">on</span>Create (savedInstanceState)<br>        <span class="hljs-built_in">set</span>ContentView (R.layout. activity_counter)<br><br>        viewModel = ViewModelProvider (this). get (CounterViewModel:: class. java)<br><br>        viewModel.<span class="hljs-keyword">state</span>.observe (this, Observer &#123; <span class="hljs-keyword">state</span> -&gt;<br>            render (<span class="hljs-keyword">state</span>)<br>        &#125;)<br><br>        buttonIncrement. <span class="hljs-built_in">set</span>OnClickListener &#123;<br>            viewModel.processIntent (CounterIntent. IncrementIntent)<br>        &#125;<br><br>        buttonDecrement. <span class="hljs-built_in">set</span>OnClickListener &#123;<br>            viewModel.processIntent (CounterIntent. DecrementIntent)<br>        &#125;<br>    &#125;<br><br>    private fun render (<span class="hljs-keyword">state</span>: CounterViewState) &#123;<br>        textViewCount. text = <span class="hljs-keyword">state</span>.count.<span class="hljs-keyword">to</span>String ()<br>    &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<p>在这个示例中，我们使用了 ViewModel 来处理业务逻辑和状态管理，同时使用 LiveData 来观察状态的变化。通过定义 Model、Intent、ViewState 来区分数据模型、用户操作意图、界面状态，实现了简单的 MVI 架构。希望这个例子能帮助你更好地理解如何在 Android 应用中使用 MVI 架构。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Android/" class="category-chain-item">Android</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/Android/%E6%9E%B6%E6%9E%84/" class="category-chain-item">架构</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>MVI学习</div>
+      <div>http://peiniwan.github.io/2024/04/a9ab203fdc2b.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>六月的雨</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年4月6日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/04/3d467a5da044.html" title="MVP MVVM">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">MVP MVVM</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/04/fd0712c76c44.html" title="LiveData、ViewModel">
+                        <span class="hidden-mobile">LiveData、ViewModel</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"OwNIdaopOn1rwNhtotGOGC0B-gzGzoHsz","appKey":"eadytQ2XqWmxuvAKeg08XX83","path":"window.location.pathname","placeholder":null,"avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":true,"recordIP":false,"serverURLs":"https://ownidaop.lc-cn-n1-shared.com","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

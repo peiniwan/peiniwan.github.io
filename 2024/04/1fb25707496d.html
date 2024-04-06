@@ -1,0 +1,832 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="六月的雨">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="kmm跨平台Kotlin 多平台 · Kotlin 官方文档 中文版 kotlin构造器 https:&#x2F;&#x2F;rengwuxian.com&#x2F;kotlin-basic-3&#x2F; https:&#x2F;&#x2F;juejin.cn&#x2F;post&#x2F;6844903872016678919 我们项目中还有根据判断条件设置View显隐的逻辑，针对这个再封装下： 12345678910111213141516fun View.hide()">
+<meta property="og:type" content="article">
+<meta property="og:title" content="kotlin、Lambda">
+<meta property="og:url" content="http://peiniwan.github.io/2024/04/1fb25707496d.html">
+<meta property="og:site_name" content="六月的雨的笔记">
+<meta property="og:description" content="kmm跨平台Kotlin 多平台 · Kotlin 官方文档 中文版 kotlin构造器 https:&#x2F;&#x2F;rengwuxian.com&#x2F;kotlin-basic-3&#x2F; https:&#x2F;&#x2F;juejin.cn&#x2F;post&#x2F;6844903872016678919 我们项目中还有根据判断条件设置View显隐的逻辑，针对这个再封装下： 12345678910111213141516fun View.hide()">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-c8a411081ee3b5bc0e4cbcf524008ee3-unknown_filename-1c39f7.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-bcb8e51fd7ccf4cdd5815eb654adb5c5-unknown_filename.1-e7e944.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-b5483cd4e1b24538648d914404bbc0bb-unknown_filename.2-74cb8c.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-b550e963a52af94425923b3a5a3c94fe-unknown_filename.3-37cde3.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-f2106c26a579a34ada3bc2eddd174a17-unknown_filename.4-cbb256.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-b963d4d265d0f5076d97dfe6bd9598ff-unknown_filename.5-6b2d8e.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-eeea87955d4f070b2310b8944e232d46-unknown_filename.6-58325d.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-a0eca88c88a767040bc3fc03c85be9dc-unknown_filename.7-91289b.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-e8801d9a1ea836c720eeac8c45045c2a-unknown_filename.9-c60d71.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-f83e1c53aa08985ddedfae71c47d89dd-unknown_filename.10-13e9e2.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-ec38378f0f999646da004c4c5ae3b37e-unknown_filename.12-33d45b.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-5bc2ca944d3f7b68946259a36a9b38c4-unknown_filename.13-6db5d6.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-7f52144c8831edaa4d6bc2d6d2f8ee83-unknown_filename.14-b5fa2a.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-9fe1b8b0b26596922b02a40ccb725744-unknown_filename.15-9e087e.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-71d51708fef84df2ef432897375b8800-unknown_filename.16-2a5f2c.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-aace1c7f50774f12c96486d90f7ae8c4-unknown_filename.17-f55e6d.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-12c8a27171db3c87230826528d8af218-unknown_filename.18-10c8a6.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-87567c236f506bf934eb6aab3e143918-unknown_filename.19-5ce731.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-060fd1c2142a2e9fd497be4a5a6004ec-unknown_filename.20-c06aa5.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-18c0379d041e8fbd2736e614088f2302-unknown_filename.21-2c5c1e.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-b2b683618ce6c75a03651848be8bfacb-unknown_filename.22-f5235c.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-58ec0225469183c57e71cb453687ac25-unknown_filename.23-c5626c.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-3c406fa8a204d56f25099ed7d21ad484-unknown_filename.24-ff37b0.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-72ea94d133222f1de35cd68f8e9ed4d7-unknown_filename.25-25766a.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-154a752183be052647f976f88363f659-unknown_filename.26-6d82e3.png">
+<meta property="article:published_time" content="2024-04-06T08:42:06.385Z">
+<meta property="article:modified_time" content="2024-03-22T02:53:00.000Z">
+<meta property="article:author" content="六月的雨">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-c8a411081ee3b5bc0e4cbcf524008ee3-unknown_filename-1c39f7.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>kotlin、Lambda - 六月的雨的笔记</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"peiniwan.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>六月的雨的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="kotlin、Lambda"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-04-06 16:42" pubdate>
+          2024年4月6日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          4.5k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          38 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">kotlin、Lambda</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="kmm跨平台"><a href="#kmm跨平台" class="headerlink" title="kmm跨平台"></a>kmm跨平台</h2><p><a target="_blank" rel="noopener" href="https://book.kotlincn.net/text/multiplatform.html">Kotlin 多平台 · Kotlin 官方文档 中文版</a></p>
+<p>kotlin构造器</p>
+<p><a target="_blank" rel="noopener" href="https://rengwuxian.com/kotlin-basic-3/">https://rengwuxian.com/kotlin-basic-3/</a></p>
+<p><a target="_blank" rel="noopener" href="https://juejin.cn/post/6844903872016678919">https://juejin.cn/post/6844903872016678919</a></p>
+<p>我们项目中还有根据判断条件设置View显隐的逻辑，针对这个再封装下：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs kotlin"><span class="hljs-function"><span class="hljs-keyword">fun</span> View.<span class="hljs-title">hide</span><span class="hljs-params">()</span></span> &#123;<br>    <span class="hljs-keyword">this</span>.visibility = View.GONE<br>&#125;<br><br><span class="hljs-function"><span class="hljs-keyword">fun</span> View.<span class="hljs-title">show</span><span class="hljs-params">()</span></span> &#123;<br>    <span class="hljs-keyword">this</span>.visibility = View.VISIBLE<br>&#125;<br><br><span class="hljs-function"><span class="hljs-keyword">fun</span> View.<span class="hljs-title">showIf</span><span class="hljs-params">(isShow: <span class="hljs-type">Boolean</span>)</span></span> &#123;<br>    <span class="hljs-keyword">if</span> (isShow) &#123;<br>        show()<br>    &#125; <span class="hljs-keyword">else</span> &#123;<br>        hide()<br>    &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+<p>Android仅支持部分Java8新特性</p>
+<p><a target="_blank" rel="noopener" href="https://developer.android.com/studio/write/java8-support.html#supported_features">链接</a></p>
+<h2 id="kotlin"><a href="#kotlin" class="headerlink" title="kotlin"></a>kotlin</h2><ul>
+<li><p>new关键字可以省略，变量类型、继承用：</p>
+</li>
+<li><p>val常亮，var变量</p>
+</li>
+<li><p>可以直接在参数里设置默认值，参数可以不传</p>
+</li>
+<li><p>扩展函数（类似于工具类）</p>
+</li>
+</ul>
+<p>forEach：遍历每一个元素<br>filter：对每个元素进行过滤操作，如果 lambda 表达式中的条件成立则留下该元素，否则剔除，最终生成新的集合<br>map：遍历每个元素并执行给定表达式，最终形成新的集合<br>flatMap：<strong>遍历每个元素，并为每个元素创建新的集合，最后合并到一个集合中</strong><br>和rxjava的类似</p>
+<p>创建数组，增加很多有用的工具函数<br>contains()first()find()</p>
+<figure class="highlight coffeescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs coffeescript">val strs: <span class="hljs-built_in">Array</span>&lt;<span class="hljs-built_in">String</span>&gt; = arrayOf(<span class="hljs-string">&quot;a&quot;</span>, <span class="hljs-string">&quot;b&quot;</span>, <span class="hljs-string">&quot;c&quot;</span>)<br></code></pre></td></tr></table></figure>
+<p>协变 (covariance) 特性，就是子类数组对象不能赋值给父类的数组变量</p>
+<figure class="highlight julia"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs julia">val strs: <span class="hljs-built_in">Array</span>&lt;<span class="hljs-built_in">String</span>&gt; = arrayOf(<span class="hljs-string">&quot;a&quot;</span>, <span class="hljs-string">&quot;b&quot;</span>, <span class="hljs-string">&quot;c&quot;</span>)                  val anys: <span class="hljs-built_in">Array</span>&lt;<span class="hljs-built_in">Any</span>&gt; = strs // compile-error: <span class="hljs-built_in">Type</span> mismatch<br></code></pre></td></tr></table></figure>
+<p>map也可以这样创建</p>
+<figure class="highlight fsharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs fsharp"><span class="hljs-keyword">val</span> map <span class="hljs-operator">=</span> mapOf(<span class="hljs-string">&quot;key1&quot;</span> <span class="hljs-keyword">to</span> <span class="hljs-number">1</span>, <span class="hljs-string">&quot;key2&quot;</span> <span class="hljs-keyword">to</span> <span class="hljs-number">2</span>, <span class="hljs-string">&quot;key3&quot;</span> <span class="hljs-keyword">to</span> <span class="hljs-number">3</span>, <span class="hljs-string">&quot;key4&quot;</span> <span class="hljs-keyword">to</span> <span class="hljs-number">3</span>)<br></code></pre></td></tr></table></figure>
+<p>istOf() 创建不可变的 List，mutableListOf() 创建可变的 List</p>
+<p>Kotlin 中集合分为两种类型：只读的和可变的。这里的只读有两层意思：<br>集合的 size 不可变<br>集合中的元素值不可变<br>可以转换</p>
+<figure class="highlight arcade"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs arcade"><span class="hljs-built_in">map</span>.toMutableMap()<br></code></pre></td></tr></table></figure>
+<p>构造器</p>
+<figure class="highlight delphi"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs delphi"><span class="hljs-keyword">class</span> User <span class="hljs-function"><span class="hljs-keyword">constructor</span><span class="hljs-params">(<span class="hljs-keyword">var</span> <span class="hljs-keyword">name</span>: <span class="hljs-keyword">String</span>)</span> <span class="hljs-comment">&#123;                                   // 直接调用主构造器    </span></span><br><span class="hljs-comment"><span class="hljs-function">constructor(name: String, id: Int) : this(name) &#123;    &#125;</span>                <span class="hljs-comment">//  通过上一个次构造器，间接调用主构造器  </span></span><br><span class="hljs-function"><span class="hljs-title">constructor</span><span class="hljs-params">(<span class="hljs-keyword">name</span>: <span class="hljs-keyword">String</span>, id: Int, age: Int)</span> :</span> this(<span class="hljs-keyword">name</span>, id) <span class="hljs-comment">&#123;      &#125;</span><br>&#125;<br></code></pre></td></tr></table></figure>
+<p>=&#x3D; ：可以对基本数据类型以及 String 等类型进行内容比较，相当于 Java 中的 equals<br>=&#x3D;&#x3D; ：对引用的内存地址进行比较，相当于 Java 中的 &#x3D;&#x3D;</p>
+<p>如果每个类型都去实现诸如 TextViewList、ActivityList 这样的具体的类型，显然是不可能的。因此就诞生了「泛型」，它的意思是把具体的类型泛化，编码的时候用符号来指代类型，在使用的时候，再确定它的类型</p>
+<p>使用关键字 out 来支持协变，等同于 Java 中的上界通配符 ? extends。<br>使用关键字 in 来支持逆变，等同于 Java 中的下界通配符 ? super。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs swift"><span class="hljs-keyword">var</span> textViews: <span class="hljs-type">List</span>&lt;out <span class="hljs-type">TextView</span>&gt;<br><span class="hljs-keyword">var</span> textViews: <span class="hljs-type">List</span>&lt;<span class="hljs-keyword">in</span> <span class="hljs-type">TextView</span>&gt;<br></code></pre></td></tr></table></figure>
+<p>协程就是kotlin官方提供的线程api</p>
+<p><strong>属性委托</strong><br>有些常见的属性操作,我们可以通过委托方式,让它实现,例如:<em>lazy 延迟属性: 值只在第一次访问的时候计算</em><br><em>类委托</em><br>可以通过类委托来减少 extend类委托的时,编译器回优使用自身重新函数,而不是委托对象的函数</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs kotlin"><span class="hljs-keyword">interface</span> <span class="hljs-title class_">Base</span>&#123;<br><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">print</span><span class="hljs-params">()</span></span><br>&#125;<br><br>case BaseImpl(<span class="hljs-keyword">var</span> x: <span class="hljs-built_in">Int</span>):Base&#123;<br><br><span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">print</span><span class="hljs-params">()</span></span>&#123;<br>print(x)<br>&#125;<br><br>&#125;<br><span class="hljs-comment">// Derived 的 print 实现会通过构造函数的b对象来完成class Derived(b: base): Base by b</span><br><br></code></pre></td></tr></table></figure>
+
+<p>委托就是代理</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><code class="hljs kotlin"><span class="hljs-comment">//接口代理，可以不是必须实现接口或抽象类的方法</span><br>  <span class="hljs-keyword">class</span> <span class="hljs-title class_">SeniorManager</span>(<span class="hljs-keyword">val</span> driver: Driver, <span class="hljs-keyword">val</span> writer: Writer) : Driver <span class="hljs-keyword">by</span> driver, Writer <span class="hljs-keyword">by</span> writer<br>    <br>  <span class="hljs-keyword">class</span> <span class="hljs-title class_">CarDriver</span> : <span class="hljs-type">Driver</span> &#123;<br>      <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">drive</span><span class="hljs-params">()</span></span> &#123;<br>          println(<span class="hljs-string">&quot;开车呢&quot;</span>)<br>      &#125;<br>  &#125;<br>    <br>  <span class="hljs-keyword">class</span> <span class="hljs-title class_">PPTWriter</span> : <span class="hljs-type">Writer</span> &#123;<br>      <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">write</span><span class="hljs-params">()</span></span> &#123;<br>          println(<span class="hljs-string">&quot;做PPT呢&quot;</span>)<br>      &#125;<br>    <br>  &#125;<br>    <br>  <span class="hljs-keyword">interface</span> <span class="hljs-title class_">Driver</span> &#123;<br>      <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">drive</span><span class="hljs-params">()</span></span><br>  &#125;<br>    <br>  <span class="hljs-keyword">interface</span> <span class="hljs-title class_">Writer</span> &#123;<br>      <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">write</span><span class="hljs-params">()</span></span><br>  &#125;<br>  <br>    <br>      <span class="hljs-keyword">val</span> driver = CarDriver()<br>      <span class="hljs-keyword">val</span> writer = PPTWriter()<br>      <span class="hljs-keyword">val</span> seniorManager = SeniorManager(driver, writer)<br>      seniorManager.drive()<br>      seniorManager.write()<br>          <br><span class="hljs-comment">//类委托</span><br>  <span class="hljs-keyword">interface</span> <span class="hljs-title class_">Base</span> &#123;<br>      <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">print</span><span class="hljs-params">()</span></span><br>  &#125;<br>  <span class="hljs-keyword">class</span> <span class="hljs-title class_">BaseImpl</span>(<span class="hljs-keyword">val</span> x: <span class="hljs-built_in">Int</span>) : Base &#123;<br>      <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">print</span><span class="hljs-params">()</span></span> &#123; print(x) &#125;<br>  &#125;<br>  <span class="hljs-keyword">class</span> <span class="hljs-title class_">Derived</span>(b: Base) : Base <span class="hljs-keyword">by</span> b<span class="hljs-comment">//实现继承的代替方式</span><br>  <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">main</span><span class="hljs-params">(args: <span class="hljs-type">Array</span>&lt;<span class="hljs-type">String</span>&gt;)</span></span> &#123;<br>      <span class="hljs-keyword">val</span> b = BaseImpl(<span class="hljs-number">10</span>)<br>      Derived(b).print() <span class="hljs-comment">// prints 10</span><br>  &#125;<br>    <br></code></pre></td></tr></table></figure>
+
+<p>使⽤用 类名::class 获取的是 Kotlin 的类型是 KClass<br>使⽤用 类名::class.java 获取的是 Java 的类型<br>Any<br>Kotlin 的顶层⽗父类是 Any ，对应 Java 当中的 Object ，但是⽐比 Object 少了了 wait()&#x2F;notify()<br>等函数<br>Unit<br>Kotlin 中的 Unit 对应 Java 中的 void<br>在 Java 中通过 「类名.this」 获取⽬目标类引⽤用<br>在 Kotlin 中通过「this@类名」获取⽬目标类引⽤用</p>
+<hr>
+<h3 id="以前"><a href="#以前" class="headerlink" title="以前"></a>以前</h3><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs kotlin"><br><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">toast</span><span class="hljs-params">(message: <span class="hljs-type">String</span>, length: <span class="hljs-type">Int</span> = Toast.LENGTH_SHORT)</span></span> &#123;<br>     Toast.makeText(<span class="hljs-keyword">this</span>, message, length).show()<br> &#125;<br><br>toast(<span class="hljs-string">&quot;hello&quot;</span>)<br><br> <span class="hljs-comment">//扩展函数,我们就可以在每一个Activity中直接使用toast()函数了。</span><br> <span class="hljs-function"><span class="hljs-keyword">fun</span> Context.<span class="hljs-title">toast</span><span class="hljs-params">(message: <span class="hljs-type">CharSequence</span>, duration: <span class="hljs-type">Int</span> = Toast.LENGTH_SHORT)</span></span> &#123;<br>     Toast.makeText(<span class="hljs-keyword">this</span>, message, duration).show()<br> &#125;<br></code></pre></td></tr></table></figure>
+<ul>
+<li>switch可以是任意对象</li>
+</ul>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs kotlin"> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">whenTest</span><span class="hljs-params">(obj: <span class="hljs-type">Any</span>)</span></span> &#123;<br>       <span class="hljs-keyword">when</span> (obj) &#123;<br>           <span class="hljs-number">1</span> -&gt; print(<span class="hljs-string">&quot;第一项&quot;</span>)<br>           <span class="hljs-string">&quot;hello&quot;</span> -&gt; print(<span class="hljs-string">&quot;这个是字符串hello&quot;</span>)<br>           <span class="hljs-keyword">is</span> <span class="hljs-built_in">Long</span> -&gt; print(<span class="hljs-string">&quot;这是一个Long类型数据&quot;</span>)<br>           !<span class="hljs-keyword">is</span> String -&gt; print(<span class="hljs-string">&quot;这不是String类型的数据&quot;</span>)<br>           <span class="hljs-keyword">else</span> -&gt; print(<span class="hljs-string">&quot;else类似于Java中的default&quot;</span>)<br>       &#125;<br>   &#125;<br>    <br><br><span class="hljs-comment">// 如果是返回Int类型，连返回类型都可以不写</span><br>   <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">getIntValue</span><span class="hljs-params">(value: <span class="hljs-type">Int</span>)</span></span> = value<br>   <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">add_two</span><span class="hljs-params">(x: <span class="hljs-type">Int</span>, y: <span class="hljs-type">Int</span>)</span></span>: <span class="hljs-built_in">Int</span> = x + y<br></code></pre></td></tr></table></figure>
+<p>!! 强⾏调用符<br>?. 安全调用符</p>
+<ul>
+<li><p>kotlin默认不能空，变量类型后面跟?号定义，表明这是一个可空类型</p>
+</li>
+<li><p>?. 代表着如果该类型为空的话就返回null不做后续的操作，如果不为空的话才会去访问对应的方法或者属性</p>
+</li>
+<li><p>!!. 代表着如果该类型为空的话就抛出NullPointerException，如果不为空就去访问对应的方法或者属性， 所以只有在很少的特定场景才用这种符号，代表着程序不处理这种异常的case了，会像java代码一样抛出NullPointerException。 而且代码中一定不用出现下面这种代码，会让代码可读性很差而且如果有空指针异常，我们也不能马上发现是哪空了：</p>
+<pre><code class="hljs">/*
+  * 不推荐这样的写法：链式的连续用!!.
+  * */
+  val user = User()
+  user!!.name!!.subSequence(0,5)!!.length
+</code></pre>
+</li>
+</ul>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br></pre></td><td class="code"><pre><code class="hljs kotlin"><span class="hljs-keyword">val</span> value: String? = <span class="hljs-string">&quot;HelloWorld&quot;</span><br><span class="hljs-keyword">val</span> name: String = getName() ?: <span class="hljs-keyword">return</span>  <span class="hljs-comment">//如果是null就return</span><br>println(<span class="hljs-string">&quot;<span class="hljs-variable">$arg1</span> + <span class="hljs-variable">$arg2</span> = <span class="hljs-subst">$&#123;arg1 + arg2&#125;</span>&quot;</span>)    <span class="hljs-comment">//字符串模板</span><br><span class="hljs-keyword">val</span> FINAL_HELLO_CHINA = <span class="hljs-string">&quot;HelloChina&quot;</span>   <span class="hljs-comment">//类型可以不写，自动推导</span><br><span class="hljs-keyword">val</span> args1 = arrayOf(<span class="hljs-number">1</span>,<span class="hljs-number">2</span>,<span class="hljs-number">3</span>)<br><span class="hljs-keyword">val</span> range: IntRange = <span class="hljs-number">0.</span><span class="hljs-number">.1024</span> <span class="hljs-comment">// [0, 1024]</span><br><span class="hljs-keyword">val</span> range_exclusive: IntRange = <span class="hljs-number">0</span> until <span class="hljs-number">1024</span> <span class="hljs-comment">// [0, 1024) = [0, 1023]</span><br>    <br><span class="hljs-keyword">class</span> <span class="hljs-title class_">A</span> &#123;<br>    <span class="hljs-keyword">var</span> b = <span class="hljs-number">0</span><br>    <span class="hljs-keyword">lateinit</span> <span class="hljs-keyword">var</span> c: String   <span class="hljs-comment">//var延迟初始化用lateinit，使用 lateinit 关键字，变量在定义时不需要初始化，所以在使用questionTextView变量时，不需要加上 ? 和 !! 操作符。在使用第一次变量之前，一定要保证为questionTextView赋值 ， 不然会出现空指针异常。</span><br>    <span class="hljs-keyword">lateinit</span> <span class="hljs-keyword">var</span> d: X<br>    <span class="hljs-keyword">val</span> e: X <span class="hljs-keyword">by</span> lazy &#123;<br>        <span class="hljs-comment">//val延迟初始化用lazy代理</span><br>        println(<span class="hljs-string">&quot;init X&quot;</span>)<br>        X()<br>    &#125;<br>    <br>    <span class="hljs-comment">//第一次调用 get() 会执行已传递给 lazy() 的 lambda 表达式并记录结果， 后续调用 get() 只是返回记录的结果。</span><br>     <span class="hljs-keyword">private</span> <span class="hljs-keyword">val</span> linearLayoutManager <span class="hljs-keyword">by</span> lazy &#123;<br>        LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, <span class="hljs-literal">false</span>)<br>    &#125;<br>    <br>    <span class="hljs-keyword">var</span> cc: String? = <span class="hljs-literal">null</span> <span class="hljs-comment">//初始化成null不好</span><br>&#125;<br><span class="hljs-keyword">abstract</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Person</span>(<span class="hljs-keyword">open</span> <span class="hljs-keyword">val</span> age: <span class="hljs-built_in">Int</span>) &#123;<br>    <span class="hljs-comment">//只有open的成员和类才能被继承,接口和抽象类默认是open的</span><br>    <span class="hljs-keyword">abstract</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">work</span><span class="hljs-params">()</span></span><br>&#125;<br><br><span class="hljs-comment">//没有三目运算符，可以使用if 表达式</span><br><span class="hljs-keyword">val</span> max = <span class="hljs-keyword">if</span> (a &gt; b) a <span class="hljs-keyword">else</span> b<br><br><span class="hljs-comment">//对于bean对象可以这样写</span><br><span class="hljs-keyword">data</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Forecast</span>(<span class="hljs-keyword">val</span> date: Date, <span class="hljs-keyword">val</span> temperature: <span class="hljs-built_in">Float</span>, <span class="hljs-keyword">val</span> details: String)<br>    <br><span class="hljs-comment">//Kotlin 的构造函数可以写在类头中，跟在类名后面</span><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Person</span>( <span class="hljs-keyword">var</span> name:String)&#123;<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">var</span> description: String? = <span class="hljs-literal">null</span><br><br>    <span class="hljs-comment">//在主构造函数中不能有任何代码实现，如果有额外的代码需要在构造方法中执行，你需要放到init代码块中执行</span><br>    <span class="hljs-keyword">init</span> &#123;<br>        name = <span class="hljs-string">&quot;Zhang Tao&quot;</span><br>    &#125;<br><br>    <span class="hljs-keyword">internal</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">sayHello</span><span class="hljs-params">()</span></span> &#123;<br>        println(<span class="hljs-string">&quot;hello <span class="hljs-variable">$name</span>&quot;</span>)<br>    &#125;<br><br>    <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">printName</span><span class="hljs-params">()</span></span>&#123;<br>        println(name)<br>    &#125;<br><br>    <span class="hljs-comment">//这里我们让次级构造函数调用了主构造函数，完成 name 的赋值。</span><br>    <span class="hljs-comment">// 由于次级构造函数不能直接将参数转换为字段，所以需要手动声明一个 description 字段，并为 description 字段赋值。</span><br>    <span class="hljs-keyword">constructor</span>(name: String, description: String) : <span class="hljs-keyword">this</span>(name) &#123;<br>        <span class="hljs-keyword">this</span>.description = description<br>    &#125;<br><br>&#125;<br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Latitude</span> <span class="hljs-keyword">private</span> <span class="hljs-keyword">constructor</span>(<span class="hljs-keyword">val</span> value: <span class="hljs-built_in">Double</span>) &#123;<br>        <span class="hljs-keyword">companion</span> <span class="hljs-keyword">object</span> &#123;<span class="hljs-comment">//伴随对象</span><br>            <span class="hljs-comment">//加上这个注解Java可以直接像静态那样调用，否则得Latitude.companion.ofDouble(3.0)</span><br>            <span class="hljs-meta">@JvmStatic</span><br>            <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">ofDouble</span><span class="hljs-params">(double: <span class="hljs-type">Double</span>)</span></span>: Latitude &#123;<br>                <span class="hljs-keyword">return</span> Latitude(double)<br>            &#125;<br><br>            <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">ofLatitude</span><span class="hljs-params">(latitude: <span class="hljs-type">Latitude</span>)</span></span>: Latitude &#123;<br>                <span class="hljs-keyword">return</span> Latitude(latitude.value)<br>            &#125;<br><br>            <span class="hljs-meta">@JvmField</span><br>            <span class="hljs-keyword">val</span> TAG: String = <span class="hljs-string">&quot;Latitude&quot;</span><br>        &#125;<br>    &#125;<br><br>    <span class="hljs-keyword">class</span> <span class="hljs-title class_">Manager</span> : <span class="hljs-type">Driver</span>, <span class="hljs-type">Writer</span> &#123;<br>        <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">write</span><span class="hljs-params">()</span></span> &#123;<br><br>        &#125;<br><br>        <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">drive</span><span class="hljs-params">()</span></span> &#123;<br><br>        &#125;<br>    &#125;<br><br>  <br><br><span class="hljs-comment">//扩展方法，不用运算符operator的话，用&quot;abc&quot;.times(16)这样来调用,jva可以类名.times(&quot;abc&quot;, 16)调用</span><br>    <span class="hljs-keyword">operator</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> String.<span class="hljs-title">times</span><span class="hljs-params">(int: <span class="hljs-type">Int</span>)</span></span>: String &#123;<br>        <span class="hljs-keyword">val</span> stringBuilder = StringBuilder()<br>        <span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">0</span> until int) &#123;<br>            stringBuilder.append(<span class="hljs-keyword">this</span>)<br>        &#125;<br>        <span class="hljs-keyword">return</span> stringBuilder.toString()<br>    &#125;<br><br><span class="hljs-comment">//函数引用</span><br>    <span class="hljs-keyword">val</span> pdfPrinter = PdfPrinter()<br>        args.forEach(pdfPrinter::println)<br>        <br>         <span class="hljs-keyword">class</span> <span class="hljs-title class_">PdfPrinter</span> &#123;<br>        <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">println</span><span class="hljs-params">(any: <span class="hljs-type">Any</span>)</span></span> &#123;<br>            kotlin.io.println(any)  <span class="hljs-comment">//重名了可以用包名调用</span><br>        &#125;<br>    &#125;<br><br>   <span class="hljs-comment">//常见的高阶函数</span><br>        <span class="hljs-keyword">val</span> list = listOf&lt;<span class="hljs-built_in">Int</span>&gt;(<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">5</span>, <span class="hljs-number">10</span>, <span class="hljs-number">8</span>, <span class="hljs-number">2</span>)<br>        <span class="hljs-keyword">val</span> newList = ArrayList&lt;<span class="hljs-built_in">Int</span>&gt;();<br>        list.forEach &#123;<br>            <span class="hljs-keyword">val</span> newElement = it * <span class="hljs-number">2</span> + <span class="hljs-number">3</span><br>            newList.add(newElement)<br>        &#125;<br>        <span class="hljs-comment">//和上面一样，上面麻烦，map可以对集合进行操作，返回一个修改过得集合</span><br>        <span class="hljs-comment">//flatmap，对集合的集合进行操作，省去了俩次遍历的麻烦，跟rx java一样</span><br>        <span class="hljs-keyword">val</span> newList2 = list.map &#123; it * <span class="hljs-number">2</span> + <span class="hljs-number">3</span> &#125;<br>        <span class="hljs-keyword">val</span> newList3 = list.map &#123; <span class="hljs-built_in">Int</span>::toDouble &#125;<br>        newList3.forEach(::println)<br>        newList3.map(::println)  <span class="hljs-comment">//和上面输出一样，但是又重新add了一个集合，不好,纯粹用于迭代的话会影响性能，实现里面还有一个数组</span><br>        <br>        <span class="hljs-comment">//提取开头指定数量或符合指定条件的子集  </span><br>        list.takeWhile &#123; it &lt;= <span class="hljs-number">3</span> &#125;.forEach(::println)  <span class="hljs-comment">//小于的去掉</span><br>        list.forEach &#123;<br>            <span class="hljs-keyword">if</span> (it % <span class="hljs-number">2</span> == <span class="hljs-number">0</span>) &#123;<br>                println(it)<br>            &#125;<br>        &#125;<br>        list.filter &#123; it.isEvent() &#125;.forEach(::println)<span class="hljs-comment">//过滤</span><br>            <br>        <span class="hljs-keyword">val</span> person = findPerson();<br>        <span class="hljs-comment">//person是可null的，所以需要？</span><br>        println(person?.age)<br>        println(person?.name)<br>        <span class="hljs-comment">//上面太麻烦，findPerson加了？,所以后面不需要了,减少的判空操作。let可以安全调用</span><br>        findPerson()?.let &#123; person -&gt;<br>            person.work()<br>            println(person.age)<br>        &#125;<br>        <span class="hljs-comment">//还可以更简洁，person也不用写</span><br>        findPerson()?.apply &#123;<br>            work()<br>            println(age)<br>        &#125;<br><span class="hljs-comment">//使用apply做对象的初始化</span><br><span class="hljs-keyword">return</span> TextView(context).apply &#123;<br>    text = <span class="hljs-string">&quot;test&quot;</span><br>    setOnClickListener(onClickListener)<br>&#125;<br><br>    <span class="hljs-comment">//use不用close了</span><br>        BufferedReader(FileReader(<span class="hljs-string">&quot;hello.txt&quot;</span>)).use &#123;<br>            <span class="hljs-keyword">var</span> line: String?<br>            <span class="hljs-keyword">while</span> (<span class="hljs-literal">true</span>) &#123;<br>                <span class="hljs-comment">//it表示当前对象BufferedReader，所以可以用它的方法</span><br>                line = it.readLine() ?: <span class="hljs-keyword">break</span><br>                println(line)<br>            &#125;<br>        &#125;<br></code></pre></td></tr></table></figure>
+
+<p>with的用法：<br>返回值是最后一行，可以直接调用对象的方法</p>
+<figure class="highlight isbl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs isbl"><span class="hljs-variable">fun</span> <span class="hljs-function"><span class="hljs-title">alphabet</span>(): <span class="hljs-variable">String</span> &#123;</span><br><span class="hljs-function">    <span class="hljs-variable">val</span> <span class="hljs-variable"><span class="hljs-class">result</span></span> = <span class="hljs-title">StringBuilder</span>()</span><br>    <span class="hljs-variable"><span class="hljs-class">result</span>.append</span>(<span class="hljs-string">&quot;START\n&quot;</span>)<br>    <span class="hljs-variable">for</span> (<span class="hljs-variable">letter</span> <span class="hljs-variable"><span class="hljs-keyword">in</span></span> <span class="hljs-string">&#x27;A&#x27;</span>..<span class="hljs-string">&#x27;Z&#x27;</span>) &#123;<br>        <span class="hljs-variable"><span class="hljs-class">result</span>.append</span>(<span class="hljs-variable">letter</span>)<br>    &#125;<br>    <span class="hljs-variable"><span class="hljs-class">result</span>.append</span>(<span class="hljs-string">&quot;\nEND&quot;</span>)<br>    <span class="hljs-variable">return</span> <span class="hljs-variable"><span class="hljs-class">result</span>.toString</span>()<br>&#125;<br><br><span class="hljs-comment">/*</span><br><span class="hljs-comment">* 通过with语句，可以直接将对象传入，省掉对象的声明</span><br><span class="hljs-comment">* */</span><br><span class="hljs-variable">fun</span> <span class="hljs-function"><span class="hljs-title">alphabet4</span>(): <span class="hljs-variable">String</span> &#123;</span><br><span class="hljs-function">    <span class="hljs-variable">return</span> <span class="hljs-title">with</span>(<span class="hljs-title">StringBuilder</span>()) &#123;</span><br><span class="hljs-function">        <span class="hljs-title">append</span>(<span class="hljs-string">&quot;START\n&quot;</span>)</span><br>        <span class="hljs-variable">for</span> (<span class="hljs-variable">letter</span> <span class="hljs-variable"><span class="hljs-keyword">in</span></span> <span class="hljs-string">&#x27;A&#x27;</span>..<span class="hljs-string">&#x27;Z&#x27;</span>) &#123;<br>            <span class="hljs-function"><span class="hljs-title">append</span>(<span class="hljs-variable">letter</span>)</span><br>        &#125;<br>        <span class="hljs-function"><span class="hljs-title">append</span>(<span class="hljs-string">&quot;\nEND&quot;</span>)</span><br>        <span class="hljs-function"><span class="hljs-title">toString</span>()</span><br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>take是从集合中取前几个元素<br>takeLast是从集合中取后几个元素<br>sortedBy 排序<br>过滤list，符合过滤条件的就是过滤结果<br>filterNot把符合条件的过滤掉，剩下的是结果。这个操作和 filter 相反<br>slice,取集合中的某一部分</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs stylus">val numbers = <span class="hljs-built_in">listOf</span>(<span class="hljs-string">&quot;one&quot;</span>, <span class="hljs-string">&quot;two&quot;</span>, <span class="hljs-string">&quot;three&quot;</span>, <span class="hljs-string">&quot;four&quot;</span>, <span class="hljs-string">&quot;five&quot;</span>, <span class="hljs-string">&quot;six&quot;</span>)    <br><span class="hljs-function"><span class="hljs-title">println</span><span class="hljs-params">(numbers.slice(<span class="hljs-number">1</span>..<span class="hljs-number">3</span>)</span></span>)<br><span class="hljs-function"><span class="hljs-title">println</span><span class="hljs-params">(numbers.slice(<span class="hljs-number">0</span>..<span class="hljs-number">4</span> step <span class="hljs-number">2</span>)</span></span>)<br><span class="hljs-function"><span class="hljs-title">println</span><span class="hljs-params">(numbers.slice(setOf(<span class="hljs-number">3</span>, <span class="hljs-number">5</span>, <span class="hljs-number">0</span>)</span></span>)) <br><br><span class="hljs-selector-attr">[two, three, four]</span><br><span class="hljs-selector-attr">[one, three, five]</span><br><span class="hljs-selector-attr">[four, six, one]</span><br><br>val numbers = <span class="hljs-built_in">listOf</span>(<span class="hljs-string">&quot;one&quot;</span>, <span class="hljs-string">&quot;two&quot;</span>, <span class="hljs-string">&quot;three&quot;</span>, <span class="hljs-string">&quot;four&quot;</span>, <span class="hljs-string">&quot;five&quot;</span>, <span class="hljs-string">&quot;six&quot;</span>)<br><span class="hljs-function"><span class="hljs-title">println</span><span class="hljs-params">(numbers.takeWhile &#123; !it.startsWith(<span class="hljs-string">&#x27;f&#x27;</span>)</span></span> &#125;)<br><span class="hljs-function"><span class="hljs-title">println</span><span class="hljs-params">(numbers.takeLastWhile &#123; it != <span class="hljs-string">&quot;three&quot;</span> &#125;)</span></span><br><span class="hljs-function"><span class="hljs-title">println</span><span class="hljs-params">(numbers.dropWhile &#123; it.length == <span class="hljs-number">3</span> &#125;)</span></span><br><span class="hljs-function"><span class="hljs-title">println</span><span class="hljs-params">(numbers.dropLastWhile &#123; it.contains(<span class="hljs-string">&#x27;i&#x27;</span>)</span></span> &#125;)<br><br><br><span class="hljs-selector-attr">[one, two, three]</span><br><span class="hljs-selector-attr">[four, five, six]</span><br><span class="hljs-selector-attr">[three, four, five, six]</span><br><span class="hljs-selector-attr">[one, two, three, four]</span><br><br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="JAVA-Lambda"><a href="#JAVA-Lambda" class="headerlink" title="JAVA Lambda"></a>JAVA Lambda</h2><p>闭包就是Lambda 表达式<br>lambda 表达式，通常是在需要一个函数，但是又不想去命名一个函数的场合下使用，也就是匿名函数。而Lambda可以简化匿名函数，使代码简洁。<br>也可以将一个代码块赋值给一个变量，在调用方法的时候，可以直接将这个lambda表达式当作参数传递进去<a target="_blank" rel="noopener" href="https://www.zhihu.com/question/20125256/answer/324121308">链接</a></p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-c8a411081ee3b5bc0e4cbcf524008ee3-unknown_filename-1c39f7.png" srcset="/img/loading.gif" lazyload alt="unknown_filename"></p>
+<p>什么是Lambda?我们知道，对于一个Java变量，我们可以赋给其一个“值”。<img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-bcb8e51fd7ccf4cdd5815eb654adb5c5-unknown_filename.1-e7e944.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.1"></p>
+<p>如果你想把“一块代码”赋给一个Java变量，应该怎么做呢？<br>比如，我想把右边那块代码，赋给一个叫做aBlockOfCode的Java变量：<img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-b5483cd4e1b24538648d914404bbc0bb-unknown_filename.2-74cb8c.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.2"></p>
+<p>在Java 8之前，这个是做不到的。但是Java 8问世之后，利用Lambda特性，就可以做到了。<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-b550e963a52af94425923b3a5a3c94fe-unknown_filename.3-37cde3.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.3"></p>
+<p>当然，这个并不是一个很简洁的写法。所以，为了使这个赋值操作更加elegant, 我们可以移除一些没用的声明。<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-f2106c26a579a34ada3bc2eddd174a17-unknown_filename.4-cbb256.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.4"></p>
+<p>这样，我们就成功的非常优雅的把“一块代码”赋给了一个变量。而“这块代码”，或者说“这个被赋给一个变量的函数”，就是一个Lambda表达式。<br>但是这里仍然有一个问题，就是变量aBlockOfCode的类型应该是什么？<br>在Java 8里面，所有的Lambda的类型都是一个接口，而Lambda表达式本身，也就是”那段代码“，需要是这个接口的实现。这是我认为理解Lambda的一个关键所在，简而言之就是，Lambda表达式本身就是一个接口的实现。直接这样说可能还是有点让人困扰，我们继续看看例子。我们给上面的aBlockOfCode加上一个类型：<img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-b963d4d265d0f5076d97dfe6bd9598ff-unknown_filename.5-6b2d8e.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.5"></p>
+<p>这种只有一个接口函数需要被实现的接口类型，我们叫它”函数式接口“。<br>为了避免后来的人在这个接口中增加接口函数导致其有多个接口函数需要被实现，变成”非函数接口”，我们可以在这个上面加上一个声明@FunctionalInterface, 这样别人就无法在里面添加新的接口函数了：<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-eeea87955d4f070b2310b8944e232d46-unknown_filename.6-58325d.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.6"></p>
+<p>这样，我们就得到了一个完整的Lambda表达式声明：<img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-a0eca88c88a767040bc3fc03c85be9dc-unknown_filename.7-91289b.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.7"></p>
+<p>Lambda 表达式有什么作用?最直观的作用就是使得代码变得异常简洁。我们可以对比一下 Lambda 表达式和传统的 Java 对同一个接口的实现：</p>
+<p>这两种写法本质上是等价的。但是显然，Java 8中的写法更加优雅简洁。并且，由于 Lambda 可以直接赋值给一个变量，我们就可以直接把 Lambda 作为参数传给函数, 而传统的 Java 必须有明确的接口实现的定义，初始化才行：<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-e8801d9a1ea836c720eeac8c45045c2a-unknown_filename.9-c60d71.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.9"></p>
+<p>有些情况下，这个接口实现只需要用到一次。传统的Java 7必须要求你定义一个“污染环境”的接口实现MyInterfaceImpl，而相较之下Java 8的Lambda, 就显得干净很多。<img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-f83e1c53aa08985ddedfae71c47d89dd-unknown_filename.10-13e9e2.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.10"></p>
+<p>Lambda结合FunctionalInterface Lib, forEach, stream()，method reference等新特性可以使代码变的更加简洁！<br>直接上例子。假设 Person 的定义和 List&lt;Person&gt;的值都给定。</p>
+<p>现在需要你打印出guiltyPersons List里面所有LastName以”Z”开头的人的FirstName。<br>原生态Lambda写法：定义两个函数式接口，定义一个静态函数，调用静态函数并给参数赋值Lambda表达式。<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-ec38378f0f999646da004c4c5ae3b37e-unknown_filename.12-33d45b.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.12"></p>
+<p>这个代码实际上已经比较简洁了，但是我们还可以更简洁么？当然可以。在Java 8中有一个函数式接口的包，里面定义了大量可能用到的函数式接口（java.util.function (Java Platform SE 8 )）。<br>所以，我们在这里压根都不需要定义 NameChecker 和 Executor 这两个函数式接口，直接用 Java 8函数式接口包里的 Predicate&lt;\T&gt;和 Consumer&lt;\T&gt;就可以了——因为他们这一对的接口定义和 NameChecker&#x2F;Executor 其实是一样的。</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-5bc2ca944d3f7b68946259a36a9b38c4-unknown_filename.13-6db5d6.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.13"></p>
+<p>第一步简化 - 利用函数式接口包：<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-7f52144c8831edaa4d6bc2d6d2f8ee83-unknown_filename.14-b5fa2a.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.14"></p>
+<p>静态函数里面的 for each 循环其实是非常碍眼的。这里可以利用 Iterable 自带的 forEach()来替代。forEach()本身可以接受一个 Consumer&lt;\T&gt; 参数。</p>
+<p>第二步简化 - 用Iterable.forEach()取代foreach loop：<img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-9fe1b8b0b26596922b02a40ccb725744-unknown_filename.15-9e087e.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.15"></p>
+<p>由于静态函数其实只是对List进行了一通操作，这里我们可以甩掉静态函数，直接使用stream()特性来完成。<br>stream()的几个方法都是接受 Predicate&lt;\T&gt;，Consumer&lt;\T&gt;等参数的（java.util.stream (Java Platform SE 8 )）。你理解了上面的内容，stream()这里就非常好理解了，并不需要多做解释。</p>
+<p>第三步简化 - 利用stream()替代静态函数：<img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-71d51708fef84df2ef432897375b8800-unknown_filename.16-2a5f2c.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.16"></p>
+<p>对比最开始的Lambda写法，这里已经非常非常简洁了。但是如果，我们的要求变一下，变成print这个人的全部信息，及p -&gt; System.out.println(p);</p>
+<p>那么还可以利用Method reference来继续简化。所谓Method reference, 就是用已经写好的别的Object&#x2F;Class的method来代替Lambda expression。格式如下：<img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-aace1c7f50774f12c96486d90f7ae8c4-unknown_filename.17-f55e6d.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.17"></p>
+<p>第四步简化 - 如果是println(p)，则可以利用Method reference代替forEach中的Lambda表达式：<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-12c8a27171db3c87230826528d8af218-unknown_filename.18-10c8a6.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.18"></p>
+<p>这基本上就是能写的最简洁的版本了。</p>
+<p>在Java 8中，我们会使用Lambda表达式创建匿名方法，<strong>但是有时候，我们的Lambda表达式可能仅仅调用一个已存在的方法</strong>，而不做任何其它事，对于这种情况，通过一个方法名字来引用这个已存在的方法会更加清晰，Java 8的方法引用允许我们这样做。</p>
+<p><strong>方法引用</strong>是一个更加紧凑，易读的Lambda表达式，注意方法引用是一个Lambda表达式，其中方法引用的操作符是双冒号”::”。<br>方法引用 Person:: compareByAge 在语义上与 Lambda 表达式 (a, b) -&gt; Person.compareByAge(a, b) 是等同的，都有如下特性：真实的参数是拷贝自 Comparator&lt;\Person&gt;.compare 方法，即(Person, Person)；表达式体调用 Person.compareByAge 方法；可以省略掉参数 <img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-87567c236f506bf934eb6aab3e143918-unknown_filename.19-5ce731.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.19"></p>
+<p>Lambda 配合 Optional&lt;\T&gt;可以使 Java 对于 null 的处理变的异常优雅这里假设我们有一个 person object，以及一个 person object 的 Optional wrapper: <img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-060fd1c2142a2e9fd497be4a5a6004ec-unknown_filename.20-c06aa5.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.20"></p>
+<p>Optional&lt;\T&gt;如果不结合 Lambda 使用的话，并不能使原来繁琐的 null check 变的简单。<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-18c0379d041e8fbd2736e614088f2302-unknown_filename.21-2c5c1e.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.21"></p>
+<p>只有当 Optional&lt;\T&gt;结合 Lambda 一起使用的时候，才能发挥出其真正的威力！我们现在就来对比一下下面四种常见的 null 处理中，Java 8的 Lambda+Optional&lt;<br>T&gt;和传统 Java 两者之间对于 null 的处理差异。情况一 - 存在则开干 </p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-b2b683618ce6c75a03651848be8bfacb-unknown_filename.22-f5235c.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.22"></p>
+<p>情况二 - 存在则返回，无则返回屁<img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-58ec0225469183c57e71cb453687ac25-unknown_filename.23-c5626c.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.23"><br>情况三 - 存在则返回，无则由函数产生<img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-3c406fa8a204d56f25099ed7d21ad484-unknown_filename.24-ff37b0.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.24"><br>情况四 - 夺命连环null检查<img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-72ea94d133222f1de35cd68f8e9ed4d7-unknown_filename.25-25766a.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.25"></p>
+<p>由上述四种情况可以清楚地看到，Optional&lt;\T&gt;+Lambda 可以让我们少写很多 ifElse 块。尤其是对于情况四那种夺命连环 null 检查，传统 java 的写法显得冗长难懂，而新的 Optional&lt;<br>T&gt;+Lambda 则清新脱俗，清楚简洁。</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-154a752183be052647f976f88363f659-unknown_filename.26-6d82e3.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.26"></p>
+<p>关于Java的Lambda, 还有东西需要讨论和学习。比如如何handle lambda exception，如何利用Lambda的特性来进行parallel processing等。</p>
+<p>总之，我只是一如既往地介绍个大概，让你大概知道，哦！原来是这样子就OK了。网上关于Lambda有很多相关的教程，多看多练。假以时日，必定有所精益。 </p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%85%B6%E4%BB%96%E8%AF%AD%E8%A8%80/" class="category-chain-item">其他语言</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E5%85%B6%E4%BB%96%E8%AF%AD%E8%A8%80/kotlin/" class="category-chain-item">kotlin</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>kotlin、Lambda</div>
+      <div>http://peiniwan.github.io/2024/04/1fb25707496d.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>六月的雨</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年4月6日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/04/f5528598dcd3.html" title="Kotlin分享">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Kotlin分享</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/04/3efb4556ec44.html" title="Kotlin 协程总结">
+                        <span class="hidden-mobile">Kotlin 协程总结</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"OwNIdaopOn1rwNhtotGOGC0B-gzGzoHsz","appKey":"eadytQ2XqWmxuvAKeg08XX83","path":"window.location.pathname","placeholder":null,"avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":true,"recordIP":false,"serverURLs":"https://ownidaop.lc-cn-n1-shared.com","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
