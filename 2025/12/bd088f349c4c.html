@@ -1,0 +1,902 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="[[晴天小庭]]">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="随着声明式布局的方式逐渐扩展到手机端开发，谷歌也推出了Jetpack Compose框架，然而Compose过于难以上手的缺点让许多新人望而却步，文章重点针对几个初学者面临的难点进行突破">
+<meta property="og:type" content="article">
+<meta property="og:title" content="妈！Jetpack Compose太难学了，别怕，这里帮你理清几个概念">
+<meta property="og:url" content="http://peiniwan.github.io/2025/12/bd088f349c4c.html">
+<meta property="og:site_name" content="六月的雨的笔记">
+<meta property="og:description" content="随着声明式布局的方式逐渐扩展到手机端开发，谷歌也推出了Jetpack Compose框架，然而Compose过于难以上手的缺点让许多新人望而却步，文章重点针对几个初学者面临的难点进行突破">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/mis/202512162150770.webp">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/mis/202512162150771.webp">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/mis/202512162150772.webp">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/mis/202512162150770.webp">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/mis/202512162150774.webp">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/mis/202512162150775.webp">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/mis/202512162150777.webp">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/mis/202512162150778.webp">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/mis/202512162150779.webp">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/mis/202512162150780.webp">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/mis/202512162150781.webp">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/mis/202512162150782.webp">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/mis/202512162150783.jpg">
+<meta property="article:published_time" content="2025-12-16T13:59:22.500Z">
+<meta property="article:modified_time" content="2025-12-16T13:50:09.235Z">
+<meta property="article:author" content="六月的雨">
+<meta property="article:tag" content="clippings">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/mis/202512162150770.webp">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>妈！Jetpack Compose太难学了，别怕，这里帮你理清几个概念 - 六月的雨的笔记</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"peiniwan.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>六月的雨的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="妈！Jetpack Compose太难学了，别怕，这里帮你理清几个概念"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-12-16 21:59" pubdate>
+          2025年12月16日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          5.8k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          48 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">妈！Jetpack Compose太难学了，别怕，这里帮你理清几个概念</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>我正在参加「掘金·启航计划」</p>
+<p>更多好文： <a target="_blank" rel="noopener" href="https://juejin.cn/post/7248792806583943229" title="https://juejin.cn/post/7248792806583943229">刚学Jetpack Compose?最好不要踩这些新手容易碰到的坑 - 掘金 (juejin.cn)</a></p>
+<h2 id="Jetpack-Compose-入门难点解疑"><a href="#Jetpack-Compose-入门难点解疑" class="headerlink" title="Jetpack Compose 入门难点解疑"></a>Jetpack Compose 入门难点解疑</h2><p>近些年 <code>声明式布局</code> 开发方式逐渐从网页端延展到了手机端，说到底还是声明式太香了，其代码更加清晰、简洁，并且更接近于自然语言的表达方式。这使得代码易于理解和维护，降低了开发人员的心智负担。</p>
+<p>谷歌和苹果分别维护着两个地球上最大的手机操作系统：Android和IOS。长期以来，由于编程语言的特性，手机端一直都是使用命令式布局（偏向面向对象的开发方式）来开发UI，但是随着手机UI逐渐复杂和动态化，原有的方式暴露了其瓶颈，越来越多的手机端工程师抱怨，实现产品要求的效果越来越难了。于是为了适应市场的要求，谷歌和苹果分别推出了原生的 <code>声明式布局</code> 开发框架，苹果端是SwiftUi,安卓端就是本期的主角- <code>Jetpack Compose</code> 。</p>
+<p>如果你从来没听说过 <code>Jetpack Compose</code> ，笔者建议你先阅读一下官方的简介和开发文档，因为本期节目并不会从0开始介绍这个框架，而是带领新人攻克最难的几个入门门槛。</p>
+<ul>
+<li><a href="https://link.juejin.cn/?target=https://developer.android.google.cn/jetpack/compose?hl=zh-cn" title="https://developer.android.google.cn/jetpack/compose?hl=zh-cn">Jetpack Compose 简介 | Android Developers (google.cn)</a></li>
+<li><a href="https://link.juejin.cn/?target=https://developer.android.google.cn/jetpack/compose/documentation?hl=zh-cn" title="https://developer.android.google.cn/jetpack/compose/documentation?hl=zh-cn">Jetpack Compose 开发文档 | Android Developers (google.cn)</a></li>
+</ul>
+<p>如果你已经大致读完了上面两个文档，你仍然回到这篇文章，那说明你遇到了笔者一开始遇到的问题： <code>Jetpack Compose</code> 的文档实在写的太烂了，充满了机翻，而且比较难的概念只是一笔带过。</p>
+<p>本章会手把手带你理解Jetpack Compose初学最难理解的几个难点。</p>
+<h3 id="一、可组合函数与附带效应"><a href="#一、可组合函数与附带效应" class="headerlink" title="一、可组合函数与附带效应"></a>一、可组合函数与附带效应</h3><p><code>可组合函数</code> 是Compose中描述UI的函数，你可以把它类比成HTML，可组合函数使用kotlin作为开发语言。</p>
+<p>关于可组合函数，必须有以下特点：</p>
+<ul>
+<li>此函数带有 <code>@Composable</code> 注释。所有可组合函数都必须带有此注释；此注释可告知 Compose 编译器：此函数旨在将数据转换为界面。</li>
+<li>此函数接受数据。可组合函数可以接受一些参数，这些参数可让应用逻辑描述界面。在本例中，我们的 widget 接受一个 <code>String</code> ，因此它可以按名称问候用户。</li>
+<li>此函数可以在界面中显示文本。为此，它会调用 <code>Text()</code> 可组合函数，该函数实际上会创建文本界面元素。可组合函数通过调用其他可组合函数来发出界面层次结构。</li>
+<li>此函数不会返回任何内容。发出界面的 Compose 函数不需要返回任何内容，因为它们描述所需的屏幕状态，而不是构造界面 widget。</li>
+<li><strong>可组合函数快速、幂等且没有附带效应</strong> 。<ul>
+<li>使用同一参数多次调用此函数时，它的行为方式相同，并且它不使用其他值，如全局变量或对 <code>random()</code> 的调用。</li>
+<li>此函数描述界面而没有任何副作用，如修改属性或全局变量。</li>
+</ul>
+</li>
+</ul>
+<p>这里出现了一个概念：幂等，也许有人第一次接触到这个词，我提供一下关于这个词的解释：</p>
+<blockquote>
+<p>在编程中，”幂等”是指一个操作或函数，无论执行多少次，结果都是相同的。换句话说，对于给定的输入，多次执行相同的操作或函数不会产生额外的影响或副作用。</p>
+</blockquote>
+<p>假设你的函数改变了外部的变量或者访问了外部的变量，那它就不是幂等的，例如下面的函数：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs kotlin"><span class="hljs-keyword">var</span> a:<span class="hljs-built_in">Int</span>=<span class="hljs-number">1</span><br><br><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">nonIdempotent</span><span class="hljs-params">()</span></span>&#123;<br>    a++<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>很显然，每次调用nonIdempotent()方法的结果都是不一样的，这种就是” <code>不幂等</code> “的函数。</p>
+<p>相同的，我们再来看看 <code>幂等</code> 的函数：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs kotlin"><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">idempotent</span><span class="hljs-params">(a:<span class="hljs-type">Int</span>)</span></span>:<span class="hljs-built_in">Int</span>&#123;<br>    <span class="hljs-keyword">return</span> a+<span class="hljs-number">1</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>如果我传入的a不一样，每次返回的结果都不一样，还算幂等吗？当然算，我们说幂等的前提是保持参数一致，如果参数一致的情况下，结果永远都是a+1，因此方法是幂等的。</p>
+<p>下面再看一个函数，请问这是幂等的吗:</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs kotlin"><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">idempotentOrNonIdempotent</span><span class="hljs-params">(a:<span class="hljs-type">Int</span>)</span></span>:<span class="hljs-built_in">Int</span>&#123;<br>    print(<span class="hljs-string">&quot;<span class="hljs-subst">$&#123;a+<span class="hljs-number">1</span>&#125;</span>&quot;</span>)<br>    <span class="hljs-keyword">return</span> a+<span class="hljs-number">1</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>也许你会觉得这是幂等的，因为结果是一致的，但是这个函数却是 <code>不幂等</code> 的，因为print会对控制台输出日志，这属于对函数外部产生了影响，而对外部产生影响属于 <code>附带效应</code> ，因此也是不幂等的。</p>
+<blockquote>
+<p><code>附带效应</code> 是指发生在 <strong>可组合函数作用域</strong> 之外的应用状态的变化。由于可组合项的生命周期和属性（例如不可预测的重组、以不同顺序执行可组合项的重组或可以舍弃的重组），可组合项在理想情况下应该是无附带效应的。</p>
+</blockquote>
+<p>回到Compose中来，为什么Compose的可组合函数要强调 <code>幂等且没有附带效应</code> 呢？因为Compose是没有对象这一个概念的，它是用纯粹的函数来表达UI，因此UI的刷新就是 <code>重新调用一次可组合函数</code> ，刷新过程由Compose的 <code>智能重组</code> 机制自动完成，关于这个机制我们接下来才会提到，你只需要了解一个概念：即 <code>Compose的UI刷新就是重新调用一次可组合函数，而且调用的次数和时机是不确定的</code> 即可。</p>
+<p>基于这个因素，如果我们的可组合函数里面出现了附带效应的情况，就会导致附带效应在不恰当的时机出现，例如下面的代码：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs kotlin"><span class="hljs-meta">@Composable</span><br><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">MyScreen</span><span class="hljs-params">(</span></span><br><span class="hljs-params"><span class="hljs-function">    title:<span class="hljs-type">String</span></span></span><br><span class="hljs-params"><span class="hljs-function">)</span></span>&#123;<br><br>    Log.d(<span class="hljs-string">&quot;UI日志&quot;</span>,<span class="hljs-string">&quot;MyScreen&quot;</span>)<br>    Column&#123;<br>        Text(title)<br>    &#125;<br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>也许你的本意只是想输出一个日志，查看MyScreen的出现时机，<em>但是这样在Compose中属于经典的错误。这样写的结果是每当MyScreen刷新的时候，都会输出一遍日志</em>，如何解决附带效应的问题我们接下来再讲，现在只需要读者留一个概念：千万要注意 <code>附带效应</code> ！</p>
+<h3 id="二、重组与智能重组"><a href="#二、重组与智能重组" class="headerlink" title="二、重组与智能重组"></a>二、重组与智能重组</h3><p>在命令式界面模型中，如需更改某个 widget，您可以在该 widget 上调用 setter 以更改其内部状态。在 Compose 中，您可以使用新数据再次调用可组合函数。</p>
+<p>这样做会导致函数进行重组，系统会根据需要使用新数据重新绘制函数发出的 widget。Compose 框架可以智能地仅重组已更改的组件。</p>
+<p>例如，假设有以下可组合函数，它用于显示一个按钮：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs kotlin"><span class="hljs-meta">@Composable</span><br><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">ClickCounter</span><span class="hljs-params">(clicks: <span class="hljs-type">Int</span>, onClick: () -&gt; <span class="hljs-type">Unit</span>)</span></span> &#123;<br>    Button(onClick = onClick) &#123;<br>        Text(<span class="hljs-string">&quot;I&#x27;ve been clicked <span class="hljs-variable">$clicks</span> times&quot;</span>)<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>每次点击该按钮时，调用方都会更新 <code>clicks</code> 的值。Compose 会再次调用 lambda 与 <code>Text</code> 函数以显示新值；此过程称为“<em>重组</em>”。不依赖于该值的其他函数不会进行重组。</p>
+<p>如前文所述，重组整个界面树在计算上成本高昂，因为会消耗计算能力并缩短电池续航时间。Compose 使用 <code>智能重组</code> 来解决此问题。</p>
+<p>所谓的 <code>智能重组</code> 就是：Compose根据可组合函数的参数来决定是否进行重组。</p>
+<p>也就是说，每一次可组合函数被调用的时候，他会检查所有传入的参数，<em>如果本次传入的参数和上一次传入的参数都是相同的话</em>（这里指的相同是指结构性相等，在kotlin中指的是&#x3D;&#x3D;，在java中指的是调用对象的equals()方法) ，那么Compose就会略过调用这个可组合函数，以达到最快的重组效率。</p>
+<p>让我们回到这个可组合函数，如果他的父级可组合函数由于某种原因触发了重组，那么Compose就会尝试调用MyScreen()来完成刷新，如果title参数没有发生变化的话，Compose实际上就会略过MyScreen的刷新。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs kotlin"><span class="hljs-meta">@Composable</span><br><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">MyScreen</span><span class="hljs-params">(</span></span><br><span class="hljs-params"><span class="hljs-function">    title:<span class="hljs-type">String</span></span></span><br><span class="hljs-params"><span class="hljs-function">)</span></span>&#123;<br>    Column&#123;<br>        Text(title)<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="三、Compose的生命周期"><a href="#三、Compose的生命周期" class="headerlink" title="三、Compose的生命周期"></a>三、Compose的生命周期</h3><p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/mis/202512162150770.webp" srcset="/img/loading.gif" lazyload alt="7183be478c3c8b3f73025640989b37be_MD5"></p>
+<p>组合中可组合项的生命周期。 进入组合，执行 0 次或多次重组，然后退出组合。</p>
+<p>每一次composable（重组）就是调用一次可组合函数</p>
+<h3 id="四、remember与状态"><a href="#四、remember与状态" class="headerlink" title="四、remember与状态"></a>四、remember与状态</h3><blockquote>
+<p>由于 Compose 是声明式工具集，因此更新它的唯一方法是通过新参数调用同一可组合项。这些参数是界面状态的表现形式。每当状态更新时，都会发生重组。</p>
+</blockquote>
+<h4 id="1-remember"><a href="#1-remember" class="headerlink" title="1.remember"></a>1.remember</h4><blockquote>
+<p><code>remember</code> 会将对象存储在组合中，当调用 <code>remember</code> 的可组合项从组合中移除后，它会忘记该对象</p>
+</blockquote>
+<p>为什么需要remember，是因为Compose使用了纯函数的形式表达UI（与flutter等框架使用对象不同），可组合函数本身可能会被多次调用，如果我们直接在方法体中声明属性，<em>这个属性就会因为方法本身被多次调用从而丢失</em>，因此我们需要一种让变量“<strong>持久化</strong>”的能力，remember就提供了这种能力，让某个变量从“Enter the Compotision”阶段一直保存到“leave the Composition”阶段。</p>
+<p>被remember包裹住的变量，<em>每一次组合的时候，取的都是同一个变量</em>。</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/mis/202512162150771.webp" srcset="/img/loading.gif" lazyload alt="eee4d84c49ff6688f14b0300a4739614_MD5"></p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/mis/202512162150772.webp" srcset="/img/loading.gif" lazyload alt="03474cbb84a274da2ad7efce8f466705_MD5"></p>
+<p>有时候，我们希望某个remember变量在恰当的时候发生变化，例如int类型的变量num变化的时候，自动生成对应的字符串，我们可以使用remember的key，<em>当key发生变化的时候</em>，remember的变量会重新生成。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs kotlin"><span class="hljs-keyword">var</span> num <span class="hljs-keyword">by</span> remember &#123; mutableStateOf(<span class="hljs-number">0</span>) &#125;<br><span class="hljs-keyword">val</span> numString = remember(key1=num) &#123;<span class="hljs-string">&quot;我是数字<span class="hljs-variable">$num</span>&quot;</span>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>上述案例中，numString是受num影响的，如果num不变的情况下，numString取的值永远都是上一次生成的值，一旦num发生了变化，即remember中的key值变化，那么remember的lambda会重新执行来获取新值。</p>
+<h4 id="2-MutableState"><a href="#2-MutableState" class="headerlink" title="2.MutableState"></a>2.MutableState</h4><blockquote>
+<p><a href="https://link.juejin.cn/?target=https://developer.android.google.cn/reference/kotlin/androidx/compose/runtime/package-summary?hl=zh-cn%23mutableStateOf(kotlin.Any,androidx.compose.runtime.SnapshotMutationPolicy)" title="https://developer.android.google.cn/reference/kotlin/androidx/compose/runtime/package-summary?hl=zh-cn#mutableStateOf(kotlin.Any,androidx.compose.runtime.SnapshotMutationPolicy)"><code>mutableStateOf</code></a> 会创建可观察的 <a href="https://link.juejin.cn/?target=https://developer.android.google.cn/reference/kotlin/androidx/compose/runtime/MutableState?hl=zh-cn" title="https://developer.android.google.cn/reference/kotlin/androidx/compose/runtime/MutableState?hl=zh-cn"><code>MutableState</code></a> ，后者是与 Compose 运行时集成的可观察类型</p>
+</blockquote>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs csharp"><span class="hljs-keyword">interface</span> <span class="hljs-title">MutableState</span>&lt;<span class="hljs-title">T</span>&gt; : <span class="hljs-title">State</span>&lt;<span class="hljs-title">T</span>&gt; &#123;<br>    <span class="hljs-keyword">override</span> <span class="hljs-keyword">var</span> <span class="hljs-keyword">value</span>: T<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>如果 <code>value</code> 有任何变化，系统就会为用于读取 <code>value</code> 的所有可组合函数安排重组。</p>
+<p>在可组合项中声明 <code>MutableState</code> 对象的方法有三种：</p>
+<ul>
+<li><code>val mutableState = remember &#123; mutableStateOf(default) &#125;</code></li>
+<li><code>var value by remember &#123; mutableStateOf(default) &#125;</code> （实际中最多使用）</li>
+<li><code>val (value, setValue) = remember &#123; mutableStateOf(default) &#125;</code></li>
+</ul>
+<p>这些声明是等效的，以语法糖的形式针对状态的不同用法提供。您选择的声明应该能够在您编写的可组合项中生成可读性最高的代码。</p>
+</blockquote>
+<p>简单来说，MutableState对象的作用就是一种可以被Compose观察其变化的对象，当一个MutableState变化的时候，这个对象所在的所有 <code>重组作用域</code> 都会进入重组。</p>
+<p>*关于 <code>重组作用域</code> 的概念此处不展开，你可以大致理解为 <code>MutableState</code> 所在的那个可组合函数</p>
+<p>通常MutableState是和remember一起出现的，下面演示一个组件：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs kotlin"><span class="hljs-meta">@Composable</span><br><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">MyButton</span><span class="hljs-params">()</span></span>&#123;<br><br>    <span class="hljs-keyword">var</span> num:<span class="hljs-built_in">Int</span> <span class="hljs-keyword">by</span> remember&#123; mutableStateOf(<span class="hljs-number">0</span>) &#125;<br><br>    Column&#123;<br>        Button(onClick = &#123; num++ &#125;) &#123;<br>            Text(<span class="hljs-string">&quot;点我加一&quot;</span>)<br>        &#125;<br>        Text(<span class="hljs-string">&quot;当前点击次数：<span class="hljs-variable">$num</span>&quot;</span>)<br>    &#125;<br>    <br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>很容易看出来，这是一个竖向的布局，上面是一个按钮，点击之后，会让num变量+1，然后触发重组，导致其下面的Text的显示内容也+1。</p>
+<p>可能很多初学者看到num的类型是Int很奇怪，会奇怪为什么Int的类型变化会导致重组，不是说只有MutableState变化才会触发重组吗，这是由于使用了<em>by这个操作符对MutableState进行了委托</em>，num的get和set方法本质上是 <code>修改了MutableState的内部的value</code> 。</p>
+<p>我们可以去除掉by操作符，代码会变成这样，本质是一样的：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs kotlin"><span class="hljs-meta">@Composable</span><br><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">MyButton</span><span class="hljs-params">()</span></span>&#123;<br><br>    <span class="hljs-keyword">val</span> num: MutableState&lt;<span class="hljs-built_in">Int</span>&gt; = remember&#123; mutableStateOf(<span class="hljs-number">0</span>) &#125;<br>&gt; - `<span class="hljs-keyword">val</span> mutableState = remember &#123; mutableStateOf(default) &#125;`<br>    Column&#123;<br>        Button(onClick = &#123; num.value++ &#125;) &#123;<br>            Text(<span class="hljs-string">&quot;点我加一&quot;</span>)<br>        &#125;<br>        Text(<span class="hljs-string">&quot;当前点击次数：<span class="hljs-subst">$&#123;num.value&#125;</span>&quot;</span>)<br>    &#125;<br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>可以看出来，num的类型变成了MutableState，不能再对num修改，而是修改起内部的value，这样会导致Compose进行重组（也许你会好奇为什么会进行重组，这里大致的原理是每个重组作用域都会监听它内部所有的MutableState的value的变化，一旦他们发生了变化就会触发重组，是一个观察者模式的设计）。</p>
+<p>实际开发中基本都是使用by的方式委托调用MutableState，因为不需要额外写.value。</p>
+<h3 id="五、解决附带效应"><a href="#五、解决附带效应" class="headerlink" title="五、解决附带效应"></a>五、解决附带效应</h3><p>附带效应是指发生在可组合函数作用域之外的应用状态的变化，例如当进入页面的时候更新一下当前的位置，亦或者修改一下全局变量，如果直接在可组合函数里面引入这些附带效应的话，会让逻辑出现严重的问题，下面是两种常见的错误的附带效应的使用案例：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><code class="hljs kotlin"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 手机位置更新服务</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">object</span> PhoneLocationUpdateService&#123;<br>    <span class="hljs-comment">//...</span><br>    <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">updateMyLocation</span><span class="hljs-params">()</span></span>&#123;<br>        <span class="hljs-comment">// <span class="hljs-doctag">TODO:</span> 更新当前的位置</span><br>    &#125;<br>    <span class="hljs-comment">//...</span><br>&#125;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 全局变量、可组合函数以外的变量</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">var</span> globalParams:<span class="hljs-built_in">Int</span>=<span class="hljs-number">0</span><br><br><span class="hljs-meta">@Composable</span><br><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">TestScreen</span><span class="hljs-params">()</span></span>&#123;<br><br>    <span class="hljs-comment">//❎的做法一</span><br>    PhoneLocationUpdateService.updateMyLocation()<br>    <span class="hljs-comment">//❎错误的做法二</span><br>    globalParams++<br><br>    Column&#123;<br>        <span class="hljs-comment">//...</span><br>    &#125;<br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h4 id="为什么附带效应在Compose中存在问题？"><a href="#为什么附带效应在Compose中存在问题？" class="headerlink" title="为什么附带效应在Compose中存在问题？"></a>为什么附带效应在Compose中存在问题？</h4><p>这要结合Compose的生命周期来说，回归到生命周期的这张图中</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/mis/202512162150770.webp" srcset="/img/loading.gif" lazyload alt="7183be478c3c8b3f73025640989b37be_MD5"></p>
+<p>如果我们希望可组合函数显示的时候，都让某个全局变量增加1的话，确实很容易直接在可组合函数的开头几句中直接让全局变量+1，但是需要重视的是，可组合函数会在生命周期期间多次重组的，也就是自身会被多次调用，这样就和我们需要的业务相违背了。</p>
+<p>相似地，如果我们在AndroidView中的onLayout中插入某些访问全局变量的代码的话，可想而知会出现多大的问题（因为onLayout会频繁被调用而且次数未知）。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs kotlin"><span class="hljs-keyword">var</span> globalParams:<span class="hljs-built_in">Int</span>=<span class="hljs-number">0</span><br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">CrazyView</span> <span class="hljs-meta">@JvmOverloads</span> <span class="hljs-keyword">constructor</span>(<br>    context: Context, attrs: AttributeSet? = <span class="hljs-literal">null</span>, defStyleAttr: <span class="hljs-built_in">Int</span> = <span class="hljs-number">0</span><br>) : View(context, attrs, defStyleAttr) &#123;<br><br>    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">onLayout</span><span class="hljs-params">(changed: <span class="hljs-type">Boolean</span>, left: <span class="hljs-type">Int</span>, top: <span class="hljs-type">Int</span>, right: <span class="hljs-type">Int</span>, bottom: <span class="hljs-type">Int</span>)</span></span> &#123;<br>        <span class="hljs-keyword">super</span>.onLayout(changed, left, top, right, bottom)<br>        <span class="hljs-comment">//让人疯狂！！！</span><br>        globalParams++<br>    &#125;<br>    <br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h4 id="解决附带效应利器——SideEffect-Api"><a href="#解决附带效应利器——SideEffect-Api" class="headerlink" title="解决附带效应利器——SideEffect Api"></a>解决附带效应利器——SideEffect Api</h4><blockquote>
+<p>如 <a href="https://link.juejin.cn/?target=https://developer.android.google.cn/jetpack/compose/mental-model?hl=zh-cn" title="https://developer.android.google.cn/jetpack/compose/mental-model?hl=zh-cn">Compose 编程思想</a> 文档中所述，可组合项应该没有附带效应。如果您需要更改应用的状态（如 <a href="https://link.juejin.cn/?target=https://developer.android.google.cn/jetpack/compose/state?hl=zh-cn" title="https://developer.android.google.cn/jetpack/compose/state?hl=zh-cn">管理状态文档</a> 中所述）， <strong>您应该使用 Effect API，以便以可预测的方式执行这些附带效应</strong> 。</p>
+</blockquote>
+<p>换句话说，我们的可组合函数确实有些情况需要带一点附带效应，但是我们希望以” <code>可预测的方式</code> “的执行。</p>
+<p>注：SideEffect较多，属于最难上手的部分，但是只要你搞懂了他们的使用场景和解决的问题，就可以大胆使用了。</p>
+<h5 id="SideEffect"><a href="#SideEffect" class="headerlink" title="SideEffect"></a>SideEffect</h5><p>[[9-长期副作用 + 智能重组 &#x3D; 若智？聊聊rememberUpdateState#2.智能重组]]</p>
+<p> 从生命周期角度看</p>
+<table>
+<thead>
+<tr>
+<th>阶段</th>
+<th><code>SideEffect</code></th>
+<th><code>LaunchedEffect</code></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>首次进入 Composition</td>
+<td>执行一次</td>
+<td>启动协程执行一次</td>
+</tr>
+<tr>
+<td>每次重组成功</td>
+<td>再次执行（同步）</td>
+<td>不重启协程（除非 key 变）</td>
+</tr>
+<tr>
+<td>离开 Composition</td>
+<td>不执行任何清理</td>
+<td>自动 cancel 协程</td>
+</tr>
+<tr>
+<td>key 变化</td>
+<td>不影响执行</td>
+<td>cancel 上次协程 → 启动新的协程</td>
+</tr>
+</tbody></table>
+<p>两者的组合场景（真实项目中常见）</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs kotlin"><span class="hljs-meta">@Composable</span><br><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">ProfileScreen</span> <span class="hljs-params">(userId: <span class="hljs-type">String</span>)</span></span> &#123;<br><br>    <span class="hljs-comment">// 异步加载用户资料</span><br>    LaunchedEffect(userId) &#123;<br>        viewModel.loadProfile(userId)<br>    &#125;<br><br>    <span class="hljs-comment">// 每次渲染完同步上报</span><br>    SideEffect &#123;<br>        Analytics.logEvent(<span class="hljs-string">&quot;profile_view&quot;</span>, mapOf(<span class="hljs-string">&quot;id&quot;</span> to userId))<br>    &#125;<br><br>    <span class="hljs-comment">// UI</span><br>    Text(<span class="hljs-string">&quot;User: <span class="hljs-variable">$userId</span>&quot;</span>)<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>🔹 <code>LaunchedEffect</code> → 只在 userId 变化时重新加载；<br>🔹 <code>SideEffect</code> → 每次重组后上报埋点。</p>
+<p><code>SideEffect</code>的最佳使用场景是 ​<strong>​将 Compose 状态同步到外部非响应式系统​</strong>​。它的设计初衷是作为 Compose 与非 Compose 世界之间的桥梁，而非处理复杂业务逻辑。对于异步操作或需要生命周期感知的任务，优先考虑 <code>LaunchedEffect</code>或 <code>ViewModel</code>。</p>
+<h5 id="1-LaunchedEffect：在某个可组合项的作用域内运行挂起函数"><a href="#1-LaunchedEffect：在某个可组合项的作用域内运行挂起函数" class="headerlink" title="1.LaunchedEffect：在某个可组合项的作用域内运行挂起函数"></a>1.LaunchedEffect：在某个可组合项的作用域内运行挂起函数</h5><p>使用场景： <code>希望在一个组合内进行异步操作</code></p>
+<p>LaunchedEffect会提供一个协程作用域，这个作用域不会随着重组消失，它只会在该组合销毁的时候停止。</p>
+<p>LaunchedEffect和remember一样，<em>使用key作为是否重启的标志</em>，当key发生变化的时候，会重新启动运行挂起函数</p>
+<p>多个 Key，只要任意一个 key 变化就会重新执行。</p>
+<p>下图展示了一个组件显示3秒之后会弹出一个”我显示了”的文字的可组合函数</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/mis/202512162150774.webp" srcset="/img/loading.gif" lazyload alt="332e84b922aad6400ec5464d79fcf917_MD5"></p>
+<p>图中的key1<em>传入了Unit，也就是LaunchedEffect不会重启</em>，你可以通过改变key的方式让它重启，具体得看业务需要。</p>
+<p>我们想要「userId 和 token 都变了」时才执行：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs stylus"><span class="hljs-selector-tag">var</span> lastUserId by remember &#123; <span class="hljs-built_in">mutableStateOf</span>(userId) &#125;<br><span class="hljs-selector-tag">var</span> lastToken by remember &#123; <span class="hljs-built_in">mutableStateOf</span>(token) &#125;<br><br>val trigger = <span class="hljs-built_in">remember</span>(userId, token) &#123;<br>    <span class="hljs-keyword">if</span> (userId != lastUserId &amp;&amp; token != lastToken) &#123;<br>        lastUserId = userId<br>        lastToken = token<br>        UUID<span class="hljs-selector-class">.randomUUID</span>() <span class="hljs-comment">// 随机触发一次</span><br>    &#125; <span class="hljs-keyword">else</span> null<br>&#125;<br><br><span class="hljs-function"><span class="hljs-title">LaunchedEffect</span><span class="hljs-params">(trigger)</span></span> &#123;<br>    <span class="hljs-keyword">if</span> (trigger != null) &#123;<br>        <span class="hljs-built_in">println</span>(<span class="hljs-string">&quot;Both userId and token changed! -&gt; run effect&quot;</span>)<br>    &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<h5 id="2-rememberCoroutineScope：获取组合感知作用域，以便在可组合项外启动协程"><a href="#2-rememberCoroutineScope：获取组合感知作用域，以便在可组合项外启动协程" class="headerlink" title="2.rememberCoroutineScope：获取组合感知作用域，以便在可组合项外启动协程"></a>2.rememberCoroutineScope：获取组合感知作用域，以便在可组合项外启动协程</h5><p>使用场景： <code>希望在非重组作用域启动协程任务</code></p>
+<p>Compose中并不都是重组作用域，有一些诸如点击回调的地方，我们也希望启动协程任务，这样LaunchedEffect就无法满足我们的需求了，因为<em>LaunchedEffect是一个可组合函数，他无法在重组作用域以外的地方调用</em>。</p>
+<p>下面看看案例，我们在重组作用域使用rememberCoroutineScope()方法生成一个scope，这个scope的生命周期和组合的生命周期也是一致的，从组合出现到销毁，中间的重组并不会影响它，同时我们根据名字也可以知道，这个scope内部是被remember处过，我们不用担心重组之后又生成一个Scope。</p>
+<p>接着我们就可以在非重组作用域（图中是onClick回调）中使用协程来完成异步操作。</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/mis/202512162150775.webp" srcset="/img/loading.gif" lazyload alt="7a45424677fdca593df647f019cd518e_MD5"></p>
+<p>你看懂了吗，点击按钮的3秒后，Text就会显示一段文字。</p>
+<h5 id="3-rememberUpdatedState：在效应中引用某个值，该效应在值改变时不应重启"><a href="#3-rememberUpdatedState：在效应中引用某个值，该效应在值改变时不应重启" class="headerlink" title="3.rememberUpdatedState：在效应中引用某个值，该效应在值改变时不应重启"></a>3.rememberUpdatedState：在效应中引用某个值，该效应在值改变时不应重启</h5><p>[[9-长期副作用 + 智能重组 &#x3D; 若智？聊聊rememberUpdateState#3.长期副作用+智能重组&#x3D;？]]</p>
+<p>使用场景： <code>LaunchedEffect中执行了一段异步操作之后，希望取到最新的方法参数的值</code></p>
+<p>假设我们拥有这样一个可组合函数，他的逻辑希望是：3秒后显示传入的num。</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/mis/202512162150777.webp" srcset="/img/loading.gif" lazyload alt="e8fe78ae97426d89d505d0a75ed639aa_MD5"></p>
+<p>实际上，当你在3秒内传入了不同的num，在3秒后显示的结果是第一次传入的num。</p>
+<p>这是什么情况呢，还记得LaunchedEffect的设计吗，它的设计就是避免异步逻辑遭受重组的干扰，因此只有第一次传入的num会真正被LaunchedEffect的lambda拿走，其余的num都被LaunchedEffect自身的设计忽视了。</p>
+<p>这个时候会有人想起，LaunchedEffect的key是可以让它重启的，于是会改造成这样：</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/mis/202512162150778.webp" srcset="/img/loading.gif" lazyload alt="07bc71d1e4e2c8d89301b8b7e7ac5c1b_MD5"></p>
+<p>每次num发生变化的时候，都重启LaunchedEffect，这样不就可以在3秒倒计时之后，取到的都是最新的num吗，最终结果来说这是没问题的，显示的也是最新的值，但是问题是：倒计时也重启了。</p>
+<p>在这种场景下，就需要使用rememberUpdatedState()了，它本质上非常简单，让我们看看源码：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs kotlin"><span class="hljs-meta">@Composable</span><br><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-type">&lt;T&gt;</span> <span class="hljs-title">rememberUpdatedState</span><span class="hljs-params">(newValue: <span class="hljs-type">T</span>)</span></span>: State&lt;T&gt; = remember &#123;<br>    mutableStateOf(newValue)<br>&#125;.apply &#123; value = newValue &#125;<br></code></pre></td></tr></table></figure>
+
+<p>实际上就是把一个值缓存在一个MutableState里面而已，这样有什么用呢，我们看看改造后的代码：</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/mis/202512162150779.webp" srcset="/img/loading.gif" lazyload alt="fadb5ab1156b4b35b2f3687e251a317a_MD5"></p>
+<p>我们继续看代码，使用 <code>rememberUpdatedState()</code> 把 <code>num</code> <em>缓存在一个 <code>MutableState</code> 中，当 <code>LaunchedEffect</code> 内部的delay结束时，通过 <code>MutableState</code> 访问到了最新的值。</em></p>
+<p>等等，为什么这个时候获取到的是最新的值呢，不是说 <code>LaunchedEffect</code> 不是不会受到重组影响吗，当然不会，还记得 <code>MutableState</code> 的 <code>by</code> 使用方式吗，我们访问 <code>rememberUpDatedNum</code> 实际上是访问了 <code>MutableState</code> 内部的 <code>value</code> 变量， <code>MutableState</code> 自始至终都没发生过变化，而是它内部的 <code>value</code> 发生了变化，因此我们可以取到最新的值。</p>
+<h5 id="4-DisposableEffect：需要清理的效应"><a href="#4-DisposableEffect：需要清理的效应" class="headerlink" title="4.DisposableEffect：需要清理的效应"></a>4.DisposableEffect：需要清理的效应</h5><p>使用场景： <code>当前可组合函数去订阅某些信息，而且可组合函数销毁的时候取消订阅</code></p>
+<p>假设我们有一个这样的天气服务，可以通知所有的订阅者当前的天气。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs kotlin"><span class="hljs-keyword">interface</span> <span class="hljs-title class_">WeatherListener</span>&#123;<br><br>    <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">onUpdate</span><span class="hljs-params">(weather:<span class="hljs-type">String</span>)</span></span><br><br>&#125;<br><br><span class="hljs-keyword">object</span> WeatherService&#123;<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">val</span> observerList=mutableListOf&lt;WeatherListener&gt;()<br><br>    <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">addObserver</span><span class="hljs-params">(observer:<span class="hljs-type">WeatherListener</span>)</span></span>= observerList.add(observer)<br><br>    <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">remove</span><span class="hljs-params">(observer: <span class="hljs-type">WeatherListener</span>)</span></span>=observerList.remove(observer)<br><br>    <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">update</span><span class="hljs-params">()</span></span>&#123;<br>        observerList.forEach &#123;<br>            it.onUpdate(<span class="hljs-string">&quot;下雨了&quot;</span>)<br>        &#125;<br>    &#125;<br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>我们希望在一个组合中订阅实时的天气，可以这样做：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs kotlin"><span class="hljs-meta">@Composable</span><br><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">Weather</span><span class="hljs-params">()</span></span>&#123;<br><br>    <span class="hljs-keyword">var</span> weatherString <span class="hljs-keyword">by</span> remember&#123; mutableStateOf(<span class="hljs-string">&quot;&quot;</span>) &#125;<br><br>    DisposableEffect(<span class="hljs-built_in">Unit</span>)&#123;<br>        <span class="hljs-keyword">val</span> listener=<span class="hljs-keyword">object</span>:WeatherListener&#123;<br>            <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">onUpdate</span><span class="hljs-params">(weather: <span class="hljs-type">String</span>)</span></span> &#123;<br>                weatherString=weather<br>            &#125;<br>        &#125;<br>        WeatherService.addObserver(listener)<br>        onDispose &#123;<br>            WeatherService.remove(listener)<br>        &#125;<br>    &#125;<br>    <br>    Text(<span class="hljs-string">&quot;当前的天气:<span class="hljs-subst">$&#123;weatherString&#125;</span>&quot;</span>)<br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><code>DisposableEffect</code> 和 <code>LaunchedEffect</code> 很类似，都有key作为重启的标识，只是必须调用 <code>onDispose</code> 方法结尾，在 <code>onDispose</code> 中进行解绑操作。</p>
+<h5 id="5-derivedStateOf：将一个或多个状态对象转换为其他状态"><a href="#5-derivedStateOf：将一个或多个状态对象转换为其他状态" class="headerlink" title="5.derivedStateOf：将一个或多个状态对象转换为其他状态"></a>5.derivedStateOf：将一个或多个状态对象转换为其他状态</h5><p>[[7-从重组谈谈页面性能优化思路，狠狠优化一笔#2.使用派生状态来降低重组次数]]</p>
+<p>使用场景： <code>订阅可观察的列表变化、观察多个状态的变化等</code></p>
+<p>有时候我们希望某个状态发生改变的时候，会改变另外一个状态的值，<em>通常可以使用 <code>remember</code> 的 <code>key</code> 来完成这个业务</em>，例如下图，showText的值会在num改变的时候重新生成。</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/mis/202512162150780.webp" srcset="/img/loading.gif" lazyload alt="e64a0a2a9060308befb804d45449d90f_MD5"></p>
+<p>但是有些可观察的状态我们是无法使用为 <code>remember</code> 的 <code>key</code> 的，因为变化并不是发生在它自身的值的变化，而是其<em>内部的值发生了变化</em>，例如常见的mutableListOf()生成的列表。</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/mis/202512162150781.webp" srcset="/img/loading.gif" lazyload alt="0c4ec7f241f09fb918a3911063c0a499_MD5"></p>
+<p>为什么会没用呢，因为 <code>remember</code> 比较的额是对象自身，而不是对象内部的内容，对于 <code>list</code> 来说，它从来没有改变为其他引用，我们只改变它内部的元素，因此remember是无法感知到 <code>list</code> 的变化的，这时候我们就需要使用 <code>derivedStateOf</code> 来感知。</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/mis/202512162150782.webp" srcset="/img/loading.gif" lazyload alt="718864b345b317892899ace8440b2543_MD5"></p>
+<p><code>derivedStateOf</code> 传入的lambda里面的任意一个 <code>MutableState</code> 发生变化的时候，就会重新生成一个新值。</p>
+<p>其他类内部包含了其他State的也可以通过这种方式来观察其变化。</p>
+<h6 id="用法二"><a href="#用法二" class="headerlink" title="用法二"></a>用法二</h6><p>val expanded by derivedStateOf { hasFocus &amp;&amp; menuVisible }<br>不推荐（除非有副作用需求）</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs stylus"><span class="hljs-selector-tag">var</span> expanded by remember &#123; <span class="hljs-built_in">mutableStateOf</span>(false) &#125;<br><br><span class="hljs-function"><span class="hljs-title">LaunchedEffect</span><span class="hljs-params">(hasFocus, menuVisible)</span></span> &#123;<br>    expanded = hasFocus &amp;&amp; menuVisible<br>&#125;<br><span class="hljs-function"><span class="hljs-title">DropdownMenu</span><span class="hljs-params">(expanded = expanded, ...)</span></span><br><br></code></pre></td></tr></table></figure>
+<p>&#96;</p>
+<blockquote>
+<p>这会多一层状态同步，而且可能造成多余的 recomposition。</p>
+</blockquote>
+<p>[[K-Attachments&#x2F;5768e418d0a708c2404efaca8f314bc1_MD5.jpg|Open: Pasted image 20251112184820.png]]<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/mis/202512162150783.jpg" srcset="/img/loading.gif" lazyload alt="5768e418d0a708c2404efaca8f314bc1_MD5"></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%85%B6%E4%BB%96%E8%AF%AD%E8%A8%80/" class="category-chain-item">其他语言</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/clippings/" class="print-no-link">#clippings</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>妈！Jetpack Compose太难学了，别怕，这里帮你理清几个概念</div>
+      <div>http://peiniwan.github.io/2025/12/bd088f349c4c.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>[[晴天小庭]]</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年12月16日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"OwNIdaopOn1rwNhtotGOGC0B-gzGzoHsz","appKey":"eadytQ2XqWmxuvAKeg08XX83","path":"window.location.pathname","placeholder":null,"avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":true,"recordIP":false,"serverURLs":"https://ownidaop.lc-cn-n1-shared.com","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

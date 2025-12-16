@@ -1,0 +1,980 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="六月的雨">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="有好的建议可以提、集思广益，逐渐补充完善项目的代码规范 代码注意事项 代码必须格式化、去除无效引用 dialog 统一使用半透明activity（） 通用common抽象，只能放公共类，不要放业务相关 相关联的逻辑应该在一起，不相关联的逻辑不应该混在一起 严禁使用new handler()、new Thread()，可以项目使用项目里的ThreadUtils 第三方代码必须二次封装后再使用 rec">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android端代码规范">
+<meta property="og:url" content="http://peiniwan.github.io/2025/12/d64dc819a208.html">
+<meta property="og:site_name" content="六月的雨的笔记">
+<meta property="og:description" content="有好的建议可以提、集思广益，逐渐补充完善项目的代码规范 代码注意事项 代码必须格式化、去除无效引用 dialog 统一使用半透明activity（） 通用common抽象，只能放公共类，不要放业务相关 相关联的逻辑应该在一起，不相关联的逻辑不应该混在一起 严禁使用new handler()、new Thread()，可以项目使用项目里的ThreadUtils 第三方代码必须二次封装后再使用 rec">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-12-16T13:59:22.434Z">
+<meta property="article:modified_time" content="2024-03-25T01:34:00.000Z">
+<meta property="article:author" content="六月的雨">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>Android端代码规范 - 六月的雨的笔记</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"peiniwan.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>六月的雨的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Android端代码规范"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-12-16 21:59" pubdate>
+          2025年12月16日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.6k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          14 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Android端代码规范</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p><em>有好的建议可以提、集思广益，逐渐补充完善项目的代码规范</em></p>
+<h1 id="代码注意事项"><a href="#代码注意事项" class="headerlink" title="代码注意事项"></a>代码注意事项</h1><ul>
+<li>代码必须格式化、去除无效引用</li>
+<li>dialog 统一使用半透明activity（）</li>
+<li>通用common抽象，只能放公共类，不要放业务相关</li>
+<li>相关联的逻辑应该在一起，不相关联的逻辑不应该混在一起</li>
+<li>严禁使用new handler()、new Thread()，可以项目使用项目里的ThreadUtils</li>
+<li>第三方代码必须二次封装后再使用</li>
+<li>recycleView有各种写法，统一（BaseRecyclerViewAdapterHelper就挺好的）</li>
+<li>eventbus一定不要重复，分场景定义</li>
+<li>避免重复添加fragment导致的崩溃，建议调用FragmentTransaction.add方法，先判断fragment.isAdded()</li>
+<li>如果使用Java语言，在所有使用 Object的地方，必须进行判空，除非你能非常确定对象不会为空，推荐使用项目里的ObjectUtils.isNotEmpty()</li>
+<li>kotlin严禁使用避免使用 !!</li>
+<li>使用图片加载时用ImageLoadingUtil，不要直接使用glide</li>
+<li>Bundle不要传递过大参数。控制在500K以内，过大的时候可以选中存储为文件，然后传递文件路径在解析</li>
+<li>写工具类先看工具类有没有，不要重复添加</li>
+<li>全局获取：ContextManager.getApplication()</li>
+</ul>
+<figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs applescript">ActivityUtils activity 类<br><br>ObjectUtils 判空工具类<br><br>ContextManager <span class="hljs-built_in">application</span> 代理类，页面监听代理<br><br>MetaDataUtils 获取清单文件内的配置<br><br>cThreadUtils 线程池<br><br>CommonLoadingDialog 通用loading 弹窗，不要再布局里面再放一个lottie view<br></code></pre></td></tr></table></figure>
+
+
+<ul>
+<li>待补充…</li>
+</ul>
+<h1 id="分包"><a href="#分包" class="headerlink" title="分包"></a>分包</h1><p><strong>按功能分包</strong></p>
+<p>好处：  </p>
+<ol>
+<li>高内聚、低耦合，哪块要添新功能，只改某一个 package 下的东西  </li>
+<li>很容易删除功能  </li>
+<li>package 的大小有意义了,包里 class 太多,表示这块需要重构（划分子包）</li>
+</ol>
+<h1 id="命名"><a href="#命名" class="headerlink" title="命名"></a>命名</h1><p><strong>代码中的命名严禁使用拼音与英文混合的方式，更不允许直接使用中文的方式。正确的英文拼写和语法可以让阅读者易于理解，避免歧义。</strong></p>
+<h3 id="类名：大写驼峰"><a href="#类名：大写驼峰" class="headerlink" title="类名：大写驼峰"></a>类名：大写驼峰</h3><p>模块名 + 功能（Activity、Fragment、Adapter）</p>
+<h3 id="方法名：小写驼峰"><a href="#方法名：小写驼峰" class="headerlink" title="方法名：小写驼峰"></a>方法名：小写驼峰</h3><p>方法名通常是动词或动词短语。</p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>initXX()</code></td>
+<td>初始化相关方法，使用 init 为前缀标识，如初始化布局 <code>initView()</code></td>
+</tr>
+<tr>
+<td><code>isXX()</code>, <code>checkXX()</code></td>
+<td>方法返回值为 boolean 型的请使用 is&#x2F;check 为前缀标识</td>
+</tr>
+<tr>
+<td><code>getXX()</code></td>
+<td>返回某个值的方法，使用 get 为前缀标识</td>
+</tr>
+<tr>
+<td><code>setXX()</code></td>
+<td>设置某个属性值</td>
+</tr>
+<tr>
+<td><code>handleXX()</code>, <code>processXX()</code></td>
+<td>对数据进行处理的方法</td>
+</tr>
+<tr>
+<td><code>displayXX()</code>, <code>showXX()</code></td>
+<td>弹出提示框和提示信息，使用 display&#x2F;show 为前缀标识</td>
+</tr>
+<tr>
+<td><code>updateXX()</code></td>
+<td>更新数据</td>
+</tr>
+<tr>
+<td><code>saveXX()</code>, <code>insertXX()</code></td>
+<td>保存或插入数据</td>
+</tr>
+<tr>
+<td><code>resetXX()</code></td>
+<td>重置数据</td>
+</tr>
+<tr>
+<td><code>clearXX()</code></td>
+<td>清除数据</td>
+</tr>
+<tr>
+<td><code>removeXX()</code>, <code>deleteXX()</code></td>
+<td>移除数据或者视图等，如 <code>removeView()</code></td>
+</tr>
+<tr>
+<td><code>drawXX()</code></td>
+<td>绘制数据或效果相关的，使用 draw 前缀标识</td>
+</tr>
+</tbody></table>
+<h3 id="变量名：小写驼峰"><a href="#变量名：小写驼峰" class="headerlink" title="变量名：小写驼峰"></a>变量名：小写驼峰</h3><p>全局变量 ：mXXX</p>
+<h3 id="静态变量、常量：大写下划线-A-B"><a href="#静态变量、常量：大写下划线-A-B" class="headerlink" title="静态变量、常量：大写下划线 A_B"></a>静态变量、常量：大写下划线 A_B</h3><h3 id="其他命名"><a href="#其他命名" class="headerlink" title="其他命名"></a>其他命名</h3><p>命名要明白，见名知其意，例如：</p>
+<p>工具类：util</p>
+<p>管理类：Manager</p>
+<h1 id="资源"><a href="#资源" class="headerlink" title="资源"></a>资源</h1><h3 id="图片（drawable-和drawable-xxhdpi-）"><a href="#图片（drawable-和drawable-xxhdpi-）" class="headerlink" title="图片（drawable&#x2F; 和drawable-xxhdpi&#x2F;）"></a>图片（drawable&#x2F; 和drawable-xxhdpi&#x2F;）</h3><p>命名规则：<code>类型&#123;_模块名&#125;_逻辑名称</code>、<code>类型&#123;_模块名&#125;_颜色</code>。<code>&#123;&#125;</code> 中的内容为可选</p>
+<p>位置：公用的放在common，自己的模块用到的放自己模块</p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>btn_main_about.png</code></td>
+<td>主页关于按键 <code>类型_模块名_逻辑名称</code></td>
+</tr>
+<tr>
+<td><code>btn_back.png</code></td>
+<td>返回按键 <code>类型_逻辑名称</code></td>
+</tr>
+<tr>
+<td><code>divider_maket_white.png</code></td>
+<td>商城白色分割线 <code>类型_模块名_颜色</code></td>
+</tr>
+<tr>
+<td><code>ic_edit.png</code></td>
+<td>编辑图标 <code>类型_逻辑名称</code></td>
+</tr>
+<tr>
+<td><code>bg_main.png</code></td>
+<td>主页背景 <code>类型_逻辑名称</code></td>
+</tr>
+<tr>
+<td><code>btn_red.png</code></td>
+<td>红色按键 <code>类型_颜色</code></td>
+</tr>
+</tbody></table>
+<h3 id="选择器"><a href="#选择器" class="headerlink" title="选择器"></a>选择器</h3><table>
+<thead>
+<tr>
+<th><code>sel_btn_xx</code></th>
+<th>作用在 <code>btn_xx</code> 上的 <code>selector</code></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>btn_xx_normal</code></td>
+<td>默认状态效果</td>
+</tr>
+<tr>
+<td><code>btn_xx_pressed</code></td>
+<td><code>state_pressed</code> 点击效果</td>
+</tr>
+<tr>
+<td><code>btn_xx_focused</code></td>
+<td><code>state_focused</code> 聚焦效果</td>
+</tr>
+<tr>
+<td><code>btn_xx_disabled</code></td>
+<td><code>state_enabled</code> 不可用效果</td>
+</tr>
+<tr>
+<td><code>btn_xx_checked</code></td>
+<td><code>state_checked</code> 选中效果</td>
+</tr>
+<tr>
+<td><code>btn_xx_selected</code></td>
+<td><code>state_selected</code> 选中效果</td>
+</tr>
+<tr>
+<td><code>btn_xx_hovered</code></td>
+<td><code>state_hovered</code> 悬停效果</td>
+</tr>
+<tr>
+<td><code>btn_xx_checkable</code></td>
+<td><code>state_checkable</code> 可选效果</td>
+</tr>
+</tbody></table>
+<h3 id="布局资源文件（layout-）"><a href="#布局资源文件（layout-）" class="headerlink" title="布局资源文件（layout&#x2F;）"></a>布局资源文件（layout&#x2F;）</h3><p>命名规则：类型_模块名_功能(可选)</p>
+<table>
+<thead>
+<tr>
+<th>activity</th>
+<th>activity_模块名</th>
+<th>例如 R.layout.activity_login</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>fragment</td>
+<td>fragment_模块名</td>
+<td>例如 R.layout.fragment_login</td>
+</tr>
+<tr>
+<td>include</td>
+<td>layout_模块名_功能名</td>
+<td>例如 R.layout.layout_login_bottom</td>
+</tr>
+<tr>
+<td>adapter</td>
+<td>item_模块名_功能名</td>
+<td>例如 R.layout.item_simple_text</td>
+</tr>
+<tr>
+<td>dialog</td>
+<td>dialog_模块_功能名</td>
+<td>例如 R.layout.dialog_time_picker</td>
+</tr>
+<tr>
+<td>widget</td>
+<td>widget_模块_功能</td>
+<td>例如 R.layout.widget_app_clock</td>
+</tr>
+</tbody></table>
+<h3 id="布局资源-id-命名"><a href="#布局资源-id-命名" class="headerlink" title="布局资源 id 命名"></a>布局资源 id 命名</h3><p>id 命名直接采用小写驼峰样式，因为使用viewBinding直接就可以就可以获取ID，不需要再重新转一下了</p>
+<p>控件Id命名：控件缩写_(模块名)_功能名</p>
+<table>
+<thead>
+<tr>
+<th>TextView</th>
+<th>EditText</th>
+<th>ImageView</th>
+<th>Button</th>
+<th>ListView</th>
+<th>CheckBox</th>
+<th>LinearLayout</th>
+<th>RelativeLayout</th>
+<th>FrameLayout</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>tvShopName</td>
+<td>et</td>
+<td>iv</td>
+<td>btn</td>
+<td>lv</td>
+<td>cb</td>
+<td>ll</td>
+<td>rl</td>
+<td>fl</td>
+</tr>
+</tbody></table>
+<h3 id="strings-xml"><a href="#strings-xml" class="headerlink" title="strings.xml"></a>strings.xml</h3><p><code>&lt;string&gt;</code> 的 <code>name</code> 命名使用下划线命名法，采用以下规则：<code>&#123;模块名（moudle）_&#125;逻辑名称</code>，这样方便同一个界面的所有 <code>string</code> 都放到一起，方便查找。</p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>main_menu_about</code></td>
+<td>主菜单按键文字</td>
+</tr>
+<tr>
+<td><code>friend_title</code></td>
+<td>好友模块标题栏</td>
+</tr>
+<tr>
+<td><code>friend_dialog_del</code></td>
+<td>好友删除提示</td>
+</tr>
+<tr>
+<td><code>login_check_email</code></td>
+<td>登录验证</td>
+</tr>
+<tr>
+<td><code>dialog_title</code></td>
+<td>弹出框标题</td>
+</tr>
+</tbody></table>
+<h1 id="注释规范"><a href="#注释规范" class="headerlink" title="注释规范"></a>注释规范</h1><h3 id="类注释"><a href="#类注释" class="headerlink" title="类注释"></a>类注释</h3><p>每个类完成后应该有作者姓名和描述的注释，对自己的代码负责，也好找人。</p>
+<p>具体可以在 AS 中自己配制，进入 Settings -&gt; Editor -&gt; File and Code Templates -&gt; Includes -&gt; File Header，输入</p>
+<figure class="highlight perl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs perl">/**<br> *     desc   : 类描述 <br> *     <span class="hljs-keyword">time</span>   : $&#123;YEAR&#125;/$&#123;MONTH&#125;/$&#123;DAY&#125;<br> *     author : $&#123;USER&#125;<br> */<br></code></pre></td></tr></table></figure>
+
+<h3 id="方法注释"><a href="#方法注释" class="headerlink" title="方法注释"></a>方法注释</h3><p>不强制，因为有些方法一看就知道是干啥的，在方法前一行输入 <code>/** + 回车</code> ，AS 便会帮你生成模板，我们只需要补全参数即可</p>
+<h3 id="变量注释"><a href="#变量注释" class="headerlink" title="变量注释"></a>变量注释</h3><p>&#x2F;&#x2F;</p>
+<h3 id="提测的代码todo"><a href="#提测的代码todo" class="headerlink" title="提测的代码todo"></a>提测的代码todo</h3><p>建议，不强制，不要无效的todo </p>
+<h1 id="代码样式规范"><a href="#代码样式规范" class="headerlink" title="代码样式规范"></a>代码样式规范</h1><h3 id="编写简短方法"><a href="#编写简短方法" class="headerlink" title="编写简短方法"></a>编写简短方法</h3><p>在可行的情况下，尽量编写短小精炼的方法。有些情况下较长的方法是恰当的，因此对方法的代码长度没有做出硬性限制。如果某个方法的代码超出 40 行，请考虑是否可以在不破坏程序结构的前提下对其拆解。</p>
+<h3 id="类成员的顺序"><a href="#类成员的顺序" class="headerlink" title="类成员的顺序"></a>类成员的顺序</h3><p>推荐使用如下排序：</p>
+<ol>
+<li>常量（Kotlin 伴生对象放在开头）</li>
+<li>字段</li>
+<li>构造函数</li>
+<li>重写函数和回调</li>
+<li>方法</li>
+</ol>
+<p>如果类继承于 Android 组件（例如 <code>Activity</code> 或 <code>Fragment</code>），那么把重写函数按照他们的生命周期进行排序是一个非常好的习惯，例如，<code>Activity</code> 实现了 <code>onCreate()</code>、<code>onDestroy()</code>、<code>onPause()</code>、<code>onResume()</code>，它的正确排序如下所示：</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs less"><span class="hljs-selector-tag">public</span> <span class="hljs-selector-tag">class</span> <span class="hljs-selector-tag">MainActivity</span> <span class="hljs-selector-tag">extends</span> <span class="hljs-selector-tag">Activity</span> &#123;<br>    <span class="hljs-comment">//Order matches Activity lifecycle</span><br>    <span class="hljs-variable">@Override</span><br>    public void <span class="hljs-built_in">onCreate</span>() &#123;&#125;<br><br>    <span class="hljs-variable">@Override</span><br>    public void <span class="hljs-built_in">onResume</span>() &#123;&#125;<br><br>    <span class="hljs-variable">@Override</span><br>    public void <span class="hljs-built_in">onPause</span>() &#123;&#125;<br><br>    <span class="hljs-variable">@Override</span><br>    public void <span class="hljs-built_in">onDestroy</span>() &#123;&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<h3 id="函数参数的排序"><a href="#函数参数的排序" class="headerlink" title="函数参数的排序"></a>函数参数的排序</h3><p>在 Android 开发过程中，<code>Context</code> 在函数参数中是再常见不过的了，我们最好把 <code>Context</code> 作为其第一个参数。</p>
+<p>正相反，我们把回调接口应该作为其最后一个参数。</p>
+<figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs arduino"><span class="hljs-comment">// Context always goes first</span><br><span class="hljs-function"><span class="hljs-keyword">public</span> User <span class="hljs-title">loadUser</span><span class="hljs-params">(Context context, <span class="hljs-type">int</span> userId)</span></span>;<br><br><span class="hljs-comment">// Callbacks always go last</span><br><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-type">void</span> <span class="hljs-title">loadUserAsync</span><span class="hljs-params">(Context context, <span class="hljs-type">int</span> userId, UserCallback callback)</span></span>;<br></code></pre></td></tr></table></figure>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Android/" class="category-chain-item">Android</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/Android/%E6%9E%B6%E6%9E%84/" class="category-chain-item">架构</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Android端代码规范</div>
+      <div>http://peiniwan.github.io/2025/12/d64dc819a208.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>六月的雨</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年12月16日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/12/242ac5540d80.html" title="LiveData、ViewModel">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">LiveData、ViewModel</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/12/d0387facc838.html" title="android编译优化">
+                        <span class="hidden-mobile">android编译优化</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"OwNIdaopOn1rwNhtotGOGC0B-gzGzoHsz","appKey":"eadytQ2XqWmxuvAKeg08XX83","path":"window.location.pathname","placeholder":null,"avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":true,"recordIP":false,"serverURLs":"https://ownidaop.lc-cn-n1-shared.com","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

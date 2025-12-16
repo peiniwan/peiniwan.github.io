@@ -1,0 +1,752 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="六月的雨">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Android 构建流程AAPT ( Android 资源打包工具， Android Asset Packaging Tool) 是一种编译工具, 供 Android studio 和 Android Gradle plugin 用于编译和打包应用资源。而 AAPT2是在 AAPT 上做了优化。 Android Gradle Plugin0.0或者更高版本默认开启AAPT2。AAPT2会解析资源、">
+<meta property="og:type" content="article">
+<meta property="og:title" content="9-Android构建流程">
+<meta property="og:url" content="http://peiniwan.github.io/2025/12/4c89bc4ee6b8.html">
+<meta property="og:site_name" content="六月的雨的笔记">
+<meta property="og:description" content="Android 构建流程AAPT ( Android 资源打包工具， Android Asset Packaging Tool) 是一种编译工具, 供 Android studio 和 Android Gradle plugin 用于编译和打包应用资源。而 AAPT2是在 AAPT 上做了优化。 Android Gradle Plugin0.0或者更高版本默认开启AAPT2。AAPT2会解析资源、">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android_%E6%9E%84%E5%BB%BA%E6%B5%81%E7%A8%8B.resources/2023/09/15/18-50-34-c1adb4339eaf5f47c9e8e6d708018e0a-unknown_filename.4-78e973.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android_%E6%9E%84%E5%BB%BA%E6%B5%81%E7%A8%8B.resources/2023/09/15/18-50-34-7d24a82d422bff3f63009b58e4c05bb7-unknown_filename.1-72cfbe.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android_%E6%9E%84%E5%BB%BA%E6%B5%81%E7%A8%8B.resources/2023/09/15/18-50-34-d6e8fce6d1a1c9ba5d4a71376167ec0f-unknown_filename.5-d75aa4.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android_%E6%9E%84%E5%BB%BA%E6%B5%81%E7%A8%8B.resources/2023/09/15/18-50-34-47dc6a421ed9f5b3c9edfefce35c1c26-unknown_filename-1ffe40.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android_%E6%9E%84%E5%BB%BA%E6%B5%81%E7%A8%8B.resources/2023/09/15/18-50-34-bd2ed2f3484aefe2db5fd032c936839b-unknown_filename.3-ea9e4b.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android_%E6%9E%84%E5%BB%BA%E6%B5%81%E7%A8%8B.resources/2023/09/15/18-50-34-9e9f7de761231fb48f291244b7fde38a-unknown_filename.2-f107b6.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android_%E6%9E%84%E5%BB%BA%E6%B5%81%E7%A8%8B.resources/2023/09/15/18-50-34-829bdefc57223f78d17ba16e1452515b-unknown_filename.7-045de7.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android_%E6%9E%84%E5%BB%BA%E6%B5%81%E7%A8%8B.resources/2023/09/15/18-50-34-57476b5cfcb37c1c0e39dc2772823951-unknown_filename.6-b7c27f.png">
+<meta property="article:published_time" content="2025-12-16T13:59:22.726Z">
+<meta property="article:modified_time" content="2024-03-29T06:45:00.000Z">
+<meta property="article:author" content="六月的雨">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android_%E6%9E%84%E5%BB%BA%E6%B5%81%E7%A8%8B.resources/2023/09/15/18-50-34-c1adb4339eaf5f47c9e8e6d708018e0a-unknown_filename.4-78e973.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>9-Android构建流程 - 六月的雨的笔记</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"peiniwan.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>六月的雨的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="9-Android构建流程"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-12-16 21:59" pubdate>
+          2025年12月16日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.3k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          11 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">9-Android构建流程</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h3 id="Android-构建流程"><a href="#Android-构建流程" class="headerlink" title="Android 构建流程"></a>Android 构建流程</h3><p>AAPT ( <em>Android 资源打包工具</em>， Android Asset Packaging Tool) 是一种编译工具, 供 Android studio 和 Android Gradle plugin 用于编译和打包应用资源。而 AAPT2是在 AAPT 上做了优化。 Android Gradle Plugin0.0或者更高版本默认开启AAPT2。AAPT2会解析资源、为资源编索引并资源编译为针对 Android平台进行过优化的二进制格式。</p>
+<p>其实里面都是用的命令生成的</p>
+<ol>
+<li>编译资源，使⽤ aapt2 ⼯具对资源进⾏编译，产出：资源⼆进制⽂件压缩包 zip</li>
+<li>链接资源使⽤。 aapt2 ⼯具将资源整合，产出：资源⽂件及 R.java ⽂件，arsc</li>
+<li>编译 Java ⽂件。使⽤ javac ⼯具编译 Java ⽂件，产出：class 字节码⽂件</li>
+<li>使⽤ dex ⼯具编译 class 代码，产出：dex ⽂件</li>
+<li>合并 dex ⽂件和资源⽂件，产出：还未签名的 apk ⽂件</li>
+<li>使⽤ apksigner ⼯具对 apk 签名，产出：已签名的 apk ⽂件</li>
+</ol>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android_%E6%9E%84%E5%BB%BA%E6%B5%81%E7%A8%8B.resources/2023/09/15/18-50-34-c1adb4339eaf5f47c9e8e6d708018e0a-unknown_filename.4-78e973.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.4"></p>
+<h3 id="⼿动⽣成⼀个安装包的过程"><a href="#⼿动⽣成⼀个安装包的过程" class="headerlink" title="⼿动⽣成⼀个安装包的过程"></a>⼿动⽣成⼀个安装包的过程</h3><p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android_%E6%9E%84%E5%BB%BA%E6%B5%81%E7%A8%8B.resources/2023/09/15/18-50-34-7d24a82d422bff3f63009b58e4c05bb7-unknown_filename.1-72cfbe.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.1"><br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android_%E6%9E%84%E5%BB%BA%E6%B5%81%E7%A8%8B.resources/2023/09/15/18-50-34-d6e8fce6d1a1c9ba5d4a71376167ec0f-unknown_filename.5-d75aa4.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.5"><br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android_%E6%9E%84%E5%BB%BA%E6%B5%81%E7%A8%8B.resources/2023/09/15/18-50-34-47dc6a421ed9f5b3c9edfefce35c1c26-unknown_filename-1ffe40.png" srcset="/img/loading.gif" lazyload alt="unknown_filename"><br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android_%E6%9E%84%E5%BB%BA%E6%B5%81%E7%A8%8B.resources/2023/09/15/18-50-34-bd2ed2f3484aefe2db5fd032c936839b-unknown_filename.3-ea9e4b.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.3"></p>
+<p>配置 buildCofig 里的参数<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android_%E6%9E%84%E5%BB%BA%E6%B5%81%E7%A8%8B.resources/2023/09/15/18-50-34-9e9f7de761231fb48f291244b7fde38a-unknown_filename.2-f107b6.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.2"></p>
+<h3 id="apk-目录"><a href="#apk-目录" class="headerlink" title="apk 目录"></a>apk 目录</h3><p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android_%E6%9E%84%E5%BB%BA%E6%B5%81%E7%A8%8B.resources/2023/09/15/18-50-34-829bdefc57223f78d17ba16e1452515b-unknown_filename.7-045de7.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.7"></p>
+<h3 id="arsc-文件"><a href="#arsc-文件" class="headerlink" title="arsc 文件"></a>arsc 文件</h3><ul>
+<li><p>编译后的二进制资源文件，主要作用是 App 的资源索引表，可以从二进制的文件中查找到资源的相关信息，或者根据资源的 id 可以定位到二进制文件中的位置</p>
+</li>
+<li><p>除了 assets、图片、布局资源之外，其它的资源都会被赋予一个资源 ID。打包工具负责编译和打包资源，编译完成之后，<em>会生成一个 resources. arsc 文件和一个R.java，前者保存的是一个资源索引表，后者定义了各个资源 ID 常量，供在代码中索引资源</em>。id 都是16进制 0X1212，<strong>字符串没了</strong><br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android_%E6%9E%84%E5%BB%BA%E6%B5%81%E7%A8%8B.resources/2023/09/15/18-50-34-57476b5cfcb37c1c0e39dc2772823951-unknown_filename.6-b7c27f.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.6"></p>
+</li>
+</ul>
+<h3 id="META-INF"><a href="#META-INF" class="headerlink" title="META-INF"></a>META-INF</h3><p>进入目录，发现会有3个文件：CERT. RSA，CERT. SF，MANIFEST. MF。<br>MANIFEST：版本号以及对每一个文件的哈希值（BASE64）。包括资源文件。这个是对每个文件的整体进行 SHA1 hash。<br>CERT. SF 文件：看到跟 manifest. mf 中的很类似，也是 BASE64编码的哈希值，这个是对每个文件的头3行进行 SHA1 hash。这两个文件中的内容仅仅是个摘要，也就是仅仅对文件做个 hash。<br>CERT. RSA：最后一个文件是 CERT. RSA，这个文件中放的是 apk 包的签名，同时还有证书的公钥。</p>
+<h3 id="Android-的签名机制"><a href="#Android-的签名机制" class="headerlink" title="Android 的签名机制"></a>Android 的签名机制</h3><p>对 APK 中所有文件内容分别进行 Hash 计算，并将结果以 BASE64编码格式保存在 MANIFEST. MF。使用开发者的私钥对 MANIFEST. MF 进行加密，将加密结果保存在 CERT. SF。最后 CERT.RSA (证书信息包括公钥）和上面的两个文件，放入 APK 的<strong>META-INF</strong>目录下。</p>
+<p><strong>如何判断证书是否有效</strong></p>
+<p>因为签名的时候是使用私钥对 MANIFEST. MF 进行加密保存在 CERT. SF 中，之后只需要用证书中的公钥对 CERT. SF 进行解密，将结果和 MANIFEST. MF 进行比较即可<br>注意，在证书正确的情况下如果更改的 APK 里面文件内容，此时以上判断还是不会通过。<em>因为 MANIFEST. MF 保存的是 APK 里面所有文件的 Hash 值，只要改变了 APK 里文件内容，Hash 值就会变化</em></p>
+<p><em>v2 签名机制</em>是在 Android 7.0 以及以上版本才支持。因此对于 Android 7.0 以及以上版本，在安装过程中，如果发现有 v2 签名块，则必须走 v2 签名机制，不能绕过。否则降级走 v1 签名机制。v1 和 v2 签名机制是可以同时存在的</p>
+<ul>
+<li><strong>V1</strong>：逐文件校验，慢，安全性低，但兼容老系统。</li>
+<li><strong>V2</strong>：整体校验，快，安全性高，但只支持 7.0+。</li>
+</ul>
+<h3 id="使用-python-实现多渠道打包"><a href="#使用-python-实现多渠道打包" class="headerlink" title="使用 python 实现多渠道打包"></a>使用 python 实现多渠道打包</h3><p>实现思路：<br>如果能直接修改 apk 的渠道号，而不需要再重新签名能节省不少打包的时间。解压 apk，解压后的根目录会有一个 META-INF 目录。如果在 META-INF 目录内添加空文件，可以不用重新签名应用。因此，通过为不同渠道的应用添加不同的空文件，可以唯一标识一个渠道。</p>
+<p>思路已经很清晰了，在 META-INF 目录添加一个空文件，文件名即渠道号，如 channel_wandoujia。然后在 java 代码中对文件进行遍历，找到该渠道文件，读出文件名，即获取到了渠道号。</p>
+<h3 id="加快编译速度"><a href="#加快编译速度" class="headerlink" title="加快编译速度"></a>加快编译速度</h3><ul>
+<li>你可以把编译简单理解为，将高级语言转化为机器或者虚拟机所能识别的低级语言的过程。对于 Android 来说，这个过程就是把 Java 或者 Kotlin 转变为 Android 虚拟机运行的<strong>Dalvik 字节码</strong></li>
+<li>关闭 JITandroid:vmSafeMode&#x3D;“true”，关闭虚拟机的 JIT 优化</li>
+</ul>
+<blockquote>
+<p>Android Q 大幅改进了 ART 运行时。所谓运行时改进就是对编译器 (JIT) 的改进, 开发者无需进行任何操作，便可有效缩短应用的启动时间，减少内存消耗，并提高应用的运行流畅度。<br>ART 配置文件，允许 ART 在应用开始运行之前就预编译一部分代码。基于云的编译文件适用于所有应用，而且运行 Android P 或更高版本系统的设备目前已提供相关支持。</p>
+</blockquote>
+<ul>
+<li>r8&#x2F;d8</li>
+</ul>
+<blockquote>
+<p>d8Dex 编译时间更短，dex 文件大小更小，D8编译的. dex 文件将拥有相同或者是更好的运行时性能</p>
+</blockquote>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%BA%90%E7%A0%81/" class="category-chain-item">源码</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E6%BA%90%E7%A0%81/Framework/" class="category-chain-item">Framework</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>9-Android构建流程</div>
+      <div>http://peiniwan.github.io/2025/12/4c89bc4ee6b8.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>六月的雨</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年12月16日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/12/32fa1f4007bf.html" title="1.Handler消息机制">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">1.Handler消息机制</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/12/33bb23a10f32.html" title="8-Launcher学习">
+                        <span class="hidden-mobile">8-Launcher学习</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"OwNIdaopOn1rwNhtotGOGC0B-gzGzoHsz","appKey":"eadytQ2XqWmxuvAKeg08XX83","path":"window.location.pathname","placeholder":null,"avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":true,"recordIP":false,"serverURLs":"https://ownidaop.lc-cn-n1-shared.com","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

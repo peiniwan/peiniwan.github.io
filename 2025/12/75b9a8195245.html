@@ -1,0 +1,750 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="六月的雨">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="IO 多路复用Linux IO 多路复用 epoll 机制 | Android Framework 在 Linux 中：  IO 就是对文件的读写操作 多路是指同时读写多个文件 复用是指使用一个程序处理多个文件的同时读写问题来了，为什么需要多路复用，为了快  命令1234567891011121314151617181920212223242526272829touch 用于创建一个文件touch">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux相关">
+<meta property="og:url" content="http://peiniwan.github.io/2025/12/75b9a8195245.html">
+<meta property="og:site_name" content="六月的雨的笔记">
+<meta property="og:description" content="IO 多路复用Linux IO 多路复用 epoll 机制 | Android Framework 在 Linux 中：  IO 就是对文件的读写操作 多路是指同时读写多个文件 复用是指使用一个程序处理多个文件的同时读写问题来了，为什么需要多路复用，为了快  命令1234567891011121314151617181920212223242526272829touch 用于创建一个文件touch">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/picgo/picgo-clipboard-images/2023-09-27-16-01-25b9f22da78dfc035f4bbf467cad703f-2023-09-22-10-25-25b9f22da78dfc035f4bbf467cad703f-20230922102517-497185-781bf1.png">
+<meta property="article:published_time" content="2025-12-16T13:59:22.694Z">
+<meta property="article:modified_time" content="2024-03-31T14:48:00.000Z">
+<meta property="article:author" content="六月的雨">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/picgo/picgo-clipboard-images/2023-09-27-16-01-25b9f22da78dfc035f4bbf467cad703f-2023-09-22-10-25-25b9f22da78dfc035f4bbf467cad703f-20230922102517-497185-781bf1.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>Linux相关 - 六月的雨的笔记</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"peiniwan.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>六月的雨的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Linux相关"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-12-16 21:59" pubdate>
+          2025年12月16日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          12 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Linux相关</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="IO-多路复用"><a href="#IO-多路复用" class="headerlink" title="IO 多路复用"></a>IO 多路复用</h2><p><a target="_blank" rel="noopener" href="https://yuandaimaahao.github.io/AndroidFrameworkTutorialPages/004.%E5%9F%BA%E7%A1%80%E7%BB%84%E4%BB%B6%E7%AF%87/004.Linux%20IO%20%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8%20epoll%20%E6%9C%BA%E5%88%B6.html">Linux IO 多路复用 epoll 机制 | Android Framework</a></p>
+<p>在 Linux 中：</p>
+<ul>
+<li>IO 就是对文件的读写操作</li>
+<li>多路是指同时读写多个文件</li>
+<li>复用是指使用一个程序处理多个文件的同时读写<br>问题来了，为什么需要多路复用，为了快</li>
+</ul>
+<h2 id="命令"><a href="#命令" class="headerlink" title="命令"></a>命令</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><code class="hljs shell">touch 用于创建一个文件<br>touch test<br>mkdir 用于创建目录<br>mkdir -p dir/dir2/dir3<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_">#</span><span class="language-bash">删除文件</span><br>rm file <br><span class="hljs-meta prompt_">#</span><span class="language-bash">删除文件夹</span><br>rm -r dir<br><span class="hljs-meta prompt_">#</span><span class="language-bash">强制删除</span><br>rm -f file<br><span class="hljs-meta prompt_">#</span><span class="language-bash"><span class="hljs-comment"># 强制删除文件夹</span></span><br>rm -rf dir<br>tree . -L 2   查看目录<br><br>在图像界面打开文件夹<br>nautilus /opt<br><br>sudo apt-get install aapt     ##安装软件用apt<br>sudo dpkg -i ScrcpyGui-1.5.1.deb <br><br>sudo apt install vlc<br><br>cd   ~       当前用户主目录<br>cd   /        根目录<br>cd   ..       上一级目录<br>cd            当前用户主目录<br>ls   -l       dir 列出当前目录下的文件信息（此命令很常用，简化的格式为 ll）<br>mkdir: 创建目录<br></code></pre></td></tr></table></figure>
+
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/schips/p/using_scrcpy_debug_android.html">使用Scrcpy 在电脑显示手机画面并控制安卓设备 - schips - 博客园</a></p>
+<p><strong>sudo</strong> vim 保存没有权限的文件 ：wq!<br><a target="_blank" rel="noopener" href="https://www.cnblogs.com/wudaojiuxiao/p/17051622.html">https://www.cnblogs.com/wudaojiuxiao/p/17051622.html</a><br><a target="_blank" rel="noopener" href="https://blog.csdn.net/lianghecai52171314/article/details/111098573">https://blog.csdn.net/lianghecai52171314/article/details/111098573</a></p>
+<h2 id="找文件"><a href="#找文件" class="headerlink" title="找文件"></a>找文件</h2><p>比如 service_manager.c</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros"><span class="hljs-built_in">find</span> . -name <span class="hljs-string">&quot;service_manager.c&quot;</span><br></code></pre></td></tr></table></figure>
+
+<p>找文件内容，找 recyclerview 库</p>
+<figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs 1c">find . -name <span class="hljs-string">&quot;Android.bp&quot;</span> <span class="hljs-string">| xargs grep &quot;</span>name: \<span class="hljs-string">&quot;.*recyclerview.*\&quot;&quot;</span><br></code></pre></td></tr></table></figure>
+
+<p>find . -name “Android.bp”: 这个指令会从当前目录（. 代表当前目录）开始，递归地查找所有名为”Android.bp” 的文件。<br>|: 管道符号，它将前一个命令的输出作为下一个命令的输入。</p>
+<p>xargs grep “name: &quot;.*recyclerview.*&quot;“: 这个指令会接收上一条find指令找到的所有”Android.bp” 文件路径，并将这些路径作为参数传递给grep 命令。<br>然后, grep 命令会在这些文件中查找与正则表达式 “name: &quot;.*recyclerview.*&quot;“ 匹配的行。<br>正则表达式 “name: &quot;.<em>recyclerview.<em>&quot;“ 意味着匹配包含字符串 “name:”, 紧跟任意字符(.</em>)并且包含字符串 “recyclerview” 和任意字符(.</em>)以及最后是双引号(“) 的行。</p>
+<p>总结起来，这条命令就是查找当前目录及其子目录下所有名为 “Android.bp” 的文件，并检测其中是否有包含特定格式（即”name:” 后跟任意字符并且有 “recyclerview”, 再跟上任意字符和双引号）文本行</p>
+<p>grep -r “messaging.apk”<br>grep 是一个用于在文件中搜索指定模式（字符串）的命令。<br>-r 是 grep 命令的选项之一，代表递归搜索（recursive search）。这个选项告诉 grep 命令在当前目录及其所有子目录中进行搜索。</p>
+<p><em>. 表示当前目录</em>。这个命令将在当前目录及其子目录中搜索文件。<br>因此，grep -r “messaging.apk” . 命令会在当前目录及其所有子目录中搜索包含 “messaging.apk” 的文件行，并将匹配的行打印输出到终端。</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros"><span class="hljs-built_in">find</span> . -name <span class="hljs-string">&quot;ComponentActivity.java&quot;</span><br></code></pre></td></tr></table></figure>
+<h3 id="找文件夹"><a href="#找文件夹" class="headerlink" title="找文件夹"></a>找文件夹</h3><p> sudo find &#x2F;  -name “<em>Android Studio</em>“<br>这个命令会从根目录（”&#x2F;“）开始搜索所有包含”Android Studio”关键字的文件和文件夹。</p>
+<h2 id="环境变量"><a href="#环境变量" class="headerlink" title="环境变量"></a>环境变量</h2><p>env</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs bash">vim ~/.bashrc<br><span class="hljs-built_in">export</span> PATH=<span class="hljs-string">&quot;/path/to/your/directory:<span class="hljs-variable">$PATH</span>&quot;</span><br><span class="hljs-built_in">source</span> ~/.bashrc<br><span class="hljs-built_in">echo</span> <span class="hljs-variable">$PATH</span><br><br><span class="hljs-built_in">export</span> PATH=<span class="hljs-variable">$PATH</span>:/opt/android studio/bin<br></code></pre></td></tr></table></figure>
+<p>export JAVA_HOME&#x3D;&#x2F;home&#x2F;sixrain&#x2F;aosp11&#x2F;prebuilts&#x2F;jdk&#x2F;jdk11&#x2F;linux-x86&#x2F;bin&#x2F;java&#x2F;<br>export PATH&#x3D;$PATH:$JAVA_HOME&#x2F;bin</p>
+<h2 id="su-root-权限"><a href="#su-root-权限" class="headerlink" title="su root 权限"></a>su root 权限</h2><p>chmod 777 file.txt<br>chmod -R 777 folder_name<br>r 表示读取权限；<br>w 表示写入权限；<br>x 表示执行权限；</p>
+<ul>
+<li>表示无权限。<br>  例如，数字 7 表示所有者、用户组和其他用户都具有读取、写入和执行权限，数字 6 表示所有者和用户组具有读取和写入权限，其他用户没有任何权限。<br>chown -R sixrain ~&#x2F;aosp 更改文件的所有者</li>
+</ul>
+<p>sudo chmod -R 777 out<br>sudo chmod -R 777 aosp </p>
+<h2 id="使用htop查看程序运行的内存状态"><a href="#使用htop查看程序运行的内存状态" class="headerlink" title="使用htop查看程序运行的内存状态"></a>使用htop查看程序运行的内存状态</h2><p><code>htop</code> 是一个在 Linux 系统中常用的系统监控工具，它可以实时地展示系统中各个进程的资源占用情况，如 CPU、内存等。相比于传统的 <code>top</code> 命令，<code>htop</code> 提供了更友好的界面和更方便的操作方式。</p>
+<p>以下是一些基本使用方法：</p>
+<ol>
+<li><strong>安装 htop</strong>：不同的Linux发行版可能有不同的安装命令。在Ubuntu或Debian上，你可以使用 <code>sudo apt-get install htop</code> 来安装。而在CentOS上，则可以使用 <code>sudo yum install htop</code>.</li>
+<li><strong>启动 htop</strong>：在终端输入 <code>htop</code> 并回车即可启动。</li>
+<li><strong>理解界面</strong>：从上至下分别为系统概览（包括CPU、内存、交换空间利用率等）、进程列表和操作提示。</li>
+<li><strong>操作指南</strong>：<ul>
+<li>上下箭头: 在进程列表中移动。</li>
+<li>F1 或者h: 显示帮助。</li>
+<li>F2 或者S: 进入设置菜单。</li>
+<li>F3 或者&#x2F; : 搜索进程。</li>
+<li>F4 或者: 根据用户过滤进程。</li>
+<li>F5 或者t: 展示&#x2F;隐藏树状视图。</li>
+<li>F6,&gt;,&lt;,: 根据CPU%,MEM%,TIME+等排序进程列表</li>
+<li>F9 k: 结束选定进程.</li>
+<li>F10 q : 退出htop.<br>这只是基础功能介绍，你还可以通过F2来自定义显示内容或颜色主题等。<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/picgo/picgo-clipboard-images/2023-09-27-16-01-25b9f22da78dfc035f4bbf467cad703f-2023-09-22-10-25-25b9f22da78dfc035f4bbf467cad703f-20230922102517-497185-781bf1.png" srcset="/img/loading.gif" lazyload alt="image.png"></li>
+</ul>
+</li>
+</ol>
+<h2 id="固定IP"><a href="#固定IP" class="headerlink" title="固定IP"></a>固定IP</h2><p>[[Android 系统开发工具推荐#[ ](https &#x2F;&#x2F;yuandaimaahao.github.io&#x2F;AndroidFrameworkTutorialPages&#x2F;002.%E7%8E%A9%E8%BD%ACAOSP%E7%AF%87&#x2F;002.%20%E7%B3%BB%E7%BB%9F%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7%E6%8E%A8%E8%8D%90.html _1-2-ssh-%E5%AE%A2%E6%88%B7%E7%AB%AF-tabby-terminal) 1.2 ssh 客户端 Tabby Terminal|ssh的安装]]</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">network:</span><br>  <span class="hljs-attr">version:</span> <span class="hljs-number">2</span><br>  <span class="hljs-attr">renderer:</span> <span class="hljs-string">NetworkManager</span><br>  <span class="hljs-attr">ethernets:</span><br>    <span class="hljs-attr">ens33:</span>   <span class="hljs-comment"># 网卡名称</span><br>      <span class="hljs-attr">dhcp4:</span> <span class="hljs-literal">no</span>     <span class="hljs-comment"># 关闭dhcp</span><br>      <span class="hljs-attr">dhcp6:</span> <span class="hljs-literal">no</span><br>      <span class="hljs-attr">addresses:</span> [<span class="hljs-number">192.168</span><span class="hljs-number">.123</span><span class="hljs-number">.102</span><span class="hljs-string">/24</span>]  <span class="hljs-comment"># 静态ip，根据自己网络情况配置</span><br>      <span class="hljs-attr">gateway4:</span> <span class="hljs-number">192.168</span><span class="hljs-number">.123</span><span class="hljs-number">.1</span>     <span class="hljs-comment"># 网关，根据自己网络情况配置</span><br>      <span class="hljs-attr">nameservers:</span><br>        <span class="hljs-attr">addresses:</span> [<span class="hljs-number">8.8</span><span class="hljs-number">.8</span><span class="hljs-number">.8</span>, <span class="hljs-number">114.114</span><span class="hljs-number">.114</span><span class="hljs-number">.114</span>] <span class="hljs-comment">#dns，根据自己网络情况配置</span><br><br><span class="hljs-string">//192.168.123.102</span><br></code></pre></td></tr></table></figure>
+
+
+<h2 id="SELinux"><a href="#SELinux" class="headerlink" title="SELinux"></a>SELinux</h2><p>SELinux（Security-Enhanced Linux）是一种Linux内核的安全模块，它为Linux系统提供了访问控制安全策略。在Android中，SELinux以强制访问控制（MAC）形式存在，用于增强系统安全性。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/AOSP/" class="category-chain-item">AOSP</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Linux相关</div>
+      <div>http://peiniwan.github.io/2025/12/75b9a8195245.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>六月的雨</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年12月16日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/12/7ceb30e1d028.html" title="vim 学习">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">vim 学习</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/12/ce9b0a1a7f53.html" title="AOSP总结">
+                        <span class="hidden-mobile">AOSP总结</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"OwNIdaopOn1rwNhtotGOGC0B-gzGzoHsz","appKey":"eadytQ2XqWmxuvAKeg08XX83","path":"window.location.pathname","placeholder":null,"avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":true,"recordIP":false,"serverURLs":"https://ownidaop.lc-cn-n1-shared.com","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

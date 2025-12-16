@@ -1,0 +1,744 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="六月的雨">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="SharedPreferences基本使用1234SharedPreferences sharedPreferences &#x3D; this.getSharedPreferences(getLocalClassName(), MODE_PRIVATE);SharedPreferences.Editor editor &#x3D; sharedPreferences.edit();editor.putString(">
+<meta property="og:type" content="article">
+<meta property="og:title" content="数据存储">
+<meta property="og:url" content="http://peiniwan.github.io/2025/12/7efc84cd0a08.html">
+<meta property="og:site_name" content="六月的雨的笔记">
+<meta property="og:description" content="SharedPreferences基本使用1234SharedPreferences sharedPreferences &#x3D; this.getSharedPreferences(getLocalClassName(), MODE_PRIVATE);SharedPreferences.Editor editor &#x3D; sharedPreferences.edit();editor.putString(">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/09/15/2024-02-06-11-25-f1aadf32f59291e428be7591a38668ea-18-23-45-f1aadf32f59291e428be7591a38668ea-f1aadf32f59291e428be7591a38668ea-ba2779-22e4b4.png">
+<meta property="article:published_time" content="2025-12-16T13:59:22.673Z">
+<meta property="article:modified_time" content="2024-03-13T04:11:00.000Z">
+<meta property="article:author" content="六月的雨">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/09/15/2024-02-06-11-25-f1aadf32f59291e428be7591a38668ea-18-23-45-f1aadf32f59291e428be7591a38668ea-f1aadf32f59291e428be7591a38668ea-ba2779-22e4b4.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>数据存储 - 六月的雨的笔记</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"peiniwan.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>六月的雨的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="数据存储"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-12-16 21:59" pubdate>
+          2025年12月16日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.7k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          15 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">数据存储</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="SharedPreferences"><a href="#SharedPreferences" class="headerlink" title="SharedPreferences"></a>SharedPreferences</h1><h2 id="基本使用"><a href="#基本使用" class="headerlink" title="基本使用"></a>基本使用</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">SharedPreferences</span> <span class="hljs-variable">sharedPreferences</span> <span class="hljs-operator">=</span> <span class="hljs-built_in">this</span>.getSharedPreferences(getLocalClassName(), MODE_PRIVATE);<br>SharedPreferences.<span class="hljs-type">Editor</span> <span class="hljs-variable">editor</span> <span class="hljs-operator">=</span> sharedPreferences.edit();<br>editor.putString(<span class="hljs-string">&quot;key&quot;</span>, <span class="hljs-string">&quot;value&quot;</span>);<br>editor.apply();<br></code></pre></td></tr></table></figure>
+
+<p>SharedPreferences 本身是一个接口，程序无法直接创建 SharedPreferences 实例，只能通过 Context 提供的 getSharedPreferences(String name, int mode) 方法来获取 SharedPreferences 实例，name 表示要存储的 xml 文件名，第二个参数直接写 Context.MODE_PRIVAT，表示该 SharedPreferences 数据只能被本应用读写。当然还有 MODE_WORLD_READABLE 等，但是已经被废弃了，因为 SharedPreference 在多进程下表现并不稳定。</p>
+<h2 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h2><p>保存基于 XML 文件存储的 key-value 键值对数据，在 &#x2F;data&#x2F;data&#x2F;&lt;\package name&gt;&#x2F;shared_prefs 目录下。</p>
+<p><strong>总结：</strong></p>
+<ol>
+<li>sSharedPrefsCache 是一个 ArrayMap&lt;String,ArrayMap&lt;File,SharedPreferencesImpl&gt;&gt;，它会保存加载到内存中的 SharedPreferences 对象，ContextImpl 类中并没有定义将 SharedPreferences 对象移除 sSharedPrefsCache 的方法，所以<em>一旦加载到内存中，就会存在直至进程销毁</em>。相对的，也就是说，SP 对象一旦加载到内存，后面任何时间使用，都是从内存中获取，不会再出现读取磁盘的情况</li>
+<li>key 是包名</li>
+<li>获取 SP 只能通过 ContextImpl#getSharedPerferences 来获取，它里面首先通过 mSharedPrefsPaths 根据传入的 name 拿到 File ，然后根据 File 从 ArrayMap&lt;File, SharedPreferencesImpl&gt; cache 里取出对应的 SharedPrederenceImpl 实例</li>
+<li>SharedPreferencesImpl 实例化的时候会<em>启动子线程来读取磁盘文件</em>，但是在此之前如果通过 SharedPreferencesImpl#getXxx 或者 SharedPreferences.Editor 会阻塞 UI 线程，因为在从 SP 文件中读取数据或者往 SP 文件中写入数据的时候必须等待 SP 文件加载完</li>
+<li>在 EditorImpl 中 putXxx 的时候，是通过 HashMap 来存储数据，提交的时候分为 commit 和 apply</li>
+<li><strong>SP 的读写操作是线程安全的，它对 mMap 的读写操作用的是同一把锁</strong>，考虑到 SP 对象的生命周期与进程一致，一旦加载到内存中就不会再去读取磁盘文件，所以只要保证内存中的状态是一致的，就可以保证读写的一致性</li>
+</ol>
+<h3 id="apply-和-commit"><a href="#apply-和-commit" class="headerlink" title="apply () 和 commit ()"></a>apply () 和 commit ()</h3><ul>
+<li>提交的时候分为 commit 和 apply，它们都会把修改先提交到内存中，然后在写入磁盘中。只不过 apply 是异步写磁盘，而 commit 可能是同步写磁盘也可能是异步写磁盘，在于前面是否还有写磁盘任务</li>
+<li>如果频繁操作的话 apply 的性能会优于 commit， apply 会将最后修改内容写入磁盘。</li>
+<li>但是如果希望立刻获取存储操作的结果，并据此做相应的其他操作，应当使用 commit。</li>
+</ul>
+<p>对于 apply 和 commit ，它是如何保证同步的呢？在这两个方法里都有 mcr.writtenToDiskLatch.await()，它其实是一个 CountDownLatch。</p>
+<blockquote>
+<p>CountDownLatch 是一个同步工具类，它允许一个或多个线程一直等待，直到其他线程的操作执行完成后在执行。</p>
+</blockquote>
+<p>commit 同步提交：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-type">boolean</span> <span class="hljs-title function_">commit</span> <span class="hljs-params">()</span> &#123;<br>    <span class="hljs-type">MemoryCommitResult</span> <span class="hljs-variable">mcr</span> <span class="hljs-operator">=</span> commitToMemory (); <span class="hljs-comment">// 提交到内存</span><br>    <br>    <span class="hljs-comment">// 同步写入磁盘</span><br>    SharedPreferencesImpl.<span class="hljs-built_in">this</span>.enqueueDiskWrite(mcr, <span class="hljs-literal">null</span>);<br>    <span class="hljs-keyword">try</span> &#123;<br>        mcr.writtenToDiskLatch.await(); <span class="hljs-comment">// 等待写入完成</span><br>    &#125; <span class="hljs-keyword">catch</span> (InterruptedException e) &#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;<br>    &#125;<br>    <span class="hljs-keyword">return</span> mcr.writeToDiskResult;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>apply 异步提交：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">apply</span> <span class="hljs-params">()</span> &#123;<br>    <span class="hljs-keyword">final</span> <span class="hljs-type">MemoryCommitResult</span> <span class="hljs-variable">mcr</span> <span class="hljs-operator">=</span> commitToMemory ();<br>    <br>    <span class="hljs-keyword">final</span> <span class="hljs-type">Runnable</span> <span class="hljs-variable">awaitCommit</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Runnable</span>() &#123;<br>        <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">run</span><span class="hljs-params">()</span> &#123;<br>            <span class="hljs-keyword">try</span> &#123;<br>                mcr.writtenToDiskLatch.await();<br>            &#125; <span class="hljs-keyword">catch</span> (InterruptedException ignored) &#123;&#125;<br>        &#125;<br>    &#125;;<br><br>    <span class="hljs-comment">// 添加到QueuedWork中，在Activity.onPause()等时机执行</span><br>    QueuedWork.addFinisher(awaitCommit);<br>    <br>    <span class="hljs-comment">// 异步写入磁盘</span><br>    <span class="hljs-type">Runnable</span> <span class="hljs-variable">postWriteRunnable</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Runnable</span>() &#123;<br>        <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">run</span><span class="hljs-params">()</span> &#123;<br>            awaitCommit.run();<br>            QueuedWork.removeFinisher(awaitCommit);<br>        &#125;<br>    &#125;;<br>    <br>    SharedPreferencesImpl.<span class="hljs-built_in">this</span>.enqueueDiskWrite(mcr, postWriteRunnable);<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+
+<h2 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h2><ol>
+<li>跨进程不安全。SharedPreferences 在跨进程频繁读写有可能导致数据全部丢失。根据线上统计，SP 大约会有万分之一的损坏率。</li>
+<li>加载缓慢。SharedPreferences 文件的加载使用了异步线程，而且加载线程并没有设置线程优先级，如果这个时候主线程读取数据就需要等待文件加载线程的结束。<br> 这就导致出现主线程等待低优先级线程锁的问题，比如一个 100KB 的 SP 文件读取等待时间大约需要 50~100ms，我建议<strong>提前用异步线程预加载启动过程用到的 SP 文件</strong>。</li>
+<li>全量写入。无论是调用 commit () 还是 apply ()，即使我们只改动其中的一个条目，都会把整个内容全部写到文件。而且即使我们多次写入同一个文件，SP 也没有将多次修改合并为一次，这也是性能差的重要原因之一。ANR</li>
+<li>卡顿。由于提供了异步落盘的 apply 机制，在崩溃或者其他一些异常情况可能会导致数据丢失。所以当应用收到系统广播，或者被调用 onPause 等一些时机，系统会强制把所有的 SharedPreferences 对象数据落地到磁盘。如果没有落地完成，这时候主线程会被一直阻塞。</li>
+</ol>
+<h2 id="建议"><a href="#建议" class="headerlink" title="建议"></a>建议</h2><ol>
+<li>强烈建议不要在 SP 里面存储特别大的 key&#x2F;value ，有助于减少卡顿 &#x2F; ANR</li>
+<li>请不要高频的使用 apply，尽可能的批量提交；commit 直接在主线程操作，更要注意了</li>
+<li>不要使用 MODE_MULTI_PROCESS</li>
+<li><em>高频写操作的 key 与高频读操作的 key 可以适当的拆分文件</em>，以减少同步锁竞争 (一次全部加载)</li>
+<li>不要连续多次 edit，每次 edit 就是打开一次文件，应该获取一次 edit，然后多次执行 putXxx，<em>减少内存波动</em>，所以在封装方法的时候要注意了</li>
+</ol>
+<h1 id="MMKV"><a href="#MMKV" class="headerlink" title="MMKV"></a>MMKV</h1><p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/09/15/2024-02-06-11-25-f1aadf32f59291e428be7591a38668ea-18-23-45-f1aadf32f59291e428be7591a38668ea-f1aadf32f59291e428be7591a38668ea-ba2779-22e4b4.png" srcset="/img/loading.gif" lazyload alt="f1aadf32f59291e428be7591a38668ea|800|600"></p>
+<p>mmap 将一个文件或者其它对象映射进内存。(linux 上的东西)<br>常规文件操作需要从磁盘到页缓存再到用户主存的两次数据拷贝。（从磁盘拷贝到页缓存中，由于页缓存处在内核空间，不能被用户进程直接寻址，所以还需要将页缓存中数据页再次拷贝到内存对应的用户空间中）<br>而 mmap 操控文件，只需要从磁盘到用户主存的一次数据拷贝过程。说白了，mmap 的关键点是实现了用户空间和内核空间的数据直接交互而省去了空间不同数据不通的繁琐过程。因此 mmap 效率更高。</p>
+<h1 id="数据库"><a href="#数据库" class="headerlink" title="数据库"></a>数据库</h1><ul>
+<li>首先进行自定义一个类进行继承 SQLiteOpenHelper,  因为如果继承 SQLiteDatabase 那么会，要覆盖其中的许多的方法。如果已经有数据库，就不需要 sqliteopenhelper<br>  MysqlLite (Context context, String name,  CursorFactory factory, int version)传入当前的应用环境, 数据库的名称，游标的工厂, 版本号, 让底层为你进行创建数据库</li>
+<li>oncreate (SQLiteDatabase db): 当数据库创建好之后进行运行的函数，主要是在数据库创建好之后进行创建表</li>
+<li>onUpgrade (SQLiteDatabase db, int oldVersion, int newVersion): 当数据库进行更新后需要进行执行的方法</li>
+<li>integer 表示整型，real 表示浮点型，text 表示文本类型，blob 表示二进制类型。另外， primary key 将 id 列设为主键，并用 autoincrement 关键字表示 id 列是自增长的</li>
+</ul>
+<figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs arduino"><span class="hljs-keyword">public</span> <span class="hljs-type">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">String</span> CREATE_BOOK = <span class="hljs-string">&quot;create table book (&quot;</span><br>+ <span class="hljs-string">&quot;id integer primary key autoincrement, &quot;</span><br>+ <span class="hljs-string">&quot;author text, &quot;</span><br>+ <span class="hljs-string">&quot;price real, &quot;</span><br>+ <span class="hljs-string">&quot;pages integer, &quot;</span><br>+ <span class="hljs-string">&quot;name text)&quot;</span>;<br><br></code></pre></td></tr></table></figure>
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%BA%90%E7%A0%81/" class="category-chain-item">源码</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>数据存储</div>
+      <div>http://peiniwan.github.io/2025/12/7efc84cd0a08.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>六月的雨</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年12月16日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/12/88520df66ade.html" title="第三方框架源码">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">第三方框架源码</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/12/d842c8b35664.html" title="多进程Binder">
+                        <span class="hidden-mobile">多进程Binder</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"OwNIdaopOn1rwNhtotGOGC0B-gzGzoHsz","appKey":"eadytQ2XqWmxuvAKeg08XX83","path":"window.location.pathname","placeholder":null,"avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":true,"recordIP":false,"serverURLs":"https://ownidaop.lc-cn-n1-shared.com","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

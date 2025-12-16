@@ -1,0 +1,834 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="六月的雨">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="So 库架构选择 连微信也只有：abiFilters “arm64-v8a” arm64-v8a: 64位支持，目前主流的版本，虽然网上很多博客都说 v7是主流版本，但是我亲自试验了很多手机，都是 arm64-v8a 的架构，测试机型包括小米5-小米9，华为 P30，华为 mate10，魅蓝2等均是 v8架构查询手机 cpu 命令行 文章 结论：用 arm64-v8a 处理速度快250M 减到 8">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android（二）">
+<meta property="og:url" content="http://peiniwan.github.io/2025/12/8a805a2fd5e9.html">
+<meta property="og:site_name" content="六月的雨的笔记">
+<meta property="og:description" content="So 库架构选择 连微信也只有：abiFilters “arm64-v8a” arm64-v8a: 64位支持，目前主流的版本，虽然网上很多博客都说 v7是主流版本，但是我亲自试验了很多手机，都是 arm64-v8a 的架构，测试机型包括小米5-小米9，华为 P30，华为 mate10，魅蓝2等均是 v8架构查询手机 cpu 命令行 文章 结论：用 arm64-v8a 处理速度快250M 减到 8">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android%EF%BC%88%E4%B8%80%EF%BC%89.resources/2023/09/15/18-48-41-bdd37727b06e16d5b65e8b59b3726793-unknown_filename.3-dd8cc1.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android%EF%BC%88%E4%B8%80%EF%BC%89.resources/2023/09/15/18-48-41-7993cd4f8311dd2e9f49cc48f4ade8e9-unknown_filename.4-edc322.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android%EF%BC%88%E4%BA%8C%EF%BC%89.resources/2023/09/15/18-48-56-c33d027aa1e7247c246d672be4156849-wpsF24B-7a8e9f.jpg">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android%EF%BC%88%E4%BA%8C%EF%BC%89.resources/2023/09/15/18-48-56-1caf5f3bacc6666699ca9a86d39e5323-8f054a15-c276-48b1-948e-e69044b554d0-bbe90e.jpg">
+<meta property="article:published_time" content="2025-12-16T13:59:22.349Z">
+<meta property="article:modified_time" content="2024-03-29T07:39:00.000Z">
+<meta property="article:author" content="六月的雨">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android%EF%BC%88%E4%B8%80%EF%BC%89.resources/2023/09/15/18-48-41-bdd37727b06e16d5b65e8b59b3726793-unknown_filename.3-dd8cc1.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>Android（二） - 六月的雨的笔记</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"peiniwan.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>六月的雨的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Android（二）"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-12-16 21:59" pubdate>
+          2025年12月16日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          4.4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          37 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Android（二）</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h3 id="So-库架构选择"><a href="#So-库架构选择" class="headerlink" title="So 库架构选择"></a>So 库架构选择</h3><p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android%EF%BC%88%E4%B8%80%EF%BC%89.resources/2023/09/15/18-48-41-bdd37727b06e16d5b65e8b59b3726793-unknown_filename.3-dd8cc1.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.3"><br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android%EF%BC%88%E4%B8%80%EF%BC%89.resources/2023/09/15/18-48-41-7993cd4f8311dd2e9f49cc48f4ade8e9-unknown_filename.4-edc322.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.4"><br> <em>连微信也只有：abiFilters “arm64-v8a”</em></p>
+<p>arm64-v8a: 64位支持，目前主流的版本，虽然网上很多博客都说 v7是主流版本，但是我亲自试验了很多手机，都是 arm64-v8a 的架构，测试机型包括小米5-小米9，华为 P30，华为 mate10，魅蓝2等均是 v8架构查询手机 cpu 命令行</p>
+<p><a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000023517574">文章</a></p>
+<p>结论：<em>用 arm64-v8a 处理速度快</em><br>250M 减到 88M</p>
+<h3 id="看源码"><a href="#看源码" class="headerlink" title="看源码"></a>看源码</h3><p><a target="_blank" rel="noopener" href="https://cs.android.com/">https://cs.android.com/</a><br><a target="_blank" rel="noopener" href="http://androidxref.com/">http://androidxref.com/</a><br>带 stub 就是 class 文件，反编译的，看不了</p>
+<h3 id="buildToolsVersion-和-TargetSdkVersion"><a href="#buildToolsVersion-和-TargetSdkVersion" class="headerlink" title="buildToolsVersion 和 TargetSdkVersion"></a>buildToolsVersion 和 TargetSdkVersion</h3><p>compileSdkVersion：应用程序编译时使用的 Android SDK 版本<br>minSdkVersion ：应用程序所支持的最低Android平台版本</p>
+<p>targetSdkVersion 的作用：<em>应用的兼容模式</em>。它表明你的应用程序是<em>针对该版本进行开发和测试的</em>，并且遵循该版本的行为和特性。通过指定 <code>targetSdkVersion</code>，你向系统表明你的应用程序是为目标平台版本进行优化的，系统会根据该版本来确定应用程序的运行环境和默认行为，以提供最佳的兼容性和体验。</p>
+<p>TargetSdkVersion 设为23那么是按6.0设置的（运行时权限），小于23是按6.0以前的方式</p>
+<p>目前项目：</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">compileSdkVersion</span>: <span class="hljs-number">31</span>,  <br><span class="hljs-attribute">minSdkVersion</span> : <span class="hljs-number">21</span>,  <br><span class="hljs-attribute">targetSdkVersion</span> : <span class="hljs-number">31</span>,<br></code></pre></td></tr></table></figure>
+<p>31：android12</p>
+<h3 id="Android-6-0-23适配"><a href="#Android-6-0-23适配" class="headerlink" title="Android 6.0 23适配"></a>Android 6.0 23适配</h3><h4 id="使用FileProvider"><a href="#使用FileProvider" class="headerlink" title="使用FileProvider"></a>使用FileProvider</h4><p>存储的变化<br>Android 不再允许在 app 中把 file:&#x2F;&#x2F;Uri 暴露给其他 app，包括但不局限于通过 Intent 或 ClipData 等方法。</p>
+<p>Uri photoOutputUri &#x3D; Uri.fromFile (photoOutputFile);<br>原因在于使用 &#x2F;file:&#x2F;&#x2F;Uri 会有一些风险，比如：文件是私有的，接收&#x2F;file:&#x2F;&#x2F;Uri 的 app 无法访问该文件。<br>在 Android6.0之后引入运行时权限，如果接收file:&#x2F;&#x2F;Uri的app没有申请READ_EXTERNAL_STORAGE权限，在读取文件时会引发崩溃。<br>因此，google 提供了 FileProvider，<em>使用它可以生成 content:&#x2F;&#x2F;Uri 来替代 file:&#x2F;&#x2F;Uri</em>。</p>
+<p><a target="_blank" rel="noopener" href="https://juejin.cn/post/6987569764407181349">聊一聊Android存储行为的变化</a></p>
+<ol>
+<li>在 res 目录下新建 xml 目录，在 xml 目录下新建 filepaths. xml 文件</li>
+<li>在 AndroidManifest. xml 中申明：</li>
+</ol>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">provider</span> <span class="hljs-attr">android:name</span>=<span class="hljs-string">&quot;androidx.core.content.FileProvider&quot;</span> </span><br><span class="hljs-tag">    <span class="hljs-attr">android:authorities</span>=<span class="hljs-string">&quot;com.alexlu.androidstorage.fileProvider&quot;</span> </span><br><span class="hljs-tag">    <span class="hljs-attr">android:enabled</span>=<span class="hljs-string">&quot;true&quot;</span> <span class="hljs-attr">android:exported</span>=<span class="hljs-string">&quot;false&quot;</span> </span><br><span class="hljs-tag">    <span class="hljs-attr">android:grantUriPermissions</span>=<span class="hljs-string">&quot;true&quot;</span>&gt;</span> <br>    <span class="hljs-tag">&lt;<span class="hljs-name">meta-data</span> <span class="hljs-attr">android:name</span>=<span class="hljs-string">&quot;android.support.FILE_PROVIDER_PATHS&quot;</span> </span><br><span class="hljs-tag">    <span class="hljs-attr">android:resource</span>=<span class="hljs-string">&quot;@xml/filepaths&quot;</span> /&gt;</span><br> <span class="hljs-tag">&lt;/<span class="hljs-name">provider</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>使用的时候注意与配置文件中注册的包名一致：</li>
+</ol>
+<figure class="highlight vhdl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs vhdl"><span class="hljs-keyword">File</span> <span class="hljs-keyword">file</span> = <span class="hljs-keyword">context</span>.getExternalFilesDir(<span class="hljs-keyword">null</span>);<br>// val <span class="hljs-keyword">file</span> = <span class="hljs-keyword">File</span>(xxpath)<br>val uri = FileProvider.getUriForFile(<span class="hljs-keyword">context</span>, <span class="hljs-string">&quot;com.alexlu.androidstorage.fileProvider&quot;</span>, <span class="hljs-keyword">file</span>);<br></code></pre></td></tr></table></figure>
+
+<p>文件不能随便访问了，新增了 READ_MEDIA_IMAGES, READ_MEDIA_VIDEO, READ_MEDIA_AUDIO</p>
+<h4 id="动态申请权限"><a href="#动态申请权限" class="headerlink" title="动态申请权限"></a>动态申请权限</h4><ol>
+<li>在 android 6.0 Marshmallow 版本之后，系统不会在软件安装的时候就赋予该 app 所有其申请的权限，对于一些危险级别的权限，app 需要在运行时一个一个询问用户授予权限。</li>
+<li>只有那些 targetSdkVersion 设置为23和23以上的应用才会出现异常，在使用危险权限的时候系统必须要获得用户的同意才能使用，要不然应用就会崩溃。</li>
+<li>targetSdkVersion 如果没有设置为23版本或者以上，系统还是会使用旧规则：在安装的时候赋予该 app 所申请的所有权限。所以 app 当然可以和以前一样正常使用了，但是还有一点需要注意的是6.0的系统里面，用户可以手动将该 app 的权限关闭。</li>
+<li>经试验：<em>点拒绝没有奔溃，不过点不在提示后就一直不提示，也打不开那个页面，所以需要动态申请引导去设置页打开系统架</em></li>
+</ol>
+<h3 id="Android-13-32适配"><a href="#Android-13-32适配" class="headerlink" title="Android 13  32适配"></a>Android 13  32适配</h3><p><a target="_blank" rel="noopener" href="https://juejin.cn/post/7099762078977622053">Android 13 适配指南 - 掘金</a></p>
+<h4 id="相册权限"><a href="#相册权限" class="headerlink" title="相册权限"></a>相册权限</h4><p><strong>通过申请新的<code>android.permission.READ_MEDIA_IMAGES</code> 权限，就可以用以前的代码继续访问到以前的相册信息</strong>，因为对于目标版本为 Android 13 的情况，现在 <code>READ_EXTERNAL_STORAGE</code>权限被细化了，开发者需要使用<code>READ_MEDIA_IMAGE</code>、<code>READ_MEDIA_VIDEO</code>、<code>READ_MEDIA_AUDIO</code> 来替代适配；</p>
+<p>在申请完权限之后，就可以正常读取相册等信息；</p>
+<p><strong>所以如果是 TargetSDK 在 Android 13 以下，不需要处理，如果在 Android 13 以及以上 ，需要增加申请权限</strong>。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">uses-permission</span> <span class="hljs-attr">android:name</span>=<span class="hljs-string">&quot;android.permission.READ_MEDIA_IMAGES&quot;</span> /&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">uses-permission</span> <span class="hljs-attr">android:name</span>=<span class="hljs-string">&quot;android.permission.READ_MEDIA_AUDIO&quot;</span> /&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">uses-permission</span> <span class="hljs-attr">android:name</span>=<span class="hljs-string">&quot;android.permission.READ_MEDIA_VIDEO&quot;</span> /&gt;</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="通知"><a href="#通知" class="headerlink" title="通知"></a>通知</h4><p><strong>Android 13 里增加了通知的运行时权限</strong>，其中 Android 13 (33) 的通知会根据正在运行的应用程序的目标 API 级别进行不同的处理，<strong>不过不管应用程序的目标API级别如何，Android 13 都会提示用户授予应用程序发送通知的权限</strong>。</p>
+<ul>
+<li>如果是 TargetSDK 在 Android 12L (32) 以下，只要用户同意才能发送通知，一般是在应用启动的时候，比如用户点击了不允许，就无法发出通知，需要等到下次 App 再启动，才会再次询问，或者去设置通知中心打开；</li>
+<li>如果是 TargetSDK 在 Android 13 (33) 以上，就一定需要手动添加 <code>android.permission.POST_NOTIFICATIONS</code> 和<em>代码调用申请，不然可能设置中心都无法打开</em>；</li>
+</ul>
+<h3 id="Android-虚拟机"><a href="#Android-虚拟机" class="headerlink" title="Android 虚拟机"></a>Android 虚拟机</h3><p>Dalvik 和 <em>ART（5.0以后）</em><br><strong>Dalvik 运行 dex 文件，而 JVM 运行 java 字节码</strong></p>
+<p>ART 的机制与 Dalvik 不同。在 Dalvik 下，应用每次运行的时候，字节码都需要通过<strong>即时编译器</strong>（just in time ，JIT）转换为机器码，这会拖慢应用的运行效率，<br>在 ART 环境中，应用在第一次安装的时候，字节码就会<strong>预先编译成机器码</strong>，使其成为真正的本地应用。这个过程叫做预编译（AOT, Ahead-Of-Time）。这样的话，应用的启动 (首次) 和执行都会变得更加快速。</p>
+<p>ART 有什么优缺点呢？<br>优点：<br>1、系统性能的显著提升。<br>2、应用启动更快、运行更快、体验更流畅、触感反馈更及时。<br>3、更长的电池续航能力。<br>4、支持更低的硬件。<br>缺点：</p>
+<ol>
+<li>机器码占用的存储空间更大，字节码变为机器码之后，可能会增加10%-20%（不过在应用包中，可执行的代码常常只是一部分。比如最新的 Google+ APK 是 28.3 MB，但是代码只有 6.9 MB。）</li>
+<li>应用的安装时间会变长。</li>
+</ol>
+<p><strong>机器码（Machine Code）</strong> 是CPU能够直接理解和执行的指令集。不同的CPU架构（如ARM、x86）有不同的机器码指令集。</p>
+<ul>
+<li>在计算机系统中，所有程序最终都要转换成机器码才能被CPU执行。</li>
+<li>在Android中，机器码就是针对设备CPU架构（如ARMv7、ARMv8-A、x86等）的本地指令。</li>
+</ul>
+<p>ART 的演进优化<br>现代 Android 系统已采用混合编译策略：JIT + AOT 混合模式 (Android 7.0+)：<br>安装时：<em>仅编译关键代码</em><br>运行时：JIT 编译热点代码<br>空闲时：AOT 编译剩余代码<br>安装速度将比目前的安卓6.0提升最多75％</p>
+<h3 id="保活"><a href="#保活" class="headerlink" title="保活"></a>保活</h3><ol>
+<li>Service 设置成 START_STICKY，kill 后会被重启（等待5秒左右），重传 Intent，保持与重启前一样</li>
+<li>通过 startForeground 将进程设置为<strong>前台进程，做前台服务</strong>，优先级和前台应用一个级别，除非在系统内存非常缺，否则此进程不会被 kill</li>
+<li>双进程 Service：让2个进程互相保护，其中一个 Service 被清理后，另外没被清理的进程可以立即重启进程</li>
+<li>QQ 黑科技: 在应用退到后台后，另起一个只有 1 像素的页面停留在桌面上，让自己保持前台状态，保护自己不被后台清理工具杀死</li>
+<li>利用系统广播拉活</li>
+<li>多进程：用 C 编写守护进程 (即子进程)</li>
+<li>引导用户调到自启动管理界面，参考请启动</li>
+</ol>
+<h3 id="Android-逆向反编译"><a href="#Android-逆向反编译" class="headerlink" title="Android 逆向反编译"></a>Android 逆向反编译</h3><p>Android 逆向工程主要是指反编译和二次打包，通过反编译可以破解一些有用信息，而通过二次打包则可以产生一些山寨应用。Android 逆向工程是一个很有意思的话题，如果开发者对其感兴趣的话，推荐大家阅读下逆向相关的书籍，比如《Android 软件安全与逆向分析》</p>
+<p>Jar 和 Aar 的区别<br>    Jar 包里面只有代码，aar 里面不光有代码还包括代码还包括资源文件，比如 drawable 文件，xml 资源文件。对于一些不常变动的 Android Library，我们可以直接引用 aar，加快编译速度</p>
+<p><strong>APK 反编译</strong></p>
+<p>拿到需要加密的 Apk 和自己的壳程序 Apk，然后用加密算法对源 Apk 进行加密；再与壳 Apk 的 Dex 进行合并得到新的 Dex 文件；然后替换原壳程序中的 dex 文件即可，得到新的 Apk。那么这个新的 Apk 我们也叫作脱壳程序 Apk，他已经不是一个完整意义上的 Apk 程序了，他的主要工作是：负责解密源 Apk，然后加载 Apk，让其正常运行起来。</p>
+<p>通过反射和 classloader</p>
+<ol>
+<li>dex2jar：将 dex 文件转化成 jar，原理也是一样的，只要知道 Dex 文件的格式，能够解析出 dex 文件中的类信息就可以了</li>
+<li>jd-gui：可以查看 jar 中的类，其实他就是解析 class 文件，只要了解 class 文件的格式就可以，class 反编译成 Java</li>
+</ol>
+<h3 id="view"><a href="#view" class="headerlink" title="view"></a>view</h3><ul>
+<li>LinerLayout 跟 RelativeLayout 的绘制原理<br>  LinearLayout 需要测量一次，而 RelativeLayout 需要测量2次（对子 view 测量，横向纵向分别进行一次），然后如果只嵌套一层首选 LinearLayout，如果多层需要使用 RelativeLayout<br>  FrameLayout 和 LinearLayout 差不多</li>
+</ul>
+<ol>
+<li>RelativeLayout 会<em>让子 View 调用2次 onMeasure</em>，LinearLayout 在有 weight 时。也会调用子 View2次 onMeasure</li>
+<li>RelativeLayout 的子 View 假设高度和 RelativeLayout 不同，则会引发效率问题，当子 View 非常复杂时，这个问题会更加严重。</li>
+<li>假设能够，尽量使用 padding 取代 margin。</li>
+</ol>
+<ul>
+<li>CoordinatorLayout</li>
+</ul>
+<p><a target="_blank" rel="noopener" href="https://juejin.cn/post/6976443779762880549?utm_source=gold_browser_extension#comment">自定义Behavior，好文章</a></p>
+<p><strong>参考：fragment_task</strong></p>
+<p>CoordinatorLayout 是一个“加强版”的 FrameLayout，它主要有两个用途：</p>
+<ol>
+<li>用作应用的顶层布局管理器</li>
+<li>通过为子 View 指定 behavior 实现自定义的交互行为。<br>在我们做 Material Design 风格的 app 时通常都使用 CoordinatorLayout 作为布局的根节点，以便实现特定的 UI 交互行为。很常见的一种模式是 TabLayout 放在 ToolBar 布局中与其一起置顶在界面上方，在滑动的时候将 ToolBar 隐藏而 TabLayout 一直置顶在界面上方。</li>
+</ol>
+<ul>
+<li>CollapsingToolbarLayout<br>  顾名思义就是可折叠的 toolbar 布局。CollapsingToolbarLayout 可以包裹 Toolbar , 当其显示完收缩动画时使 Toolbar 显示在顶端。可以再加入浸入式的效果让 CollapsingToolbarLayout 的背景图突破系统的状态栏使界面更加美观同时也不影响 Toolbar 的显示效果。</li>
+</ul>
+<p>Padding 和 Margin 有什么区别？</p>
+<p>Padding 是控件内容的距离，margin 是控件和控件间的距离<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android%EF%BC%88%E4%BA%8C%EF%BC%89.resources/2023/09/15/18-48-56-c33d027aa1e7247c246d672be4156849-wpsF24B-7a8e9f.jpg" srcset="/img/loading.gif" lazyload alt="wpsF24B"></p>
+<p>实现侧边栏、和指示器效果、页面滑动有几种方式<br>侧边栏：自定义、slidingmenu、DrawerLayout 、SlidingDrawer<br>指示器效果：自定义、viewpager 里面的 PagerTabStrip、ActionBar Tab 标签、viewpagerindicate、FragmentTabHost、TabActivity、radiobutton、tablayout<br>页面滑动：自定义、viewpager、手势识别器，其实就是 onTouchEvent 提供的简单工具类，onTouchEvent 将触摸事件委托给了手势识别器</p>
+<p>layout_weight<br>屏幕适配经常用等分的长度“先各自分配各自控件的长度，然后将剩余的长度按照权重的比例 layout_weight 的大小进行设置。</p>
+<h3 id="抓包的原理"><a href="#抓包的原理" class="headerlink" title="抓包的原理"></a>抓包的原理</h3><p>代理。客户端请求-&gt;经过代理-&gt;到达服务端服务端返回-&gt;经过代理-&gt;到达客户端<br>任何 Https 的 app 都能抓的到吗？<br>7.0以下是可以的，<em>只要手机里安装对应 CA 证书，比如用 charles 抓包，手机要安装 charles 提供的证书就行</em>。<br>Android 7.0 之后，Google 推出更加严格的安全机制，应用默认不信任用户证书（手机里自己安装证书），自己的 app 可以通过配置解决，但是抓其它 app 的 https 请求就行不通。<br>okhtttp 禁止代理，就可以了 builder.proxy (Proxy. NO_PROXY);<br>charles 抓包显示乱码解决方法：</p>
+<ol>
+<li>工具栏–&gt;Proxy–&gt;SSL Proxying Settings</li>
+<li>添加需求抓包的请求的域名和端口号0<br>HTTPS 能调试是因为你安装了调试工具给你的根证书，相当于你主动被中间人入侵</li>
+</ol>
+<h3 id="Intent-传输数据的大小有限制吗"><a href="#Intent-传输数据的大小有限制吗" class="headerlink" title="Intent 传输数据的大小有限制吗"></a>Intent 传输数据的大小有限制吗</h3><p>Intent 中的 Bundle 是使用 Binder 机制进行数据传送的, <em>数据会写到内核空间，Binder 缓冲区域</em>。<br>Binder 的缓冲区是有大小限制的, 有些 ROM 是 1M, 有些 ROM 是 2M;<br>这个限制定义在 frameworks&#x2F;native&#x2F;libs&#x2F;binder&#x2F;processState. cpp 类中, 如果超过这个限制, 系统就会报错<br>因为 Binder 本身就是为了进程间频繁-灵活的通信所设计的, 并不是为了拷贝大量数据;</p>
+<p>如果非 ipc 就很简单了, static 变量, eventBus 之类的都可以;<br>如果是 ipc, 一定要一次性传大文件, 可以用 file 或者 socket;</p>
+<h3 id="没有给权限如何定位，特定机型定位失败，如何解决"><a href="#没有给权限如何定位，特定机型定位失败，如何解决" class="headerlink" title="没有给权限如何定位，特定机型定位失败，如何解决"></a>没有给权限如何定位，特定机型定位失败，如何解决</h3><p>GPS 就是精准定位！<br>蓝牙、移动信号、wifi 都是能定位的。就是基于网络定位，但是不太准，没有 GPS 定位那么准。<br>android 的定位权限就是 GPS 定位，但是只要你有网络请求，就能得到你的大概范围。</p>
+<h3 id="Android-各个版本"><a href="#Android-各个版本" class="headerlink" title="Android 各个版本"></a>Android 各个版本</h3><p>Android 3.0系统这个系统是为了平板电脑设计的，加入了 fragment</p>
+<ul>
+<li>4.0版本，这个版本对于不在对手机和平板进行区别对待, actionbar 在这个版本加的</li>
+<li>5.0系统，使用了 ART 运行环境代替了 Dalvik 虚拟机大大提升了运行速度之外，还提出了 Material Design 的设计语言来优化应用的界面，新增了很多控件。Material Design 主题，设置阴影、ToolBar (就相当于一个控件，更加灵活)、DrawerLayout、CardView，google 发布的新的 Android Support Design 库，里面也包含了几个新的控件，那么 TabLayout 就是其中一个。RecyclerView</li>
+<li>6.0系统加入了运行时权限，加入指纹识别，能提供原生指纹识别 API，这不但降低了厂商开发指纹识别模块的成本。大量漂亮流畅的动画</li>
+<li>7.0系统加入了多窗口模式功能，引入了 JIT 编译器，APP 的安装速度将比目前的安卓6.0提升最多75％，支持了 Java8语言模式，夜间模式<br>  获取文件需要使用 fileprovider</li>
+<li>8.0对隐式广播、后台服务和位置更新等进行了后台自动限制，以此来增加手机电池寿命。<br>  后台启动服务 startService 会报错，需要使用 startForgand ()<br>  通知栏需要使用新的 API，旧的不生效了，需要指定个 channelID</li>
+<li>9.0：全面屏的全面支持</li>
+<li>AndroidQ：5G 网络、通知中的智能回复、黑暗主题、设置面板、分享快捷方式、用户隐私</li>
+</ul>
+<h3 id="缓存数据，如何保证和服务器的数据统一？"><a href="#缓存数据，如何保证和服务器的数据统一？" class="headerlink" title="缓存数据，如何保证和服务器的数据统一？"></a>缓存数据，如何保证和服务器的数据统一？</h3><ol>
+<li>比如有个网络更新的功能, activity 可以每隔半小时开启 service 去访问服务器，获取最新的数据。</li>
+<li>在缓存文件里面加入时间戳，根据实际情况在一定的时间差内再次访问网络数据、判断 URL 在缓存的第一行写一个上当前时间，读的时候判断是不是过期，根据需求看需要多久跟新</li>
+</ol>
+<h3 id="系统分层"><a href="#系统分层" class="headerlink" title="系统分层"></a>系统分层</h3><p>（由下向上） 【如图】</p>
+<ul>
+<li>安卓系统分为四层，分别是 Linux 内核层、Libraries 层、FrameWork 层，以及 Applications 层</li>
+</ul>
+<ol>
+<li>Linux 内核层：包含 Linux 内核和驱动模块（比如 USB、Camera、蓝牙等）</li>
+<li>Libraries 层：这一层提供动态库（也叫共享库） 、android 运行时库、Dalvik、apengl、虚拟机等，编程语言主要为 C 或 C++，所以可以简单的看成 Native 层。</li>
+<li>FrameWork 层：这一层大部分用 java 语言编写，有 activityManager、windowManager 等，它是 android 平台上 Java 世界的基石。</li>
+<li>Applications 层：应用层，桌面、联系人、拨号等软件<br> FrameWork 层 ——– Java 世界<br> Libraries 层 ——– Native 世界<br> Linux 内核层 ——– Linux OS<br> Java 世界和 Native 世界间的通信是通过 JNI 层, JNI 层和 Native 世界都可以直接调用系统底层</li>
+<li>Dalvik VM 和传统 JVM 的区别：<br> 传统的 JVM：编写. java 文件→编译为. class 文件 → 打包成. jar 文件<br> Dalvik VM： 编写. java 文件 → 编译为. class 文件 → 打包成. dex 文件 → 打包成. apk 文件 (通过 dx 工具) 将所有的类整合到一个文件中，提高了效率。更适合在手机上运行<br> <img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android%EF%BC%88%E4%BA%8C%EF%BC%89.resources/2023/09/15/18-48-56-1caf5f3bacc6666699ca9a86d39e5323-8f054a15-c276-48b1-948e-e69044b554d0-bbe90e.jpg" srcset="/img/loading.gif" lazyload alt="8f054a15-c276-48b1-948e-e69044b554d0"></li>
+</ol>
+<h3 id="ABI"><a href="#ABI" class="headerlink" title="ABI"></a>ABI</h3><p>应用程序二进制接口 ABI（Application Binary Interface）定义了二进制文件（尤其是. so 文件）如何运行在相应的系统平台上，从使用的指令集，内存对齐到可用的系统函数库。在 Android 系统上，每一个 CPU 架构对应一个 ABI：armeabi，armeabi-v7a，x86，mips，arm64- v8a，mips64，x86_64。</p>
+<p><strong>SO 文件</strong><br>如果程序中使用到了 NDK，它将会生成. so 文件。c++的类库</p>
+<h3 id="CPU"><a href="#CPU" class="headerlink" title="CPU"></a>CPU</h3><p>中央处理单元（CPU）主要由运算器、控制器、寄存器三部分组成，从字面意思看运算器就是起着运算的作用，控制器就是负责发出 CPU 每条指令所需要的信息，寄存器就是保存运算或者指令的一些临时文件，这样可以保证更高的速度。<br>CPU 需要执行数以百万计的指示，才能使它向我们期待的方向运行</p>
+<p>Intel 和 ARM 处理器的第一个区别是，前者使用复杂指令集（超高性能的台式机和服务器处理器），而后者使用精简指令集（低功耗处理器）。</p>
+<h3 id="ARGB"><a href="#ARGB" class="headerlink" title="ARGB"></a>ARGB</h3><p>色彩模式，也就是 RGB 色彩模式附加上 Alpha（透明度）通道，常见于32位位图的存储结构。<br>透明度是个 0~255的值，为0的时候，完全不可见；为 255的时候完全可见，#(0-f) 00设置透明，f 全黑色 Color.FromArgb () 有一个构造函数有4个参数，<br>Color.FromArgb (int alpha, int red, int green, int blue). 这个用来控制颜色的透明度。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Android/" class="category-chain-item">Android</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Android（二）</div>
+      <div>http://peiniwan.github.io/2025/12/8a805a2fd5e9.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>六月的雨</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年12月16日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/12/7db93f300422.html" title="Countly 日志">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Countly 日志</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/12/2a4c1471c008.html" title="Android（一）">
+                        <span class="hidden-mobile">Android（一）</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"OwNIdaopOn1rwNhtotGOGC0B-gzGzoHsz","appKey":"eadytQ2XqWmxuvAKeg08XX83","path":"window.location.pathname","placeholder":null,"avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":true,"recordIP":false,"serverURLs":"https://ownidaop.lc-cn-n1-shared.com","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

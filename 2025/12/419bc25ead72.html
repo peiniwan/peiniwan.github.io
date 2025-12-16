@@ -1,0 +1,818 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="六月的雨">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="溢出的解决方法 使用Column包裹在SingleChildScrollView  123SingleChildScrollView(  child: Column(children: children),)  改成 ListView  123ListView(  children: children)  使用两者的组合Column和ListView时，使用Expanded或者给ListView一">
+<meta property="og:type" content="article">
+<meta property="og:title" content="3-Flutter工作tips">
+<meta property="og:url" content="http://peiniwan.github.io/2025/12/419bc25ead72.html">
+<meta property="og:site_name" content="六月的雨的笔记">
+<meta property="og:description" content="溢出的解决方法 使用Column包裹在SingleChildScrollView  123SingleChildScrollView(  child: Column(children: children),)  改成 ListView  123ListView(  children: children)  使用两者的组合Column和ListView时，使用Expanded或者给ListView一">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Flutter_Tips.resources/2023/09/15/18-50-55-1c252adf3b7c2331e1739f1363d3f493-unknown_filename.6-f1171e.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Flutter_Tips.resources/2023/09/15/18-50-55-725fd7b1edf17b0af4da1c2abb2c2729-unknown_filename-0362bf.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Flutter_Tips.resources/2023/09/15/18-50-55-e5d0dc17d17e1e1f247a9727186a8fba-unknown_filename.1-329925.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Flutter_Tips.resources/2023/09/15/18-50-55-3b0f99cf218502c6f78faa83118d2604-unknown_filename.5-6e2193.png">
+<meta property="article:published_time" content="2025-12-16T13:59:22.520Z">
+<meta property="article:modified_time" content="2024-03-25T01:15:00.000Z">
+<meta property="article:author" content="六月的雨">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Flutter_Tips.resources/2023/09/15/18-50-55-1c252adf3b7c2331e1739f1363d3f493-unknown_filename.6-f1171e.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>3-Flutter工作tips - 六月的雨的笔记</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"peiniwan.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>六月的雨的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="3-Flutter工作tips"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-12-16 21:59" pubdate>
+          2025年12月16日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.5k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          13 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">3-Flutter工作tips</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="溢出的解决方法"><a href="#溢出的解决方法" class="headerlink" title="溢出的解决方法"></a>溢出的解决方法</h2><ol>
+<li>使用Column包裹在SingleChildScrollView</li>
+</ol>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs less"><span class="hljs-selector-tag">SingleChildScrollView</span>(<br>  <span class="hljs-attribute">child</span>: <span class="hljs-built_in">Column</span>(<span class="hljs-attribute">children</span>: children),<br>)<br></code></pre></td></tr></table></figure>
+<ol start="2">
+<li>改成 ListView</li>
+</ol>
+<figure class="highlight isbl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs isbl"><span class="hljs-function"><span class="hljs-title">ListView</span>(</span><br><span class="hljs-function">  <span class="hljs-variable">children</span>: <span class="hljs-variable">children</span></span><br><span class="hljs-function">)</span><br></code></pre></td></tr></table></figure>
+<ol start="3">
+<li>使用两者的组合Column和ListView时，使用Expanded或者给ListView一个固定高度</li>
+</ol>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs less"><span class="hljs-selector-tag">Column</span>(<br>  <span class="hljs-attribute">children</span>: [<br>    ...children.<span class="hljs-built_in">take</span>(<span class="hljs-number">2</span>).<span class="hljs-built_in">toList</span>(), <span class="hljs-comment">// show first 2 children in Column</span><br>    <span class="hljs-built_in">Expanded</span>(<br>      <span class="hljs-attribute">child</span>: <span class="hljs-built_in">ListView</span>(<br>        <span class="hljs-attribute">children</span>: children.<span class="hljs-built_in">getRange</span>(<span class="hljs-number">3</span>, children.length).<span class="hljs-built_in">toList</span>(),<br>      ), <span class="hljs-comment">// And rest of them in ListView</span><br>    ),<br>  ],<br>)<br></code></pre></td></tr></table></figure>
+<h2 id="dialog-高度自适应"><a href="#dialog-高度自适应" class="headerlink" title="dialog 高度自适应"></a>dialog 高度自适应</h2><p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Flutter_Tips.resources/2023/09/15/18-50-55-1c252adf3b7c2331e1739f1363d3f493-unknown_filename.6-f1171e.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.6"></p>
+<p>flutter可以分架构打包<br>flutter build apk –obfuscate –split-debug-info debuginfo –target-platform android-arm,android-arm64,android-x64 –split-per-abi</p>
+<h2 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h2><ul>
+<li><strong>Expanded 仅应在 Row，Column 或者 Flex 使用，检查代码.必须是直接的子类</strong>，否则 debug 能运行，release 报错。</li>
+<li>使用 Flutter Web 目前不适合Web ，对于具有大量密集文本的静态网页，传统的 Web 开发方法支持更快的加载时间和更容易维护。 webdev</li>
+</ul>
+<p><strong>Flutter Inspector 不显示解决</strong><br>&lt; <a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/64725383/flutter-inspector-stuck-on-installing-dev-tools/65542661#65542661%3E">https://stackoverflow.com/questions/64725383/flutter-inspector-stuck-on-installing-dev-tools/65542661#65542661&gt;</a></p>
+<p><strong>flutter 自己的代码打开错乱</strong><br>把. idea 删掉、对应错误的文件本地打开，然后删掉，或者用 flutter SDK 重新替换</p>
+<h2 id="LayoutBuilder"><a href="#LayoutBuilder" class="headerlink" title="LayoutBuilder"></a>LayoutBuilder</h2><p>一个 text 的右边和另一个 text 的左边对齐, 另一个 text 宽度还不固定，这两个 widget 不在同一行，是上下两行<br>使用<strong>LayoutBuilder</strong>控件来获取第一个<strong>Text</strong>控件的宽度，并使用这个宽度来设置第二个<strong>Text</strong>控件的位置</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs java">Column(<br>  children: [<br>    Row(<br>      children: [<br>        Text(<span class="hljs-string">&#x27;Left Text&#x27;</span>),<br>      ],<br>    ),<br>    LayoutBuilder(<br>      builder: (context, constraints) &#123;<br>        <span class="hljs-type">final</span> <span class="hljs-variable">leftTextWidth</span> <span class="hljs-operator">=</span><br>            (TextPainter(text: TextSpan(text: <span class="hljs-string">&#x27;Left Text&#x27;</span>), maxLines: <span class="hljs-number">1</span>, textDirection: TextDirection.ltr)..layout()).width;<br>        <span class="hljs-keyword">return</span> Row(<br>          children: [<br>            SizedBox(width: leftTextWidth),<br>            Text(<span class="hljs-string">&#x27;Right Text&#x27;</span>),<br>          ],<br>        );<br>      &#125;,<br>    ),<br>  ],<br>),<br></code></pre></td></tr></table></figure>
+
+
+<p>手势Draggable文章<br><a target="_blank" rel="noopener" href="https://blog.csdn.net/du591310450/article/details/89845157">https://blog.csdn.net/du591310450/article/details/89845157</a><br><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_52262025/article/details/123618314">https://blog.csdn.net/weixin_52262025&#x2F;article&#x2F;details&#x2F;123618314，用的这个</a></p>
+<p>角度转弧度 π&#x2F;180×角度<br>弧度变角度 180&#x2F;π×弧度<br>1度&#x3D;π&#x2F;180≈0.01745弧度，1弧度&#x3D;180&#x2F;π≈57.3度。</p>
+<p>计算重叠区域面积<br><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/rectangle-area/solution/223-ju-xing-mian-ji-3xing-dai-ma-by-acw_weian/">https://leetcode.cn/problems/rectangle-area/solution/223-ju-xing-mian-ji-3xing-dai-ma-by-acw_weian/</a></p>
+<h2 id="UI"><a href="#UI" class="headerlink" title="UI"></a>UI</h2><ul>
+<li>SingleChildScrollView 可以滚动，如果SingleChildScrollView嵌套SingleChildScrollView，第二SingleChildScrollView需要加个Expanded</li>
+<li>有问题的时候可以试试Expanded</li>
+<li>Expanded 平分加三个Expanded</li>
+<li>Scaffold(  resizeToAvoidBottomInset: true,） 可以把布局顶上去，不会被输入法遮盖，键盘弹出 overflowed：放这个，Scaffold (  resizeToAvoidBottomInset: false，这样在键盘弹出时将不会 resize</li>
+<li>Text.rich(TextSpan 一个textviwe不同颜色大小</li>
+<li>Flexible 可以让 textview 换行</li>
+</ul>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs less"><span class="hljs-selector-tag">RichText</span>(<span class="hljs-attribute">text</span>: <span class="hljs-built_in">TextSpan</span>(<br>                <span class="hljs-attribute">children</span>: [<br>                   <span class="hljs-built_in">TextSpan</span>(<br>                     <span class="hljs-attribute">text</span>:<span class="hljs-string">&quot;*&quot;</span>,<br>                     <span class="hljs-attribute">style</span>: <span class="hljs-built_in">TextStyle</span>(<span class="hljs-attribute">color</span>: JCColor.colorAuxRedColor, <span class="hljs-attribute">fontSize</span>: <span class="hljs-number">15</span>)<br>                   ),<br>                  <span class="hljs-built_in">TextSpan</span>(<br>                      <span class="hljs-attribute">text</span>:<span class="hljs-string">&quot;费用归属&quot;</span>,<br>                      <span class="hljs-attribute">style</span>: <span class="hljs-built_in">TextStyle</span>(<span class="hljs-attribute">color</span>: JCColor.colorText222<span class="hljs-attribute">Color</span>, <span class="hljs-attribute">fontSize</span>: <span class="hljs-number">15</span>)<br>                  )<br>                ]<br>            )),<br><br></code></pre></td></tr></table></figure>
+
+<ul>
+<li><p>alignment: Alignment.centerLeft, 左对齐</p>
+</li>
+<li><p>row 水平居中 mainAxisAlignment:MainAxisAlignment.spaceBetween</p>
+<figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs arduino"><br><span class="hljs-keyword">enum</span> <span class="hljs-title class_">MainAxisAlignment</span> &#123;<br> <span class="hljs-comment">//将子控件放在主轴的开始位置</span><br>  start,  <br>   <span class="hljs-comment">//将子控件放在主轴的结束位置</span><br>  end,<br>  <span class="hljs-comment">//将子控件放在主轴的中间位置</span><br>  center,<br>  <span class="hljs-comment">//将主轴空白位置进行均分，排列子元素，手尾没有空隙</span><br>  spaceBetween,<br>  <span class="hljs-comment">//将主轴空白区域均分，使中间各个子控件间距相等，首尾子控件间距为中间子控件间距的一半</span><br>  spaceAround,<br>  <span class="hljs-comment">//将主轴空白区域均分，使各个子控件间距相等</span><br>  spaceEvenly,<br>&#125;<br></code></pre></td></tr></table></figure>
+</li>
+<li><p>Row mainAxisSize: MainAxisSize.min,&#x2F;&#x2F;wrap_content ,不加的话默认为match_parent（MainAxisSize.max）</p>
+</li>
+<li><p>Column mainAxisAlignment: MainAxisAlignment.center,</p>
+</li>
+</ul>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Flutter_Tips.resources/2023/09/15/18-50-55-725fd7b1edf17b0af4da1c2abb2c2729-unknown_filename-0362bf.png" srcset="/img/loading.gif" lazyload alt="unknown_filename"></p>
+<p>listview嵌套listview</p>
+<figure class="highlight arcade"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs arcade">child: ListView.separated(<br>                      shrinkWrap: <span class="hljs-literal">true</span>,<br>                      <span class="hljs-attr">physics</span>: NeverScrollableScrollPhysics(),  <span class="hljs-comment">//list嵌套listview</span><br>                      itemCount: logic.architectureList?.<span class="hljs-built_in">length</span> ?? <span class="hljs-number">0</span>,<br>                      <span class="hljs-attr">itemBuilder</span>: <span class="hljs-function">(<span class="hljs-params">context, index</span>) =&gt;</span><br>                          _buildItem(logic.architectureList?[index]),<br>                      <span class="hljs-attr">separatorBuilder</span>: <span class="hljs-function">(<span class="hljs-params">context, index</span>) =&gt;</span> Divider(height: <span class="hljs-number">.0</span>),<br>                    ));<br><br></code></pre></td></tr></table></figure>
+
+<p>ListView.separated 有分割线</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs less"><br><span class="hljs-selector-tag">Visibility</span>(<br>  <span class="hljs-attribute">visible</span>: true,<br>  <span class="hljs-comment">//是否保持占位</span><br>  <span class="hljs-attribute">maintainState</span>: false,<br>  <span class="hljs-attribute">child</span>: <span class="hljs-built_in">Text</span>(<span class="hljs-string">&quot;显示&quot;</span>),<br>),<br>    <br></code></pre></td></tr></table></figure>
+
+<p>弹窗</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs less"><span class="hljs-selector-tag">showModalBottomSheet</span>(<br>                      <span class="hljs-attribute">shape</span>: const <span class="hljs-built_in">RoundedRectangleBorder</span>(<br>                          <span class="hljs-attribute">borderRadius</span>: BorderRadius.<span class="hljs-built_in">only</span>(<br>                              <span class="hljs-attribute">topLeft</span>: Radius.<span class="hljs-built_in">circular</span>(<span class="hljs-number">16</span>),<br>                              <span class="hljs-attribute">topRight</span>: Radius.<span class="hljs-built_in">circular</span>(<span class="hljs-number">16</span>))),<br>                      <span class="hljs-attribute">context</span>: context,<br>                      <span class="hljs-attribute">builder</span>: (BuildContext context) &#123;<br>                        <span class="hljs-selector-tag">return</span> <span class="hljs-selector-tag">AirTicketRuleDialog</span>();<br>                      &#125;);<br></code></pre></td></tr></table></figure>
+<ul>
+<li>Spacer其实就是包装了一个 Expanded 的 SizedBox. 我们可以通过它灵活控制 Row&#x2F;Column。 Spacer(flex: 2), &#x2F;&#x2F; 弹性系数为2</li>
+<li>返回键</li>
+</ul>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs kotlin">WillPopScope(<br>              child: <span class="hljs-keyword">this</span>,<br>              onWillPop: () async &#123;<br>                <span class="hljs-keyword">return</span> Future.value(<span class="hljs-literal">false</span>);<br>              &#125;);<br></code></pre></td></tr></table></figure>
+<ul>
+<li><p>这种布局<br>  <img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Flutter_Tips.resources/2023/09/15/18-50-55-e5d0dc17d17e1e1f247a9727186a8fba-unknown_filename.1-329925.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.1"></p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs less"><br><span class="hljs-selector-tag">Row</span>(<span class="hljs-attribute">children</span>: [<br>         const <span class="hljs-built_in">SizedBox</span>(<span class="hljs-attribute">width</span>: <span class="hljs-number">32</span>),<br>         <span class="hljs-built_in">Expanded</span>(<br>           <span class="hljs-attribute">child</span>: <span class="hljs-built_in">Text</span>(<br>             <span class="hljs-string">&#x27;退改行李规定&#x27;</span>,<br>             <span class="hljs-attribute">textAlign</span>: TextAlign.center,<br>         ),<br>         <span class="hljs-built_in">InkWell</span>(    ]),<br>    <br></code></pre></td></tr></table></figure>
+</li>
+<li><p>MediaQuery.removePadding 可以移除组件的边距，有些组件自带有边距，</p>
+</li>
+</ul>
+<p><strong>通知栏高度</strong></p>
+<figure class="highlight actionscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs actionscript"><span class="hljs-keyword">final</span> <span class="hljs-keyword">dynamic</span> padding = MediaQuery.of(context).padding;<br>padding: EdgeInsets.only(top: padding.top),<br></code></pre></td></tr></table></figure>
+
+
+<h2 id="动画"><a href="#动画" class="headerlink" title="动画"></a>动画</h2><p><em>分类</em><br>缩放动画<br>ScaleTransition：可以将 Widget 平滑地缩放。<br>AnimatedContainer：可以平滑地调整 Widget 的大小。<br>旋转动画<br>RotationTransition：可以将 Widget 平滑地旋转。<br>透明渐变动画<br>FadeTransition：可以将 Widget 平滑地改变透明度。<br>AnimatedOpacity：可以平滑地调整 Widget 的透明度。</p>
+<p><em>主要类</em><br>在使用 Flutter 动画的时候, 我们通常使用这几个组件.<br>AnimationController, 控制动画的抽象类<br>Animation, 给定值, 转换为动画<br>Tween, 执行范围<br>AnimatedBuilder, 处理动画的 Widget<br>Transform 控件可以将动画执行中的变量值处理反馈在子控件上.<br><a target="_blank" rel="noopener" href="https://github.com/dlgchg/animations_flutter">https://github.com/dlgchg/animations_flutter</a></p>
+<h2 id="刷新"><a href="#刷新" class="headerlink" title="刷新"></a>刷新</h2><ul>
+<li>flutter 同一个页面，关闭后，再重新打开</li>
+<li>eventbus</li>
+<li>then back</li>
+<li>在onresume里刷新</li>
+<li>find原来的logic，调用他的方法</li>
+</ul>
+<p><strong>Android二次进入同一Flutter页面，Flutter没有刷新</strong><br>Flutter页面使用StatefulWidget组件，并重写didUpdateWidget（）。</p>
+<h2 id="技巧"><a href="#技巧" class="headerlink" title="技巧"></a>技巧</h2><p>flutter run –release 这样运行，正式版也可以看日志**</p>
+<p><strong>dio抓包</strong></p>
+<figure class="highlight wren"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs wren"><span class="hljs-variable">dio</span> <span class="hljs-operator">=</span> <span class="hljs-title class_">Dio</span>(<span class="hljs-variable">options</span>);<br>(<span class="hljs-variable">dio?</span>.<span class="hljs-property">httpClientAdapter</span> <span class="hljs-keyword">as</span> <span class="hljs-title class_">DefaultHttpClientAdapter</span>).<span class="hljs-property">onHttpClientCreate</span> <span class="hljs-title function_">=</span><br>    (<span class="hljs-title class_">HttpClient</span> <span class="hljs-variable">client</span>) &#123;<br>  <span class="hljs-variable">client</span>.<span class="hljs-property">findProxy</span> <span class="hljs-title function_">=</span> (<span class="hljs-variable">uri</span>) &#123;<br>    <span class="hljs-keyword">return</span> &#x27;<span class="hljs-variable">PROXY</span> <span class="hljs-number">172.16</span><span class="hljs-number">.60</span><span class="hljs-number">.122</span>:<span class="hljs-number">8888</span>&#x27;;<br>  &#125;;<br>&#125;;<br>    <br></code></pre></td></tr></table></figure>
+
+
+<p>cancelTap<br>传接口时不要当成方法，要不然直接调用</p>
+<p><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/55437643/flutter-disable-system-debug-messages-in-run-tab">日志过滤</a></p>
+<p><a target="_blank" rel="noopener" href="https://gist.github.com/eduardoflorence/4fdf7d0f38b56adb3e4929e132a98e58">防止tab每次都刷新</a><br>AutomaticKeepAliveClientMixin</p>
+<p><strong>修改 minSdkVersion</strong><br>由于 Flutter 3.13 及更高版本的更改而更新的响应</p>
+<p>在此版本中，此文件_<strong>flutter-directory&#x2F;packages&#x2F;flutter_tools&#x2F;gradle&#x2F;flutter. gradle</strong><em>的内容已移至此新位置</em><strong>flutter-directory&#x2F;packages&#x2F;flutter_tools&#x2F;gradle&#x2F;src&#x2F;main&#x2F;groovy&#x2F;flutter. groovy</strong>_。和默认的 <code>minSdkVersion = 19</code>. 但为了安全地使用最新的软件包和 Android 设备，最好将其设置为 <code>minSdkVersion = 20</code>.</p>
+<h2 id="flutter-动态化"><a href="#flutter-动态化" class="headerlink" title="flutter 动态化"></a>flutter 动态化</h2><p>Flutter 混合开发 - 动态下发 libflutter. so &amp; libapp. so - 掘金<br><a target="_blank" rel="noopener" href="https://juejin.cn/post/7313446602441785382?utm_source=gold_browser_extension">https://juejin.cn/post/7313446602441785382?utm_source=gold_browser_extension</a></p>
+<p><a target="_blank" rel="noopener" href="https://juejin.cn/post/6950207830225862664/">Flutter动态化方案—源码解析（基于1.22以上版本) - 掘金 (juejin.cn)</a><br><a target="_blank" rel="noopener" href="https://juejin.cn/post/7189533148022046778#heading-7">https://juejin.cn/post/7189533148022046778?#heading-7</a></p>
+<h2 id="分包"><a href="#分包" class="headerlink" title="分包"></a>分包</h2><p>flutter create –template&#x3D;package  &#x2F;Users&#x2F;tal&#x2F;flutteProjects&#x2F;hello<br>flutter packages pub publish –dry-run<br>flutter packages pub publish –server&#x3D; <a target="_blank" rel="noopener" href="https://pub.dartlang.org/">https://pub.dartlang.org</a></p>
+<p>hello:<br>    path: &#x2F;Users&#x2F;tal&#x2F;flutteProjects&#x2F;hello </p>
+<p>flutter build apk –split-per-abi<br><a target="_blank" rel="noopener" href="https://github.com/kezong/fat-aar-android">fat-aar-android</a> ：build aar 后没有打出 release<br>assembleRelease  编译不过，报错</p>
+<h2 id="路由跳转"><a href="#路由跳转" class="headerlink" title="路由跳转"></a>路由跳转</h2><p>Get. off () 导航到下一个页面并删除前一个页面<br>Get. offAll () 导航到下一个页面并删除以前所有的页面<br>类似 singleTop，启动页面需要指定路由名字</p>
+<ul>
+<li><p><strong>跳转页面</strong></p>
+<ul>
+<li>原生：<code>Navigator.pushNamed(...)</code></li>
+<li>GetX：<code>Get.toNamed(...)</code></li>
+</ul>
+</li>
+<li><p><strong>关闭直到指定页面</strong></p>
+<ul>
+<li>原生：<code>Navigator.popUntil(ModalRoute.withName(...))</code></li>
+<li>GetX：<code>Get.until((route) =&gt; Get.currentRoute == ...)</code></li>
+</ul>
+</li>
+</ul>
+<p>普通路由 ：直接跳转页面<br>命名路由：给路由起名字Navigator.of(context).pushNamed(“&#x2F;search”);<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Flutter_Tips.resources/2023/09/15/18-50-55-3b0f99cf218502c6f78faa83118d2604-unknown_filename.5-6e2193.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.5"></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%85%B6%E4%BB%96%E8%AF%AD%E8%A8%80/" class="category-chain-item">其他语言</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E5%85%B6%E4%BB%96%E8%AF%AD%E8%A8%80/flutter/" class="category-chain-item">flutter</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>3-Flutter工作tips</div>
+      <div>http://peiniwan.github.io/2025/12/419bc25ead72.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>六月的雨</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年12月16日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/12/32b8b7f5fae8.html" title="4-Flutter基础知识">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">4-Flutter基础知识</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/12/3f084f516e6f.html" title="2-Flutter 状态管理框架">
+                        <span class="hidden-mobile">2-Flutter 状态管理框架</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"OwNIdaopOn1rwNhtotGOGC0B-gzGzoHsz","appKey":"eadytQ2XqWmxuvAKeg08XX83","path":"window.location.pathname","placeholder":null,"avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":true,"recordIP":false,"serverURLs":"https://ownidaop.lc-cn-n1-shared.com","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

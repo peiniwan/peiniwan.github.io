@@ -1,0 +1,753 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="六月的雨">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="冷流 只有订阅者订阅时，才开始执行发射数据流的代码。并且冷流和订阅者只能是一对一的关系，当有多个不同的订阅者时，消息是重新完整发送的。也就是说对冷流而言，有多个订阅者的时候，他们各自的事件是独立的。 冷数据流，不消费则不生产数据,这一点与LiveData不同：LiveData的发送端并不依赖于接收端。  热流 无论有没有订阅者订阅，事件始终都会发生。当 热流有多个订阅者时，热流与订阅者们的关系是一">
+<meta property="og:type" content="article">
+<meta property="og:title" content="5.冷流热流">
+<meta property="og:url" content="http://peiniwan.github.io/2025/12/3e0298e17d43.html">
+<meta property="og:site_name" content="六月的雨的笔记">
+<meta property="og:description" content="冷流 只有订阅者订阅时，才开始执行发射数据流的代码。并且冷流和订阅者只能是一对一的关系，当有多个不同的订阅者时，消息是重新完整发送的。也就是说对冷流而言，有多个订阅者的时候，他们各自的事件是独立的。 冷数据流，不消费则不生产数据,这一点与LiveData不同：LiveData的发送端并不依赖于接收端。  热流 无论有没有订阅者订阅，事件始终都会发生。当 热流有多个订阅者时，热流与订阅者们的关系是一">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-12-16T13:59:22.549Z">
+<meta property="article:modified_time" content="2024-03-13T03:59:00.000Z">
+<meta property="article:author" content="六月的雨">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>5.冷流热流 - 六月的雨的笔记</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"peiniwan.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>六月的雨的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="5.冷流热流"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-12-16 21:59" pubdate>
+          2025年12月16日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.7k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          15 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">5.冷流热流</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="冷流"><a href="#冷流" class="headerlink" title="冷流"></a>冷流</h2><ul>
+<li><em>只有订阅者订阅时，才开始执行发射数据流的代码。并且冷流和订阅者只能是一对一的关系</em>，当有多个不同的订阅者时，消息是重新完整发送的。也就是说对冷流而言，有多个订阅者的时候，他们各自的事件是独立的。</li>
+<li>冷数据流，<em>不消费则不生产数据</em>,这一点与LiveData不同：LiveData的发送端并不依赖于接收端。</li>
+</ul>
+<h2 id="热流"><a href="#热流" class="headerlink" title="热流"></a>热流</h2><ul>
+<li><em>无论有没有订阅者订阅，事件始终都会发生</em>。当 热流有多个订阅者时，热流与订阅者们的关系是<em>一对多</em>的关系，可以与多个订阅者共享信息。（都收到）</li>
+<li>冷流和订阅者只能是一对一的关系，当我们要实现一个流，多个订阅者的需求时(这在开发中是很常见的)，就需要热流了</li>
+<li>SharedFlow即共享的Flow，可以实现一对多关系,SharedFlow是一种热流。</li>
+</ul>
+<figure class="highlight mel"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs mel"><span class="hljs-comment">//ViewModel</span><br>val sharedFlow=MutableSharedFlow&lt;String&gt;()<br><br>viewModelScope.<span class="hljs-keyword">launch</span>&#123;<br>	  sharedFlow.<span class="hljs-keyword">emit</span>(<span class="hljs-string">&quot;Hello&quot;</span>)<br>	  sharedFlow.<span class="hljs-keyword">emit</span>(<span class="hljs-string">&quot;SharedFlow&quot;</span>)<br>&#125;<br><br><span class="hljs-comment">//Activity</span><br>lifecycleScope.<span class="hljs-keyword">launch</span>&#123;<br>	viewMode.sharedFlow.collect &#123; <br>	   <span class="hljs-keyword">print</span>(it)<br>	&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<h2 id="SharedFlow"><a href="#SharedFlow" class="headerlink" title="SharedFlow"></a>SharedFlow</h2><p>哪些场景下才使用SharedFlow<br>其实SharedFlow相比StateFlow更加灵活，由于它可以处理粘性和背压的问题，一个很常用的场景就是是用于事件的传递。就是类似EventBus那种消息总线。可以很方便很简单的实现一个基于SharedFlow的FlowBus。</p>
+<p>另一种情况下就是用于管理页面的事件处理，比如根据值的状态弹出弹窗，吐司。由于SharedFlow可以自由的控制是否需要粘性，如果默认没有粘性的情况下，我们可以在页面销毁重建，或旋转屏幕的时候，保证不会触发到页面状态，如弹窗，吐司的触发。因为没有粘性内部没有值的保存，所以不会触发到页面状态。</p>
+<p>这两种场景我已经在SharedFlow的单独介绍文章中有代码与演示，有兴趣的可以看看<a target="_blank" rel="noopener" href="https://juejin.cn/post/7127454075666300965" title=" https://juejin.cn/post/7127454075666300965">这里</a>。</p>
+<p><strong>SharedFlow 相同的值可以重复发，StateFlow 不行</strong></p>
+<h2 id="StateFlow"><a href="#StateFlow" class="headerlink" title="StateFlow"></a>StateFlow</h2><p>StateFlow 与 LiveData 是最接近的，因为:</p>
+<p>有初始值： StateFlow 初始化时必须传入初始值；<br>容量为 1： StateFlow 只会保存一个值；<br>重放为 1： StateFlow 会向新订阅者重放最新的值；<br>不支持 resetReplayCache() 重置重放缓存：</p>
+<ol>
+<li>它始终是有值的。</li>
+<li>它的值是唯一的。</li>
+<li>它允许被多个观察者共用 (因此是共享的数据流)。</li>
+<li>它永远只会把最新的值重现给订阅者，这与活跃观察者的数量是无关的。</li>
+</ol>
+<p>构造函数</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs kotlin"><span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-type">&lt;T&gt;</span> <span class="hljs-title">MutableStateFlow</span><span class="hljs-params">(value: <span class="hljs-type">T</span>)</span></span>: MutableStateFlow&lt;T&gt; = StateFlowImpl(value ?: NULL)<br></code></pre></td></tr></table></figure>
+
+<p>1.StateFlow构造函数较为简单，只需要传入一个默认值<br>2.StateFlow本质上是一个replay为 1，并且没有缓冲区的SharedFlow, 因此第一次订阅时会先获得默认值<br>3.StateFlow仅在值已更新，并且值发生了变化时才会返回，即如果更新后的值没有变化，也没会回调Collect方法，这点与LiveData不同</p>
+<p><strong>stateIn将普通流转化成StateFlow</strong></p>
+<figure class="highlight pf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs pf">val result: StateFlow<span class="hljs-variable">&lt;Result&lt;UiState&gt;</span>&gt; = someFlow<br>	.<span class="hljs-keyword">state</span>In(<br>		scope = viewModelScope, <br>		started = WhileSubscribed(<span class="hljs-number">5000</span>), <br>		initialValue = Result.Loading<br>	)<br></code></pre></td></tr></table></figure>
+
+
+<p>需要传入一个默认值，同时之所以WhileSubscribed中传入了5000，是为了实现等待5秒后仍然没有订阅者存在就终止协程的功能，这个方法有以下功能</p>
+<ul>
+<li>防抖</li>
+<li>用户将您的应用转至后台运行，5 秒钟后所有来自其他层的数据更新会停止，这样可以节省电量。</li>
+<li>最新的数据仍然会被缓存，所以当用户切换回应用时，视图立即就可以得到数据进行渲染。</li>
+<li>订阅将被重启，新数据会填充进来，当数据可用时更新视图。</li>
+<li>在屏幕旋转时，因为重新订阅的时间在 5s 内，因此上游流不会中止</li>
+</ul>
+<p><strong>flowWithLifecycle</strong><br>我们都知道LiveData的监听是和Activity的生命周期绑定的，比如页面再后台就不会触发，而页面到前台才会触发。<br>StateFlow可不会这么和生命周期绑定，不过我们可以通过添加一个函数让StateFlow可以和生命周期绑定实现和LiveData一样的效果。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs kotlin"><span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">startObserve</span><span class="hljs-params">()</span></span> &#123;<br>	lifecycleScope.launch &#123;<br>		mViewModel.searchFlow<br>			.flowWithLifecycle(<span class="hljs-keyword">this</span><span class="hljs-symbol">@Demo4Activity</span>.lifecycle)  <br>			<span class="hljs-comment">//相当于自动帮我们设置 lifecycle.repeatOnLifecycle</span><br>			.collect &#123;<br>				YYLogUtils.w(<span class="hljs-string">&quot;search-state-value <span class="hljs-variable">$it</span>&quot;</span>)<br>			&#125;<br>	&#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+<p>如果我就想当前Actiity不可见的情况下也能触发监听，那要怎么搞，也能做，我们StateFlow默认就不绑定生命周期的，我们把绑定生命周期的代码去掉即可</p>
+<p><strong>StateFlow的数据防抖是双刃剑</strong>，所以我们需要看使用的场景是否需要此功能。</p>
+<p>我们点击登录按钮，调用接口得到错误信息“密码错误”。通过StateFlow发送给Activity。Activity就会弹窗展示错误信息。那么第二次再点击登录按钮，StateFlow就会判断你的值还是“密码错误”，它就不给你发送了。这样就导致用户点击按钮没反应？还以为App挂了呢，所以此时我们就需要使用LiveData。</p>
+<p>如果<strong>使用DataBinding的情况下，推荐使用LiveData</strong>。</p>
+<p>除了这两种情况，其他情况下使用StateFlow平替LiveData是没什么问题的。</p>
+<h2 id="最佳实践"><a href="#最佳实践" class="headerlink" title="最佳实践"></a>最佳实践</h2><p>使用带超时参数的 WhileSubscribed 策略暴露 Flow（可以防抖）<br>望等待 5 秒后没有订阅者则停止数据流，可以使用 whileSubscribed(5000)。</p>
+<figure class="highlight haskell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs haskell"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-type">MyViewModel</span>(...) : <span class="hljs-type">ViewModel</span>() &#123;</span><br><span class="hljs-class">	val result = userId.mapLatest &#123; newUserId -&gt;</span><br><span class="hljs-class">		repository.observeItem(<span class="hljs-title">newUserId</span>)</span><br><span class="hljs-class">	&#125;.stateIn(</span><br><span class="hljs-class">		<span class="hljs-title">scope</span> = <span class="hljs-title">viewModelScope</span>, </span><br><span class="hljs-class">		<span class="hljs-title">started</span> = <span class="hljs-type">WhileSubscribed(5000)</span>, </span><br><span class="hljs-class">		<span class="hljs-title">initialValue</span> = <span class="hljs-type">Result</span>.<span class="hljs-type">Loading</span></span><br><span class="hljs-class">	)</span><br><span class="hljs-class">&#125;</span><br></code></pre></td></tr></table></figure>
+<p>接收<br>使用 repeatOnLifecycle 来收集数据更新</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs stylus"><br><span class="hljs-function"><span class="hljs-title">onCreateView</span><span class="hljs-params">(...)</span></span> &#123;<br>	viewLifecycleOwner<span class="hljs-selector-class">.lifecycleScope</span><span class="hljs-selector-class">.launch</span> &#123;<br>		viewLifecycleOwner<span class="hljs-selector-class">.lifecycle</span><span class="hljs-selector-class">.repeatOnLifecycle</span>(STARTED) &#123;<br>			myViewModel<span class="hljs-selector-class">.myUiState</span><span class="hljs-selector-class">.collect</span> &#123; ... &#125;<br>		&#125;<br>	&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>如果你的数据流比较复杂，同时不需要获取myFlow.value，需要配置新用户订阅重播无素的个数，或者需要发送重复的值，可以考虑使用SharedFlow</p>
+<p>SharedFlow配置更为灵活，支持配置replay, 缓冲区大小等，StateFlow是SharedFlow的特化版本，replay固定为 1，缓冲区大小默认为 0</p>
+<p><strong>replay</strong> 表示当新的订阅者Collect时，发送几个已经发送过的数据给它，默认为 0，即默认新订阅者不会获取以前的数据</p>
+<h2 id="Channel"><a href="#Channel" class="headerlink" title="Channel"></a>Channel</h2><p>Channel 是 Kotlin 中实现跨协程数据传输的数据结构，类似于 Java 中的 BlockQueue 阻塞队列。不同之处在于 BlockQueue 会阻塞线程，而 Channel 是挂起线程</p>
+<p><a target="_blank" rel="noopener" href="https://juejin.cn/post/6844904153181847566#heading-0">Google 的建议</a> 是优先使用 Flow 而不是 Channel，主要原因是 Flow 会更自动地关闭数据流，而一旦 Channel 没有正常关闭，则容易造成资源泄漏。此外，Flow 相较于 Channel 提供了更明确的约束和操作符，更灵活。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%85%B6%E4%BB%96%E8%AF%AD%E8%A8%80/" class="category-chain-item">其他语言</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E5%85%B6%E4%BB%96%E8%AF%AD%E8%A8%80/kotlin/" class="category-chain-item">kotlin</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>5.冷流热流</div>
+      <div>http://peiniwan.github.io/2025/12/3e0298e17d43.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>六月的雨</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年12月16日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/12/c3381ea17c8e.html" title="6.依赖注入框架">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">6.依赖注入框架</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/12/323b10089345.html" title="4.Flow学习">
+                        <span class="hidden-mobile">4.Flow学习</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"OwNIdaopOn1rwNhtotGOGC0B-gzGzoHsz","appKey":"eadytQ2XqWmxuvAKeg08XX83","path":"window.location.pathname","placeholder":null,"avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":true,"recordIP":false,"serverURLs":"https://ownidaop.lc-cn-n1-shared.com","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

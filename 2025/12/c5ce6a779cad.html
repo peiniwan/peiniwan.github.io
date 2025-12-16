@@ -1,0 +1,727 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="六月的雨">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="覆盖安装长时间在后台 APP 重启的处理 12345678910public final static int APP_STATUS_KILLED &#x3D; 0; &#x2F;&#x2F;表示应用是被杀死后再启动的  public final static int APP_STATUS_NORMAL &#x3D; 1; &#x2F;&#x2F;表示应用是正常启动的  public static int APP_STATUS &#x3D; APP_STATUS_K">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android 机型适配问题整理">
+<meta property="og:url" content="http://peiniwan.github.io/2025/12/c5ce6a779cad.html">
+<meta property="og:site_name" content="六月的雨的笔记">
+<meta property="og:description" content="覆盖安装长时间在后台 APP 重启的处理 12345678910public final static int APP_STATUS_KILLED &#x3D; 0; &#x2F;&#x2F;表示应用是被杀死后再启动的  public final static int APP_STATUS_NORMAL &#x3D; 1; &#x2F;&#x2F;表示应用是正常启动的  public static int APP_STATUS &#x3D; APP_STATUS_K">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-12-16T13:59:22.330Z">
+<meta property="article:modified_time" content="2024-03-21T09:26:00.000Z">
+<meta property="article:author" content="六月的雨">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>Android 机型适配问题整理 - 六月的雨的笔记</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"peiniwan.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>六月的雨的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Android 机型适配问题整理"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-12-16 21:59" pubdate>
+          2025年12月16日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.3k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          12 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Android 机型适配问题整理</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h3 id="覆盖安装"><a href="#覆盖安装" class="headerlink" title="覆盖安装"></a>覆盖安装</h3><p>长时间在后台 APP 重启的处理</p>
+<figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs arduino"><span class="hljs-keyword">public</span> <span class="hljs-keyword">final</span> <span class="hljs-type">static</span> <span class="hljs-type">int</span> APP_STATUS_KILLED = <span class="hljs-number">0</span>; <span class="hljs-comment">//表示应用是被杀死后再启动的  </span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">final</span> <span class="hljs-type">static</span> <span class="hljs-type">int</span> APP_STATUS_NORMAL = <span class="hljs-number">1</span>; <span class="hljs-comment">//表示应用是正常启动的  </span><br><span class="hljs-keyword">public</span> <span class="hljs-type">static</span> <span class="hljs-type">int</span> APP_STATUS = APP_STATUS_KILLED; <span class="hljs-comment">//记录App的启动状态</span><br><br><span class="hljs-keyword">if</span> (Constants.APP_STATUS != Constants.APP_STATUS_NORMAL) &#123;<br>            BookLogger.<span class="hljs-built_in">e</span>(TAG, <span class="hljs-string">&quot;非正常启动流程，直接重新初始化应用界面&quot;</span>)<br>            CommonUtil.<span class="hljs-built_in">reInitApp</span>()<br>            <span class="hljs-built_in">finish</span>()<br>            <span class="hljs-keyword">return</span><br> &#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="startService"><a href="#startService" class="headerlink" title="startService"></a>startService</h3><p>Android 8.0 行为变更：后台执行限制<br>Android 8.0 还对特定函数做出了以下变更：如果针对 Android 8.0 的应用尝试在不允许其创建后台服务的情况下使用 startService() 函数，则该函数将引发一个 IllegalStateException。<br>新的 Context.startForegroundService() 函数将启动一个前台服务。现在，即使应用在后台运行，系统也允许其调用 Context.startForegroundService()。不过，应用必须在创建服务后的五秒内调用该服务的 startForeground() 函数。</p>
+<figure class="highlight fortran"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs fortran"><span class="hljs-keyword">public</span> static void start(Context context) &#123;    <br><span class="hljs-keyword">Intent</span> <span class="hljs-keyword">intent</span> = new <span class="hljs-keyword">Intent</span>(context, InitializeService.<span class="hljs-keyword">class</span>);    <span class="hljs-keyword">intent</span>.setAction(ACTION_INIT);   <br><span class="hljs-keyword">if</span> (Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.O)&#123;        <br>  context.startForegroundService(<span class="hljs-keyword">intent</span>);    <br>&#125; <span class="hljs-keyword">else</span>&#123;        <br>   context.startService(<span class="hljs-keyword">intent</span>);   <br>  &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<h3 id="小米手机适配"><a href="#小米手机适配" class="headerlink" title="小米手机适配"></a>小米手机适配</h3><p>可以说小米手机对android系统定制得让人头痛，好好的应用跑在小米手机上多多少少会点问题。</p>
+<ul>
+<li><p>短信发送失败无回调 <br>  在发送短信时候，若系统拦截之后，若用户点击拒绝发送短信，这个时候发现一直收不到系统发送短信失败的广播回调，就会出现无回调不知道短信是否发送成功，这对于需要监听短信发送结果的要求是一个打击，用户往往很可能拒绝发送短信。<br>  解决方案：使用安卓系统的权限管理进行权限，既能接受说明发送短信意图也能收到回调。这个时候系统在有权限申请之后，不会再默认拦截了。</p>
+</li>
+<li><p>隐藏显示刘海会使当前activity重建，会造成数据不正确的问题，强制让应用回到首页</p>
+</li>
+</ul>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs pgsql"><span class="hljs-type">int</span> force_black_v2 = <br>Settings.<span class="hljs-keyword">Global</span>.getInt(mContext.getContentResolver(), &quot;force_black_v2&quot;, <br><span class="hljs-number">0</span>);<br><span class="hljs-type">int</span> <span class="hljs-keyword">local</span> = (<span class="hljs-type">int</span>) SharePrefUtil.<span class="hljs-keyword">get</span>(&quot;force_black_v2&quot;, <span class="hljs-number">0</span>);<br><span class="hljs-keyword">if</span> (AppStatusManager.getInstance().getAppStatus() == <br>AppStatus.STATUS_RECYCLE || <span class="hljs-keyword">local</span> != force_black_v2) &#123;    SharePrefUtil.put(&quot;force_black_v2&quot;, force_black_v2);   <br>//跳到MainActivity,让MainActivity也finish掉   <br>Intent intent = <span class="hljs-built_in">new</span> Intent(this, SplashActivity.<span class="hljs-keyword">class</span>);    startActivity(intent);    <br>finish();   <br><span class="hljs-keyword">return</span>;<br><br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>应用安装完成后打开应用出现初始化两次 <br>  是指在调用系统安装应用程序完成安装之后，若用户直接通过这个程序打开应用进入之后，用户按home键退出回到桌面应用程序列表，又点击该应用的icon重新进入该应用，却发现应用是重新打开，而不是继续上次离开的界面，按道理应用不应该重新初始化，后面经搜索发现这是个系统bug。 <br>  解决方案：在启动Activity onCreate方法中进行判断是否重复启动</li>
+</ul>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs less"><span class="hljs-variable">@Override</span><br>   protected void <span class="hljs-built_in">onCreate</span>(Bundle savedInstanceState) &#123;<br>       <span class="hljs-selector-tag">super</span><span class="hljs-selector-class">.onCreate</span>(savedInstanceState);<br>    <br>       <span class="hljs-comment">//防止重复创建的问题，第一次安装完成启动，和home键退出点击launcher icon启动会重复</span><br>       <span class="hljs-selector-tag">if</span> (!<span class="hljs-built_in">isTaskRoot</span>()<br>               &amp;&amp; <span class="hljs-built_in">getIntent</span>().<span class="hljs-built_in">hasCategory</span>(Intent.CATEGORY_LAUNCHER)<br>               &amp;&amp; <span class="hljs-built_in">getIntent</span>().<span class="hljs-built_in">getAction</span>() != null<br>               &amp;&amp; <span class="hljs-built_in">getIntent</span>().<span class="hljs-built_in">getAction</span>().<span class="hljs-built_in">equals</span>(Intent.ACTION_MAIN)) &#123;<br>    <br>           <span class="hljs-selector-tag">finish</span>();<br>           <span class="hljs-selector-tag">return</span>;<br>       &#125;<br>       &#125;<br>    <br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>静态注册广播收不到广播 <br>  在注册系统广播之后，收到广播是有条件，并不是每次都能够收到，在该品牌机型中要求：Receiver注册不能配置运行在非该应用包名下的进程中，否则收不到广播，广播只给不配置android:process的Receiver。同时要求是在当前进程应用没有退出的前提下，否则也收不到。 <br>  暂没有找到解决方案</li>
+<li>悬浮窗适配<br>  开启悬浮窗之前，检查如果是否有悬浮窗权限,如果系统没有赋予 APP 弹出悬浮窗的权限，就先跳转到权限授权界面，等用户打开该权限之后，再去弹出悬浮窗，比如 QQ 等一些主流应用就是这么做得</li>
+</ul>
+<h3 id="华为机型"><a href="#华为机型" class="headerlink" title="华为机型"></a>华为机型</h3><ul>
+<li><p>Toast不显示 （荣耀手机）<br>  也是偶然发现在荣耀8机型上后台应用的toast不会被显示出来，只能当前在前台的应用TOAST提示。 <br>  解决方案：替换toast显示，改用其他方式，如dialog或者弹出activity界面。</p>
+</li>
+<li><p>多网络下指定网络不成功 <br>  简单讲就是指wifi和移动网络同时开着的情况下，不能指定移动网络访问，详见接受说明移步到我的另一篇文章：<a target="_blank" rel="noopener" href="http://blog.csdn.net/u010019468/article/details/72886859">http://blog.csdn.net/u010019468/article/details/72886859</a></p>
+  <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE"/>
+  
+</li>
+<li><p>这个权限是普通权限，在华为6.0手机上，一旦targerSdk》23就没有权限，也不能申请。只能把targetSdk降低到23以下，目前在华为p8电信版手机发现</p>
+</li>
+<li><p>华为手机：因为某些机型是虚拟按键的,所以要加上以下设置防止挡住按键.        setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);</p>
+</li>
+<li><p>空字符串AES解密崩溃 <br>  在华为c8817d手机上出现了这个问题，虽然不怎么规范，却反应了这个问题。</p>
+</li>
+</ul>
+<hr>
+<h3 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h3><p>5.0以上的手机，如果禁止了权限，那么toast也会被禁止，建议通过弹窗的形式</p>
+<figure class="highlight abnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs abnf">HqToastUtils.showToast(GlobalContext.getString(R.string.main_open_notification))<span class="hljs-comment">;</span><br>     if (Build.VERSION.SDK_INT &gt;<span class="hljs-operator">=</span> Build.VERSION_CODES.BASE) &#123;<br>         // 进入设置系统应用权限界面<br>         Intent intent <span class="hljs-operator">=</span> new Intent(Settings.ACTION_SETTINGS)<span class="hljs-comment">;</span><br>         mContext.startActivity(intent)<span class="hljs-comment">;</span><br>         return<span class="hljs-comment">;</span><br>     &#125; else if (Build.VERSION.SDK_INT &gt;<span class="hljs-operator">=</span> Build.VERSION_CODES.LOLLIPOP) &#123;// 运行系统在<span class="hljs-number">5</span>.x环境使用<br>         // 进入设置系统应用权限界面<br>         Intent intent <span class="hljs-operator">=</span> new Intent(Settings.ACTION_SETTINGS)<span class="hljs-comment">;</span><br>         mContext.startActivity(intent)<span class="hljs-comment">;</span><br>         return<span class="hljs-comment">;</span><br>     &#125;<br></code></pre></td></tr></table></figure>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Android/" class="category-chain-item">Android</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Android 机型适配问题整理</div>
+      <div>http://peiniwan.github.io/2025/12/c5ce6a779cad.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>六月的雨</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年12月16日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/12/2a4c1471c008.html" title="Android（一）">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Android（一）</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"OwNIdaopOn1rwNhtotGOGC0B-gzGzoHsz","appKey":"eadytQ2XqWmxuvAKeg08XX83","path":"window.location.pathname","placeholder":null,"avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":true,"recordIP":false,"serverURLs":"https://ownidaop.lc-cn-n1-shared.com","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

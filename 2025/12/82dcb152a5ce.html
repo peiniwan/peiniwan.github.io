@@ -1,0 +1,889 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="六月的雨">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="组件化模块化：项目按照独立的模块进行划分 项目组件化的重要环节在于，将项目按照模块来进行拆分，拆分成一个个业务module和其他基础module（lib），各个业务module之间互不依赖，互相解耦！每个业务module都可以安排不同的开发人员团队来进行开发，不强制使用一种开发模式，MVP可以，MVC也可以！然后各个业务module之间通过路由机制进行跳转和传递！ 资源名冲突color，shape">
+<meta property="og:type" content="article">
+<meta property="og:title" content="热修复、插件化、组件化">
+<meta property="og:url" content="http://peiniwan.github.io/2025/12/82dcb152a5ce.html">
+<meta property="og:site_name" content="六月的雨的笔记">
+<meta property="og:description" content="组件化模块化：项目按照独立的模块进行划分 项目组件化的重要环节在于，将项目按照模块来进行拆分，拆分成一个个业务module和其他基础module（lib），各个业务module之间互不依赖，互相解耦！每个业务module都可以安排不同的开发人员团队来进行开发，不强制使用一种开发模式，MVP可以，MVC也可以！然后各个业务module之间通过路由机制进行跳转和传递！ 资源名冲突color，shape">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%83%AD%E4%BF%AE%E5%A4%8D%E3%80%81%E6%8F%92%E4%BB%B6%E5%8C%96%E3%80%81%E7%BB%84%E4%BB%B6%E5%8C%96.resources/2023/09/15/18-49-57-558129a1644d0736cd25072fe9b87f86-unknown_filename.6-93023b.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/picgo/picgo-clipboard-images/2024-02-07-14-59-905bdcd01cc8d7186ed1dae4e73d68bd-20240207145904-ef292d.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%83%AD%E4%BF%AE%E5%A4%8D%E3%80%81%E6%8F%92%E4%BB%B6%E5%8C%96%E3%80%81%E7%BB%84%E4%BB%B6%E5%8C%96.resources/2023/09/15/18-49-57-959a108dc14d4ede457274785e93557a-QQ%E6%88%AA%E5%9B%BE20191220155257-00878f.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%83%AD%E4%BF%AE%E5%A4%8D%E3%80%81%E6%8F%92%E4%BB%B6%E5%8C%96%E3%80%81%E7%BB%84%E4%BB%B6%E5%8C%96.resources/2023/09/15/18-49-57-1d77e0a5d9d2cc3928337e4240560cb9-unknown_filename.8-bd7ba6.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%83%AD%E4%BF%AE%E5%A4%8D%E3%80%81%E6%8F%92%E4%BB%B6%E5%8C%96%E3%80%81%E7%BB%84%E4%BB%B6%E5%8C%96.resources/2023/09/15/18-49-57-1773bde8e552cb02c3c2b9b615f41295-unknown_filename.2-c24a95.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%83%AD%E4%BF%AE%E5%A4%8D%E3%80%81%E6%8F%92%E4%BB%B6%E5%8C%96%E3%80%81%E7%BB%84%E4%BB%B6%E5%8C%96.resources/2023/09/15/18-49-57-02948fd9b34281a931a019cd061f9bb3-unknown_filename.3-007fef.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%83%AD%E4%BF%AE%E5%A4%8D%E3%80%81%E6%8F%92%E4%BB%B6%E5%8C%96%E3%80%81%E7%BB%84%E4%BB%B6%E5%8C%96.resources/2023/09/15/18-49-57-dcb489261f7dff4d3db54abb729db1eb-unknown_filename.1-4e2a34.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/09/15/2024-03-01-10-00-a8af465c25d9756eb62b976b8df3cc16-18-51-39-a8af465c25d9756eb62b976b8df3cc16-unknown_filename.7-d28efe-a343b7.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%83%AD%E4%BF%AE%E5%A4%8D%E3%80%81%E6%8F%92%E4%BB%B6%E5%8C%96%E3%80%81%E7%BB%84%E4%BB%B6%E5%8C%96.resources/2023/09/15/18-49-57-d52c46072c8e7043e6332cff6c41c212-unknown_filename-f5841f.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%83%AD%E4%BF%AE%E5%A4%8D%E3%80%81%E6%8F%92%E4%BB%B6%E5%8C%96%E3%80%81%E7%BB%84%E4%BB%B6%E5%8C%96.resources/2023/09/15/18-49-57-d2717d7c63a8224a518e62ebd51bc7f0-Image-bcf7fb.jpg">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%83%AD%E4%BF%AE%E5%A4%8D%E3%80%81%E6%8F%92%E4%BB%B6%E5%8C%96%E3%80%81%E7%BB%84%E4%BB%B6%E5%8C%96.resources/2023/09/15/18-49-57-ef8df50043de69c909b3b348173a9b0b-Image.3-627eb5.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%83%AD%E4%BF%AE%E5%A4%8D%E3%80%81%E6%8F%92%E4%BB%B6%E5%8C%96%E3%80%81%E7%BB%84%E4%BB%B6%E5%8C%96.resources/2023/09/15/18-49-57-15c550c8d2ad51ca4061a52ab8968183-Image.1-fffad7.jpg">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%83%AD%E4%BF%AE%E5%A4%8D%E3%80%81%E6%8F%92%E4%BB%B6%E5%8C%96%E3%80%81%E7%BB%84%E4%BB%B6%E5%8C%96.resources/2023/09/15/18-49-57-4623ba0ad503b9577b793569ab28422f-Image.2-5459d7.jpg">
+<meta property="article:published_time" content="2025-12-16T13:59:22.445Z">
+<meta property="article:modified_time" content="2024-03-21T02:55:00.000Z">
+<meta property="article:author" content="六月的雨">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%83%AD%E4%BF%AE%E5%A4%8D%E3%80%81%E6%8F%92%E4%BB%B6%E5%8C%96%E3%80%81%E7%BB%84%E4%BB%B6%E5%8C%96.resources/2023/09/15/18-49-57-558129a1644d0736cd25072fe9b87f86-unknown_filename.6-93023b.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>热修复、插件化、组件化 - 六月的雨的笔记</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"peiniwan.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>六月的雨的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="热修复、插件化、组件化"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-12-16 21:59" pubdate>
+          2025年12月16日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          4.5k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          38 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">热修复、插件化、组件化</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="组件化"><a href="#组件化" class="headerlink" title="组件化"></a>组件化</h2><p><strong>模块化：项目按照独立的模块进行划分</strong></p>
+<p>项目组件化的重要环节在于，将项目按照模块来进行拆分，拆分成一个个业务module和其他基础module（lib），各个业务module之间互不依赖，互相解耦！每个业务module都可以安排不同的开发人员团队来进行开发，不强制使用一种开发模式，MVP可以，MVC也可以！然后各个业务module之间通过路由机制进行跳转和传递！</p>
+<p><strong>资源名冲突</strong><br>color，shape，drawable，图片资源，布局资源，或者anim资源等等，都有可能造成资源名称冲突。有时候大家负责不同的模块，如果不是按照统一规范命名，则会偶发出现该问题</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs awk">android &#123;<br>	<span class="hljs-regexp">//</span> 所有xml资源命名以 <span class="hljs-string">&quot;login_&quot;</span> 开头、否则编译报红<br>	resourcePrefix <span class="hljs-string">&quot;login_&quot;</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+<h3 id="组件化模块间交互"><a href="#组件化模块间交互" class="headerlink" title="组件化模块间交互"></a>组件化模块间交互</h3><ul>
+<li>使用 EventBus 的方式，缺点是：EventBean 维护成本太高，不好去管理：</li>
+<li>使用广播的方式，缺点是：不好管理，都统一发出去了</li>
+<li>使用隐士意图方式，缺点是：在 AndroidManifest. xml 里面配置 xml 写的太多了</li>
+<li>使用类加载方式，缺点就是，容易写错包名类名，缺点较少</li>
+<li>使用全局 Map 的方式，缺点是，要注册很多的对象</li>
+</ul>
+<h3 id="网上开源的组件化"><a href="#网上开源的组件化" class="headerlink" title="网上开源的组件化"></a>网上开源的组件化</h3><p><a target="_blank" rel="noopener" href="https://github.com/luojilab/DDComponentForAndroid/wiki/1%E3%80%81%E7%BB%84%E4%BB%B6%E6%95%B0%E6%8D%AE%E4%BA%A4%E4%BA%92">1、组件数据交互 · luojilab&#x2F;DDComponentForAndroid Wiki</a></p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs stylus">Router<span class="hljs-selector-class">.getInstance</span>()<span class="hljs-selector-class">.getService</span>(MedRecordDossierService::class<span class="hljs-selector-class">.java</span>.name).getPatientFragment<br></code></pre></td></tr></table></figure>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%83%AD%E4%BF%AE%E5%A4%8D%E3%80%81%E6%8F%92%E4%BB%B6%E5%8C%96%E3%80%81%E7%BB%84%E4%BB%B6%E5%8C%96.resources/2023/09/15/18-49-57-558129a1644d0736cd25072fe9b87f86-unknown_filename.6-93023b.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.6"></p>
+<p>核心思路非常朴素且高效：<strong>面向接口编程 + 中央 Router（Service Locator）做实现的注册与查找 + 组件生命周期钩子控制注册&#x2F;反注册</strong>。<br>这样组件之间既能互相调用，又不需要互相依赖实现代码，达到彻底解耦。</p>
+<h4 id="1-交互的契约层：把“接口”单独下沉"><a href="#1-交互的契约层：把“接口”单独下沉" class="headerlink" title="1. 交互的契约层：把“接口”单独下沉"></a>1. 交互的契约层：把“接口”单独下沉</h4><p>项目推荐把所有组件对外暴露的服务接口统一放到 <code>componentservice</code> 这个 module 里（只放接口、数据结构等“契约”）。</p>
+<ul>
+<li><strong>示例</strong>：例如 <code>reader</code> 组件要对外提供一个能力（返回一个阅读页 Fragment），就在 <code>componentservice</code> 定义：<ul>
+<li><code>ReadBookService</code>（接口，只描述能力，不包含实现）</li>
+</ul>
+</li>
+</ul>
+<p>这样其它组件只需要依赖 <code>componentservice</code>，不会依赖 <code>reader</code> 组件本身。</p>
+<h4 id="2-实现层：实现类留在组件内部，外部不可见"><a href="#2-实现层：实现类留在组件内部，外部不可见" class="headerlink" title="2. 实现层：实现类留在组件内部，外部不可见"></a>2. 实现层：实现类留在组件内部，外部不可见</h4><p><code>reader</code> 组件内部自己实现 <code>ReadBookServiceImpl</code>，并返回真实的 <code>ReaderFragment</code>。<br>由于组件代码隔离，这个实现类对外部组件不可见，外部永远只能看到接口。</p>
+<h4 id="3-注册与发现：Router-充当中央“服务注册表”"><a href="#3-注册与发现：Router-充当中央“服务注册表”" class="headerlink" title="3. 注册与发现：Router 充当中央“服务注册表”"></a>3. 注册与发现：Router 充当中央“服务注册表”</h4><h4 id="Router-内部的数据结构"><a href="#Router-内部的数据结构" class="headerlink" title="Router 内部的数据结构"></a>Router 内部的数据结构</h4><p>Router 里维护了一个 <code>HashMap&lt;String, Object&gt; services</code>，用来保存 “<code>serviceName</code> -&gt; <code>serviceImpl</code>” 的映射，并提供以下方法</p>
+<ul>
+<li><code>addService(serviceName, impl)</code></li>
+<li><code>getService(serviceName)</code></li>
+<li><code>removeService(serviceName)</code></li>
+</ul>
+<p>所以它本质上就是一个线程安全（synchronized）的 <strong>Service Locator</strong>。</p>
+<h5 id="注册时机：每个组件的-ApplicationLike"><a href="#注册时机：每个组件的-ApplicationLike" class="headerlink" title="注册时机：每个组件的 ApplicationLike"></a>注册时机：每个组件的 ApplicationLike</h5><p>每个组件提供一个 <code>ApplicationLike</code>（相当于“组件自己的 Application”，用于组件生命周期控制）。</p>
+<ul>
+<li><strong>加载时</strong>：在组件加载时 <code>onCreate()</code> 里把实现注册进 Router。</li>
+<li><strong>卸载时</strong>：在组件卸载时 <code>onStop()</code> 里反注册。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">// 注册</span><br>router.addService(ReadBookService.class.getSimpleName(), <span class="hljs-keyword">new</span> <span class="hljs-title class_">ReadBookServiceImpl</span>());<br><span class="hljs-comment">// 反注册</span><br>router.removeService(ReadBookService.class.getSimpleName());<br></code></pre></td></tr></table></figure>
+
+<p>这就是“组件可动态加载&#x2F;卸载”时交互仍然可控的关键。</p>
+<h4 id="4-调用方式：使用方从-Router-拿接口再调用"><a href="#4-调用方式：使用方从-Router-拿接口再调用" class="headerlink" title="4. 调用方式：使用方从 Router 拿接口再调用"></a>4. 调用方式：使用方从 Router 拿接口再调用</h4><p>其它组件要使用 <code>reader</code> 的能力时：</p>
+<ol>
+<li>调用 <code>Router.getInstance().getService(ReadBookService.class.getSimpleName())</code></li>
+<li><strong>判空</strong>（因为组件可能没被集成&#x2F;没加载）</li>
+<li><strong>强转为接口类型</strong> <code>ReadBookService</code></li>
+<li>调用接口方法拿到结果（例如 Fragment）</li>
+</ol>
+<p><strong>关键点</strong>：调用方只依赖接口，不依赖实现，也不需要知道实现类名。</p>
+<h4 id="5-为什么它能做到“组件动态加载-卸载”"><a href="#5-为什么它能做到“组件动态加载-卸载”" class="headerlink" title="5. 为什么它能做到“组件动态加载&#x2F;卸载”"></a>5. 为什么它能做到“组件动态加载&#x2F;卸载”</h4><p>除了 <code>services</code>，Router 还维护了一个 <code>components</code> 表（<code>HashMap&lt;String, IApplicationLike&gt;</code>），并提供：</p>
+<ul>
+<li><code>registerComponent(classname)</code>：通过 <code>Class.forName(classname)</code> 反射创建 <code>IApplicationLike</code>，调用其 <code>onCreate()</code>，然后记录到 <code>components</code> 中。</li>
+<li>对应也有反注册逻辑：卸载时会走 <code>onStop()</code> 并从表中移除。<br>因此，“组件是否可被调用”完全取决于它是否完成了 <code>ApplicationLike</code> 的注册流程，以及服务表里是否存在对应实现。</li>
+</ul>
+<h4 id="6-这种交互方式的特点与边界"><a href="#6-这种交互方式的特点与边界" class="headerlink" title="6. 这种交互方式的特点与边界"></a>6. 这种交互方式的特点与边界</h4><table>
+<thead>
+<tr>
+<th>特点</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>真正解耦</strong></td>
+<td>组件间只通过接口交互。</td>
+</tr>
+<tr>
+<td><strong>支持按需集成</strong></td>
+<td>没集成&#x2F;没加载的组件，<code>getService()</code> 返回 <code>null</code>，调用方可降级处理。</td>
+</tr>
+<tr>
+<td><strong>支持动态卸载</strong></td>
+<td><code>onStop()</code> 反注册即可切断能力暴露。</td>
+</tr>
+</tbody></table>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/picgo/picgo-clipboard-images/2024-02-07-14-59-905bdcd01cc8d7186ed1dae4e73d68bd-20240207145904-ef292d.png" srcset="/img/loading.gif" lazyload alt="image.png|800"></p>
+<p>彻底明白 Phone Module与 AndroidLibrary的区别<br>Phone Module 可以单独运行</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs stylus"><span class="hljs-comment">// 配置资源路径，方便测试环境，打包不集成到正式环境</span><br>sourceSets &#123; <span class="hljs-comment">// 节省apt大小</span><br>	<span class="hljs-selector-tag">main</span> &#123;<br>		<span class="hljs-keyword">if</span> (!isRelease) &#123;<br>			<span class="hljs-comment">// 如果是组件化模式，需要单独运行时</span><br>			manifest<span class="hljs-selector-class">.srcFile</span> <span class="hljs-string">&#x27;src/main/debug/AndroidManifest.xml&#x27;</span><br>		&#125; <span class="hljs-keyword">else</span> &#123;<br>			<span class="hljs-comment">// 集成化模式，整个项目打包apk</span><br>			manifest<span class="hljs-selector-class">.srcFile</span> <span class="hljs-string">&#x27;src/main/AndroidManifest.xml&#x27;</span><br>			java &#123;<br>				<span class="hljs-comment">// release 时 debug 目录下文件不需要合并到主工程</span><br>				exclude <span class="hljs-string">&#x27;**/debug/**&#x27;</span><br>			&#125;<br>		&#125;<br>	&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+<h3 id="项目重构"><a href="#项目重构" class="headerlink" title="项目重构"></a>项目重构</h3><ul>
+<li><p>项目由于业务需求越来越大，不同项目的功能想相互迁移变的越来越难，经过查阅大量文章，推动项目组件化，分成基础组件层、业务组件层、业务module层，从下往上依赖，module是不同的业务，如社区、还款等，方便迁移并且可以独立运行。</p>
+</li>
+<li><p>传递数据是通过scheme，scheme是一种页面内跳转协议，通过定义自己的scheme协议，可以非常方便跳转app中的各个页面：通过scheme协议，服务器可以定制化告诉App跳转那个页面，可以通过通知栏消息定制化跳转页面，可以通过H5页面跳转指定页面。</p>
+</li>
+<li><p>基础组件层：<br>  底层使用的库和封装的一些工具库（libs），比如okhttp,rxjava,rxandroid,glide、相机、照片等</p>
+</li>
+<li><p>业务组件层：<br>  与业务相关，封装第三方sdk，比如封装后的支付等、自定义view、工具类</p>
+</li>
+<li><p>业务模块层：<br>  按照业务划分模块，比如说还款模块，社区模块等</p>
+</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">intent-filter</span>&gt;</span><br>	<span class="hljs-tag">&lt;<span class="hljs-name">action</span> <span class="hljs-attr">android:name</span>=<span class="hljs-string">&quot;android.intent.action.VIEW&quot;</span> /&gt;</span><br>	<span class="hljs-tag">&lt;<span class="hljs-name">category</span> <span class="hljs-attr">android:name</span>=<span class="hljs-string">&quot;android.intent.category.DEFAULT&quot;</span> /&gt;</span><br>	<span class="hljs-tag">&lt;<span class="hljs-name">category</span> <span class="hljs-attr">android:name</span>=<span class="hljs-string">&quot;android.intent.category.BROWSABLE&quot;</span> /&gt;</span><br><br>	<span class="hljs-tag">&lt;<span class="hljs-name">data</span> <span class="hljs-attr">android:scheme</span>=<span class="hljs-string">&quot;qianbaoguanjia80e866a23d&quot;</span> /&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">intent-filter</span>&gt;</span><br>    <br></code></pre></td></tr></table></figure>
+
+<figure class="highlight lasso"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs lasso">Intent intent = <span class="hljs-literal">new</span> Intent(Intent.ACTION_VIEW,<br>Uri.parse(<span class="hljs-string">&quot;qianbaoguanjia80e8565663d://brushcard?goWhere=&quot;</span> + <span class="hljs-string">&quot;1&quot;</span>));<br>startActivity(intent);<br><br>Intent intent = getIntent();<br><span class="hljs-built_in">String</span> action = intent.getAction();<br><span class="hljs-keyword">if</span> (Intent.ACTION_VIEW.<span class="hljs-keyword">equals</span>(action)) &#123;<br><br>	Uri uri = intent.getData();<br>	<span class="hljs-keyword">if</span> (uri != <span class="hljs-built_in">null</span>) &#123;<br>		<span class="hljs-built_in">String</span> dataString = intent.getDataString();<br>		<span class="hljs-keyword">Log</span>.d(<span class="hljs-string">&quot;Alex&quot;</span>, <span class="hljs-string">&quot;dataString:&quot;</span> + dataString);<br><br>		<span class="hljs-built_in">String</span> host = uri.getHost();<span class="hljs-comment">//从哪来</span><br>		<span class="hljs-keyword">if</span> (host.<span class="hljs-keyword">equals</span>(<span class="hljs-string">&quot;brushcard&quot;</span>)) &#123;<br>			<span class="hljs-built_in">String</span> goWhere = uri.getQueryParameter(<span class="hljs-string">&quot;goWhere&quot;</span>);<span class="hljs-comment">//到哪去</span><br>			<span class="hljs-keyword">if</span> (goWhere.<span class="hljs-keyword">equals</span>(<span class="hljs-string">&quot;1&quot;</span>)) &#123;<br>				<span class="hljs-keyword">return</span>;<br>			&#125;<br>		&#125;<br>		<span class="hljs-keyword">return</span>;<br></code></pre></td></tr></table></figure>
+<h2 id="插件化"><a href="#插件化" class="headerlink" title="插件化"></a>插件化</h2><ul>
+<li>减少体积、添加功能</li>
+<li>提高打开速度（多个 dex，效果不理想)</li>
+<li>为什么有反射：private 防不住的，不是限制做坏事，是限制不小心写错了</li>
+<li>把插件 apk 放在 asset 里，或者网络下载，保存在本地，可以<em>通过 dexClassLoader 加载</em></li>
+</ul>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%83%AD%E4%BF%AE%E5%A4%8D%E3%80%81%E6%8F%92%E4%BB%B6%E5%8C%96%E3%80%81%E7%BB%84%E4%BB%B6%E5%8C%96.resources/2023/09/15/18-49-57-959a108dc14d4ede457274785e93557a-QQ%E6%88%AA%E5%9B%BE20191220155257-00878f.png" srcset="/img/loading.gif" lazyload alt="QQ截图20191220155257"></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">MainActivity</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">AppCompatActivity</span> &#123;<br><br><br>  <span class="hljs-meta">@Override</span><br>  <span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">onCreate</span><span class="hljs-params">(Bundle savedInstanceState)</span> &#123;<br>	<span class="hljs-built_in">super</span>.onCreate(savedInstanceState);<br>	setContentView(R.layout.activity_main);<br><br>	<span class="hljs-type">File</span> <span class="hljs-variable">apk</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">File</span>(getCacheDir() + <span class="hljs-string">&quot;/plugin-debug.apk&quot;</span>);<br>	<span class="hljs-keyword">try</span> (<span class="hljs-type">Source</span> <span class="hljs-variable">source</span> <span class="hljs-operator">=</span> Okio.source(getAssets().open(<span class="hljs-string">&quot;plugin-debug.apk&quot;</span>));<br>		 <span class="hljs-type">BufferedSink</span> <span class="hljs-variable">sink</span> <span class="hljs-operator">=</span> Okio.buffer(Okio.sink(apk))) &#123;<br>	  sink.writeAll(source);<br>	&#125; <span class="hljs-keyword">catch</span> (IOException e) &#123;<br>	  e.printStackTrace();<br>	&#125;<br>	<span class="hljs-type">DexClassLoader</span> <span class="hljs-variable">classLoader</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">DexClassLoader</span>(apk.getPath(), getCacheDir().getPath(), <span class="hljs-literal">null</span>, <span class="hljs-literal">null</span>);<br>	<span class="hljs-keyword">try</span> &#123;<br>	  <span class="hljs-type">Class</span> <span class="hljs-variable">utilsClass</span> <span class="hljs-operator">=</span> classLoader.loadClass(<span class="hljs-string">&quot;com.demo.pluginnable_plugin.Utils&quot;</span>);<br>	  <span class="hljs-type">Constructor</span> <span class="hljs-variable">utilsConstructor</span> <span class="hljs-operator">=</span> utilsClass.getDeclaredConstructors()[<span class="hljs-number">0</span>];<br>	  <span class="hljs-comment">//   utilsConstructor.setAccessible(true); //反射用法需要</span><br>	  <span class="hljs-type">Object</span> <span class="hljs-variable">utils</span> <span class="hljs-operator">=</span> utilsConstructor.newInstance();<br>	  <span class="hljs-type">Method</span> <span class="hljs-variable">shoutMethod</span> <span class="hljs-operator">=</span> utilsClass.getDeclaredMethod(<span class="hljs-string">&quot;shout&quot;</span>);<br>	  <span class="hljs-comment">//    shoutMethod.setAccessible(true);</span><br>	  shoutMethod.invoke(utils);<br>	&#125; <span class="hljs-keyword">catch</span> (IllegalAccessException e) &#123;<br>	  e.printStackTrace();<br>	&#125; <span class="hljs-keyword">catch</span> (InstantiationException e) &#123;<br>	  e.printStackTrace();<br>	&#125; <span class="hljs-keyword">catch</span> (NoSuchMethodException e) &#123;<br>	  e.printStackTrace();<br>	&#125; <span class="hljs-keyword">catch</span> (InvocationTargetException e) &#123;<br>	  e.printStackTrace();<br>	&#125; <span class="hljs-keyword">catch</span> (ClassNotFoundException e) &#123;<br>	  e.printStackTrace();<br>	&#125;<br><br>	<span class="hljs-type">Intent</span> <span class="hljs-variable">intent</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Intent</span>();<span class="hljs-comment">//打不开</span><br>	intent.setClassName(<span class="hljs-built_in">this</span>, <span class="hljs-string">&quot;com.hencoder.a37_pluginnable_plugin.SecondActivity&quot;</span>);<br>	startActivity(intent);<br>  &#125;<br>&#125;<br>    <br><br></code></pre></td></tr></table></figure>
+
+<p>动态加载其他 apk 的 activity，<em>可以设置个代理类，因为一开始是不知道要启动的名字是叫什么的</em></p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%83%AD%E4%BF%AE%E5%A4%8D%E3%80%81%E6%8F%92%E4%BB%B6%E5%8C%96%E3%80%81%E7%BB%84%E4%BB%B6%E5%8C%96.resources/2023/09/15/18-49-57-1d77e0a5d9d2cc3928337e4240560cb9-unknown_filename.8-bd7ba6.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.8"></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">ProxyActivity</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">AppCompatActivity</span> &#123;<br>  Object realActivity;<br><br><br><span class="hljs-comment">//  realActivity = dexClassLoader.loadClass(???);</span><br><br><br>  <span class="hljs-meta">@Override</span><br>  <span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">onCreate</span><span class="hljs-params">(<span class="hljs-meta">@Nullable</span> Bundle savedInstanceState)</span> &#123;<br>    <span class="hljs-built_in">super</span>.onCreate(savedInstanceState);<br><span class="hljs-comment">//    realActivity.onCreate(savedInstanceState);</span><br>  &#125;<br><br><br>  <span class="hljs-meta">@Override</span><br>  <span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">onStart</span><span class="hljs-params">()</span> &#123;<br>    <span class="hljs-built_in">super</span>.onStart();<br><span class="hljs-comment">//    realActivity.onStart();</span><br>  &#125;<br><br>  <span class="hljs-comment">//动态加载asset\resour（主要是图片）</span><br>  <span class="hljs-meta">@Override</span><br>  <span class="hljs-keyword">public</span> Resources <span class="hljs-title function_">getResources</span><span class="hljs-params">()</span> &#123;<br>    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Resources</span>(getAssets(), <span class="hljs-built_in">super</span>.getResources().getDisplayMetrics(), <span class="hljs-built_in">super</span>.getResources().getConfiguration());<br>  &#125;<br><br><br>  <span class="hljs-keyword">private</span> AssetManager <span class="hljs-title function_">createAssetManager</span><span class="hljs-params">(String dexPath)</span> &#123;<br>    <span class="hljs-keyword">try</span> &#123;<br>      <span class="hljs-type">AssetManager</span> <span class="hljs-variable">assetManager</span> <span class="hljs-operator">=</span> AssetManager.class.newInstance();<br>      <span class="hljs-type">Method</span> <span class="hljs-variable">addAssetPath</span> <span class="hljs-operator">=</span> assetManager.getClass().getMethod(<span class="hljs-string">&quot;addAssetPath&quot;</span>, String.class);<br>      addAssetPath.invoke(assetManager, dexPath);<br>      <span class="hljs-keyword">return</span> assetManager;<br>    &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;<br>      e.printStackTrace();<br>      <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;<br>    &#125;<br>  &#125;<br><br><br>  <span class="hljs-comment">/*private Resources createResources(AssetManager assetManager) &#123;</span><br><span class="hljs-comment">    Resources superRes = mContext.getResources();</span><br><span class="hljs-comment">    Resources resources = new Resources(assetManager, superRes.getDisplayMetrics(), superRes.getConfiguration());</span><br><span class="hljs-comment">    return resources;</span><br><span class="hljs-comment">  &#125;*/</span><br>&#125;<br><br><br></code></pre></td></tr></table></figure>
+
+<h3 id="ClassLoader"><a href="#ClassLoader" class="headerlink" title="ClassLoader"></a>ClassLoader</h3><p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%83%AD%E4%BF%AE%E5%A4%8D%E3%80%81%E6%8F%92%E4%BB%B6%E5%8C%96%E3%80%81%E7%BB%84%E4%BB%B6%E5%8C%96.resources/2023/09/15/18-49-57-1773bde8e552cb02c3c2b9b615f41295-unknown_filename.2-c24a95.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.2"></p>
+<p><strong>ClassLoader有PathClassLoader、DexClassLoader俩个子类</strong></p>
+<p> <em>Android 8.0</em><br>与 DexClassLoader <strong>完全一致</strong>，这个 optimizedDirectory 在 Android 8.0 以后也被舍弃了，只能使用系统默认的位置了。</p>
+<p><em>5.0–8.0</em></p>
+<ul>
+<li>PathClassLoader 和 DexClassLoader 都能加载外部的 dex／apk，只不过<strong>区别是 DexClassLoader 可以指定 optimizedDirectory</strong>，也就是 dex2oat 的产物 .odex （优化后的 dex 文件）存放的位置，而 PathClassLoader 只能使用系统默认位置。</li>
+<li>DEX 文件同级目录下添加一个 oat&#x2F; 文件作为 .odex 的存储目录。</li>
+</ul>
+<p><em>android 4.4之前</em></p>
+<ul>
+<li><p>PathClassLoader 只能加载安装在 Android 系统内 APK 文件（*&#x2F;data&#x2F;app 目录下*），其他位置的文件加载时都会报 ClassNotFoundException。因为 PathClassLoader 会读取 &#x2F;data&#x2F;dalvik-cache 目录下的经过 Dalvik 优化过的 dex 文件，这个目录的 dex 文件是在安装 apk 包的时候由 Dalvik 生成的，没有安装的时候，自然没有生成这个文件。</p>
+</li>
+<li><p>对于 App 而言，Apk 文件中有一个 classes. dex 文件，那么这个 dex 就是 Apk 的主 dex, 是通过 PathClassLoader 加载的。</p>
+</li>
+<li><p>DexClassLoader：可以加载任意目录下的 dex&#x2F;jar&#x2F;apk&#x2F;zip 文件，是实现热修复的重点。</p>
+</li>
+<li><p>PathClassLoader：用于加载 Android 系统类和开发编写应用的类，只能加载已经安装应用的 dex 或 apk 文件，是 Android 默认使用的类加载器，也是 getSystemClassLoader 的返回对象。</p>
+</li>
+</ul>
+<p>BootClassLoader：主要用于加载系统的类，包括 java 和 android 系统的类库，和 JVM 中不同，BootClassLoader 是 ClassLoader 内部类，是由 Java 实现，它也是所有系统 ClassLoader 的 父 ClassLoader。</p>
+<ul>
+<li>我们可以指定到 getCacheDir().getPath()</li>
+</ul>
+<ul>
+<li>在 App 的 Activity 中，通过 getClassLoader 获取到的是 PathClassLoader, 它的父类是 BootClassLoader。</li>
+</ul>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%83%AD%E4%BF%AE%E5%A4%8D%E3%80%81%E6%8F%92%E4%BB%B6%E5%8C%96%E3%80%81%E7%BB%84%E4%BB%B6%E5%8C%96.resources/2023/09/15/18-49-57-02948fd9b34281a931a019cd061f9bb3-unknown_filename.3-007fef.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.3|600"></p>
+<h3 id="loadClass-的类加载过程"><a href="#loadClass-的类加载过程" class="headerlink" title="loadClass() 的类加载过程"></a>loadClass() 的类加载过程</h3><p><strong>双亲委托机制</strong><br>宏观上：是⼀个带缓存的、从上到下的加载过程（即网上所说的「双亲委托机制」）<br>这样做的意义是为了性能，每次加载都会消耗时间，但如果父亲加载过，就可以直接拿来使用了。</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%83%AD%E4%BF%AE%E5%A4%8D%E3%80%81%E6%8F%92%E4%BB%B6%E5%8C%96%E3%80%81%E7%BB%84%E4%BB%B6%E5%8C%96.resources/2023/09/15/18-49-57-dcb489261f7dff4d3db54abb729db1eb-unknown_filename.1-4e2a34.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.1|600"></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs java">      <span class="hljs-keyword">protected</span> Class&lt;?&gt; loadClass(String name, <span class="hljs-type">boolean</span> resolve)<br>            <span class="hljs-keyword">throws</span> ClassNotFoundException<br>        &#123;<br>                <span class="hljs-comment">// First, check if the class has already been loaded</span><br>                Class&lt;?&gt; c = findLoadedClass(name);<br>                <span class="hljs-keyword">if</span> (c == <span class="hljs-literal">null</span>) &#123;<br>                    <span class="hljs-keyword">try</span> &#123;<br>                        <span class="hljs-keyword">if</span> (parent != <span class="hljs-literal">null</span>) &#123;<br>                            c = parent.loadClass(name, <span class="hljs-literal">false</span>);<br>                        &#125; <span class="hljs-keyword">else</span> &#123;<br>                            c = findBootstrapClassOrNull(name);<br>                        &#125;<br>                    &#125; <span class="hljs-keyword">catch</span> (ClassNotFoundException e) &#123;<br>                        <span class="hljs-comment">// ClassNotFoundException thrown if class not found</span><br>                        <span class="hljs-comment">// from the non-null parent class loader</span><br>                    &#125;<br>    <br>    <br>                    <span class="hljs-keyword">if</span> (c == <span class="hljs-literal">null</span>) &#123;<br>                        <span class="hljs-comment">// If still not found, then invoke findClass in order</span><br>                        <span class="hljs-comment">// to find the class.</span><br>                        c = findClass(name);<br>                    &#125;<br>                &#125;<br>                <span class="hljs-keyword">return</span> c;<br>        &#125;<br>    <br></code></pre></td></tr></table></figure>
+
+<h3 id="代理-startActivity"><a href="#代理-startActivity" class="headerlink" title="代理 startActivity"></a>代理 startActivity</h3><p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/09/15/2024-03-01-10-00-a8af465c25d9756eb62b976b8df3cc16-18-51-39-a8af465c25d9756eb62b976b8df3cc16-unknown_filename.7-d28efe-a343b7.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.7|600"></p>
+<h2 id="热更新"><a href="#热更新" class="headerlink" title="热更新"></a>热更新</h2><p><strong>热更更新和插件化的区别</strong></p>
+<ol>
+<li>插件化的内容在原 App 中没有，而热更新是原 App 中的内容做了改动</li>
+<li>插件化在代码中有固定的入口，而热更新则可能改变任何一个位置的代码，热更新的原理 ClassLoader 的 dex 文件替换，直接修改字节码。</li>
+<li>热修复（热更新）主要用来修复代码、修复bug，而插件化是增加新的功能类或者是资源文件。</li>
+</ol>
+<p><strong>应用场景</strong></p>
+<p>当一个App发布之后，突然发现了一个严重bug需要进行紧急修复，你得：重新打包App、测试、向各个应用市场和渠道换包、提示用户升级、用户下载、覆盖安装。有时候仅仅是为了修改了一行代码，也要付出巨大的成本进行换包和重新发布。</p>
+<p><strong>热修复和插件化的原理主要是操作ClassLoader</strong></p>
+<ul>
+<li>Java程序（class文件）并不是本地的可执行程序。当运行Java程序时，首先运行JVM（Java虚拟机），然后再把Java class文件加载到JVM里头运行，负责加载Java class的这部分就叫做Class Loader（类加载器）。</li>
+<li>一个ClassLoader可以包含多个dex文件，每个dex文件是一个Element（元素），多个dex文件排列成一个有序的数组dexElements，当找类的时候，会按顺序遍历dex文件，然后从当前遍历的dex文件中找类，如果找不到从下一个dex文件继续查找，如果找到类则返回。</li>
+<li>然后就可以做一些事情，比如，<em>在这个数组的第一个元素放置我们的补丁，里面包含修复过的类，这样的话，当遍历findClass的时候，后面的就会忽略</em>。</li>
+<li>热更新的关键在于，<em>把补丁dex文件加载放进一个Element</em>，并且插入到dexElements这个数组的前面(插入到后面的话会被忽略掉)</li>
+</ul>
+<h3 id="手写热更新"><a href="#手写热更新" class="headerlink" title="手写热更新"></a>手写热更新</h3><p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%83%AD%E4%BF%AE%E5%A4%8D%E3%80%81%E6%8F%92%E4%BB%B6%E5%8C%96%E3%80%81%E7%BB%84%E4%BB%B6%E5%8C%96.resources/2023/09/15/18-49-57-d52c46072c8e7043e6332cff6c41c212-unknown_filename-f5841f.png" srcset="/img/loading.gif" lazyload alt="unknown_filename|700"></p>
+<p>创建一个新的dexElements，把补丁的每个DexElement放到新的数组里，把旧的都拷贝到新的后面，然后把数组换了<br>newClassLoader.pathList.dexElements</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">HotfixApplication</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Application</span> &#123;<br>    File apk; <span class="hljs-comment">// 存储热修复补丁文件</span><br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">attachBaseContext</span><span class="hljs-params">(Context base)</span> &#123;<br>        <span class="hljs-built_in">super</span>.attachBaseContext(base); <span class="hljs-comment">// 调用父类方法初始化基础上下文</span><br>        <br>        <span class="hljs-comment">// 1. 定位热修复文件路径（位于应用缓存目录）</span><br>        apk = <span class="hljs-keyword">new</span> <span class="hljs-title class_">File</span>(getCacheDir() + <span class="hljs-string">&quot;/hotfix.dex&quot;</span>);<br>        <br>        <span class="hljs-comment">// 2. 检查热修复文件是否存在</span><br>        <span class="hljs-keyword">if</span> (apk.exists()) &#123;<br>            <span class="hljs-keyword">try</span> &#123;<br>                <span class="hljs-comment">// 3. 获取当前应用的类加载器（PathClassLoader）</span><br>                <span class="hljs-type">ClassLoader</span> <span class="hljs-variable">classLoader</span> <span class="hljs-operator">=</span> getClassLoader();<br>                <br>                <span class="hljs-comment">// 4. 反射获取BaseDexClassLoader中的pathList字段</span><br>                <span class="hljs-type">Class</span> <span class="hljs-variable">loaderClass</span> <span class="hljs-operator">=</span> BaseDexClassLoader.class;<br>                <span class="hljs-type">Field</span> <span class="hljs-variable">pathListField</span> <span class="hljs-operator">=</span> loaderClass.getDeclaredField(<span class="hljs-string">&quot;pathList&quot;</span>);<br>                pathListField.setAccessible(<span class="hljs-literal">true</span>); <span class="hljs-comment">// 突破私有访问限制</span><br>                <br>                <span class="hljs-comment">// 5. 获取当前类加载器的DexPathList对象，先获取字段，然后获取字段的值</span><br>                <span class="hljs-type">Object</span> <span class="hljs-variable">pathListObject</span> <span class="hljs-operator">=</span> pathListField.get(classLoader); <br>                <br>                <span class="hljs-comment">// 6. 获取DexPathList中的dexElements数组字段</span><br>                <span class="hljs-type">Class</span> <span class="hljs-variable">pathListClass</span> <span class="hljs-operator">=</span> pathListObject.getClass();<br>                <span class="hljs-type">Field</span> <span class="hljs-variable">dexElementsField</span> <span class="hljs-operator">=</span> pathListClass.getDeclaredField(<span class="hljs-string">&quot;dexElements&quot;</span>);<br>                dexElementsField.setAccessible(<span class="hljs-literal">true</span>);<br>            <br>	             <span class="hljs-comment">// 9. 获取当前应用的dexElements数组</span><br>	             <span class="hljs-type">Object</span> <span class="hljs-variable">dexElementsObject</span> <span class="hljs-operator">=</span> dexElementsField.get(pathListObject);<br>	                <br>                <span class="hljs-comment">// 7. 创建新的类加载器加载热修复DEX</span><br>                <span class="hljs-comment">// 注意：这里使用PathClassLoader而不是DexClassLoader（兼容性问题）</span><br>                <span class="hljs-type">PathClassLoader</span> <span class="hljs-variable">newClassLoader</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">PathClassLoader</span>(<br>                    apk.getPath(), <span class="hljs-comment">// 热修复DEX路径</span><br>                    <span class="hljs-literal">null</span>          <span class="hljs-comment">// 父类加载器（设为null使用默认）</span><br>                );<br>                <br>                <span class="hljs-comment">// 8. 获取新类加载器的DexPathList和dexElements</span><br>                <span class="hljs-type">Object</span> <span class="hljs-variable">newPathListObject</span> <span class="hljs-operator">=</span> pathListField.get(newClassLoader);<br>                <span class="hljs-type">Object</span> <span class="hljs-variable">newDexElementsObject</span> <span class="hljs-operator">=</span> dexElementsField.get(newPathListObject);<br><br>                <br>                <span class="hljs-comment">// 10. 计算新旧数组长度</span><br>                <span class="hljs-type">int</span> <span class="hljs-variable">oldLength</span> <span class="hljs-operator">=</span> Array.getLength(dexElementsObject);    <span class="hljs-comment">// 原始数组长度</span><br>                <span class="hljs-type">int</span> <span class="hljs-variable">newLength</span> <span class="hljs-operator">=</span> Array.getLength(newDexElementsObject); <span class="hljs-comment">// 补丁数组长度</span><br>                <br>                <span class="hljs-comment">// 11. 创建合并后的新数组（大小为原始+补丁）</span><br>                <span class="hljs-type">Object</span> <span class="hljs-variable">concatDexElementsObject</span> <span class="hljs-operator">=</span> Array.newInstance(<br>                    dexElementsObject.getClass().getComponentType(), <span class="hljs-comment">// 数组元素类型</span><br>                    oldLength + newLength                            <span class="hljs-comment">// 总长度</span><br>                );<br>                <br>                <span class="hljs-comment">// 12. 将补丁DEX元素复制到新数组前端（优先加载）</span><br>                <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> <span class="hljs-variable">i</span> <span class="hljs-operator">=</span> <span class="hljs-number">0</span>; i &lt; newLength; i++) &#123;<br>                    Array.set(concatDexElementsObject, i, Array.get(newDexElementsObject, i));<br>                &#125;<br>                <br>                <span class="hljs-comment">// 13. 将原始DEX元素复制到新数组后端</span><br>                <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> <span class="hljs-variable">i</span> <span class="hljs-operator">=</span> <span class="hljs-number">0</span>; i &lt; oldLength; i++) &#123;<br>                    Array.set(concatDexElementsObject, newLength + i, Array.get(dexElementsObject, i));<br>                &#125;<br>                <br>                <span class="hljs-comment">// 14. 关键步骤：将新数组设置回当前类加载器</span><br>                dexElementsField.set(pathListObject, concatDexElementsObject);<br>                <br>            &#125; <span class="hljs-keyword">catch</span> (NoSuchFieldException | IllegalAccessException e) &#123;<br>                e.printStackTrace(); <span class="hljs-comment">// 异常处理（实际项目需更健壮）</span><br>            &#125;<br>        &#125;<br>    &#125;<br>&#125;<br>   <br>   <br><br>   <span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">MainActivity</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">AppCompatActivity</span> &#123;<br>     TextView titleTv;<br>     Button showTitleBt;<br>     Button hotfixBt;<br>     Button removeHotfixBt;<br>     Button killSelfBt;<br>     File apk;<br>   <br>     <span class="hljs-meta">@Override</span><br>     <span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">onCreate</span><span class="hljs-params">(Bundle savedInstanceState)</span> &#123;<br>   <br>       <span class="hljs-built_in">super</span>.onCreate(savedInstanceState);<br>       setContentView(R.layout.activity_main);<br>   <br>       titleTv = findViewById(R.id.titleTv);<br>       showTitleBt = findViewById(R.id.showTitleBt);<br>       hotfixBt = findViewById(R.id.hotfixBt);<br>       removeHotfixBt = findViewById(R.id.removeHotfixBt);<br>       killSelfBt = findViewById(R.id.killSelfBt);<br>   <br>       apk = <span class="hljs-keyword">new</span> <span class="hljs-title class_">File</span>(getCacheDir() + <span class="hljs-string">&quot;/hotfix.dex&quot;</span>);<br>   <br>       View.<span class="hljs-type">OnClickListener</span> <span class="hljs-variable">onClickListener</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">View</span>.OnClickListener() &#123;<br>         <span class="hljs-meta">@Override</span><br>         <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">onClick</span><span class="hljs-params">(<span class="hljs-keyword">final</span> View v)</span> &#123;<br>           <span class="hljs-keyword">switch</span> (v.getId()) &#123;<br>             <span class="hljs-keyword">case</span> R.id.showTitleBt:<br>               <span class="hljs-type">Title</span> <span class="hljs-variable">title</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Title</span>();<br>               titleTv.setText(title.getTitle());<br>               <span class="hljs-keyword">break</span>;<br>             <span class="hljs-keyword">case</span> R.id.hotfixBt:<br>               <span class="hljs-keyword">try</span> (<span class="hljs-type">Source</span> <span class="hljs-variable">source</span> <span class="hljs-operator">=</span> Okio.source(getAssets().open(<span class="hljs-string">&quot;apk/hotfix.dex&quot;</span>));<br>                    <span class="hljs-type">BufferedSink</span> <span class="hljs-variable">sink</span> <span class="hljs-operator">=</span> Okio.buffer(Okio.sink(apk))) &#123;<br>                 sink.writeAll(source);<br>               &#125; <span class="hljs-keyword">catch</span> (IOException e) &#123;<br>                 e.printStackTrace();<br>               &#125;<br>   <span class="hljs-comment">//            OkHttpClient client = new OkHttpClient();</span><br>   <span class="hljs-comment">//            Request request = new Request.Builder()</span><br>   <span class="hljs-comment">//                .url(&quot;https://api.hencoder.com/patch/upload/hotfix.dex&quot;)</span><br>   <span class="hljs-comment">//                .get()</span><br>   <span class="hljs-comment">//                .build();</span><br>   <span class="hljs-comment">//            client.newCall(request)</span><br>   <span class="hljs-comment">//                .enqueue(new Callback() &#123;</span><br>   <span class="hljs-comment">//                  @Override</span><br>   <span class="hljs-comment">//                  public void onFailure(@NotNull Call call, @NotNull IOException e) &#123;</span><br>   <span class="hljs-comment">//                  &#125;</span><br>   <span class="hljs-comment">//</span><br>   <span class="hljs-comment">//                  @Override</span><br>   <span class="hljs-comment">//                  public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException &#123;</span><br>   <span class="hljs-comment">//                    try &#123;</span><br>   <span class="hljs-comment">//                      FileOutputStream fos = new FileOutputStream(apk);</span><br>   <span class="hljs-comment">//                      fos.write(response.body().bytes());</span><br>   <span class="hljs-comment">//                      fos.close();</span><br>   <span class="hljs-comment">//                    &#125; catch (Exception e) &#123;</span><br>   <span class="hljs-comment">//                      e.printStackTrace();</span><br>   <span class="hljs-comment">//                    &#125;</span><br>   <span class="hljs-comment">//                    v.post(new Runnable() &#123;</span><br>   <span class="hljs-comment">//                      @Override</span><br>   <span class="hljs-comment">//                      public void run() &#123;</span><br>   <span class="hljs-comment">//                        Toast.makeText(MainActivity.this, &quot;加载补丁成功&quot;, Toast.LENGTH_SHORT).show();</span><br>   <span class="hljs-comment">//                      &#125;</span><br>   <span class="hljs-comment">//                    &#125;);</span><br>   <span class="hljs-comment">//                  &#125;</span><br>   <span class="hljs-comment">//                &#125;);</span><br>               <span class="hljs-keyword">break</span>;<br>             <span class="hljs-keyword">case</span> R.id.removeHotfixBt:<br>               <span class="hljs-keyword">if</span> (apk.exists()) &#123;<br>                 apk.delete();<br>               &#125;<br>               <span class="hljs-keyword">break</span>;<br>             <span class="hljs-keyword">case</span> R.id.killSelfBt:<br>               android.os.Process.killProcess(android.os.Process.myPid());<br>               <span class="hljs-keyword">break</span>;<br>           &#125;<br>         &#125;<br>       &#125;;<br>   <br>       showTitleBt.setOnClickListener(onClickListener);<br>       hotfixBt.setOnClickListener(onClickListener);<br>       removeHotfixBt.setOnClickListener(onClickListener);<br>       killSelfBt.setOnClickListener(onClickListener);<br>     &#125;<br>   &#125;<br>   <br>   <br><br>   <span class="hljs-type">def</span> <span class="hljs-variable">patchPath</span> <span class="hljs-operator">=</span> <span class="hljs-string">&#x27;com/hencoder/a38_hotfix/Title&#x27;</span><br>   <br>   task hotfix &#123;<br>       doLast &#123;<br>   <span class="hljs-comment">//        exec &#123;</span><br>   <span class="hljs-comment">//            commandLine &#x27;rm&#x27;, &#x27;-r&#x27;, &#x27;./build/patch&#x27;</span><br>   <span class="hljs-comment">//        &#125;</span><br>   <span class="hljs-comment">//        exec &#123;</span><br>   <span class="hljs-comment">//            commandLine &#x27;mkdir&#x27;, &#x27;./build/patch&#x27;</span><br>   <span class="hljs-comment">//        &#125;</span><br>           exec &#123;<br>               commandLine <span class="hljs-string">&#x27;javac&#x27;</span>, <span class="hljs-string">&quot;./src/main/java/$&#123;patchPath&#125;.java&quot;</span>, <span class="hljs-string">&#x27;-d&#x27;</span>, <span class="hljs-string">&#x27;./build/patch&#x27;</span><br>           &#125;<br>           exec &#123;<br>               commandLine <span class="hljs-string">&#x27;C:\\Users\\41009\\AppData\\Local\\Android\\Sdk\\build-tools\\29.0.2\\d8.bat&#x27;</span>, <span class="hljs-string">&quot;./build/patch/$&#123;patchPath&#125;.class&quot;</span>, <span class="hljs-string">&#x27;--output&#x27;</span>, <span class="hljs-string">&#x27;./build/patch&#x27;</span><br>           &#125;<br>           exec &#123;<br>               commandLine <span class="hljs-string">&#x27;mv&#x27;</span>, <span class="hljs-string">&quot;./build/patch/classes.dex&quot;</span>, <span class="hljs-string">&#x27;./build/patch/hotfix.dex&#x27;</span><br>           &#125;<br>       &#125;<br>   &#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="tinker"><a href="#tinker" class="headerlink" title="tinker"></a><strong>tinker</strong></h3><p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/212121671ec6">好文章</a><br>有 Git 才有 tinkerID，有还报错的话本地提交一次。<br>需要改造 Application，不支持 AndroidDagger<br><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/63fcffa3d4b2">https://www.jianshu.com/p/63fcffa3d4b2</a><br>坑太多，建议使用 <a target="_blank" rel="noopener" href="http://www.tinkerpatch.com/">http://www.tinkerpatch.com/</a></p>
+<p>tinker 将 old. apk 和 new. apk 做了 diff，拿到 patch. dex，然后将 patch. dex 与本机中 apk 的 classes. dex 做了合并，生成新的 classes. dex，运行时通过反射将合并后的 dex 文件放置在加载的 dexElements 数组的前面。</p>
+<h3 id="AndFix"><a href="#AndFix" class="headerlink" title="AndFix"></a>AndFix</h3><p>原理：<br>方法的替换，把有bug的方法替换成补丁文件中的方法。</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%83%AD%E4%BF%AE%E5%A4%8D%E3%80%81%E6%8F%92%E4%BB%B6%E5%8C%96%E3%80%81%E7%BB%84%E4%BB%B6%E5%8C%96.resources/2023/09/15/18-49-57-d2717d7c63a8224a518e62ebd51bc7f0-Image-bcf7fb.jpg" srcset="/img/loading.gif" lazyload alt="Image"></p>
+<p><strong>优点</strong>：<br>重大bug，需要紧急修复<br>可以下次迭代修复的bug<br>影响用户体验的行为<br>无需重启</p>
+<p><strong>缺点</strong>：<br>无法添加新类(内部类也不行)和新的字段、新的方法<br>资源文件无法替换   试了下换原有的图片可以，但是新增的不行<br>不能修改xml布局文件   不能<br>加固后的包补丁无法使用，如果要加固，需要加固前的包来生成补丁，不过这样生成的补丁也很容易破解<br>不能对同一个方法修复两次，否则App根本跑不起来<br>对加载过的补丁文件要做名字修改 如果名字重叠 就不会再次加载</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%83%AD%E4%BF%AE%E5%A4%8D%E3%80%81%E6%8F%92%E4%BB%B6%E5%8C%96%E3%80%81%E7%BB%84%E4%BB%B6%E5%8C%96.resources/2023/09/15/18-49-57-ef8df50043de69c909b3b348173a9b0b-Image.3-627eb5.png" srcset="/img/loading.gif" lazyload alt="Image.3"></p>
+<p><strong>补丁加载的时机</strong><br>可以放在自定义Application的onCreate方法中，也可以放在button的点击事件中，也可以放在监听网络变化的广播中。<br>加载过的补丁会被保存到data&#x2F;packagename&#x2F;files&#x2F;apatch_opt目录下，所以下载过来的补丁用过一次就可以删除了。</p>
+<p>操作：<br>通过命令生成补丁</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs stylus"> -<span class="hljs-selector-tag">a</span>,<span class="hljs-attr">--alias</span> &lt;alias&gt;     keystore entry alias.<br> -e,<span class="hljs-attr">--epassword</span> &lt;\*\*\*&gt;   keystore entry password.<br> -f,<span class="hljs-attr">--from</span> &lt;loc&gt;        new Apk file path.<br> -k,<span class="hljs-attr">--keystore</span> &lt;loc&gt;    keystore path.<br> -n,<span class="hljs-attr">--name</span> &lt;name&gt;       patch name.<br> -o,<span class="hljs-attr">--out</span> &lt;dir&gt;         output dir.<br> -<span class="hljs-selector-tag">p</span>,<span class="hljs-attr">--kpassword</span> &lt;\*\*\*&gt;   keystore password.<br> -t,<span class="hljs-attr">--to</span> &lt;loc&gt;          old Apk file path.<br><br>apkpatch -f D:\\addfixUtils\\<span class="hljs-number">2</span><span class="hljs-selector-class">.apk</span> -t D:\\addfixUtils\\<span class="hljs-number">1</span><span class="hljs-selector-class">.apk</span> -o D:\\addfixUtils\\output -k D:\\addfixUtils\\key<span class="hljs-selector-class">.jks</span> -<span class="hljs-selector-tag">p</span> <span class="hljs-number">000000</span> -<span class="hljs-selector-tag">a</span> liuyu -e <span class="hljs-number">000000</span><br></code></pre></td></tr></table></figure>
+
+<p>其他<br>如果本地保存了多个补丁，那么AndFix会按照补丁生成的时间顺序加载补丁。具体是根据.apatch文件中的PATCH.MF的字段Created-Time。</p>
+<p>刚开始做的demo中，每次产生的apatch文件用的名字都是相同的，结果导致只有第一次的补丁能生效。看了源码后发现只有每次名字不同才能加载，log中应该也有提示，但是没注意到。</p>
+<p>由于原理类似dexposed,所以目前发现activity的生命周期方法中不要直接hotfix.推荐在initview&#x2F;initdata之类的方法中进行.</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%83%AD%E4%BF%AE%E5%A4%8D%E3%80%81%E6%8F%92%E4%BB%B6%E5%8C%96%E3%80%81%E7%BB%84%E4%BB%B6%E5%8C%96.resources/2023/09/15/18-49-57-15c550c8d2ad51ca4061a52ab8968183-Image.1-fffad7.jpg" srcset="/img/loading.gif" lazyload alt="Image.1"></p>
+<p>常见问题<br><a target="_blank" rel="noopener" href="http://baichuan.taobao.com/docs/doc.htm?spm=a3c0d.7629140.0.0.Tokj1O&treeId=234&articleId=105843&docType=1">http://baichuan.taobao.com/docs/doc.htm?spm=a3c0d.7629140.0.0.Tokj1O&amp;treeId=234&amp;articleId=105843&amp;docType=1</a></p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%83%AD%E4%BF%AE%E5%A4%8D%E3%80%81%E6%8F%92%E4%BB%B6%E5%8C%96%E3%80%81%E7%BB%84%E4%BB%B6%E5%8C%96.resources/2023/09/15/18-49-57-4623ba0ad503b9577b793569ab28422f-Image.2-5459d7.jpg" srcset="/img/loading.gif" lazyload alt="Image.2"></p>
+<p>阿里百川<br><a target="_blank" rel="noopener" href="http://www.tuicool.com/articles/viEJfeE">http://www.tuicool.com/articles/viEJfeE</a><br>主要好处是可以对补丁很好的管理，例如停止发布、继续发布、发布回滚等等</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Android/" class="category-chain-item">Android</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/Android/%E6%9E%B6%E6%9E%84/" class="category-chain-item">架构</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>热修复、插件化、组件化</div>
+      <div>http://peiniwan.github.io/2025/12/82dcb152a5ce.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>六月的雨</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年12月16日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/12/20507b7f51aa.html" title="1.Java基础">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">1.Java基础</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/12/cf89bd963647.html" title="MVP MVVM">
+                        <span class="hidden-mobile">MVP MVVM</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"OwNIdaopOn1rwNhtotGOGC0B-gzGzoHsz","appKey":"eadytQ2XqWmxuvAKeg08XX83","path":"window.location.pathname","placeholder":null,"avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":true,"recordIP":false,"serverURLs":"https://ownidaop.lc-cn-n1-shared.com","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

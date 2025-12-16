@@ -1,0 +1,738 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="六月的雨">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="最近学完Python，写了几个爬虫练练手，网上的教程有很多，但是有的已经不能爬了，主要是网站经常改，可是爬虫还是有通用的思路的，即下载数据、解析数据、保存数据。下面一一来讲。 1.下载数据首先打开要爬的网站，分析URL，每打开一个网页看URL有什么变化，有可能带上上个网页的某个数据，例如xxID之类，那么我们就需要在上一个页面分析HTML，找到对应的数据。如果网页源码找不到，可能是ajax异步加载">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Python写爬虫爬妹子">
+<meta property="og:url" content="http://peiniwan.github.io/2025/12/fcf34e3c7a6d.html">
+<meta property="og:site_name" content="六月的雨的笔记">
+<meta property="og:description" content="最近学完Python，写了几个爬虫练练手，网上的教程有很多，但是有的已经不能爬了，主要是网站经常改，可是爬虫还是有通用的思路的，即下载数据、解析数据、保存数据。下面一一来讲。 1.下载数据首先打开要爬的网站，分析URL，每打开一个网页看URL有什么变化，有可能带上上个网页的某个数据，例如xxID之类，那么我们就需要在上一个页面分析HTML，找到对应的数据。如果网页源码找不到，可能是ajax异步加载">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/Python/attachments/2024-01-03-18-02-a78d237323852fca46d04d2a49e4e670-kkp4u-e848fc.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/Python/attachments/2024-01-03-18-02-fc762aec546cc646ba7b1e0952d5f76c-hbzkj-cc156e.png">
+<meta property="article:published_time" content="2025-12-16T13:59:22.561Z">
+<meta property="article:modified_time" content="2024-03-13T03:59:00.000Z">
+<meta property="article:author" content="六月的雨">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/Python/attachments/2024-01-03-18-02-a78d237323852fca46d04d2a49e4e670-kkp4u-e848fc.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>Python写爬虫爬妹子 - 六月的雨的笔记</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"peiniwan.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>六月的雨的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Python写爬虫爬妹子"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-12-16 21:59" pubdate>
+          2025年12月16日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.6k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          14 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Python写爬虫爬妹子</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>最近学完Python，写了几个爬虫练练手，网上的教程有很多，但是有的已经不能爬了，主要是网站经常改，可是爬虫还是有通用的思路的，即下载数据、解析数据、保存数据。下面一一来讲。</p>
+<h2 id="1-下载数据"><a href="#1-下载数据" class="headerlink" title="1.下载数据"></a>1.下载数据</h2><p>首先打开要爬的网站，分析URL，每打开一个网页看URL有什么变化，有可能带上上个网页的某个数据，例如xxID之类，那么我们就需要在上一个页面分析HTML，找到对应的数据。如果网页源码找不到，可能是ajax异步加载，去xhr里去找。</p>
+<p> <img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/Python/attachments/2024-01-03-18-02-a78d237323852fca46d04d2a49e4e670-kkp4u-e848fc.png" srcset="/img/loading.gif" lazyload alt="kkp4u"></p>
+<p>有的网站做了反爬的处理，可以添加User-Agent ：判断浏览器</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-attr">self.user_agent</span> = <span class="hljs-string">&#x27;Mozilla/4.0 (compatible; MSIE 5.5; Windows NT)&#x27;</span><br><span class="hljs-comment"># 初始化 headers</span><br><span class="hljs-attr">self.headers</span> = &#123;<span class="hljs-string">&#x27;User-Agent&#x27;</span>: self.user_agent&#125;<br></code></pre></td></tr></table></figure>
+
+<p>如果不行，在Chrome上按F12分析请求头、请求体，看需不需要添加别的信息，例如有的网址添加了referer：记住当前网页的来源，那么我们在请求的时候就可以带上。按Ctrl + Shift + C，可以定位元素在HTML上的位置</p>
+<h4 id="动态网页"><a href="#动态网页" class="headerlink" title="动态网页"></a>动态网页</h4><p>有一些网页是动态网页，我们得到网页的时候，数据还没请求到呢，当然什么都提取不出来，用Python 解决这个问题只有两种途径：直接从JavaScript 代码里采集内容，或者用Python 的第三方库运行JavaScript，直接采集你在浏览器里看到的页面。</p>
+<ol>
+<li><p>找请求，看返回的内容，网页的内容可能就在这里。然后可以复制请求，复杂的网址中，有些乱七八糟的可以删除，有意义的部分保留。切记删除一小部分后先尝试能不能打开网页，如果成功再删减，直到不能删减。</p>
+</li>
+<li><p>Selenium：是一个强大的网络数据采集工具（但是速度慢），其最初是为网站自动化测试而开发的。近几年，它还被广泛用于获取精确的网站快照，因为它们可以直接运行在浏览器上。Selenium 库是一个在WebDriver 上调用的API。WebDriver 有点儿像可以加载网站的浏览器，但是它也可以像BeautifulSoup对象一样用来查找页面元素，与页面上的元素进行交互（发送文本、点击等），以及执行其他动作来运行网络爬虫。</p>
+</li>
+</ol>
+<p>PhantomJS：是一个“无头”（headless）浏览器。它会把网站加载到内存并执行页面上的JavaScript，但是它不会向用户展示网页的图形界面。把Selenium和PhantomJS 结合在一起，就可以运行一个非常强大的网络爬虫了，可以处理cookie、JavaScript、header，以及任何你需要做的事情。</p>
+<h4 id="下载数据的模块有urllib、urllib2及Requests"><a href="#下载数据的模块有urllib、urllib2及Requests" class="headerlink" title="下载数据的模块有urllib、urllib2及Requests"></a>下载数据的模块有urllib、urllib2及Requests</h4><p>Requests相比其他俩个的话，支持HTTP连接保持和连接池，支持使用cookie保持会话，支持文件上传，支持自 动确定响应内容的编码，支持国际化的 URL 和 POST 数据自动编码，而且api相对来说也简单，但是requests直接使用不能异步调用，速度慢。</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros">html = requests.<span class="hljs-built_in">get</span>(url, <span class="hljs-attribute">headers</span>=headers)   #没错，就是这么简单<br></code></pre></td></tr></table></figure>
+
+
+<p><strong>urllib2以我爬取淘宝的妹子例子来说明</strong>  </p>
+<p> <img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/Python/attachments/2024-01-03-18-02-fc762aec546cc646ba7b1e0952d5f76c-hbzkj-cc156e.png" srcset="/img/loading.gif" lazyload alt="hbzkj"></p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs csharp">user_agent = <span class="hljs-string">&#x27;Mozilla/4.0 (compatible; MSIE 5.5; Windows NT)&#x27;</span><br>headers = &#123;<span class="hljs-string">&#x27;User-Agent&#x27;</span>: user_agent&#125;<br><span class="hljs-meta"># 注意：form data请求参数</span><br><span class="hljs-keyword">params</span> = <span class="hljs-string">&#x27;q&amp;viewFlag=A&amp;sortType=default&amp;searchStyle=&amp;searchRegion=city%3A&amp;searchFansNum=&amp;currentPage=1&amp;pageSize=100&#x27;</span><br><br><br><span class="hljs-function">def <span class="hljs-title">getHome</span>():</span><br><span class="hljs-function">    url</span> = <span class="hljs-string">&#x27;https://mm.taobao.com/tstar/search/tstar_model.do?_input_charset=utf-8&#x27;</span><br>    req = urllib2.Request(url, headers=headers)<br>    <span class="hljs-meta"># decode（’utf - 8’）解码   把其他编码转换成unicode编码</span><br>    <span class="hljs-meta"># encode(’gbk’) 编码  把unicode编码转换成其他编码</span><br>    <span class="hljs-meta"># ”gbk”.decode(’gbk’).encode(’utf - 8&#x27;)</span><br>    <span class="hljs-meta"># unicode = 中文</span><br>    <span class="hljs-meta"># gbk = 英文</span><br>    <span class="hljs-meta"># utf - 8 = 日文</span><br>    <span class="hljs-meta"># 英文一 &gt; 中文一 &gt; 日文,unicode相当于转化器</span><br>    html = urllib2.urlopen(req, data=<span class="hljs-keyword">params</span>).read().decode(<span class="hljs-string">&#x27;gbk&#x27;</span>).encode(<span class="hljs-string">&#x27;utf-8&#x27;</span>)<br>    <span class="hljs-meta"># json转对象</span><br>    peoples = json.loads(html)<br>    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> peoples[<span class="hljs-string">&#x27;data&#x27;</span>][<span class="hljs-string">&#x27;searchDOList&#x27;</span>]:<br>        <span class="hljs-meta">#去下一个页面获取数据</span><br>        getUseInfo(i[<span class="hljs-string">&#x27;userId&#x27;</span>], i[<span class="hljs-string">&#x27;realName&#x27;</span>])<br></code></pre></td></tr></table></figure>
+
+<h2 id="2-解析数据"><a href="#2-解析数据" class="headerlink" title="2.解析数据"></a>2.解析数据</h2><p>解析数据也有很多方式，我只看了beautifulsoup和正则，这个例子是用正则来解析的</p>
+<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs scss">def <span class="hljs-built_in">getUseInfo</span>(userId, realName):<br>    url = <span class="hljs-string">&#x27;https://mm.taobao.com/self/aiShow.htm?userId=&#x27;</span> + <span class="hljs-built_in">str</span>(userId)<br>    req = urllib2.<span class="hljs-built_in">Request</span>(url)<br>    html = urllib2.<span class="hljs-built_in">urlopen</span>(req).<span class="hljs-built_in">read</span>().<span class="hljs-built_in">decode</span>(<span class="hljs-string">&#x27;gbk&#x27;</span>).<span class="hljs-built_in">encode</span>(<span class="hljs-string">&#x27;utf-8&#x27;</span>)<br><br>    pattern = re.<span class="hljs-built_in">compile</span>(<span class="hljs-string">&#x27;&lt;img.*?src=(.*?)/&gt;&#x27;</span>, re.S)<br>    items = re.<span class="hljs-built_in">findall</span>(pattern, html)<br>    x = <span class="hljs-number">0</span><br>    for item in items:<br>        if re.<span class="hljs-built_in">match</span>(r<span class="hljs-string">&#x27;.*(.jpg&quot;)$&#x27;</span>, item.<span class="hljs-built_in">strip</span>()):<br>            tt = <span class="hljs-string">&#x27;http:&#x27;</span> + re.<span class="hljs-built_in">split</span>(<span class="hljs-string">&#x27;&quot;&#x27;</span>, item.<span class="hljs-built_in">strip</span>())[<span class="hljs-number">1</span>]<br>            <span class="hljs-built_in">down_image</span>(tt, x, realName)<br>            x = x + <span class="hljs-number">1</span><br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&#x27;下载完毕&#x27;</span>)<br></code></pre></td></tr></table></figure>
+
+<p>正则表达式说明</p>
+<p>match：匹配string 开头，成功返回Match object, 失败返回None，只匹配一个。<br>search：在string中进行搜索，成功返回Match object, 失败返回None, 只匹配一个。<br>findall：在string中查找所有 匹配成功的组, 即用括号括起来的部分。返回list对象，每个list item是由每个匹配的所有组组成的list。</p>
+<p>1）.<em>? 是一个固定的搭配，.和</em>代表可以匹配任意无限多个字符，加上？表示使用非贪婪模式进行匹配，也就是我们会尽可能短地做匹配</p>
+<p>2）(.<em>?)代表一个分组，如果有5个(.</em>?)就说明匹配了五个分组</p>
+<p>3） 正则表达式中，“.”的作用是匹配除“\n”以外的任何字符，也就是说，它是在一行中进行匹配。这里的“行”是以“\n”进行区分的。HTML标签每行的末尾有一个“\n”，不过它不可见。 如果不使用re.S参数，则只在每一行内进行匹配，如果一行没有，就换下一行重新开始，不会跨行。而使用re.S参数以后，正则表达式会将这个字符串作为一个整体，将“\n”当做一个普通的字符加入到这个字符串中，在整体中进行匹配。</p>
+<h2 id="3-保存数据"><a href="#3-保存数据" class="headerlink" title="3.保存数据"></a>3.保存数据</h2><p>数据解析后可以保存到文件或数据库中，这个例子是保存到了文件中，很简单，就不做说明了，在下篇讲如何将数据保存到数据库</p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/sixrain/p/9138442.html">https://www.cnblogs.com/sixrain/p/9138442.html</a></p>
+<figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs livecodeserver">def down_image(url, filename, realName):<br>    req = urllib2.Request(url=url)<br>    <span class="hljs-built_in">folder</span> = <span class="hljs-string">&#x27;e:\\images\\%s&#x27;</span> % realName<br>    <span class="hljs-keyword">if</span> os.path.isdir(<span class="hljs-built_in">folder</span>):<br>        pass<br>    <span class="hljs-keyword">else</span>:<br>        os.makedirs(<span class="hljs-built_in">folder</span>)<br><br>    f = <span class="hljs-built_in">folder</span> + <span class="hljs-string">&#x27;\\%s.jpg&#x27;</span> % filename<br>    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> os.path.isfile(f):<br>        print f<br>        binary_data = urllib2.urlopen(req).<span class="hljs-built_in">read</span>()<br>        <span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(f, <span class="hljs-string">&#x27;wb&#x27;</span>) <span class="hljs-keyword">as</span> temp_file:<br>            temp_file.<span class="hljs-built_in">write</span>(binary_data)<br></code></pre></td></tr></table></figure>
+
+<p>GitHub地址，还有其他网站爬虫，欢迎star：<br><a target="_blank" rel="noopener" href="https://github.com/peiniwan/Spider2">https://github.com/peiniwan/Spider2</a></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%85%B6%E4%BB%96%E8%AF%AD%E8%A8%80/" class="category-chain-item">其他语言</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E5%85%B6%E4%BB%96%E8%AF%AD%E8%A8%80/Python/" class="category-chain-item">Python</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Python写爬虫爬妹子</div>
+      <div>http://peiniwan.github.io/2025/12/fcf34e3c7a6d.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>六月的雨</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年12月16日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/12/01566d3167fc.html" title="Python基础语法">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Python基础语法</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/12/06220d0f6b2a.html" title="7.Hilt">
+                        <span class="hidden-mobile">7.Hilt</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"OwNIdaopOn1rwNhtotGOGC0B-gzGzoHsz","appKey":"eadytQ2XqWmxuvAKeg08XX83","path":"window.location.pathname","placeholder":null,"avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":true,"recordIP":false,"serverURLs":"https://ownidaop.lc-cn-n1-shared.com","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

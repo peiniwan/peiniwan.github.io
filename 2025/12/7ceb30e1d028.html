@@ -1,0 +1,780 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="六月的雨">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="快捷键[[命令快捷键#Vim]] vim 基本使用一般模式通过 vim + 文件名，进入 vim 环境（test. txt 可以是当前目录已存在的文件，也可以是当前目录不存在的文件。）： 此时，我们在 vim 的一般模式下，如果 test. txt 文件有内容，我们可以通过：  j 下移光标 k 上移光标 h 左移光标 l 右移光标  如果用的不习惯，上下左右方向键也可以移动光标。 编辑模式在一般">
+<meta property="og:type" content="article">
+<meta property="og:title" content="vim 学习">
+<meta property="og:url" content="http://peiniwan.github.io/2025/12/7ceb30e1d028.html">
+<meta property="og:site_name" content="六月的雨的笔记">
+<meta property="og:description" content="快捷键[[命令快捷键#Vim]] vim 基本使用一般模式通过 vim + 文件名，进入 vim 环境（test. txt 可以是当前目录已存在的文件，也可以是当前目录不存在的文件。）： 此时，我们在 vim 的一般模式下，如果 test. txt 文件有内容，我们可以通过：  j 下移光标 k 上移光标 h 左移光标 l 右移光标  如果用的不习惯，上下左右方向键也可以移动光标。 编辑模式在一般">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-12-16T13:59:22.696Z">
+<meta property="article:modified_time" content="2024-03-25T14:21:00.000Z">
+<meta property="article:author" content="六月的雨">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>vim 学习 - 六月的雨的笔记</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"peiniwan.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>六月的雨的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="vim 学习"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-12-16 21:59" pubdate>
+          2025年12月16日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          4.8k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          40 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">vim 学习</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="快捷键"><a href="#快捷键" class="headerlink" title="快捷键"></a>快捷键</h1><p>[[命令快捷键#Vim]]</p>
+<h1 id="vim-基本使用"><a href="#vim-基本使用" class="headerlink" title="vim 基本使用"></a>vim 基本使用</h1><h4 id="一般模式"><a href="#一般模式" class="headerlink" title="一般模式"></a>一般模式</h4><p>通过 <code>vim + 文件名</code>，进入 vim 环境（test. txt 可以是当前目录已存在的文件，也可以是当前目录不存在的文件。）：</p>
+<p>此时，我们在 vim 的一般模式下，如果 test. txt 文件有内容，我们可以通过：</p>
+<ul>
+<li>j 下移光标</li>
+<li>k 上移光标</li>
+<li>h 左移光标</li>
+<li>l 右移光标</li>
+</ul>
+<p>如果用的不习惯，上下左右方向键也可以移动光标。</p>
+<h4 id="编辑模式"><a href="#编辑模式" class="headerlink" title="编辑模式"></a>编辑模式</h4><p>在一般模式下，输入 a i o 可以进入编辑模式，编辑模式下，我们可以输入文本修改文件内容。</p>
+<p>a i o 的区别如下:</p>
+<ul>
+<li>a：在当前光标下一位插入</li>
+<li>i：当前光标处插入</li>
+<li>o：换行并创建全新空白行，并在行首插入</li>
+</ul>
+<p>在编辑模式下，我们点击 esc 键即可回到一般模式。</p>
+<h4 id="命令行模式"><a href="#命令行模式" class="headerlink" title="命令行模式"></a>命令行模式</h4><p>在一般模式下，输入分号，就会进入命令行模式。在命令行中，可以输入不同的指令或者字符串以实现不同的功能。其中涉及的最常用的功能包括了两类：</p>
+<ul>
+<li>退出 vim</li>
+<li>当前文本中，搜索字符串</li>
+</ul>
+<p>进入命令行模式后，有三种方式来退出 vim：</p>
+<ul>
+<li>当前文件没有做任何改变时，输入 <code>q</code> 指令，退出 vim 环境</li>
+<li>当前文件做了一些修改，如果想放弃已修改的内容，输入 <code>q!</code> 指令，退出 vim 环境</li>
+<li>当前文件做了一些修改，如果想保存已修改的内容，输入 <code>wq</code> 指令，退出 vim 环境</li>
+</ul>
+<p>进入命令行模式后，我们还可以输入 <code>/</code> + 字符串，点击回车键，进入搜索模式，点击 N 键，光标就会在匹配处依次跳动。</p>
+<p>在一般模式下，我们也可以直接输入 <code>/</code> + 字符串进行搜索。</p>
+<h1 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h1><p><a target="_blank" rel="noopener" href="https://www.v2ex.com/t/756770">IDE 使用 Vim 插件，喜欢点击鼠标切换光标位置，总觉得按键盘切换太麻烦了 - V2EX</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/kl28978113/article/details/53981137">IntelliJ IDEA 必备插件之键盘流篇-CSDN博客</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/ayamir/nvimdots">ayamir&#x2F;nvimdots: A well configured and structured Neovim.</a></p>
+<h1 id="中文问题"><a href="#中文问题" class="headerlink" title="中文问题"></a>中文问题</h1><h2 id="Windows"><a href="#Windows" class="headerlink" title="Windows"></a>Windows</h2><p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/tuilk/p/16421831.html">解决Windows下(Neo)Vim中文输入法的切换问题 - Leaos - 博客园</a> </p>
+<ul>
+<li><ol>
+<li>下载AutoHotKey 打开 <a target="_blank" rel="noopener" href="https://www.autohotkey.com/">AutoHotKey</a> 官网下载相应软件，点击 <code>Download Current Version</code> 即可。 下载完成后，进行安装。安装包很小，仅仅 3MB。选择默认安装，或者自定义安装都可以。 自定义安装仅仅更改安装路径即可，其它使用默认即可。</li>
+</ol>
+</li>
+</ul>
+<h2 id="Mac"><a href="#Mac" class="headerlink" title="Mac"></a>Mac</h2><h3 id="ieda"><a href="#ieda" class="headerlink" title="ieda"></a>ieda</h3><p><a target="_blank" rel="noopener" href="https://smart-input-source-1315501506.cos.ap-shanghai.myqcloud.com/guidedoc/mac-started-guide">https://smart-input-source-1315501506.cos.ap-shanghai.myqcloud.com/guidedoc/mac-started-guide</a></p>
+<h3 id="MacOS-底下使用Vundle或者Vim-plug-配置vim-简书"><a href="#MacOS-底下使用Vundle或者Vim-plug-配置vim-简书" class="headerlink" title="MacOS 底下使用Vundle或者Vim-plug 配置vim - 简书"></a><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/ce4ab4b71f93">MacOS 底下使用Vundle或者Vim-plug 配置vim - 简书</a></h3><p>安装 plugged</p>
+<ul>
+<li><p>使用vim-plug管理插件</p>
+</li>
+<li><p>清除之前的设置<br><code>sudo rm -rf ~/.vim  sudo rm .vimrc</code></p>
+</li>
+<li><p>拷贝vimrc</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">git clone https:<span class="hljs-regexp">//gi</span>thub.com<span class="hljs-regexp">/yxrdydh/</span>vimrc_Mac.git ~<span class="hljs-regexp">/.vim/</span><br></code></pre></td></tr></table></figure>
+<p>&#96;</p>
+</li>
+<li><p>安装插件管理vim-plug.vim</p>
+</li>
+</ul>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs jsx">curl -fLo ~<span class="hljs-regexp">/.vim/</span>autoload/plug.<span class="hljs-property">vim</span> --create-dirs \<br>    <span class="hljs-attr">https</span>:<span class="hljs-comment">//raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim</span><br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="如何让-Neovim-中文输入时自动切换输入法-jdhao’s-digital-space"><a href="#如何让-Neovim-中文输入时自动切换输入法-jdhao’s-digital-space" class="headerlink" title="如何让 Neovim 中文输入时自动切换输入法 - jdhao’s digital space"></a><a target="_blank" rel="noopener" href="https://jdhao.github.io/2021/02/25/nvim_ime_mode_auto_switch/">如何让 Neovim 中文输入时自动切换输入法 - jdhao’s digital space</a></h3><ul>
+<li><p>vim-barbaric</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://github.com/rlue/vim-barbaric">vim-barbaric</a> 是一款帮助用户自动设置输入法模式的插件。</p>
+</li>
+<li><p>安装依赖</p>
+</li>
+<li><p>在 macOS 下，需要额外安装 <a target="_blank" rel="noopener" href="https://github.com/myshov/xkbswitch-macosx">xkbswitch-macosx</a> ：</p>
+</li>
+</ul>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">curl -o <span class="hljs-regexp">/usr/</span>local<span class="hljs-regexp">/bin/</span>xkbswitch https:<span class="hljs-regexp">//</span>raw.githubusercontent.com<span class="hljs-regexp">/myshov/</span>xkbswitch-macosx<span class="hljs-regexp">/master/</span>bin/xkbswitch<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>然后使用插件管理器安装该插件即可：<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs vim">Plug <span class="hljs-string">&#x27;rlue/vim-barbaric&#x27;</span><br></code></pre></td></tr></table></figure></li>
+<li>该插件开箱即用，无需额外设置。</li>
+</ul>
+<h3 id="vim-plug简介"><a href="#vim-plug简介" class="headerlink" title="vim-plug简介"></a><a target="_blank" rel="noopener" href="http://blog.fpliu.com/it/software/Vim/plugin/vim-plug">vim-plug简介</a></h3><ul>
+<li>安装在 <a target="_blank" rel="noopener" href="https://github.com/">GitHub</a> 仓库中的插件</li>
+<li>如果您要安装的插件在 <a target="_blank" rel="noopener" href="https://github.com/">GitHub</a> 仓库中， 那么，配置的格式如下：</li>
+<li>Plug ‘userName&#x2F;repoName’</li>
+<li>执行这个指令的时候，首先检测该插件是否已经下载到本地了，如果没有下载， 就会使用 <a target="_blank" rel="noopener" href="http://blog.fpliu.com/it/software/git">git</a> 下载，下载的方式如下：</li>
+<li>git<code> -C ~/.vim/bundle clone --recursive https://github.com/tpope/vim-fugitive.git</code></li>
+<li>下载到 <code>~/.vim/bundle/vim-fugitive</code> 目录中。</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">git -C ~/.vim/bundle <span class="hljs-built_in">clone</span> --recursive https://github.com/rlue/vim-barbaric.git<br></code></pre></td></tr></table></figure>
+<ul>
+<li>安装插件  在vim中 :PlugInstall</li>
+</ul>
+<p>call plug#begin(‘~&#x2F;.vim&#x2F;plugged’)<br>call plug#end()</p>
+<h1 id="idea配置"><a href="#idea配置" class="headerlink" title="idea配置"></a>idea配置</h1><figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br><span class="line">273</span><br><span class="line">274</span><br><span class="line">275</span><br><span class="line">276</span><br><span class="line">277</span><br><span class="line">278</span><br><span class="line">279</span><br><span class="line">280</span><br><span class="line">281</span><br><span class="line">282</span><br><span class="line">283</span><br><span class="line">284</span><br><span class="line">285</span><br><span class="line">286</span><br><span class="line">287</span><br><span class="line">288</span><br><span class="line">289</span><br><span class="line">290</span><br><span class="line">291</span><br><span class="line">292</span><br><span class="line">293</span><br><span class="line">294</span><br><span class="line">295</span><br><span class="line">296</span><br><span class="line">297</span><br><span class="line">298</span><br><span class="line">299</span><br><span class="line">300</span><br><span class="line">301</span><br><span class="line">302</span><br><span class="line">303</span><br><span class="line">304</span><br><span class="line">305</span><br><span class="line">306</span><br><span class="line">307</span><br><span class="line">308</span><br><span class="line">309</span><br><span class="line">310</span><br><span class="line">311</span><br><span class="line">312</span><br><span class="line">313</span><br><span class="line">314</span><br><span class="line">315</span><br><span class="line">316</span><br><span class="line">317</span><br><span class="line">318</span><br><span class="line">319</span><br><span class="line">320</span><br><span class="line">321</span><br><span class="line">322</span><br><span class="line">323</span><br><span class="line">324</span><br><span class="line">325</span><br><span class="line">326</span><br><span class="line">327</span><br><span class="line">328</span><br><span class="line">329</span><br><span class="line">330</span><br><span class="line">331</span><br><span class="line">332</span><br><span class="line">333</span><br><span class="line">334</span><br><span class="line">335</span><br><span class="line">336</span><br><span class="line">337</span><br><span class="line">338</span><br><span class="line">339</span><br><span class="line">340</span><br><span class="line">341</span><br><span class="line">342</span><br><span class="line">343</span><br><span class="line">344</span><br><span class="line">345</span><br><span class="line">346</span><br><span class="line">347</span><br><span class="line">348</span><br><span class="line">349</span><br><span class="line">350</span><br><span class="line">351</span><br><span class="line">352</span><br><span class="line">353</span><br><span class="line">354</span><br><span class="line">355</span><br><span class="line">356</span><br><span class="line">357</span><br><span class="line">358</span><br><span class="line">359</span><br><span class="line">360</span><br><span class="line">361</span><br><span class="line">362</span><br><span class="line">363</span><br><span class="line">364</span><br><span class="line">365</span><br><span class="line">366</span><br><span class="line">367</span><br><span class="line">368</span><br><span class="line">369</span><br><span class="line">370</span><br><span class="line">371</span><br><span class="line">372</span><br><span class="line">373</span><br><span class="line">374</span><br><span class="line">375</span><br><span class="line">376</span><br><span class="line">377</span><br><span class="line">378</span><br><span class="line">379</span><br><span class="line">380</span><br><span class="line">381</span><br><span class="line">382</span><br><span class="line">383</span><br><span class="line">384</span><br><span class="line">385</span><br><span class="line">386</span><br><span class="line">387</span><br><span class="line">388</span><br><span class="line">389</span><br><span class="line">390</span><br><span class="line">391</span><br><span class="line">392</span><br><span class="line">393</span><br><span class="line">394</span><br><span class="line">395</span><br><span class="line">396</span><br><span class="line">397</span><br><span class="line">398</span><br><span class="line">399</span><br><span class="line">400</span><br><span class="line">401</span><br><span class="line">402</span><br><span class="line">403</span><br><span class="line">404</span><br><span class="line">405</span><br><span class="line">406</span><br><span class="line">407</span><br><span class="line">408</span><br><span class="line">409</span><br><span class="line">410</span><br><span class="line">411</span><br><span class="line">412</span><br><span class="line">413</span><br><span class="line">414</span><br><span class="line">415</span><br><span class="line">416</span><br><span class="line">417</span><br><span class="line">418</span><br><span class="line">419</span><br><span class="line">420</span><br><span class="line">421</span><br><span class="line">422</span><br><span class="line">423</span><br><span class="line">424</span><br><span class="line">425</span><br><span class="line">426</span><br><span class="line">427</span><br><span class="line">428</span><br><span class="line">429</span><br><span class="line">430</span><br><span class="line">431</span><br><span class="line">432</span><br><span class="line">433</span><br><span class="line">434</span><br><span class="line">435</span><br><span class="line">436</span><br><span class="line">437</span><br><span class="line">438</span><br><span class="line">439</span><br><span class="line">440</span><br><span class="line">441</span><br><span class="line">442</span><br><span class="line">443</span><br><span class="line">444</span><br><span class="line">445</span><br><span class="line">446</span><br><span class="line">447</span><br><span class="line">448</span><br><span class="line">449</span><br><span class="line">450</span><br><span class="line">451</span><br><span class="line">452</span><br><span class="line">453</span><br><span class="line">454</span><br><span class="line">455</span><br><span class="line">456</span><br><span class="line">457</span><br><span class="line">458</span><br><span class="line">459</span><br><span class="line">460</span><br></pre></td><td class="code"><pre><code class="hljs 1c"><span class="hljs-string">&quot; ================================================================================================  </span><br><span class="hljs-string">&quot; 🍰🍰🍰 Extensions 🍰🍰🍰  </span><br><span class="hljs-string">&quot; ================================================================================================  </span><br>Plug &#x27;preservim/nerdtree&#x27;  <br>  <br><span class="hljs-string">&quot;下列插件需要在IDEA中下载  </span><br><span class="hljs-string">&quot;ideaVim  </span><br><span class="hljs-string">&quot;IdeaVim-EasyMotion  </span><br><span class="hljs-string">&quot;IdeaVimExtension  </span><br><span class="hljs-string">&quot;which-key  </span><br><span class="hljs-string">&quot;CodeGlance Pro  </span><br><span class="hljs-string">&quot;TranslateAction  </span><br>  <br>  <br>  <br><span class="hljs-string">&quot; ================================================================================================  </span><br><span class="hljs-string">&quot; 🐧🐧🐧 Basic settings 🐧🐧🐧  </span><br><span class="hljs-string">&quot; ================================================================================================  </span><br><span class="hljs-string">&quot;设置在光标距离窗口顶部或底部一定行数时，开始滚动屏幕内容的行为  </span><br>set scrolloff=<span class="hljs-number">10</span>  <br>  <br><span class="hljs-string">&quot;--递增搜索功能：在执行搜索（使用 / 或 ? 命令）时，  </span><br><span class="hljs-string">&quot;Vim 会在您输入搜索模式的过程中逐步匹配并高亮显示匹配的文本。  </span><br>set incsearch  <br>  <br><span class="hljs-string">&quot;--在搜索时忽略大小写  </span><br>set ignorecase  <br>  <br><span class="hljs-string">&quot;--将搜索匹配的文本高亮显示  </span><br>set hlsearch  <br>  <br><span class="hljs-string">&quot;--设置相对行号 和 当前行的绝对行号  </span><br>set number relativenumber  <br>  <br><span class="hljs-string">&quot;--设置返回normal模式时回到英文输入法  </span><br>set keep-english-in-normal  <br>  <br>  <br>  <br><span class="hljs-string">&quot; ================================================================================================  </span><br><span class="hljs-string">&quot; 🌍🌍🌍 No Leader Keymaps 🌍🌍🌍  </span><br><span class="hljs-string">&quot; ================================================================================================  </span><br><span class="hljs-string">&quot;--普通模式下使用回车键，向下/向上 增加一行  </span><br>nmap &lt;CR&gt; o&lt;Esc&gt;  <br>nmap &lt;S-Enter&gt; O&lt;Esc&gt;  <br>  <br><span class="hljs-string">&quot;--在普通和插入模式下，向下交换行/向上交换行  </span><br>nnoremap &lt;C-j&gt; :m +<span class="hljs-number">1</span>&lt;CR&gt;  <br>nnoremap &lt;C-k&gt; :m -<span class="hljs-number">2</span>&lt;CR&gt;  <br>inoremap &lt;C-j&gt; &lt;Esc&gt; :m +<span class="hljs-number">1</span>&lt;CR&gt;gi  <br>inoremap &lt;C-k&gt; &lt;Esc&gt; :m -<span class="hljs-number">2</span>&lt;CR&gt;gi  <br>  <br><span class="hljs-string">&quot;--将 jj 和 jk 映射为 &lt;Esc&gt;  </span><br><span class="hljs-string">&quot;jj和jk为主流配置，可按喜好自行调整  </span><br>inoremap jj &lt;ESC&gt;  <br>  <br><span class="hljs-string">&quot;--格式化（规范化）文本，即对选定的文本进行换行或重排，适应指定的文本宽度。  </span><br><span class="hljs-string">&quot;全文规范化：Ctrl+Alt+l  </span><br>map Q gq  <br><span class="hljs-string">&quot;跳转到下一个错误或警告  </span><br>nmap ge &lt;action&gt;(GotoNextError)  <br><span class="hljs-string">&quot;在源代码和测试代码之间快速切换  </span><br>nmap gt &lt;action&gt;(GotoTest)  <br><span class="hljs-string">&quot;将光标移动到上一个方法的声明处  </span><br>nmap gm &lt;action&gt;(MethodUp)  <br><span class="hljs-string">&quot; last changed in current buffer(file)  </span><br><span class="hljs-string">&quot;跳转到当前接口或抽象类的实现处  </span><br>nmap ga &lt;action&gt;(GotoImplementation)  <br>  <br><span class="hljs-string">&quot; bookmark 切换书签  </span><br>nmap ma &lt;action&gt;(ToggleBookmark)  <br>  <br><span class="hljs-string">&quot;切换标签页  </span><br>nmap L &lt;action&gt;(NextTab)  <br>nmap H &lt;action&gt;(PreviousTab)  <br>  <br><span class="hljs-string">&quot;将Ctrl + s 映射为保存文档(也可以在VIM设置里将此快捷键设置为IDEA的快捷键)  </span><br>nmap &lt;C-S&gt; &lt;action&gt;(SaveAll)  <br>imap &lt;C-S&gt; &lt;Esc&gt;&lt;action&gt;(SaveAll)  <br>  <br><span class="hljs-string">&quot; e: Extract  </span><br><span class="hljs-string">&quot; extract method/function 将选中的代码片段提取为一个独立的方法(Ctrl + Alt + M)  </span><br>vmap &lt;leader&gt;em &lt;action&gt;(ExtractMethod)  <br><span class="hljs-string">&quot; extract constant （引入常量）的重构操作:将选中的代码片段抽取为一个常量，并自动替换选中的代码片段为新的常量引用(Ctrl + Alt + C)  </span><br>vmap &lt;leader&gt;ec &lt;action&gt;(IntroduceConstant)  <br><span class="hljs-string">&quot; extract field （引入字段）的重构操作:将选中的代码片段转化为一个新的字段，并自动将选中的代码片段替换为对该字段的引用(Ctrl + Alt + F)  </span><br>vmap &lt;leader&gt;ef &lt;action&gt;(IntroduceField)  <br><span class="hljs-string">&quot; extract variable （引入变量）的重构操作:将选中的代码片段抽取为一个新的变量，并自动替换选中的代码片段为新的变量引用(Ctrl + Alt + V)  </span><br>vmap &lt;leader&gt;ev &lt;action&gt;(IntroduceVariable)  <br>  <br>  <br>  <br><span class="hljs-string">&quot; ================================================================================================  </span><br><span class="hljs-string">&quot; ⭐️⭐️⭐️ Leader Keymaps ⭐️⭐️⭐️ =====================================&quot;</span> ================================================================================================  <br><span class="hljs-string">&quot;--将&lt;leader&gt;设置为 空格 键  </span><br><span class="hljs-string">&quot;可自行更改，只需更改双引号内的内容即可  </span><br><span class="hljs-string">&quot;推荐&lt;leader&gt;:  &quot;</span>空格<span class="hljs-string">&quot;  &quot;</span>;<span class="hljs-string">&quot;  &quot;</span>\<span class="hljs-string">&quot;  &quot;</span>-<span class="hljs-string">&quot;  &quot;</span>,<span class="hljs-string">&quot;  </span><br>let mapleader = <span class="hljs-string">&quot; &quot;</span>  <br>  <br>  <br>  <br><span class="hljs-string">&quot; ================================================================================================  </span><br><span class="hljs-string">&quot; 👻👻👻 Which-Key 👻👻👻  </span><br><span class="hljs-string">&quot; ================================================================================================  </span><br>  <br><span class="hljs-string">&quot;which-key的官方推荐配置  </span><br>set which-key  <br>set notimeout  <br>  <br>  <br>  <br><span class="hljs-string">&quot; ================================================================================================  </span><br><span class="hljs-string">&quot; 🌞🌞🌞 目录-食用手册 🌞🌞🌞  </span><br><span class="hljs-string">&quot; ================================================================================================  </span><br>  <br><span class="hljs-string">&quot;===================================== A =====================================  </span><br><span class="hljs-string">&quot; a:  </span><br><span class="hljs-string">&quot;===================================== B =====================================  </span><br><span class="hljs-string">&quot; b:  </span><br><span class="hljs-string">&quot;===================================== C =====================================  </span><br><span class="hljs-string">&quot; c:  CodeAndClose-[目录]🎈  </span><br><span class="hljs-string">&quot; cc: CodeCompletion-自动补全  </span><br><span class="hljs-string">&quot; cd: CloseEditor-关闭当前标签页  </span><br><span class="hljs-string">&quot; ca: CloseAllEditors-关闭所有标签页  </span><br><span class="hljs-string">&quot;===================================== D =====================================  </span><br><span class="hljs-string">&quot; d: DebugOrDelete-[目录]🎈  </span><br><span class="hljs-string">&quot; dp: BreakPoint-打断点/解除断点  </span><br><span class="hljs-string">&quot; db: DeBug-调试  </span><br><span class="hljs-string">&quot; [V]d: DeleteAndCopyClipboard-在可视模式中：删除选择的文本并复制到剪切板  </span><br><span class="hljs-string">&quot;===================================== E =====================================  </span><br><span class="hljs-string">&quot; e: ToggleExplorer ⭐️ 激活项目工具窗口&quot;</span>===================================== F =====================================  <br><span class="hljs-string">&quot; f: Find/Format ⭐🎈[目录]  </span><br><span class="hljs-string">&quot; ff: FindFile-快速 导航/查找 项目中的其他文件(Ctrl + n)  </span><br><span class="hljs-string">&quot; fl: FindFileLocation-将当前编辑的文件在项目视图中进行选中定位(Alt + F1)  </span><br><span class="hljs-string">&quot; ft: FindText-在整个项目中查找指定的文本、关键字或正则表达式，包括代码文件、配置文件和其他文件等(Ctrl + Shift + F)  </span><br><span class="hljs-string">&quot; fc: Commands-打开 &quot;</span>Find Action<span class="hljs-string">&quot;（查找动作）对话框(Ctrl + Shift + A)  </span><br><span class="hljs-string">&quot; fm: Format-重新格式化代码，使其符合预定义的代码样式和规范 and 优化导入语句，删除未使用的导入，并将导入语句按字母顺序进行排列  </span><br><span class="hljs-string">&quot;===================================== G =====================================  </span><br><span class="hljs-string">&quot; g: GitOrGenerate 🎈[目录]  </span><br><span class="hljs-string">&quot; gr: RollbackHunk-执行版本控制（VCS）的回滚操作，将修改的代码还原到之前的版本  </span><br><span class="hljs-string">&quot; gc: GenerateConstructor-生成构造函数  </span><br><span class="hljs-string">&quot; gg: GenerateGetter-生成getter函数  </span><br><span class="hljs-string">&quot; gs: GenerateSetter-生成setter函数  </span><br><span class="hljs-string">&quot; ga: GenerateGetterAndSetter-生成getter和setter函数  </span><br><span class="hljs-string">&quot; ge: GenerateEquals-生成equals和hashcode的重写方法  </span><br><span class="hljs-string">&quot; gd: ShowTabbedFileHistory-显示文件的版本控制历史(git)  </span><br><span class="hljs-string">&quot;===================================== H =====================================  </span><br><span class="hljs-string">&quot; h: PreviousTab-切换到上一个标签页  </span><br><span class="hljs-string">&quot;===================================== I =====================================  </span><br><span class="hljs-string">&quot; i: Insert ⭐快速查找并跳转到下一个以 ( 开始的函数或方法调用的位置️  </span><br><span class="hljs-string">&quot;===================================== J =====================================  </span><br><span class="hljs-string">&quot; j: InsertSemicolon⭐️ 普通模式下在行尾一个分号，然后进入插入模式并在当前行的下方新建一行&quot;</span>===================================== K =====================================  <br><span class="hljs-string">&quot; k:  </span><br><span class="hljs-string">&quot;===================================== L =====================================  </span><br><span class="hljs-string">&quot; l: NextTab-切换到下一个标签页  </span><br><span class="hljs-string">&quot;===================================== M =====================================  </span><br><span class="hljs-string">&quot; m: CodeGlance-打开/关闭地图(需要CodeGlance Pro插件)  </span><br><span class="hljs-string">&quot;===================================== N =====================================  </span><br><span class="hljs-string">&quot; n: NERDTreeOrNo ⭐️[目录]🎈  </span><br><span class="hljs-string">&quot; nn: NERDTreeFocus-将使焦点转移到 NERDTree 窗口(配置在NERDTree专栏)  </span><br><span class="hljs-string">&quot; nl: NoHighlight-取消搜索高亮显示  </span><br><span class="hljs-string">&quot; nd: NewDir-新建文件夹  </span><br><span class="hljs-string">&quot; nc: NewClass-新建类  </span><br><span class="hljs-string">&quot;===================================== O =====================================  </span><br><span class="hljs-string">&quot; o:  </span><br><span class="hljs-string">&quot;===================================== P =====================================  </span><br><span class="hljs-string">&quot; p: PasteClipboardDown-从剪切板粘贴到下面行  </span><br><span class="hljs-string">&quot; P: PasteClipboardUp-从剪切板粘贴到上面行  </span><br><span class="hljs-string">&quot; [V]p: PasteClipboardDown-在可视模式中：从剪切板粘贴到下面行  </span><br><span class="hljs-string">&quot; [V]P: PasteClipboardUp-在可视模式中：从剪切板粘贴到上面行  </span><br><span class="hljs-string">&quot;===================================== Q =====================================  </span><br><span class="hljs-string">&quot; q:  </span><br><span class="hljs-string">&quot;===================================== R =====================================  </span><br><span class="hljs-string">&quot; r: Run/Re ⭐️[目录]🎈  </span><br><span class="hljs-string">&quot; ru: RunClass-运行当前编辑器中的文件或类(Shift + F10)  </span><br><span class="hljs-string">&quot; rr: ReRun-重新运行最近一次运行的程序或测试(Ctrl + Shift + F10)  </span><br><span class="hljs-string">&quot; rt: ReRunTests-重新运行最近一次运行的测试（Unit Tests）(Ctrl + Shift + F10)  </span><br><span class="hljs-string">&quot; rn: Rename-在代码中快速更改一个标识符的名称，并自动处理所有相关的引用(Shift + F6)  </span><br><span class="hljs-string">&quot;===================================== S =====================================  </span><br><span class="hljs-string">&quot; s: Show ⭐️[目录]🎈  </span><br><span class="hljs-string">&quot; ss: ShowFileStructure-显示当前打开文件的文件结构弹出窗口，其中包含文件中的类、方法、字段等结构(Alt + 7)  </span><br><span class="hljs-string">&quot; sb: ShowBookmarks-显示书签（Bookmarks）工具窗口，其中包含当前文件中设置的书签列表(Ctrl + F11)  </span><br><span class="hljs-string">&quot; sp: ShowParameterInfo-用于显示方法或函数的参数信息(Ctrl + p)  </span><br><span class="hljs-string">&quot;===================================== T =====================================  </span><br><span class="hljs-string">&quot; t: Translate-翻译(需要Translate插件)  </span><br><span class="hljs-string">&quot;===================================== U =====================================  </span><br><span class="hljs-string">&quot; u:  </span><br><span class="hljs-string">&quot;===================================== V =====================================  </span><br><span class="hljs-string">&quot; v:  </span><br><span class="hljs-string">&quot;===================================== W =====================================  </span><br><span class="hljs-string">&quot; w: Window ⭐️[目录]🎈  </span><br><span class="hljs-string">&quot; wo: maximize-取消分割窗口 并 隐藏所有编辑器窗口  </span><br><span class="hljs-string">&quot; wl: splitWindowVertically-在垂直方向上分割编辑器窗口，将一个编辑器窗口拆分为两个垂直排列的窗格  </span><br><span class="hljs-string">&quot; wc: closeActiveWindow-关闭当前窗口或分割窗格  </span><br><span class="hljs-string">&quot; wh: HideActiveWindow-关闭提示窗口  </span><br><span class="hljs-string">&quot;===================================== X =====================================  </span><br><span class="hljs-string">&quot; x:  </span><br><span class="hljs-string">&quot;===================================== Y =====================================  </span><br><span class="hljs-string">&quot; y: CopyClipboard-将选中行复制到剪切板  </span><br><span class="hljs-string">&quot; [V]y: CopyClipboard-在可视模式中：将选中文字复制到剪切板  </span><br><span class="hljs-string">&quot;===================================== Z =====================================  </span><br><span class="hljs-string">&quot; z: zip(fold) ⭐️[目录]🎈  </span><br><span class="hljs-string">&quot; zo: unZipAll-展开所有代码折叠区域(Ctrl + Shift + 加号键)  </span><br><span class="hljs-string">&quot; zc: ZipAll-折叠所有代码折叠区域(Ctrl + Shift + 减号键)  </span><br><span class="hljs-string">&quot;=============================================================================  </span><br><span class="hljs-string">&quot;=============================================================================  </span><br><span class="hljs-string">&quot;=============================================================================  </span><br>  <br>  <br>  <br><span class="hljs-string">&quot; ================================================================================================  </span><br><span class="hljs-string">&quot; 🌟🌟🌟 &lt;leader&gt;详细配置 🌟🌟🌟  </span><br><span class="hljs-string">&quot; ================================================================================================  </span><br><span class="hljs-string">&quot;========= NULL ========  </span><br><span class="hljs-string">&quot;这一行为在按下&lt;leader&gt;后显示的,甭管就行  </span><br>let g:WhichKeyDesc_LeaderKeymap= <span class="hljs-string">&quot;&lt;leader&gt; 🌟🌟🌟LeaderKeymap🌟🌟🌟&quot;</span>  <br>  <br>  <br><span class="hljs-string">&quot;========== b ==========  </span><br>  <br>  <br><span class="hljs-string">&quot;========== c ==========  </span><br>let g:WhichKeyDesc_CodeAndClose = <span class="hljs-string">&quot;&lt;leader&gt;c CodeAndClose&quot;</span>  <br>  <br><span class="hljs-string">&quot;关闭所有标签页  </span><br>let g:WhichKeyDesc_CodeAndClose_CloseAllEditors = <span class="hljs-string">&quot;&lt;leader&gt;ca CloseAllEditors&quot;</span>  <br>nmap &lt;leader&gt;ca &lt;action&gt;(CloseAllEditors)  <br><span class="hljs-string">&quot;关闭当前标签页  </span><br>let g:WhichKeyDesc_CodeAndClose_CloseEditor = <span class="hljs-string">&quot;&lt;leader&gt;ce CloseEditor&quot;</span>  <br>nmap &lt;leader&gt;ce :action CloseEditor&lt;CR&gt;  <br><span class="hljs-string">&quot;代码自动补全  </span><br>let g:WhichKeyDesc_CodeAndClose_CodeCompletion = <span class="hljs-string">&quot;&lt;leader&gt;cc CodeCompletion)  </span><br>nmap &lt;leader&gt;cc &lt;action&gt;(CodeCompletion)  <br>  <br>  <br><span class="hljs-string">&quot;========== d ==========  </span><br>let g:WhichKeyDesc_DeBugOrDelete= <span class="hljs-string">&quot;&lt;leader&gt;d DebugOrDelete&quot;</span>  <br><span class="hljs-string">&quot;打断点/解除断点  </span><br>let g:WhichKeyDesc_DebugOrDelete_BreakPoint = <span class="hljs-string">&quot;&lt;leader&gt;dp BreakPoint&quot;</span>  <br>nmap &lt;leader&gt;dp &lt;Action&gt;(ToggleLineBreakpoint)  <br><span class="hljs-string">&quot;调试  </span><br>let g:WhichKeyDesc_DebugOrDelete_DeBug = <span class="hljs-string">&quot;&lt;leader&gt;db DeBug&quot;</span>  <br>nmap &lt;leader&gt;db &lt;Action&gt;(Debug)  <br><span class="hljs-string">&quot;在可视模式中：删除选择的文本并复制到剪切板  </span><br>let g:WhichKeyDesc_DebugOrDelete_DeleteAndCopyToClipboard = <span class="hljs-string">&quot;&lt;leader&gt;dd DeleteAndCopyClipboard&quot;</span>  <br>vmap &lt;leader&gt;dd <span class="hljs-string">&quot;+d  </span><br>  <br>  <br><span class="hljs-string">&quot;========== e ==========  </span><br><span class="hljs-string">&quot;激活项目工具窗口(Alt + 1)  </span><br>let g:WhichKeyDesc_ToggleExplorerOrExtract = <span class="hljs-string">&quot;&lt;leader&gt;e ToggleExplorer&quot;</span>  <br>nmap &lt;leader&gt;e &lt;action&gt;(ActivateProjectToolWindow)  <br>  <br>  <br><span class="hljs-string">&quot;========== f ==========  </span><br>let g:WhichKeyDesc_FindOrFormat = <span class="hljs-string">&quot;&lt;leader&gt;f FindOrFormat&quot;</span>  <br>  <br><span class="hljs-string">&quot;快速 导航/查找 项目中的其他文件(Ctrl + n)  </span><br>let g:WhichKeyDesc_FindOrFormat_FindFile = <span class="hljs-string">&quot;&lt;leader&gt;ff FindFile&quot;</span>  <br>nmap &lt;leader&gt;ff &lt;action&gt;(GotoFile)  <br><span class="hljs-string">&quot;将当前编辑的文件在项目视图中进行选中定位(Alt + F1)  </span><br>let g:WhichKeyDesc_FindOrFormat_FindFileLocation = <span class="hljs-string">&quot;&lt;leader&gt;fl FindFileLocation&quot;</span>  <br>nmap &lt;leader&gt;fl &lt;action&gt;(SelectInProjectView)  <br><span class="hljs-string">&quot;在整个项目中查找指定的文本、关键字或正则表达式，包括代码文件、配置文件和其他文件等(Ctrl + Shift + F)  </span><br>let g:WhichKeyDesc_FindOrFormat_FindText = <span class="hljs-string">&quot;&lt;leader&gt;ft FindText&quot;</span>  <br>nmap &lt;leader&gt;ft &lt;action&gt;(FindInPath)  <br><span class="hljs-string">&quot;打开 &quot;</span>Find Action<span class="hljs-string">&quot;（查找动作）对话框(Ctrl + Shift + A)  </span><br>let g:WhichKeyDesc_FindOrFormat_Commands = <span class="hljs-string">&quot;&lt;leader&gt;fc Commands&quot;</span>  <br>nmap &lt;leader&gt;fc &lt;action&gt;(GotoAction)  <br><span class="hljs-string">&quot;重新格式化代码，使其符合预定义的代码样式和规范 \| 优化导入语句，删除未使用的导入，并将导入语句按字母顺序进行排列  </span><br>let g:WhichKeyDesc_FindOrFormat_Format = <span class="hljs-string">&quot;&lt;leader&gt;fm Format&quot;</span>  <br>nmap &lt;leader&gt;fm &lt;action&gt;(ReformatCode) \<span class="hljs-string">| &lt;action&gt;(OptimizeImports)  </span><br>  <br>  <br><span class="hljs-string">&quot;========== g ==========  </span><br>let g:WhichKeyDesc_GitOrGenerate = <span class="hljs-string">&quot;&lt;leader&gt;g GitOrGenerate&quot;</span>  <br>  <br><span class="hljs-string">&quot;执行版本控制（VCS）的回滚操作，将修改的代码还原到之前的版本  </span><br>let g:WhichKeyDesc_GitOrGenerate_RollbackHunk = <span class="hljs-string">&quot;&lt;leader&gt;gr RollbackHunk&quot;</span>  <br>nmap &lt;leader&gt;gr :action Vcs.RollbackChangedLines&lt;CR&gt;  <br><span class="hljs-string">&quot;生成构造器  </span><br>let g:WhichKeyDesc_GitOrGenerate_GenerateConstructor = <span class="hljs-string">&quot;&lt;leader&gt;gc GenerateConstructor&quot;</span>  <br>nmap &lt;leader&gt;gc :action GenerateConstructor&lt;CR&gt;  <br><span class="hljs-string">&quot;生成getter  </span><br>let g:WhichKeyDesc_GitOrGenerate_GenerateGetter = <span class="hljs-string">&quot;&lt;leader&gt;gg GenerateGetter&quot;</span>  <br>nmap &lt;leader&gt;gg :action GenerateGetter&lt;CR&gt;  <br><span class="hljs-string">&quot;生成setter  </span><br>let g:WhichKeyDesc_GitOrGenerate_GenerateSetter = <span class="hljs-string">&quot;&lt;leader&gt;gs GenerateSetter&quot;</span>  <br>nmap &lt;leader&gt;gs :action GenerateSetter&lt;CR&gt;  <br><span class="hljs-string">&quot;生成setter和getter  </span><br>let g:WhichKeyDesc_GitOrGenerate_GenerateGetterAndSetter = <span class="hljs-string">&quot;&lt;leader&gt;ga GenerateGetterAndSetter&quot;</span>  <br>nmap &lt;leader&gt;ga &lt;action&gt;(GenerateGetterAndSetter)  <br><span class="hljs-string">&quot;生成 equals() 和 hashcode() 的重写方法  </span><br>let g:WhichKeyDesc_GitOrGenerate_GenerateEquals = <span class="hljs-string">&quot;&lt;leader&gt;ge GenerateEquals&quot;</span>  <br>nmap &lt;leader&gt;ge &lt;action&gt;(GenerateEquals)  <br><span class="hljs-string">&quot;生成toString  </span><br>let g:WhichKeyDesc_GitOrGenerate_GenerateToString = <span class="hljs-string">&quot;&lt;leader&gt;ge GenerateToString&quot;</span>  <br>nmap &lt;leader&gt;gt &lt;action&gt;(Actions.ActionsPlugin.GenerateToString)  <br><span class="hljs-string">&quot;diff 显示文件的版本控制历史(git)  </span><br>nmap &lt;leader&gt;gd &lt;action&gt;(Vcs.ShowTabbedFileHistory)  <br>let g:WhichKeyDesc_DebugOrDelete_ShowTabbedFileHistory = <span class="hljs-string">&quot;&lt;leader&gt;gd ShowTabbedFileHistory&quot;</span>  <br>  <br>  <br><span class="hljs-string">&quot;========== h ==========  </span><br><span class="hljs-string">&quot;切换到上一个标签页  </span><br>let g:WhichKeyDesc_PreviousTab = <span class="hljs-string">&quot;&lt;leader&gt;h PreviousTab&quot;</span>  <br>nmap &lt;leader&gt;h :action PreviousTab&lt;CR&gt;  <br>  <br>  <br><span class="hljs-string">&quot;========== i ==========  </span><br><span class="hljs-string">&quot;快速查找并跳转到下一个以 ( 开始的函数或方法调用的位置️  </span><br>let g:WhichKeyDesc_InsertAfterBrackets = <span class="hljs-string">&quot;&lt;leader&gt;i InsertAfterBrackets&quot;</span>  <br>nmap &lt;leader&gt;i f(a  <br>  <br>  <br><span class="hljs-string">&quot;========== j ==========  </span><br><span class="hljs-string">&quot;普通模式下在行尾一个分号，然后进入插入模式并在当前行的下方新建一行  </span><br>let g:WhichKeyDesc_InsertSemicolon = <span class="hljs-string">&quot;&lt;leader&gt;j InsertSemicolon&quot;</span>  <br>nmap &lt;leader&gt;j A;&lt;ESC&gt;o  <br>  <br>  <br><span class="hljs-string">&quot;========== l ==========  </span><br><span class="hljs-string">&quot;切换到下一个标签页  </span><br>let g:WhichKeyDesc_NextTab = <span class="hljs-string">&quot;&lt;leader&gt;l NextTab&quot;</span>  <br>nmap &lt;leader&gt;l :action NextTab&lt;CR&gt;  <br>  <br>  <br><span class="hljs-string">&quot;========== m ==========  </span><br><span class="hljs-string">&quot;打开/关闭 代码小地图  </span><br>let g:WhichKeyDesc_CodeGlance = <span class="hljs-string">&quot;&lt;leader&gt;m CodeGlance&quot;</span>  <br>nmap &lt;leader&gt;m &lt;action&gt;(CodeGlance.toggle)  <br>  <br>  <br><span class="hljs-string">&quot;========== n ==========  </span><br>let g:WhichKeyDesc_NERDTreeOrNew = <span class="hljs-string">&quot;&lt;leader&gt;n NERDTreeOrNew&quot;</span>  <br>  <br><span class="hljs-string">&quot;取消搜索高亮显示(No light)  </span><br>let g:WhichKeyDesc_NERDTreeOrNew_Highlight = <span class="hljs-string">&quot;&lt;leader&gt;nl NoHighlight&quot;</span>  <br>nmap &lt;leader&gt;nl :nohlsearch&lt;CR&gt;  <br><span class="hljs-string">&quot;在当前目录新建文件夹  </span><br>let g:WhichKeyDesc_NERDTreeOrNew_NewDir = <span class="hljs-string">&quot;&lt;leader&gt;nd NewDir&quot;</span>  <br>nmap &lt;leader&gt;nd &lt;action&gt;(NewDir)  <br><span class="hljs-string">&quot;在当前目录新建类  </span><br>let g:WhichKeyDesc_NERDTreeOrNew_NewClass = <span class="hljs-string">&quot;&lt;leader&gt;nc NewClass&quot;</span>  <br>nmap &lt;leader&gt;nc &lt;action&gt;(NewClass)  <br>  <br>  <br><span class="hljs-string">&quot;========== p ==========  </span><br><span class="hljs-string">&quot;从剪切板粘贴到下面行  </span><br>let g:WhichKeyDesc_PasteClipboardDown = <span class="hljs-string">&quot;&lt;leader&gt;p PasteClipboardDown&quot;</span>  <br>nmap &lt;leader&gt;p <span class="hljs-string">&quot;+p  </span><br><span class="hljs-string">&quot;从剪切板粘贴到上面行  </span><br>let g:WhichKeyDesc_PasteClipboardUp = <span class="hljs-string">&quot;&lt;leader&gt;P PasteClipboardUp&quot;</span>  <br>nmap &lt;leader&gt;P <span class="hljs-string">&quot;+P  </span><br><span class="hljs-string">&quot;在可视模式中：从剪切板粘贴到下面行  </span><br>let g:WhichKeyDesc_PasteClipboardDown = <span class="hljs-string">&quot;&lt;leader&gt;p PasteClipboardDown&quot;</span>  <br>vmap &lt;leader&gt;p <span class="hljs-string">&quot;+p  </span><br><span class="hljs-string">&quot;在可视模式中：从剪切板粘贴到上面行  </span><br>let g:WhichKeyDesc_PasteClipboardUp = <span class="hljs-string">&quot;&lt;leader&gt;P PasteClipboardUp&quot;</span>  <br>vmap &lt;leader&gt;P <span class="hljs-string">&quot;+P  </span><br>  <br>  <br><span class="hljs-string">&quot;========== r ==========  </span><br>let g:WhichKeyDesc_RunOrRe = <span class="hljs-string">&quot;&lt;leader&gt;r RunOrRe&quot;</span>  <br>  <br><span class="hljs-string">&quot;运行当前编辑器中的文件或类(Shift + F10)  </span><br>let g:WhichKeyDesc_RunOrRe_RunCalss = <span class="hljs-string">&quot;&lt;leader&gt;ru RunClass&quot;</span>  <br>nmap &lt;leader&gt;ru :action RunClass&lt;CR&gt;  <br><span class="hljs-string">&quot;重新运行最近一次运行的程序或测试(Ctrl+Shift + F10)  </span><br>let g:WhichKeyDesc_RunOrRe_ReRun = <span class="hljs-string">&quot;&lt;leader&gt;rr ReRun&quot;</span>  <br>nmap &lt;leader&gt;rr &lt;action&gt;(Rerun)  <br><span class="hljs-string">&quot;重新运行最近一次运行的测试（Unit Tests）(Ctrl + Shift + F10)  </span><br>let g:WhichKeyDesc_RunOrRe_ReRunTests = <span class="hljs-string">&quot;&lt;leader&gt;rt ReRunTests&quot;</span>  <br>nmap &lt;leader&gt;rt &lt;action&gt;(RerunTests)  <br><span class="hljs-string">&quot;在代码中快速更改一个标识符的名称，并自动处理所有相关的引用(Shift + F6)  </span><br>let g:WhichKeyDesc_RunOrRe_Rename = <span class="hljs-string">&quot;&lt;leader&gt;rn Rename&quot;</span>  <br>map &lt;leader&gt;rn &lt;action&gt;(RenameElement)  <br>  <br>========= s ==========  <br>let g:WhichKeyDesc_Show = <span class="hljs-string">&quot;&lt;leader&gt;s Show&quot;</span>  <br>  <br><span class="hljs-string">&quot;显示当前打开文件的文件结构弹出窗口，其中包含文件中的类、方法、字段等结构(Alt + 7)  </span><br>let g:WhichKeyDesc_Show_FileStructure = <span class="hljs-string">&quot;&lt;leader&gt;ss ShowFileStructure&quot;</span>  <br>nmap &lt;leader&gt;ss &lt;action&gt;(FileStructurePopup)  <br><span class="hljs-string">&quot;显示书签（Bookmarks）工具窗口，其中包含当前文件中设置的书签列表(Ctrl + F11)  </span><br>let g:WhichKeyDesc_Show_Bookmarks = <span class="hljs-string">&quot;&lt;leader&gt;sb ShowBookmarks&quot;</span>  <br>nmap &lt;leader&gt;sb &lt;action&gt;(ShowBookmarks)  <br><span class="hljs-string">&quot;用于显示方法或函数的参数信息(Ctrl + p)  </span><br>let g:WhichKeyDesc_Show_ParameterInfo = <span class="hljs-string">&quot;&lt;leader&gt;sp ShowParameterInfo&quot;</span>  <br>nmap &lt;leader&gt;sp &lt;action&gt;(ParameterInfo)  <br>  <br>  <br><span class="hljs-string">&quot;========= t ==========  </span><br><span class="hljs-string">&quot;翻译  </span><br>let g:WhichKeyDesc_Translate = <span class="hljs-string">&quot;&lt;leader&gt;t Translate&quot;</span>  <br>nmap &lt;leader&gt;t &lt;action&gt;($EditorTranslateAction)  <br>vmap &lt;leader&gt;t &lt;action&gt;($EditorTranslateAction)  <br>  <br>  <br><span class="hljs-string">&quot;========== w ==========  </span><br><span class="hljs-string">&quot;&quot;&quot;&quot;</span>   包含自定义宏，可能无法使用   <span class="hljs-string">&quot;&quot;&quot;&quot;</span>  <br>let g:WhichKeyDesc_Windows = <span class="hljs-string">&quot;&lt;leader&gt;w Windows&quot;</span>  <br>  <br><span class="hljs-string">&quot;取消分割窗口 并 隐藏所有编辑器窗口  </span><br>let g:WhichKeyDesc_Windows_maximize = <span class="hljs-string">&quot;&lt;leader&gt;wo maximize&quot;</span>  <br>nmap &lt;leader&gt;wo &lt;action&gt;(UnsplitAll) \<span class="hljs-string">| &lt;action&gt;(HideAllWindows)  </span><br><span class="hljs-string">&quot;在垂直方向上分割编辑器窗口，将一个编辑器窗口拆分为两个垂直排列的窗格(???)  </span><br>let g:WhichKeyDesc_Windows_splitWindowVertically = <span class="hljs-string">&quot;&lt;leader&gt;wl splitWindowVertically&quot;</span>  <br>nmap &lt;leader&gt;wl &lt;action&gt;(Macro.SplitVertically)  <br><span class="hljs-string">&quot;关闭当前窗口或分割窗格  </span><br>let g:WhichKeyDesc_Windows_closeActiveWindow = <span class="hljs-string">&quot;&lt;leader&gt;wc closeActiveWindow&quot;</span>  <br>nmap &lt;leader&gt;wc &lt;c-w&gt;c  <br>let g:WhichKeyDesc_Windows_HideActiveWindow = <span class="hljs-string">&quot;&lt;leader&gt;wh HideActiveWindow&quot;</span>  <br>nmap &lt;leader&gt;wh &lt;Alt-<span class="hljs-number">6</span>&gt;  <br>  <br>  <br><span class="hljs-string">&quot;========== y ==========  </span><br><span class="hljs-string">&quot;将 &quot;</span>+ 简化为 &lt;leader&gt;  <br>let g:WhichKeyDesc_CopyClipboard = <span class="hljs-string">&quot;&lt;leader&gt;y CopyClipboard&quot;</span>  <br>vmap &lt;leader&gt;y <span class="hljs-string">&quot;+y  </span><br><span class="hljs-string">&quot;将 &quot;</span>+ 简化为 &lt;leader&gt;  <br>let g:WhichKeyDesc_CopyClipboard= <span class="hljs-string">&quot;&lt;leader&gt;y CopyClipboard&quot;</span>  <br>nmap &lt;leader&gt;y <span class="hljs-string">&quot;+yy  </span><br>  <br>  <br><span class="hljs-string">&quot;========== z ==========  </span><br>let g:WhichKeyDesc_Zip = <span class="hljs-string">&quot;&lt;leader&gt;z Zip&quot;</span>  <br>  <br><span class="hljs-string">&quot;展开所有代码折叠区域(Ctrl + Shift + 加号键)  </span><br>let g:WhichKeyDesc_Zip_unZipAll = <span class="hljs-string">&quot;&lt;leader&gt;zo unZipAll&quot;</span>  <br>nmap &lt;leader&gt;zo &lt;action&gt;(ExpandAllRegions)  <br><span class="hljs-string">&quot;折叠所有代码折叠区域(Ctrl + Shift + 减号键)  </span><br>let g:WhichKeyDesc_Zip_ZipAll = <span class="hljs-string">&quot;&lt;leader&gt;zc ZipAll&quot;</span>  <br>nmap &lt;leader&gt;zc &lt;action&gt;(CollapseAllRegions)  <br>  <br>  <br>  <br>  <br><span class="hljs-string">&quot; ================================================================================================  </span><br><span class="hljs-string">&quot; 🌸🌸🌸 NERDTree 🌸🌸🌸  </span><br><span class="hljs-string">&quot; ================================================================================================  </span><br><span class="hljs-string">&quot;&lt;C-w-w&gt;：在多个打开的编辑器窗口之间切换  </span><br><span class="hljs-string">&quot;在目录中，按下 go 打开文件并保持光标在目录  </span><br><span class="hljs-string">&quot;在目录中，按下 gi 以上下并排窗口形式打开文件(并关闭目录)  </span><br><span class="hljs-string">&quot;光标在目录时，按Esc回到编辑器  </span><br><span class="hljs-string">&quot;编辑器和目录间切换存在许多功能类似的快捷键，相似但不完全相同  </span><br><span class="hljs-string">&quot;仅 打开/关闭 目录推荐使用&lt;leader&gt;wo 其次 Alt + 1  </span><br>  <br><span class="hljs-string">&quot;按下 &lt;leader&gt;nn 将使焦点转移到 NERDTree 窗口  </span><br>nnoremap &lt;leader&gt;nn :NERDTreeFocus&lt;CR&gt;  <br>let g:WhichKeyDesc_NERDTreeOrNo_NERDTreeFocus = <span class="hljs-string">&quot;&lt;leader&gt;nn NERDTreeFocus&quot;</span>  <br><span class="hljs-string">&quot;按下 &lt;C-n&gt; 将打开 NERDTree 文件资源管理器  </span><br>nnoremap &lt;C-n&gt; :NERDTree&lt;CR&gt;  <br><span class="hljs-string">&quot;按下 &lt;C-t&gt; 将切换 NERDTree 文件资源管理器的显示状态，即打开或关闭 NERDTree  </span><br>nnoremap &lt;C-t&gt; :NERDTreeToggle&lt;CR&gt;  <br><span class="hljs-string">&quot;按下 &lt;C-f&gt; 将在 NERDTree 文件资源管理器中定位当前编辑文件所在的节点，并使其可见  </span><br>nnoremap &lt;C-f&gt; :NERDTreeFind&lt;CR&gt;  <br>  <br>  <br>noremap f :action AceAction&lt;CR&gt;<br></code></pre></td></tr></table></figure>
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/AOSP/" class="category-chain-item">AOSP</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>vim 学习</div>
+      <div>http://peiniwan.github.io/2025/12/7ceb30e1d028.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>六月的雨</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年12月16日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/12/00dc98906bd4.html" title="车载应用">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">车载应用</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/12/75b9a8195245.html" title="Linux相关">
+                        <span class="hidden-mobile">Linux相关</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"OwNIdaopOn1rwNhtotGOGC0B-gzGzoHsz","appKey":"eadytQ2XqWmxuvAKeg08XX83","path":"window.location.pathname","placeholder":null,"avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":true,"recordIP":false,"serverURLs":"https://ownidaop.lc-cn-n1-shared.com","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

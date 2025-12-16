@@ -1,0 +1,736 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="六月的雨">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="设计模式3（行为模式）行为模式这类模式负责对象间的高效沟通和职责委派。  命令模式用得少 迭代器模式特点是实现 Iterable 接口，通过 next 的方式获取集合元素，同时具备对元素的删除等操作 中介者模式中介者模式要解决的就是复杂功能应用之间的重复调用，在这中间添加一层中介者包装服务，对外提供简单、通用、易扩展的服务能力。这种模式的设计满足了; 单一职责 和 开闭原则，也就符合了迪米特原则，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="设计模式3（行为模式）">
+<meta property="og:url" content="http://peiniwan.github.io/2025/12/b54530ecb59a.html">
+<meta property="og:site_name" content="六月的雨的笔记">
+<meta property="og:description" content="设计模式3（行为模式）行为模式这类模式负责对象间的高效沟通和职责委派。  命令模式用得少 迭代器模式特点是实现 Iterable 接口，通过 next 的方式获取集合元素，同时具备对元素的删除等操作 中介者模式中介者模式要解决的就是复杂功能应用之间的重复调用，在这中间添加一层中介者包装服务，对外提供简单、通用、易扩展的服务能力。这种模式的设计满足了; 单一职责 和 开闭原则，也就符合了迪米特原则，">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F3%EF%BC%88%E8%A1%8C%E4%B8%BA%E6%A8%A1%E5%BC%8F%EF%BC%89.resources/2023/09/15/18-50-23-600c6e2c4ca0a428d53d70ef3e1799e8-unknown_filename.4-0af727.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F3%EF%BC%88%E8%A1%8C%E4%B8%BA%E6%A8%A1%E5%BC%8F%EF%BC%89.resources/2023/09/15/18-50-23-4cce113690ec600cbda82a7435de1804-unknown_filename.5-0f2da6.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F3%EF%BC%88%E8%A1%8C%E4%B8%BA%E6%A8%A1%E5%BC%8F%EF%BC%89.resources/2023/09/15/18-50-23-8d6574d2eec7c286c86c1f218ae05dd3-unknown_filename-d9a9f2.jpeg">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F3%EF%BC%88%E8%A1%8C%E4%B8%BA%E6%A8%A1%E5%BC%8F%EF%BC%89.resources/2023/09/15/18-50-23-666891bdb847f6f46cf006bea500d375-unknown_filename.1-8455d4.jpeg">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F3%EF%BC%88%E8%A1%8C%E4%B8%BA%E6%A8%A1%E5%BC%8F%EF%BC%89.resources/2023/09/15/18-50-23-56a18af8474f848c5ef75d4de803016c-unknown_filename.2-d498ea.jpeg">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F3%EF%BC%88%E8%A1%8C%E4%B8%BA%E6%A8%A1%E5%BC%8F%EF%BC%89.resources/2023/09/15/18-50-23-50e09a1ec465bca3709314c67bf7b80e-unknown_filename.3-03b73a.jpeg">
+<meta property="article:published_time" content="2025-12-16T13:59:22.628Z">
+<meta property="article:modified_time" content="2024-03-27T01:54:00.000Z">
+<meta property="article:author" content="六月的雨">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F3%EF%BC%88%E8%A1%8C%E4%B8%BA%E6%A8%A1%E5%BC%8F%EF%BC%89.resources/2023/09/15/18-50-23-600c6e2c4ca0a428d53d70ef3e1799e8-unknown_filename.4-0af727.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>设计模式3（行为模式） - 六月的雨的笔记</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"peiniwan.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>六月的雨的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="设计模式3（行为模式）"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-12-16 21:59" pubdate>
+          2025年12月16日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.8k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          15 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">设计模式3（行为模式）</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="设计模式3（行为模式）"><a href="#设计模式3（行为模式）" class="headerlink" title="设计模式3（行为模式）"></a>设计模式3（行为模式）</h1><p>行为模式<br>这类模式负责<em>对象间的高效沟通和职责委派</em>。</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F3%EF%BC%88%E8%A1%8C%E4%B8%BA%E6%A8%A1%E5%BC%8F%EF%BC%89.resources/2023/09/15/18-50-23-600c6e2c4ca0a428d53d70ef3e1799e8-unknown_filename.4-0af727.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.4"></p>
+<h2 id="命令模式"><a href="#命令模式" class="headerlink" title="命令模式"></a>命令模式</h2><p>用得少</p>
+<h2 id="迭代器模式"><a href="#迭代器模式" class="headerlink" title="迭代器模式"></a>迭代器模式</h2><p>特点是实现 Iterable 接口，通过 next 的方式获取集合元素，同时具备对元素的删除等操作</p>
+<h2 id="中介者模式"><a href="#中介者模式" class="headerlink" title="中介者模式"></a>中介者模式</h2><p>中介者模式要解决的就是复杂功能应用之间的重复调用，在这中间添加一层中介者包装服务，对外提供简单、通用、易扩展的服务能力。<br>这种模式的设计满足了; 单一职责 和 开闭原则，也就符合了迪米特原则，即越少人知道越好。外部的人只需要按照需求进行调用，不需要知道具体的是如何实现的<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F3%EF%BC%88%E8%A1%8C%E4%B8%BA%E6%A8%A1%E5%BC%8F%EF%BC%89.resources/2023/09/15/18-50-23-4cce113690ec600cbda82a7435de1804-unknown_filename.5-0f2da6.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.5|474x0"></p>
+<h2 id="模板方法模式"><a href="#模板方法模式" class="headerlink" title="模板方法模式"></a>模板方法模式</h2><p>（AsnycTask、Activity）<br>提供一个抽象类，将部分逻辑以具体方法或构造器的形式实现，然后声明一些抽象方法来迫使子类实现剩余的逻辑。不同的子类可以以不同的方式实现这些抽象方法（多态实现），从而实现不同的业务逻辑。<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F3%EF%BC%88%E8%A1%8C%E4%B8%BA%E6%A8%A1%E5%BC%8F%EF%BC%89.resources/2023/09/15/18-50-23-8d6574d2eec7c286c86c1f218ae05dd3-unknown_filename-d9a9f2.jpeg" srcset="/img/loading.gif" lazyload alt="unknown_filename|669x0"></p>
+<p>使用场景</p>
+<p>1)多个子类有公有的方法，并且逻辑基本相同时<br>2)重要、复杂的算法，可以把核心算法设计为模板方法<br>3)重构时，模板方法模式是一个经常使用的模式</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><code class="hljs csharp"><span class="hljs-keyword">public</span> <span class="hljs-keyword">abstract</span> <span class="hljs-keyword">class</span> <span class="hljs-title">AbstractWork</span> &#123;<br><br>    <span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title">getUp</span>()</span> &#123;<br>        System.<span class="hljs-keyword">out</span>.println(<span class="hljs-string">&quot;起床啦！&quot;</span>);<br>    &#125;<br>    <span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">abstract</span> <span class="hljs-keyword">void</span> <span class="hljs-title">goToWork</span>()</span>;<br>    <span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">abstract</span> <span class="hljs-keyword">void</span> <span class="hljs-title">work</span>()</span>;<br>    <span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">abstract</span> <span class="hljs-keyword">void</span> <span class="hljs-title">getOffWork</span>()</span>;<br>    <span class="hljs-comment">/*</span><br><span class="hljs-comment">     * TemplateMethod，大家都拥有共同的执行步骤</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> final <span class="hljs-keyword">void</span> <span class="hljs-title">newDay</span>()</span> &#123;<br>        getUp();<br>        goToWork();<br>        work();<br>        getOffWork();<br>    &#125;<br>&#125;<br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">StaffWork</span> <span class="hljs-title">extends</span> <span class="hljs-title">AbstractWork</span> &#123;<br><br>    @Override<br>    <span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title">goToWork</span>()</span> &#123;<br>        System.<span class="hljs-keyword">out</span>.println(<span class="hljs-string">&quot;员工做公交去上班&quot;</span>);<br>    &#125;<br>    @Override<br>    <span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title">work</span>()</span> &#123;<br>        System.<span class="hljs-keyword">out</span>.println(<span class="hljs-string">&quot;员工处理具体工作&quot;</span>);<br>    &#125;<br>    @Override<br>    <span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title">getOffWork</span>()</span> &#123;<br>        System.<span class="hljs-keyword">out</span>.println(<span class="hljs-string">&quot;员工做公交下班&quot;</span>);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="策略"><a href="#策略" class="headerlink" title="策略"></a>策略</h2><p>（Volley）<strong>替换if else</strong><br>它<em>定义了一些算法，分别封装起来。让它们之间可以互相替换，此模式让算法的变化</em>，不会影响到使用算法的调用者。<br>一个类定义了多种行为，并且这些行为在这个类的方法中以多个条件语句的形式出现，那么可以使用策略模式避免在类中使用大量的条件语句。</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F3%EF%BC%88%E8%A1%8C%E4%B8%BA%E6%A8%A1%E5%BC%8F%EF%BC%89.resources/2023/09/15/18-50-23-666891bdb847f6f46cf006bea500d375-unknown_filename.1-8455d4.jpeg" srcset="/img/loading.gif" lazyload alt="unknown_filename.1|630x0"></p>
+<p>strategy和concrete是继承关系，三角箭头实线<br>context和strategy是聚合关系，空心菱形</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">interface</span> <span class="hljs-title class_">AbstractStrategy</span> &#123;<br>    <span class="hljs-comment">//按距离来计算价格</span><br>    <span class="hljs-type">int</span> <span class="hljs-title function_">calculatePrice</span><span class="hljs-params">(<span class="hljs-type">int</span> km)</span>;<br>&#125;<br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">BusStrategy</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">AbstractStrategy</span> &#123;<br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">calculatePrice</span><span class="hljs-params">(<span class="hljs-type">int</span> km)</span> &#123;<br>        <span class="hljs-keyword">return</span> km;<br>    &#125;<br>&#125;<br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">TaxiStrategy</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">AbstractStrategy</span> &#123;<br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">calculatePrice</span><span class="hljs-params">(<span class="hljs-type">int</span> km)</span> &#123;<br>        <span class="hljs-keyword">return</span> km * <span class="hljs-number">2</span>;<br>    &#125;<br>&#125;<br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Context</span> &#123;<br>    <span class="hljs-keyword">private</span> AbstractStrategy strategy;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">setStrategy</span><span class="hljs-params">(AbstractStrategy strategy)</span> &#123;<br>        <span class="hljs-built_in">this</span>.strategy = strategy;<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">calclatePrice</span><span class="hljs-params">(<span class="hljs-type">int</span> km)</span> &#123;<br>        <span class="hljs-keyword">return</span> strategy.calculatePrice(km);<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] strings)</span> &#123;<br>        <span class="hljs-type">Context</span> <span class="hljs-variable">calculator</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Context</span>();<br>        calculator.setStrategy(<span class="hljs-keyword">new</span> <span class="hljs-title class_">BusStrategy</span>());<br><span class="hljs-comment">//        calculator.setStrategy(new TaxiStrategy());</span><br>        System.out.println(<span class="hljs-string">&quot;公交车20km价格：&quot;</span> + calculator.calclatePrice(<span class="hljs-number">20</span>));<br>    &#125;<br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>传统写法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><code class="hljs java">    <span class="hljs-comment">//PriceCalculator 类很明显的问题就是并不是单一职责，首先它承担计算公交车和地铁乘坐价格的职责，</span><br>    <span class="hljs-comment">//另一个问题就是通过if-else的形式来判断使用哪种计算形式。当我们增加一种出行方式时，如出租车，</span><br>    <span class="hljs-comment">//那么我们就需要在PriceCalculator 中增加一个方法来计算出租车出行的价格，并且在calculatePrice(int km, int type)函数增加一个判断</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">PriceCalculator</span> &#123;<br>        <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">int</span> <span class="hljs-variable">TAXI</span> <span class="hljs-operator">=</span> <span class="hljs-number">3</span>;<br>        <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">int</span> <span class="hljs-variable">BUS</span> <span class="hljs-operator">=</span> <span class="hljs-number">1</span>;<br>        <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">int</span> <span class="hljs-variable">SUBWAY</span> <span class="hljs-operator">=</span> <span class="hljs-number">2</span>;<br><br>        <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] strings)</span> &#123;<br>            <span class="hljs-type">PriceCalculator</span> <span class="hljs-variable">calculator</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">PriceCalculator</span>();<br>            System.out.println(<span class="hljs-string">&quot;做20km公交票价：&quot;</span> + calculator.calculatePrice(<span class="hljs-number">20</span>, BUS));<br>            System.out.println(<span class="hljs-string">&quot;做20km地铁票价：&quot;</span> + calculator.calculatePrice(<span class="hljs-number">20</span>, SUBWAY));<br>        &#125;<br><br>        <span class="hljs-keyword">private</span> <span class="hljs-type">int</span> <span class="hljs-title function_">busPrice</span><span class="hljs-params">(<span class="hljs-type">int</span> km)</span> &#123;<br>            <span class="hljs-keyword">return</span> km * <span class="hljs-number">1</span>;<br>        &#125;<br>        <span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">taxiPrice</span><span class="hljs-params">(<span class="hljs-type">int</span> km)</span> &#123;<br>            <span class="hljs-keyword">return</span> km * <span class="hljs-number">7</span>;<br>        &#125;<br><br>        <span class="hljs-comment">/**</span><br><span class="hljs-comment">         * 根据不同类型计算</span><br><span class="hljs-comment">         */</span><br>        <span class="hljs-type">int</span> <span class="hljs-title function_">calculatePrice</span><span class="hljs-params">(<span class="hljs-type">int</span> km, <span class="hljs-type">int</span> type)</span> &#123;<br>            <span class="hljs-keyword">if</span> (type == BUS) &#123;<br>                <span class="hljs-keyword">return</span> busPrice(km);<br>            &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (type == SUBWAY) &#123;<br>                <span class="hljs-keyword">return</span> taxiPrice(km);<br>            &#125;<br>            <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>        &#125;<br>    &#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="观察者模式"><a href="#观察者模式" class="headerlink" title="观察者模式"></a>观察者模式</h2><p>定义对象之间的一种一对多依赖关系，使得每当一个对象状态发生改变时，其相关依赖对象都可得到通知并被自动更新。（android中的回调模式、listview的notifyDataChanged、rxjava）</p>
+<p>观察者模式在android中的实际运用：回调模式</p>
+<p>回调模式：实现了抽象类／接口的实例实现了父类的提供的抽象方法后，将该方法交还给父类来处理。<br>例如：通过 setOnClickListener() 方法，Button 持有 OnClickListener 的引用（这一过程没有在图上画出）；当用户点击时，Button 自动调用 OnClickListener 的 onClick() 方法。另外，如果把这张图中的概念抽象出来</p>
+<p>（Button（view） -&gt; 被观察者、OnClickListener -&gt; 观察者、setOnClickListener() -&gt; 订阅，onClick() -&gt; 事件），就由专用的观察者模式（例如只用于监听控件点击）转变成了通用的观察者模式。</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F3%EF%BC%88%E8%A1%8C%E4%B8%BA%E6%A8%A1%E5%BC%8F%EF%BC%89.resources/2023/09/15/18-50-23-56a18af8474f848c5ef75d4de803016c-unknown_filename.2-d498ea.jpeg" srcset="/img/loading.gif" lazyload alt="unknown_filename.2|438x0"></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">ObserverPattern</span> &#123;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">interface</span> <span class="hljs-title class_">Observer</span> &#123;<br>        <span class="hljs-keyword">void</span> <span class="hljs-title function_">update</span><span class="hljs-params">(String state)</span>;<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">ConcreteObserver</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">Observer</span> &#123;<br>        <span class="hljs-comment">// 观察者状态</span><br>        <span class="hljs-keyword">private</span> String observerState;<br><br>        <span class="hljs-meta">@Override</span><br>        <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">update</span><span class="hljs-params">(String state)</span> &#123;<br>            <span class="hljs-comment">// 更新观察者状态，让它与目标状态一致</span><br>            observerState = state;<br>            System.out.println(<span class="hljs-string">&quot;ConcreteObserver State :&quot;</span> + observerState);<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 抽象订阅者（目标者）</span><br><span class="hljs-comment"> * 被观察者</span><br><span class="hljs-comment">     *</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">abstract</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Subject</span> &#123;<br><br>        <span class="hljs-comment">// 保存注册的观察者对象</span><br>        <span class="hljs-keyword">private</span> List&lt;Observer&gt; mObservers = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ArrayList</span>&lt;&gt;();<br><br>        <span class="hljs-comment">//注册观察者对象</span><br>        <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">attach</span><span class="hljs-params">(Observer observer)</span> &#123;<br>            mObservers.add(observer);<br>            System.out.println(<span class="hljs-string">&quot;Attached an observer&quot;</span>);<br>        &#125;<br><br>        <span class="hljs-comment">//注销观察者对象</span><br>        <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">detach</span><span class="hljs-params">(Observer observer)</span> &#123;<br>            mObservers.remove(observer);<br>        &#125;<br><br>        <span class="hljs-comment">// 通知所有注册的观察者对象</span><br>        <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">nodifyObservers</span><span class="hljs-params">(String newState)</span> &#123;<br>            <span class="hljs-keyword">for</span> (Observer observer : mObservers) &#123;<br>                observer.update(newState);<br>            &#125;<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">ConcreteSubject</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Subject</span> &#123;<br><br>        <span class="hljs-keyword">private</span> String state;<br><br>        <span class="hljs-keyword">public</span> String <span class="hljs-title function_">getState</span><span class="hljs-params">()</span> &#123;<br>            <span class="hljs-keyword">return</span> state;<br>        &#125;<br><br>        <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">change</span><span class="hljs-params">(String newState)</span> &#123;<br>            state = newState;<br>            System.out.println(<span class="hljs-string">&quot;ConcreteSubject State:&quot;</span> + state);<br>            <span class="hljs-comment">//状态发生改变，通知观察者</span><br>            nodifyObservers(state);<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> &#123;<br>        <span class="hljs-type">ObserverPattern</span> <span class="hljs-variable">observerPattern</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ObserverPattern</span>();<br>        <span class="hljs-type">ConcreteSubject</span> <span class="hljs-variable">concreteSubject</span> <span class="hljs-operator">=</span> observerPattern.<span class="hljs-keyword">new</span> <span class="hljs-title class_">ConcreteSubject</span>();<br>        <span class="hljs-type">Observer</span> <span class="hljs-variable">observer1</span> <span class="hljs-operator">=</span> observerPattern.<span class="hljs-keyword">new</span> <span class="hljs-title class_">ConcreteObserver</span>();<br>        <span class="hljs-type">Observer</span> <span class="hljs-variable">observer2</span> <span class="hljs-operator">=</span> observerPattern.<span class="hljs-keyword">new</span> <span class="hljs-title class_">ConcreteObserver</span>();<br>        <span class="hljs-comment">// 将观察者对象注册到目标对象上</span><br>        concreteSubject.attach(observer1);<br>        concreteSubject.attach(observer2);<br>        <span class="hljs-comment">// 改变目标对象的状态</span><br>        concreteSubject.change(<span class="hljs-string">&quot;I change&quot;</span>);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>安卓自己的观察者</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">MessageObserver</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">Observer</span> &#123;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">update</span><span class="hljs-params">(Observable observable, Object o)</span> &#123;<br>        Message  message=(Message)o;<br>    &#125;<br>&#125;<br><br>    <span class="hljs-keyword">class</span> <span class="hljs-title class_">MessageObservable</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">java</span>.util.Observable &#123;<br><br>        <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">registerMessageObserver</span><span class="hljs-params">(Observer observer)</span> &#123;<br>            addObserver(observer);<br>        &#125;<br><br>        <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">unRegisterMessageObserver</span><span class="hljs-params">(Observer observer)</span> &#123;<br>            addObserver(observer);<br>        &#125;<br><br>        <span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">onMessage</span><span class="hljs-params">(Message message)</span> &#123;<br>            setChanged();<br>            notifyObservers(message);<br>        &#125;<br>    &#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="责任链模式"><a href="#责任链模式" class="headerlink" title="责任链模式"></a>责任链模式</h2><p>（try-catch、有序广播、viewgroup 事件传递）<br>一个请求有多个对象来处理，这些对象是一条链，但具体由哪个对象来处理，根据条件判断来确定，如果不能处理会传递给该链中的下一个对象，直到有对象处理它为止</p>
+<p>使用场景</p>
+<ul>
+<li>有<em>多个对象可以处理同一个请求</em>，具体哪个对象处理该请求待运行时刻再确定</li>
+<li>在不明确指定接收者的情况下，向多个对象中的一个提交一个请求</li>
+</ul>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F3%EF%BC%88%E8%A1%8C%E4%B8%BA%E6%A8%A1%E5%BC%8F%EF%BC%89.resources/2023/09/15/18-50-23-50e09a1ec465bca3709314c67bf7b80e-unknown_filename.3-03b73a.jpeg" srcset="/img/loading.gif" lazyload alt="unknown_filename.3|601x0"></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Chain</span> &#123;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">abstract</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Handler</span> &#123;<br><br>        <span class="hljs-keyword">private</span> Handler nextHandler;<br><br>        <span class="hljs-comment">// 当前领导能审批通过的最多天数</span><br>        <span class="hljs-keyword">public</span> <span class="hljs-type">int</span> maxDay;<br><br>        <span class="hljs-keyword">protected</span> <span class="hljs-title function_">Handler</span><span class="hljs-params">(<span class="hljs-type">int</span> maxDay)</span> &#123;<br>            <span class="hljs-built_in">this</span>.maxDay = maxDay;<br>        &#125;<br><br>        <span class="hljs-comment">//设置责任链中下一个处理请求的对象</span><br>        <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">setNextHandler</span><span class="hljs-params">(Handler handler)</span> &#123;<br>            nextHandler = handler;<br>        &#125;<br><br>        <span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">handleRequest</span><span class="hljs-params">(<span class="hljs-type">int</span> day)</span> &#123;<br>            <span class="hljs-keyword">if</span> (day &lt;= maxDay) &#123;<br>                reply(day);<br>            &#125; <span class="hljs-keyword">else</span> &#123;<br>                <span class="hljs-keyword">if</span> (nextHandler != <span class="hljs-literal">null</span>) &#123;<br>                    <span class="hljs-comment">//审批权限不够，继续上报</span><br>                    nextHandler.handleRequest(day);<br>                &#125; <span class="hljs-keyword">else</span> &#123;<br>                    System.out.println(<span class="hljs-string">&quot;没有更高的领导审批了&quot;</span>);<br>                &#125;<br>            &#125;<br>        &#125;<br><br>        <span class="hljs-keyword">protected</span> <span class="hljs-keyword">abstract</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">reply</span><span class="hljs-params">(<span class="hljs-type">int</span> day)</span>;<br>    &#125;<br><br>    <span class="hljs-keyword">class</span> <span class="hljs-title class_">ProjectManager</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Handler</span> &#123;<br>        <span class="hljs-keyword">public</span> <span class="hljs-title function_">ProjectManager</span><span class="hljs-params">(<span class="hljs-type">int</span> day)</span> &#123;<br>            <span class="hljs-built_in">super</span>(day);<br>        &#125;<br><br>        <span class="hljs-meta">@Override</span><br>        <span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">reply</span><span class="hljs-params">(<span class="hljs-type">int</span> day)</span> &#123;<br>            System.out.println(day + <span class="hljs-string">&quot;天请假，项目经理直接审批通过&quot;</span>);<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-keyword">class</span> <span class="hljs-title class_">DepartmentManager</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Handler</span> &#123;<br>        <span class="hljs-keyword">public</span> <span class="hljs-title function_">DepartmentManager</span><span class="hljs-params">(<span class="hljs-type">int</span> day)</span> &#123;<br>            <span class="hljs-built_in">super</span>(day);<br>        &#125;<br><br>        <span class="hljs-meta">@Override</span><br>        <span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">reply</span><span class="hljs-params">(<span class="hljs-type">int</span> day)</span> &#123;<br>            System.out.println(day + <span class="hljs-string">&quot;天请假，部门经理审批通过&quot;</span>);<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-keyword">class</span> <span class="hljs-title class_">GeneralManager</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Handler</span> &#123;<br>        <span class="hljs-keyword">public</span> <span class="hljs-title function_">GeneralManager</span><span class="hljs-params">(<span class="hljs-type">int</span> day)</span> &#123;<br>            <span class="hljs-built_in">super</span>(day);<br>        &#125;<br><br>        <span class="hljs-meta">@Override</span><br>        <span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">reply</span><span class="hljs-params">(<span class="hljs-type">int</span> day)</span> &#123;<br>            System.out.println(day + <span class="hljs-string">&quot;天请假，总经理直接审批通过&quot;</span>);<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] strings)</span> &#123;<br>        <span class="hljs-type">Chain</span> <span class="hljs-variable">chain</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Chain</span>();<br>        <span class="hljs-type">Handler</span> <span class="hljs-variable">projectManager</span> <span class="hljs-operator">=</span> chain.<span class="hljs-keyword">new</span> <span class="hljs-title class_">ProjectManager</span>(<span class="hljs-number">3</span>);<br>        <span class="hljs-type">Handler</span> <span class="hljs-variable">departmentManager</span> <span class="hljs-operator">=</span> chain.<span class="hljs-keyword">new</span> <span class="hljs-title class_">DepartmentManager</span>(<span class="hljs-number">5</span>);<br>        <span class="hljs-type">Handler</span> <span class="hljs-variable">generalManager</span> <span class="hljs-operator">=</span> chain.<span class="hljs-keyword">new</span> <span class="hljs-title class_">GeneralManager</span>(<span class="hljs-number">15</span>);<br>        <span class="hljs-comment">//创建职责链</span><br>        projectManager.setNextHandler(departmentManager);<br>        departmentManager.setNextHandler(generalManager);<br>        <span class="hljs-comment">//发起请假请求</span><br>        projectManager.handleRequest(<span class="hljs-number">4</span>);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" class="category-chain-item">设计模式</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>设计模式3（行为模式）</div>
+      <div>http://peiniwan.github.io/2025/12/b54530ecb59a.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>六月的雨</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年12月16日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/12/95e8b3e4a6a1.html" title="1-数据结构">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">1-数据结构</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/12/63a311243331.html" title="设计模式2（结构型模式）">
+                        <span class="hidden-mobile">设计模式2（结构型模式）</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"OwNIdaopOn1rwNhtotGOGC0B-gzGzoHsz","appKey":"eadytQ2XqWmxuvAKeg08XX83","path":"window.location.pathname","placeholder":null,"avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":true,"recordIP":false,"serverURLs":"https://ownidaop.lc-cn-n1-shared.com","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

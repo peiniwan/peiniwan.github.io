@@ -1,0 +1,764 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="六月的雨">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="背景近日华为举行了2023年华为开发者大会（HDC.Together），除了发布HarmonyOS 4、全新升级的鸿蒙开发套件外，华为还带来了HarmonyOS NEXT开发者预览版。 HarmonyOS NEXT 在 2023 年 8 月 6 日开始面向合作企业开发者开放，2024 年第一季度面向所有开发者开放，也就是明年开始，更新后的鸿蒙，会使用全自研内核，去掉了传统的 AOSP 代码，仅支持">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HarmonyOS NEXT调研">
+<meta property="og:url" content="http://peiniwan.github.io/2025/12/74099e05cdbe.html">
+<meta property="og:site_name" content="六月的雨的笔记">
+<meta property="og:description" content="背景近日华为举行了2023年华为开发者大会（HDC.Together），除了发布HarmonyOS 4、全新升级的鸿蒙开发套件外，华为还带来了HarmonyOS NEXT开发者预览版。 HarmonyOS NEXT 在 2023 年 8 月 6 日开始面向合作企业开发者开放，2024 年第一季度面向所有开发者开放，也就是明年开始，更新后的鸿蒙，会使用全自研内核，去掉了传统的 AOSP 代码，仅支持">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/picgo/picgo-clipboard-images/2023-11-13-09-59-8f373934effd700d4858caa73e58ffdb-20231113095934-7499c4.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/picgo/picgo-clipboard-images/2023-11-13-09-59-84949712fa10d604e6d76b81d798dec2-20231113095958-093387.png">
+<meta property="og:image" content="https://yach-doc-shimo.zhiyinlou.com/uploader/f/ZDNwDTIJxUjb1JBI.png?accessToken=eyJhbGciOiJIUzI1NiIsImtpZCI6ImRlZmF1bHQiLCJ0eXAiOiJKV1QifQ.eyJleHAiOjE2OTk4NDA2MDUsImZpbGVHVUlEIjoiemRreUJMR3dXZUZXN01BNiIsImlhdCI6MTY5OTg0MDMwNSwiaXNzIjoidXBsb2FkZXJfYWNjZXNzX3Jlc291cmNlIiwidXNlcklkIjozNDM0NTMzfQ.qKciJ0e9kTw9vU6O4LBFrgAhOoepAEq7yOBAeaBsj28">
+<meta property="og:image" content="https://yach-doc-shimo.zhiyinlou.com/uploader/f/izDTqZ55dxOXVs15.png?accessToken=eyJhbGciOiJIUzI1NiIsImtpZCI6ImRlZmF1bHQiLCJ0eXAiOiJKV1QifQ.eyJleHAiOjE2OTk4NDA2MDUsImZpbGVHVUlEIjoiemRreUJMR3dXZUZXN01BNiIsImlhdCI6MTY5OTg0MDMwNSwiaXNzIjoidXBsb2FkZXJfYWNjZXNzX3Jlc291cmNlIiwidXNlcklkIjozNDM0NTMzfQ.qKciJ0e9kTw9vU6O4LBFrgAhOoepAEq7yOBAeaBsj28">
+<meta property="og:image" content="https://yach-doc-shimo.zhiyinlou.com/uploader/f/7gxOC8QP15pOC8Cf.png?accessToken=eyJhbGciOiJIUzI1NiIsImtpZCI6ImRlZmF1bHQiLCJ0eXAiOiJKV1QifQ.eyJleHAiOjE2OTk4NDA2MDUsImZpbGVHVUlEIjoiemRreUJMR3dXZUZXN01BNiIsImlhdCI6MTY5OTg0MDMwNSwiaXNzIjoidXBsb2FkZXJfYWNjZXNzX3Jlc291cmNlIiwidXNlcklkIjozNDM0NTMzfQ.qKciJ0e9kTw9vU6O4LBFrgAhOoepAEq7yOBAeaBsj28">
+<meta property="og:image" content="https://yach-doc-shimo.zhiyinlou.com/uploader/f/AlO9mhlr37N0YoyH.png?accessToken=eyJhbGciOiJIUzI1NiIsImtpZCI6ImRlZmF1bHQiLCJ0eXAiOiJKV1QifQ.eyJleHAiOjE2OTk4NDA2MDUsImZpbGVHVUlEIjoiemRreUJMR3dXZUZXN01BNiIsImlhdCI6MTY5OTg0MDMwNSwiaXNzIjoidXBsb2FkZXJfYWNjZXNzX3Jlc291cmNlIiwidXNlcklkIjozNDM0NTMzfQ.qKciJ0e9kTw9vU6O4LBFrgAhOoepAEq7yOBAeaBsj28">
+<meta property="og:image" content="https://yach-doc-shimo.zhiyinlou.com/uploader/f/RWEtcLmkzmkj5CZd.png?accessToken=eyJhbGciOiJIUzI1NiIsImtpZCI6ImRlZmF1bHQiLCJ0eXAiOiJKV1QifQ.eyJleHAiOjE2OTk4NDA2MDUsImZpbGVHVUlEIjoiemRreUJMR3dXZUZXN01BNiIsImlhdCI6MTY5OTg0MDMwNSwiaXNzIjoidXBsb2FkZXJfYWNjZXNzX3Jlc291cmNlIiwidXNlcklkIjozNDM0NTMzfQ.qKciJ0e9kTw9vU6O4LBFrgAhOoepAEq7yOBAeaBsj28">
+<meta property="og:image" content="https://yach-doc-shimo.zhiyinlou.com/uploader/f/QrYRrdlcH7i3tYu7.png?accessToken=eyJhbGciOiJIUzI1NiIsImtpZCI6ImRlZmF1bHQiLCJ0eXAiOiJKV1QifQ.eyJleHAiOjE2OTk4NDA2MDUsImZpbGVHVUlEIjoiemRreUJMR3dXZUZXN01BNiIsImlhdCI6MTY5OTg0MDMwNSwiaXNzIjoidXBsb2FkZXJfYWNjZXNzX3Jlc291cmNlIiwidXNlcklkIjozNDM0NTMzfQ.qKciJ0e9kTw9vU6O4LBFrgAhOoepAEq7yOBAeaBsj28">
+<meta property="og:image" content="https://yach-doc-shimo.zhiyinlou.com/uploader/f/fUENN5SYMZwclFYo.png?accessToken=eyJhbGciOiJIUzI1NiIsImtpZCI6ImRlZmF1bHQiLCJ0eXAiOiJKV1QifQ.eyJleHAiOjE2OTk4NDA2MDUsImZpbGVHVUlEIjoiemRreUJMR3dXZUZXN01BNiIsImlhdCI6MTY5OTg0MDMwNSwiaXNzIjoidXBsb2FkZXJfYWNjZXNzX3Jlc291cmNlIiwidXNlcklkIjozNDM0NTMzfQ.qKciJ0e9kTw9vU6O4LBFrgAhOoepAEq7yOBAeaBsj28">
+<meta property="og:image" content="https://yach-doc-shimo.zhiyinlou.com/uploader/f/DYz2FeHZk4fZgSPE.png?accessToken=eyJhbGciOiJIUzI1NiIsImtpZCI6ImRlZmF1bHQiLCJ0eXAiOiJKV1QifQ.eyJleHAiOjE2OTk4NDA2MDUsImZpbGVHVUlEIjoiemRreUJMR3dXZUZXN01BNiIsImlhdCI6MTY5OTg0MDMwNSwiaXNzIjoidXBsb2FkZXJfYWNjZXNzX3Jlc291cmNlIiwidXNlcklkIjozNDM0NTMzfQ.qKciJ0e9kTw9vU6O4LBFrgAhOoepAEq7yOBAeaBsj28">
+<meta property="og:image" content="https://yach-doc-shimo.zhiyinlou.com/uploader/f/yYO7w39JQsaeF70q.png?accessToken=eyJhbGciOiJIUzI1NiIsImtpZCI6ImRlZmF1bHQiLCJ0eXAiOiJKV1QifQ.eyJleHAiOjE2OTk4NDA2MDUsImZpbGVHVUlEIjoiemRreUJMR3dXZUZXN01BNiIsImlhdCI6MTY5OTg0MDMwNSwiaXNzIjoidXBsb2FkZXJfYWNjZXNzX3Jlc291cmNlIiwidXNlcklkIjozNDM0NTMzfQ.qKciJ0e9kTw9vU6O4LBFrgAhOoepAEq7yOBAeaBsj28">
+<meta property="og:image" content="https://yach-doc-shimo.zhiyinlou.com/uploader/f/oJJPorcURPkAVN6d.png?accessToken=eyJhbGciOiJIUzI1NiIsImtpZCI6ImRlZmF1bHQiLCJ0eXAiOiJKV1QifQ.eyJleHAiOjE2OTk4NDA2MDUsImZpbGVHVUlEIjoiemRreUJMR3dXZUZXN01BNiIsImlhdCI6MTY5OTg0MDMwNSwiaXNzIjoidXBsb2FkZXJfYWNjZXNzX3Jlc291cmNlIiwidXNlcklkIjozNDM0NTMzfQ.qKciJ0e9kTw9vU6O4LBFrgAhOoepAEq7yOBAeaBsj28">
+<meta property="og:image" content="https://yach-doc-shimo.zhiyinlou.com/uploader/f/wlCTel5aLhTqADQl.png?accessToken=eyJhbGciOiJIUzI1NiIsImtpZCI6ImRlZmF1bHQiLCJ0eXAiOiJKV1QifQ.eyJleHAiOjE2OTk4NDA2MDUsImZpbGVHVUlEIjoiemRreUJMR3dXZUZXN01BNiIsImlhdCI6MTY5OTg0MDMwNSwiaXNzIjoidXBsb2FkZXJfYWNjZXNzX3Jlc291cmNlIiwidXNlcklkIjozNDM0NTMzfQ.qKciJ0e9kTw9vU6O4LBFrgAhOoepAEq7yOBAeaBsj28">
+<meta property="article:published_time" content="2025-12-16T13:59:22.604Z">
+<meta property="article:modified_time" content="2024-03-25T09:08:00.000Z">
+<meta property="article:author" content="六月的雨">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/picgo/picgo-clipboard-images/2023-11-13-09-59-8f373934effd700d4858caa73e58ffdb-20231113095934-7499c4.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>HarmonyOS NEXT调研 - 六月的雨的笔记</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"peiniwan.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>六月的雨的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="HarmonyOS NEXT调研"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-12-16 21:59" pubdate>
+          2025年12月16日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.7k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          15 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">HarmonyOS NEXT调研</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>近日华为举行了2023年华为开发者大会（HDC.Together），除了发布HarmonyOS 4、全新升级的鸿蒙开发套件外，华为还带来了HarmonyOS NEXT开发者预览版。</p>
+<p>HarmonyOS NEXT 在 2023 年 8 月 6 日开始面向合作企业开发者开放，2024 年第一季度面向所有开发者开放，也就是明年开始，更新后的鸿蒙，<strong>会使用全自研内核，去掉了传统的 AOSP 代码，仅支持鸿蒙内核和鸿蒙系统的应用，减少了 40% 的冗余代码，使系统的流畅度、能效、纯净安全特性大为提升</strong>。</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/picgo/picgo-clipboard-images/2023-11-13-09-59-8f373934effd700d4858caa73e58ffdb-20231113095934-7499c4.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>HarmonyOS NEXT基于OpenHarmony开发，从数码博主“WHYLAB”上手体验来看，HarmonyOS NEXT不再兼容安卓应用，如果打开安卓APK文件，会提示“无法打开此文件”。</p>
+<p>值得注意的是，HarmonyOS NEXT系统底座全线自研，砍掉传统的AOSP代码，仅支持鸿蒙内核和鸿蒙系统的应用。</p>
+<p><strong>官网</strong></p>
+<p><a target="_blank" rel="noopener" href="https://developer.harmonyos.com/">https://developer.harmonyos.com/</a></p>
+<h1 id="开发语言"><a href="#开发语言" class="headerlink" title="开发语言"></a>开发语言</h1><p><a target="_blank" rel="noopener" href="https://developer.harmonyos.com/cn/docs/documentation/doc-guides-V3/arkts-get-started-0000001504769321-V3">基本语法</a><br><a target="_blank" rel="noopener" href="https://developer.harmonyos.com/cn/docs/documentation/doc-guides-V3/video-tutorials-0000001443535745-V3">视频教程</a></p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/picgo/picgo-clipboard-images/2023-11-13-09-59-84949712fa10d604e6d76b81d798dec2-20231113095958-093387.png" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<p>ArkTS是HarmonyOS优选的主力应用开发语言。ArkTS围绕应用开发在<a target="_blank" rel="noopener" href="https://www.typescriptlang.org/">TypeScript</a>（简称TS）生态基础上做了进一步扩展，继承了TS的所有特性，是TS的超集。因此，在学习ArkTS语言之前，建议开发者具备TS语言开发能力。</p>
+<p><img src="https://yach-doc-shimo.zhiyinlou.com/uploader/f/ZDNwDTIJxUjb1JBI.png?accessToken=eyJhbGciOiJIUzI1NiIsImtpZCI6ImRlZmF1bHQiLCJ0eXAiOiJKV1QifQ.eyJleHAiOjE2OTk4NDA2MDUsImZpbGVHVUlEIjoiemRreUJMR3dXZUZXN01BNiIsImlhdCI6MTY5OTg0MDMwNSwiaXNzIjoidXBsb2FkZXJfYWNjZXNzX3Jlc291cmNlIiwidXNlcklkIjozNDM0NTMzfQ.qKciJ0e9kTw9vU6O4LBFrgAhOoepAEq7yOBAeaBsj28" srcset="/img/loading.gif" lazyload></p>
+<p>声明式的语法更像 Flutter 和 Compose，然后链式写法和组件命名又有点像客户端写法</p>
+<p><img src="https://yach-doc-shimo.zhiyinlou.com/uploader/f/izDTqZ55dxOXVs15.png?accessToken=eyJhbGciOiJIUzI1NiIsImtpZCI6ImRlZmF1bHQiLCJ0eXAiOiJKV1QifQ.eyJleHAiOjE2OTk4NDA2MDUsImZpbGVHVUlEIjoiemRreUJMR3dXZUZXN01BNiIsImlhdCI6MTY5OTg0MDMwNSwiaXNzIjoidXBsb2FkZXJfYWNjZXNzX3Jlc291cmNlIiwidXNlcklkIjozNDM0NTMzfQ.qKciJ0e9kTw9vU6O4LBFrgAhOoepAEq7yOBAeaBsj28" srcset="/img/loading.gif" lazyload></p>
+<p><img src="https://yach-doc-shimo.zhiyinlou.com/uploader/f/7gxOC8QP15pOC8Cf.png?accessToken=eyJhbGciOiJIUzI1NiIsImtpZCI6ImRlZmF1bHQiLCJ0eXAiOiJKV1QifQ.eyJleHAiOjE2OTk4NDA2MDUsImZpbGVHVUlEIjoiemRreUJMR3dXZUZXN01BNiIsImlhdCI6MTY5OTg0MDMwNSwiaXNzIjoidXBsb2FkZXJfYWNjZXNzX3Jlc291cmNlIiwidXNlcklkIjozNDM0NTMzfQ.qKciJ0e9kTw9vU6O4LBFrgAhOoepAEq7yOBAeaBsj28" srcset="/img/loading.gif" lazyload></p>
+<h1 id="开发工具"><a href="#开发工具" class="headerlink" title="开发工具"></a>开发工具</h1><h2 id="DevEco-Studio"><a href="#DevEco-Studio" class="headerlink" title="DevEco Studio"></a>DevEco Studio</h2><p><a target="_blank" rel="noopener" href="https://developer.harmonyos.com/cn/develop/deveco-studio/">https://developer.harmonyos.com/cn/develop/deveco-studio/</a></p>
+<h2 id="ArkUI"><a href="#ArkUI" class="headerlink" title="ArkUI"></a>ArkUI</h2><p>ArkUI是一套构建HarmonyOS应用界面的声明式UI开发框架。它使用极简的UI信息语法、丰富的UI组件、以及实时界面预览工具，帮助您提升HarmonyOS应用界面开发效率30%。您只需使用一套TS&#x2F;JS API，就能在多个HarmonyOS设备上提供生动而流畅的用户界面体验。<br><a target="_blank" rel="noopener" href="https://developer.harmonyos.com/cn/develop/arkUI/">https://developer.harmonyos.com/cn/develop/arkUI/</a></p>
+<p><img src="https://yach-doc-shimo.zhiyinlou.com/uploader/f/AlO9mhlr37N0YoyH.png?accessToken=eyJhbGciOiJIUzI1NiIsImtpZCI6ImRlZmF1bHQiLCJ0eXAiOiJKV1QifQ.eyJleHAiOjE2OTk4NDA2MDUsImZpbGVHVUlEIjoiemRreUJMR3dXZUZXN01BNiIsImlhdCI6MTY5OTg0MDMwNSwiaXNzIjoidXBsb2FkZXJfYWNjZXNzX3Jlc291cmNlIiwidXNlcklkIjozNDM0NTMzfQ.qKciJ0e9kTw9vU6O4LBFrgAhOoepAEq7yOBAeaBsj28" srcset="/img/loading.gif" lazyload></p>
+<p><img src="https://yach-doc-shimo.zhiyinlou.com/uploader/f/RWEtcLmkzmkj5CZd.png?accessToken=eyJhbGciOiJIUzI1NiIsImtpZCI6ImRlZmF1bHQiLCJ0eXAiOiJKV1QifQ.eyJleHAiOjE2OTk4NDA2MDUsImZpbGVHVUlEIjoiemRreUJMR3dXZUZXN01BNiIsImlhdCI6MTY5OTg0MDMwNSwiaXNzIjoidXBsb2FkZXJfYWNjZXNzX3Jlc291cmNlIiwidXNlcklkIjozNDM0NTMzfQ.qKciJ0e9kTw9vU6O4LBFrgAhOoepAEq7yOBAeaBsj28" srcset="/img/loading.gif" lazyload></p>
+<p><img src="https://yach-doc-shimo.zhiyinlou.com/uploader/f/QrYRrdlcH7i3tYu7.png?accessToken=eyJhbGciOiJIUzI1NiIsImtpZCI6ImRlZmF1bHQiLCJ0eXAiOiJKV1QifQ.eyJleHAiOjE2OTk4NDA2MDUsImZpbGVHVUlEIjoiemRreUJMR3dXZUZXN01BNiIsImlhdCI6MTY5OTg0MDMwNSwiaXNzIjoidXBsb2FkZXJfYWNjZXNzX3Jlc291cmNlIiwidXNlcklkIjozNDM0NTMzfQ.qKciJ0e9kTw9vU6O4LBFrgAhOoepAEq7yOBAeaBsj28" srcset="/img/loading.gif" lazyload></p>
+<p><img src="https://yach-doc-shimo.zhiyinlou.com/uploader/f/fUENN5SYMZwclFYo.png?accessToken=eyJhbGciOiJIUzI1NiIsImtpZCI6ImRlZmF1bHQiLCJ0eXAiOiJKV1QifQ.eyJleHAiOjE2OTk4NDA2MDUsImZpbGVHVUlEIjoiemRreUJMR3dXZUZXN01BNiIsImlhdCI6MTY5OTg0MDMwNSwiaXNzIjoidXBsb2FkZXJfYWNjZXNzX3Jlc291cmNlIiwidXNlcklkIjozNDM0NTMzfQ.qKciJ0e9kTw9vU6O4LBFrgAhOoepAEq7yOBAeaBsj28" srcset="/img/loading.gif" lazyload></p>
+<h2 id="ArkCompiler"><a href="#ArkCompiler" class="headerlink" title="ArkCompiler"></a>ArkCompiler</h2><p>ArkCompiler是华为自研的统一编程平台，包含编译器、工具链、运行时等关键部件，支持高级语言在多种芯片平台的编译与运行，并支撑应用和服务运行在手机、个人电脑、平板、电视、汽车和智能穿戴等多种设备上的需求。</p>
+<p><img src="https://yach-doc-shimo.zhiyinlou.com/uploader/f/DYz2FeHZk4fZgSPE.png?accessToken=eyJhbGciOiJIUzI1NiIsImtpZCI6ImRlZmF1bHQiLCJ0eXAiOiJKV1QifQ.eyJleHAiOjE2OTk4NDA2MDUsImZpbGVHVUlEIjoiemRreUJMR3dXZUZXN01BNiIsImlhdCI6MTY5OTg0MDMwNSwiaXNzIjoidXBsb2FkZXJfYWNjZXNzX3Jlc291cmNlIiwidXNlcklkIjozNDM0NTMzfQ.qKciJ0e9kTw9vU6O4LBFrgAhOoepAEq7yOBAeaBsj28" srcset="/img/loading.gif" lazyload></p>
+<p><img src="https://yach-doc-shimo.zhiyinlou.com/uploader/f/yYO7w39JQsaeF70q.png?accessToken=eyJhbGciOiJIUzI1NiIsImtpZCI6ImRlZmF1bHQiLCJ0eXAiOiJKV1QifQ.eyJleHAiOjE2OTk4NDA2MDUsImZpbGVHVUlEIjoiemRreUJMR3dXZUZXN01BNiIsImlhdCI6MTY5OTg0MDMwNSwiaXNzIjoidXBsb2FkZXJfYWNjZXNzX3Jlc291cmNlIiwidXNlcklkIjozNDM0NTMzfQ.qKciJ0e9kTw9vU6O4LBFrgAhOoepAEq7yOBAeaBsj28" srcset="/img/loading.gif" lazyload></p>
+<p><img src="https://yach-doc-shimo.zhiyinlou.com/uploader/f/oJJPorcURPkAVN6d.png?accessToken=eyJhbGciOiJIUzI1NiIsImtpZCI6ImRlZmF1bHQiLCJ0eXAiOiJKV1QifQ.eyJleHAiOjE2OTk4NDA2MDUsImZpbGVHVUlEIjoiemRreUJMR3dXZUZXN01BNiIsImlhdCI6MTY5OTg0MDMwNSwiaXNzIjoidXBsb2FkZXJfYWNjZXNzX3Jlc291cmNlIiwidXNlcklkIjozNDM0NTMzfQ.qKciJ0e9kTw9vU6O4LBFrgAhOoepAEq7yOBAeaBsj28" srcset="/img/loading.gif" lazyload></p>
+<h2 id="目录结构"><a href="#目录结构" class="headerlink" title="目录结构"></a>目录结构</h2><p><a target="_blank" rel="noopener" href="https://developer.harmonyos.com/cn/docs/documentation/doc-guides/ohos-building-overview-0000001263360495">https://developer.harmonyos.com/cn/docs/documentation/doc-guides/ohos-building-overview-0000001263360495</a></p>
+<p><strong>鸿蒙工程目录及配置文件说明</strong></p>
+<p>基于Hvigor构建体系，DevEco Studio定义了OpenHarmony的工程范式，下面是Hvigor构建体系的工程目录结构示意图：</p>
+<p><img src="https://yach-doc-shimo.zhiyinlou.com/uploader/f/wlCTel5aLhTqADQl.png?accessToken=eyJhbGciOiJIUzI1NiIsImtpZCI6ImRlZmF1bHQiLCJ0eXAiOiJKV1QifQ.eyJleHAiOjE2OTk4NDA2MDUsImZpbGVHVUlEIjoiemRreUJMR3dXZUZXN01BNiIsImlhdCI6MTY5OTg0MDMwNSwiaXNzIjoidXBsb2FkZXJfYWNjZXNzX3Jlc291cmNlIiwidXNlcklkIjozNDM0NTMzfQ.qKciJ0e9kTw9vU6O4LBFrgAhOoepAEq7yOBAeaBsj28" srcset="/img/loading.gif" lazyload></p>
+<h1 id="网上讨论"><a href="#网上讨论" class="headerlink" title="网上讨论"></a>网上讨论</h1><p><a target="_blank" rel="noopener" href="https://www.zhihu.com/question/616067090">https://www.zhihu.com/question/616067090</a><br><a target="_blank" rel="noopener" href="https://juejin.cn/post/7264237761158643773#comment">https://juejin.cn/post/7264237761158643773#comment</a></p>
+<ol>
+<li>鸿蒙和OpenHarmony都在不断更新，不论是手机上的鸿蒙还是OpenHarmony都在持续改进和完善。</li>
+<li>鸿蒙生态建设中需兼容AOSP并进行生态切换，这是一个核心问题，虽然可能有一些困难，但也并非不可克服。</li>
+<li>开发套件的完善是鸿蒙生态建设的重要一环，通过引入ArkUI开发框架和ArkTs语言等工具，实现一次开发多端部署已经在往实际可用的方向发展。</li>
+<li>生态切换将是一个艰难的过程，涉及到生态兼容、开发工作的延续性等问题。<strong>相关工作正在进行中，但结果仍然不确定</strong>。</li>
+</ol>
+<p>总体来说，有乐观的，也有悲观的，鸿蒙生态建设正在不断推进中，相关成果逐渐显现。然而，生态切换和生态兼容仍然面临一定的困难，如果HarmonyOS NEXT不支持apk，也没有转编译的工具，那就需要学习新语言、新UI框架，从头开发一套新的软件，这样的话成本很高，未来的发展和成果仍待观察。</p>
+<ul>
+<li><p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/v27_Nq6r3pxjwLw1bgWneg">开始有鸿蒙开发岗了，是开卷？还是开嘲讽？</a> [[Obsidian-Highlights]]</p>
+</li>
+<li><p>需要从零到一去将成熟的生态复制到鸿蒙上，这的的确确是一个大工程，而且现在可能的更多的不是技术的问题，更多的是工作量的问题，所以要想促成这个事情，必定伴随着大量资金的入驻，如果鸿蒙开发比 Android 开发髙一倍的工资，你会不心动？所以这有定向的资金扶持，如果小公司都开始去适配鸿蒙，那一定是银行贷款在这方面更容易</p>
+</li>
+<li><p>TS 编程语言的的确确可以拉拢一波前端开发者，但它是一个彻头彻尾的黑盒了，除了那少得可怜的官方文档，就没有任何机会了解底层的具体实现</p>
+</li>
+<li><p>鸿蒙到底会发展到哪一步，最终还是得看会注入多少资本以及上层的态度有多坚决，这个时候，仅靠华为文档投入其中，那大概就是充当一个痛苦的适配踩坑先锋大头兵，也许能乘风得到来自资本的丰厚打赏。也许你可以深入其中，在跨平台方向取得一丝成果。也许不管你选择怎么做，AI 就是能把你替换了。但有资金入场的地方，就有机会去分一杯羹，如何做，这是个值得思考的问题。</p>
+</li>
+<li><p>鸿蒙系统的软件用js开发，所以它就是微信小程序，就是浏览器套壳，所以运行效率也低，还不如java。能说出这种言论的人，说明你比普通群众对软件行业多了一点了解，但也仅仅是一点。解释一下：js执行效率低，这句话没毛病，但前提是js运行在类似浏览器的web环境中，通过解释器解释执行，但鸿蒙系统的js(arkts)代码显然不是运行在web环境中，而是先通过编译器编译成字节码或者机器码，最终运行机器码，所以鸿蒙软件的运行效率并不低，&#x3D;&#x3D;鸿蒙的软件界面也是通过c++的底层原生渲染的，而不是通过webview内核渲染&#x3D;&#x3D;。所以所谓的鸿蒙软件是微信小程序，是浏览器套壳的言论完全是无稽之谈。</p>
+</li>
+</ul>
+<h1 id="现状"><a href="#现状" class="headerlink" title="现状"></a>现状</h1><p><strong>技术储备</strong>，但个人不太会深度学习，除非政策严格以鸿蒙系统作为应用上架要求。项目里有大量的三方SDK跟不上，还是生态问题</p>
+<p>清华大学、上海交通大学、哈尔滨工业大学等在内的21所985高校均已开设了关于华为鸿蒙系统的课程，为了的就是培养相关的人才。从开设的课程看，主要内容为HarmonyOS原理与应用开发课程、基于HarmonyOS的Web编程技术课程、融合鸿蒙技术的智能系统新工科课程等。</p>
+<p>鸿蒙老老实实耕耘几年了，手机量多这么高了，厂商也愿意开发</p>
+<p>主要私活也可以整呀</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%85%B6%E4%BB%96%E8%AF%AD%E8%A8%80/" class="category-chain-item">其他语言</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E5%85%B6%E4%BB%96%E8%AF%AD%E8%A8%80/%E9%B8%BF%E8%92%99/" class="category-chain-item">鸿蒙</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>HarmonyOS NEXT调研</div>
+      <div>http://peiniwan.github.io/2025/12/74099e05cdbe.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>六月的雨</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年12月16日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/12/7ad65b9563af.html" title="鸿蒙应用开发者认证考试(答案)">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">鸿蒙应用开发者认证考试(答案)</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/12/ba1a233fba5a.html" title="FA模型（过时）">
+                        <span class="hidden-mobile">FA模型（过时）</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"OwNIdaopOn1rwNhtotGOGC0B-gzGzoHsz","appKey":"eadytQ2XqWmxuvAKeg08XX83","path":"window.location.pathname","placeholder":null,"avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":true,"recordIP":false,"serverURLs":"https://ownidaop.lc-cn-n1-shared.com","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

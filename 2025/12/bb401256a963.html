@@ -1,0 +1,760 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="六月的雨">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="腾讯云直播注意  使用云直播服务，至少需要2个域名，一个作为推流域名，一个作为播放域名，推流和播放不能使用相同的域名，备案的域名。添加成功后，系统会为您自动分配一个 CNAME 域名，但 CNAME 域名不能直接访问，您需要在域名服务提供商处完成 CNAME 配置，配置生效后，即可享受云直播服务。  增值计费项为直播转码、直播录制、直播截图、直播鉴黄和移动直播连麦费用，这五项为标准直播的增值功能，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="腾讯云直播">
+<meta property="og:url" content="http://peiniwan.github.io/2025/12/bb401256a963.html">
+<meta property="og:site_name" content="六月的雨的笔记">
+<meta property="og:description" content="腾讯云直播注意  使用云直播服务，至少需要2个域名，一个作为推流域名，一个作为播放域名，推流和播放不能使用相同的域名，备案的域名。添加成功后，系统会为您自动分配一个 CNAME 域名，但 CNAME 域名不能直接访问，您需要在域名服务提供商处完成 CNAME 配置，配置生效后，即可享受云直播服务。  增值计费项为直播转码、直播录制、直播截图、直播鉴黄和移动直播连麦费用，这五项为标准直播的增值功能，">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%85%BE%E8%AE%AF%E4%BA%91%E7%9B%B4%E6%92%AD.resources/2023/09/18/16-03-06-3006306da6f6de30e34161b38d341a87-unknown_filename.3-dedd29.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%85%BE%E8%AE%AF%E4%BA%91%E7%9B%B4%E6%92%AD.resources/2023/09/18/16-03-06-f989198a2b3080e553a82f61b4413f30-unknown_filename.6-dea111.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%85%BE%E8%AE%AF%E4%BA%91%E7%9B%B4%E6%92%AD.resources/2023/09/18/16-03-06-2ed57c23e0833e289697a1f6d1e2917f-unknown_filename.4-6ea66a.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%85%BE%E8%AE%AF%E4%BA%91%E7%9B%B4%E6%92%AD.resources/2023/09/18/16-03-06-bef0d97f8c30f16d295563c7c879b9ff-unknown_filename.5-8c5b29.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%85%BE%E8%AE%AF%E4%BA%91%E7%9B%B4%E6%92%AD.resources/2023/09/18/16-03-06-b1a7d49924f7668d367f0978402fa1f2-unknown_filename.1-761e5b.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%85%BE%E8%AE%AF%E4%BA%91%E7%9B%B4%E6%92%AD.resources/2023/09/18/16-03-06-bb8c8786372e27d01a0d0a595bc39e32-unknown_filename.2-bfd1eb.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%85%BE%E8%AE%AF%E4%BA%91%E7%9B%B4%E6%92%AD.resources/2023/09/18/16-03-06-9329dadb1b9e6069e93d958380536896-unknown_filename-d56373.png">
+<meta property="article:published_time" content="2025-12-16T13:59:22.586Z">
+<meta property="article:modified_time" content="2025-12-16T13:55:59.316Z">
+<meta property="article:author" content="六月的雨">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%85%BE%E8%AE%AF%E4%BA%91%E7%9B%B4%E6%92%AD.resources/2023/09/18/16-03-06-3006306da6f6de30e34161b38d341a87-unknown_filename.3-dedd29.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>腾讯云直播 - 六月的雨的笔记</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"peiniwan.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>六月的雨的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="腾讯云直播"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-12-16 21:59" pubdate>
+          2025年12月16日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.8k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          16 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">腾讯云直播</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="腾讯云直播"><a href="#腾讯云直播" class="headerlink" title="腾讯云直播"></a>腾讯云直播</h1><p><strong>注意</strong></p>
+<ul>
+<li><p>使用云直播服务，至少需要2个域名，一个作为推流域名，一个作为播放域名，推流和播放不能使用相同的域名，备案的域名。添加成功后，系统会为您自动分配一个 CNAME 域名，但 CNAME 域名不能直接访问，您需要在域名服务提供商处完成 CNAME 配置，配置生效后，即可享受云直播服务。</p>
+</li>
+<li><p>增值计费项为直播转码、直播录制、直播截图、直播鉴黄和移动直播连麦费用，这五项为标准直播的增值功能，您可以按需使用，根据您的实际使用情况进行付费。</p>
+</li>
+<li><p>播放地址StreamName 要与推流地址 StreamName 一致才能播放对应的流。<br>  <img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%85%BE%E8%AE%AF%E4%BA%91%E7%9B%B4%E6%92%AD.resources/2023/09/18/16-03-06-3006306da6f6de30e34161b38d341a87-unknown_filename.3-dedd29.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.3"></p>
+</li>
+</ul>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%85%BE%E8%AE%AF%E4%BA%91%E7%9B%B4%E6%92%AD.resources/2023/09/18/16-03-06-f989198a2b3080e553a82f61b4413f30-unknown_filename.6-dea111.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.6"><br>云点播录制</p>
+<p><strong>CNAME</strong><br>即别名记录。这种记录允许您将多个名字映射到另外一个域名。从一个域名到另一个域名<br>简单来说，A记录就是把一个域名解析到一个IP地址，而CNAME记录就是把域名解析到另外一个域名。比如<a href="http://www.baidu.com，这个二级域名解析到的是一个服务器的IP地址，比如8.8.8.8，而CNAME是将新域名，比如：a.www.baidu.com解析到另外一个域名，比如：www.baidu.com。">www.baidu.com，这个二级域名解析到的是一个服务器的IP地址，比如8.8.8.8，而CNAME是将新域名，比如：a.www.baidu.com解析到另外一个域名，比如：www.baidu.com。</a><br>CNAME在CDN中的应用<br>子域名<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%85%BE%E8%AE%AF%E4%BA%91%E7%9B%B4%E6%92%AD.resources/2023/09/18/16-03-06-2ed57c23e0833e289697a1f6d1e2917f-unknown_filename.4-6ea66a.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.4"><br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%85%BE%E8%AE%AF%E4%BA%91%E7%9B%B4%E6%92%AD.resources/2023/09/18/16-03-06-bef0d97f8c30f16d295563c7c879b9ff-unknown_filename.5-8c5b29.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.5"></p>
+<p><strong>直播转码功能（包含视频转码和音频转码）</strong><br>指将直播现场推送出来的原始流，在云端转换为不同编码格式、不同分辨率、不同码率的转码流推送给观众，以满足不同网络环境、不同终端设备等各种场景下的播放需求。<br>将原始视频流中打上官方自定义水印</p>
+<p><strong>demo图</strong></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/tencentyun/MLVBSDK/tree/master/Android/Demo">https://github.com/tencentyun/MLVBSDK/tree/master/Android/Demo</a></p>
+<p><strong>推流失败问题排查</strong><br>创建房间失败[获取推流地址失败]</p>
+<p><a target="_blank" rel="noopener" href="https://cloud.tencent.com/document/product/267/7972">https://cloud.tencent.com/document/product/267/7972</a></p>
+<p>在所有检查开始之前，您务必要先检查一下地址是否正确，因为这里出错概率最高，腾讯云的直播地址分推流地址和播放地址两种，我们要首先排除误拿<strong>推流地址来播放</strong>的错误。</p>
+<p><strong>创建直播间失败的原因</strong><br>需要绑定已备案域名才能进行播放。现在没有配置所以接口在获取推拉流地址时返回失败。绑定域名可以进入 <a target="_blank" rel="noopener" href="https://console.cloud.tencent.com/live/domainmanage">https://console.cloud.tencent.com/live/domainmanage</a> 进操作<br>①、没有购买连麦套餐；②、没有域名备案</p>
+<p>获取直播推流地址向后台请求用于直播推流用的推流地址<br>接口名：get_anchor_url</p>
+<p>“小直播”需要搭建自己的后台，开通对象存储服务（COS）对象存储服务主要用于小直播 App 中的直播封面图片和个人头像存储。<br><a target="_blank" rel="noopener" href="https://cloud.tencent.com/document/product/454/15187">https://cloud.tencent.com/document/product/454/15187</a></p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%85%BE%E8%AE%AF%E4%BA%91%E7%9B%B4%E6%92%AD.resources/2023/09/18/16-03-06-b1a7d49924f7668d367f0978402fa1f2-unknown_filename.1-761e5b.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.1"></p>
+<p>码率、分辨率自适应<br>设置场景化配置后，SDK 内部会根据场景自动选择相关的配置参数，所以我们这里把内部的config获取出来，赋值到外部。</p>
+<p><strong>TRTC SDK</strong> 实现一个既支持视频连麦，又支持上万人高并发观看的在线直播功能</p>
+<p><strong>常见的直播协议</strong><br>目前常见的直播协议有三种：RTMP、 FLV 和 HLS。</p>
+<ul>
+<li><strong>RTMP</strong>：RTMP 协议比较全能，既可以用来推送又可以用来直播，其核心理念是将大块的视频帧和音频帧拆分，然后以小数据包的形式在互联网上进行传输，而且支持加密，因此隐私性相对比较理想，但拆包组包的过程比较复杂，所以在海量并发时也容易出现一些不可预期的稳定性问题。</li>
+<li><strong>FLV</strong>：FLV 协议由 Adobe 公司主推，格式极其简单，只是在大块的视频帧和音视频头部加入一些标记头信息，由于这种简洁，在延迟表现和大规模并发方面都很成熟，唯一的不足就是在手机浏览器上的支持非常有限，但是用作手机端 App 直播协议却异常合适。</li>
+<li><strong>HLS</strong>：苹果推出的解决方案，将视频分成5秒 - 10秒的视频小分片，然后用 m3u8 索引表进行管理，由于客户端下载到的视频都是5秒 - 10秒的完整数据，故视频的流畅性很好，但也同样引入了很大的延迟（HLS 的一般延迟在10秒 - 30秒左右）。相比于 FLV， HLS 在 iPhone 和大部分 Android 手机浏览器上的支持非常给力，所以常用于 QQ 和微信朋友圈的 URL 分享。</li>
+</ul>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%85%BE%E8%AE%AF%E4%BA%91%E7%9B%B4%E6%92%AD.resources/2023/09/18/16-03-06-bb8c8786372e27d01a0d0a595bc39e32-unknown_filename.2-bfd1eb.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.2"></p>
+<p>原始流与推流码率分辨率一致。<br>高清流建议使用码率：2000kbps，分辨率：1080p。<br>标清流建议使用码率：1000kbps，分辨率：720p。</p>
+<p><strong>txTime 是否过期？</strong><br>有些客户担心自己的直播流量被人盗用，会将 txTime 设置得过于保守，例如从当前时间开始往后推5分钟。其实由于有 txSercet 签名的存在，txTime 的有效期不用设置得太短。相反，如果有效期设置得太短，当主播在直播过程中遭遇网络闪断时会因为推流 URL 过期而无法恢复推流。<br>txTime 建议设置为当前时间往后推12或者24小时为宜，也就是要长于一场普通直播的直播时间</p>
+<p><strong>连麦互动</strong></p>
+<p><a target="_blank" rel="noopener" href="https://cloud.tencent.com/document/product/454/14606">https://cloud.tencent.com/document/product/454/14606</a><br>Step3. 购买连麦套餐包由于连麦功能会使用到高速专线来降低音视频传输延迟，这部分功能<strong>需要额外购买套餐包才能开通</strong>，否则移动直播的各端 SDK 只能使用云直播的普通服务（推流和拉流），并不能开启连麦功能。</p>
+<p>由于连麦功能会使用到高速专线来降低音视频传输延迟，这部分功能需要<strong>额外购买套餐包</strong>才能开通，否则移动直播的各端 SDK 只能使用云直播的普通服务（推流和拉流），并不能开启连麦功能。<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%85%BE%E8%AE%AF%E4%BA%91%E7%9B%B4%E6%92%AD.resources/2023/09/18/16-03-06-9329dadb1b9e6069e93d958380536896-unknown_filename-d56373.png" srcset="/img/loading.gif" lazyload alt="unknown_filename"><br>MLVBLiveRoom：基于腾讯云直播（LVB）、云点播（VOD） 和即时通信（IM）三大 PAAS 服务组合而成</p>
+<p><strong>常用类</strong><br>TXLivePusher 接口提供摄像头推流能力<br>TXLivePlayer 模块负责实现直播播放功能</p>
+<p><strong>硬件加速</strong><br>硬件加速在1080p解码场景下效果显著，但细节之处并不如想象的那么美好：<br>(1) 只有 4.3 以上android系统才支持<br>(2) 兼容性我们目前还仅过了小米华为等常见机型，故这里的返回值您先不要太当真</p>
+<p><strong>缓存策略</strong><br>自动、极速、流畅。<br>极速模式：时延会尽可能低、但抗网络抖动效果不佳；<br>流畅模式：时延较高、抗抖动能力较强</p>
+<p><strong>权限检测相关</strong></p>
+<pre><code class="hljs"> private boolean checkPublishPermission() &#123;
+        if (Build.VERSION.SDK_INT &gt;= 23) &#123;
+            List&lt;String&gt; permissions = new ArrayList&lt;&gt;();
+            if (PackageManager.PERMISSION_GRANTED != ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) &#123;
+                permissions.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+            &#125;
+            if (PackageManager.PERMISSION_GRANTED != ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA)) &#123;
+                permissions.add(Manifest.permission.CAMERA);
+            &#125;
+            if (permissions.size() != 0) &#123;
+                ActivityCompat.requestPermissions(this,
+                        permissions.toArray(new String[0]),
+                        100);
+                return false;
+            &#125;
+        &#125;
+        return true;
+    &#125;
+</code></pre>
+<p>硬件加速变更不需要重启推流，直接应用配置项即可</p>
+<p>利用 QRCode 生成 Bitmap的工具函数<br>createQRCodeBitmap(String content, int widthPix, int heightPix)</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%85%B6%E4%BB%96%E8%AF%AD%E8%A8%80/" class="category-chain-item">其他语言</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>腾讯云直播</div>
+      <div>http://peiniwan.github.io/2025/12/bb401256a963.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>六月的雨</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年12月16日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/12/c8542bc6f406.html" title="长链接NIO">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">长链接NIO</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/12/6c2523187470.html" title="WebSocket">
+                        <span class="hidden-mobile">WebSocket</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"OwNIdaopOn1rwNhtotGOGC0B-gzGzoHsz","appKey":"eadytQ2XqWmxuvAKeg08XX83","path":"window.location.pathname","placeholder":null,"avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":true,"recordIP":false,"serverURLs":"https://ownidaop.lc-cn-n1-shared.com","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

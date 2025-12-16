@@ -1,0 +1,808 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="六月的雨">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="用Python如何写一个接口呢，首先得要有数据，可以用我们在网站上爬的数据，在上一篇文章中写了如何用Python爬虫，有兴趣的可以看看： https:&#x2F;&#x2F;www.cnblogs.com&#x2F;sixrain&#x2F;p&#x2F;9120529.html 大量的数据保存到数据库比较方便。我用的pymsql，pymsql是Python中操作MySQL的模块，其使用方法和MySQLdb几乎相同。但目前在python3.x中，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Python用Django写restfulapi接口">
+<meta property="og:url" content="http://peiniwan.github.io/2025/12/755ae620edb1.html">
+<meta property="og:site_name" content="六月的雨的笔记">
+<meta property="og:description" content="用Python如何写一个接口呢，首先得要有数据，可以用我们在网站上爬的数据，在上一篇文章中写了如何用Python爬虫，有兴趣的可以看看： https:&#x2F;&#x2F;www.cnblogs.com&#x2F;sixrain&#x2F;p&#x2F;9120529.html 大量的数据保存到数据库比较方便。我用的pymsql，pymsql是Python中操作MySQL的模块，其使用方法和MySQLdb几乎相同。但目前在python3.x中，">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/827512/201806/2024-01-03-18-10-9123cfe316b2d1c844aefe42984f01f7-827512-20180605104705648-902001749-02b5e1.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/827512/201806/2024-01-03-18-10-3941c53041ca20e3e11085e8bc87b2b9-827512-20180605103809526-1776036142-357db5.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/827512/201806/2024-01-03-18-10-51ebdc7244ef0fc1610f8f6e7b2f3615-827512-20180605105201595-1309487419-1812e7.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/827512/201806/2024-01-03-18-10-9092d06c97957cd052ecb5291694805c-827512-20180605105225823-1754220282-13e767.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/827512/201806/2024-01-03-18-10-75b031316ab050474eade5fb56afede6-827512-20180605105403515-217219056-b694cd.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/827512/201806/2024-01-03-18-10-ed96be0ad3044561d1e4334161cd6272-827512-20180605105445911-2109047059-453c50.jpeg">
+<meta property="article:published_time" content="2025-12-16T13:59:22.566Z">
+<meta property="article:modified_time" content="2024-03-13T03:59:00.000Z">
+<meta property="article:author" content="六月的雨">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/827512/201806/2024-01-03-18-10-9123cfe316b2d1c844aefe42984f01f7-827512-20180605104705648-902001749-02b5e1.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>Python用Django写restfulapi接口 - 六月的雨的笔记</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"peiniwan.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>六月的雨的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Python用Django写restfulapi接口"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-12-16 21:59" pubdate>
+          2025年12月16日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          20 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Python用Django写restfulapi接口</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>用Python如何写一个接口呢，首先得要有数据，可以用我们在网站上爬的数据，在上一篇文章中写了如何用Python爬虫，有兴趣的可以看看：</p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/sixrain/p/9120529.html">https://www.cnblogs.com/sixrain/p/9120529.html</a></p>
+<p>大量的数据保存到数据库比较方便。我用的pymsql，pymsql是Python中操作MySQL的模块，其使用方法和MySQLdb几乎相同。但目前在python3.x中，PyMySQL取代了MySQLdb。</p>
+<h2 id="1-连接数据库"><a href="#1-连接数据库" class="headerlink" title="1.连接数据库"></a>1.连接数据库</h2><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs routeros"><span class="hljs-comment"># 连接数据库，需指定charset否则可能会报错</span><br>db = pymysql.connect(<span class="hljs-attribute">host</span>=<span class="hljs-string">&quot;localhost&quot;</span>, <span class="hljs-attribute">user</span>=<span class="hljs-string">&quot;root&quot;</span>, <span class="hljs-attribute">password</span>=<span class="hljs-string">&quot;123&quot;</span>, <span class="hljs-attribute">db</span>=<span class="hljs-string">&quot;mysql&quot;</span>, <span class="hljs-attribute">charset</span>=<span class="hljs-string">&quot;utf8mb4&quot;</span>)<br>cursor = db.cursor()  # 创建一个游标对象<br></code></pre></td></tr></table></figure>
+
+<h2 id="2-创建数据库"><a href="#2-创建数据库" class="headerlink" title="2.创建数据库"></a>2.创建数据库</h2><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs awk">cursor.execute(<span class="hljs-string">&quot;DROP TABLE IF EXISTS meizi_meizis&quot;</span>)  <span class="hljs-comment"># 如果表存在则删除</span><br>      <span class="hljs-comment"># 创建表sql语句</span><br>      createTab = <span class="hljs-string">&quot;&quot;&quot;create table meizi_meizis(</span><br><span class="hljs-string">              id int primary key auto_increment,</span><br><span class="hljs-string">              mid varchar(10) not null,</span><br><span class="hljs-string">              title varchar(50),</span><br><span class="hljs-string">              picname varchar(10),</span><br><span class="hljs-string">              page_url varchar(50),</span><br><span class="hljs-string">              img_url varchar(50)</span><br><span class="hljs-string">              );&quot;&quot;&quot;</span><br>      cursor.execute(createTab)  <span class="hljs-comment"># 执行创建数据表操作</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="3-爬取数据"><a href="#3-爬取数据" class="headerlink" title="3.爬取数据"></a>3.爬取数据</h2><figure class="highlight prolog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs prolog">def html(self, href, title):<br>       lists = []<br>       meiziid = href.split(<span class="hljs-string">&#x27;/&#x27;</span>)[<span class="hljs-number">-1</span>]<br>       html = self.request(href)<br>       max_span = <span class="hljs-symbol">BeautifulSoup</span>(html.text, <span class="hljs-string">&#x27;lxml&#x27;</span>).find(<span class="hljs-string">&#x27;div&#x27;</span>, class_=<span class="hljs-string">&#x27;pagenavi&#x27;</span>).find_all(<span class="hljs-string">&#x27;span&#x27;</span>)[<span class="hljs-number">-2</span>].get_text()<br>       for page in range(<span class="hljs-number">1</span>, int(max_span) + <span class="hljs-number">1</span>):<br>           meizi = &#123;&#125;<br>           page_url = href + <span class="hljs-string">&#x27;/&#x27;</span> + str(page)<br>           img_html = self.request(page_url)<br>           img_url = <span class="hljs-symbol">BeautifulSoup</span>(img_html.text, <span class="hljs-string">&#x27;lxml&#x27;</span>).find(<span class="hljs-string">&#x27;div&#x27;</span>, class_=<span class="hljs-string">&#x27;main-image&#x27;</span>).find(<span class="hljs-string">&#x27;img&#x27;</span>)[<span class="hljs-string">&#x27;src&#x27;</span>]<br>           picname = img_url[<span class="hljs-number">-9</span>:-<span class="hljs-number">4</span>]<br>           meizi[<span class="hljs-string">&#x27;meiziid&#x27;</span>] = meiziid<br>           meizi[<span class="hljs-string">&#x27;title&#x27;</span>] = title<br>           meizi[<span class="hljs-string">&#x27;picname&#x27;</span>] = picname<br>           meizi[<span class="hljs-string">&#x27;page_url&#x27;</span>] = page_url<br>           meizi[<span class="hljs-string">&#x27;img_url&#x27;</span>] = img_url<br>           lists.append(meizi)  # 保存到返回数组中<br>       return lists<br></code></pre></td></tr></table></figure>
+
+<h2 id="4-保存到数据库"><a href="#4-保存到数据库" class="headerlink" title="4.保存到数据库"></a>4.保存到数据库</h2><figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs scss">def <span class="hljs-built_in">all_url</span>(self, url):<br>       html = self.<span class="hljs-built_in">request</span>(url)<br>       all_a = <span class="hljs-built_in">BeautifulSoup</span>(html.text, <span class="hljs-string">&#x27;lxml&#x27;</span>).<span class="hljs-built_in">find</span>(<span class="hljs-string">&#x27;div&#x27;</span>, class_=<span class="hljs-string">&#x27;all&#x27;</span>).<span class="hljs-built_in">find_all</span>(<span class="hljs-string">&#x27;a&#x27;</span>)<br>       for index, a in <span class="hljs-built_in">enumerate</span>(all_a):<br>           title = a.<span class="hljs-built_in">get_text</span>()<br>           href = a[<span class="hljs-string">&#x27;href&#x27;</span>]<br>           lists = self.<span class="hljs-built_in">html</span>(href, title)<br>           for i in lists:<br>               # <span class="hljs-built_in">print</span>(i[<span class="hljs-string">&#x27;meiziid&#x27;</span>], i[<span class="hljs-string">&#x27;title&#x27;</span>], i[<span class="hljs-string">&#x27;picname&#x27;</span>], i[<span class="hljs-string">&#x27;page_url&#x27;</span>], i[<span class="hljs-string">&#x27;img_url&#x27;</span>])<br>               # 插入数据到数据库sql语句，%s用作字符串占位<br>               sql = <span class="hljs-string">&quot;INSERT INTO `meizi_meizis`(`mid`,`title`,`picname`,`page_url`,`img_url`) VALUES(%s,%s,%s,%s,%s)&quot;</span><br>               try:<br>                   cursor.<span class="hljs-built_in">execute</span>(sql, (i[<span class="hljs-string">&#x27;meiziid&#x27;</span>], i[<span class="hljs-string">&#x27;title&#x27;</span>], i[<span class="hljs-string">&#x27;picname&#x27;</span>], i[<span class="hljs-string">&#x27;page_url&#x27;</span>], i[<span class="hljs-string">&#x27;img_url&#x27;</span>]))<br>                   db.<span class="hljs-built_in">commit</span>()<br>                   <span class="hljs-built_in">print</span>(i[<span class="hljs-number">0</span>] + <span class="hljs-string">&quot; is success&quot;</span>)<br>               except:<br>                   db.<span class="hljs-built_in">rollback</span>()<br>       db.<span class="hljs-built_in">close</span>()  # 关闭数据库<br></code></pre></td></tr></table></figure>
+
+<h2 id="5-创建Web工程"><a href="#5-创建Web工程" class="headerlink" title="5.创建Web工程"></a>5.创建Web工程</h2><p>运行我们的爬虫，很快数据库表里就有数据了。</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/827512/201806/2024-01-03-18-10-9123cfe316b2d1c844aefe42984f01f7-827512-20180605104705648-902001749-02b5e1.png" srcset="/img/loading.gif" lazyload></p>
+<p>然后开始写接口。我是通过Django+rest_framework来写的。</p>
+<p>Django 是用<a target="_blank" rel="noopener" href="https://code.ziqiangxuetang.com/python/python-tutorial.html">Python</a>开发的一个免费开源的Web框架，可以用于快速搭建高性能，优雅的网站。Django 中提供了开发网站经常用到的模块，常见的代码都为你写好了，减少重复的代码。</p>
+<h3 id="Django-目录结构"><a href="#Django-目录结构" class="headerlink" title="Django 目录结构"></a><strong>Django 目录结构</strong></h3><p><a target="_blank" rel="noopener" href="https://code.ziqiangxuetang.com/django/django-views-urls.html" title="Django 视图与URL">urls.py</a></p>
+<p>网址入口，关联到对应的views.py中的一个函数（或者generic类），访问网址就对应一个函数。</p>
+<p><a target="_blank" rel="noopener" href="https://code.ziqiangxuetang.com/django/django-views-urls.html" title="Django 视图与URL">views.py</a></p>
+<p>处理用户发出的请求，从urls.py中对应过来, 通过渲染templates中的网页可以将显示内容，比如登陆后的用户名，用户请求的数据，输出到网页。</p>
+<p><a target="_blank" rel="noopener" href="https://code.ziqiangxuetang.com/django/django-models.html" title="Django 模型">models.py</a></p>
+<p>与数据库操作相关，存入或读取数据时用到这个，当然用不到数据库的时候 你可以不使用。</p>
+<p><a target="_blank" rel="noopener" href="https://code.ziqiangxuetang.com/django/django-forms.html" title="Django 表单">forms.py</a></p>
+<p>表单，用户在浏览器上输入数据提交，对数据的验证工作以及输入框的生成等工作，当然你也可以不使用。</p>
+<p>templates 文件夹</p>
+<p>views.py 中的函数渲染templates中的Html模板，得到动态内容的网页，当然可以用缓存来提高速度。</p>
+<p><a target="_blank" rel="noopener" href="https://code.ziqiangxuetang.com/django/django-admin.html" title="Django 后台">admin.py</a></p>
+<p>后台，可以用很少量的代码就拥有一个强大的后台。</p>
+<p><a target="_blank" rel="noopener" href="https://code.ziqiangxuetang.com/django/django-settings.html" title="Django 配置">settings.py</a></p>
+<p>Django 的设置，配置文件，比如 DEBUG 的开关，静态文件的位置等。</p>
+<h3 id="Django-常用操作"><a href="#Django-常用操作" class="headerlink" title="Django 常用操作"></a><strong>Django 常用操作</strong></h3><p>1）新建一个 django project</p>
+<figure class="highlight nsis"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs nsis">django-<span class="hljs-literal">admin</span>.py startproject project_name<br></code></pre></td></tr></table></figure>
+
+<p>2）新建 app</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs vim"><span class="hljs-keyword">python</span> manage.<span class="hljs-keyword">py</span> startapp app_name<br></code></pre></td></tr></table></figure>
+
+<p>一般一个项目有多个app, 当然通用的app也可以在多个项目中使用。</p>
+<p>还得在工程目录的settings.py文件在配置</p>
+<figure class="highlight sml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs sml"><span class="hljs-type">INSTALLED_APPS</span> = [<br>    <span class="hljs-symbol">&#x27;django</span>.contrib.admin&#x27;,<br>    <span class="hljs-symbol">&#x27;django</span>.contrib.auth&#x27;,<br>    <span class="hljs-symbol">&#x27;django</span>.contrib.contenttypes&#x27;,<br>    <span class="hljs-symbol">&#x27;django</span>.contrib.sessions&#x27;,<br>    <span class="hljs-symbol">&#x27;django</span>.contrib.messages&#x27;,<br>    <span class="hljs-symbol">&#x27;django</span>.contrib.staticfiles&#x27;,<br>    <span class="hljs-symbol">&#x27;rest_framework&#x27;</span>,<br>    <br>    <span class="hljs-symbol">&#x27;meizi&#x27;</span>,<br>]<br></code></pre></td></tr></table></figure>
+
+<p>在app&#x2F;views.py下编写代码</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">index</span>(<span class="hljs-params">request</span>):<br>    <span class="hljs-keyword">return</span> HttpResponse(<span class="hljs-string">u&quot;你好&quot;</span>)<br></code></pre></td></tr></table></figure>
+
+<p>在工程目录urls.py配置</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> learn <span class="hljs-keyword">import</span> views <span class="hljs-keyword">as</span> learn_views <br>urlpatterns = [<br>    url(<span class="hljs-string">r&#x27;^$&#x27;</span>, learn_views.index),  <br>]<br><br></code></pre></td></tr></table></figure>
+<p>通过python manage.py runserver启动，就会看到我们输出的“你好”了</p>
+<p>3）创建数据库表 或 更改数据库表或字段</p>
+<p>在app下的models.py创建表</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs ruby"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Person</span>(models.<span class="hljs-title class_">Model</span>):<br>    name = models.<span class="hljs-title class_">CharField</span>(max_length=<span class="hljs-number">30</span>)<br>    age = models.<span class="hljs-title class_">IntegerField</span>()<br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__unicode__</span>(<span class="hljs-params"><span class="hljs-variable language_">self</span></span>):<br>        <span class="hljs-comment"># 在Python3中使用 def __str__(self):</span><br>        <span class="hljs-keyword">return</span> <span class="hljs-variable language_">self</span>.name<br></code></pre></td></tr></table></figure>
+
+<p>运行命令，就可以生成对应的表</p>
+<p>Django 1.7.1及以上 用以下命令</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs vim"># <span class="hljs-number">1</span>. 创建更改的文件<br><span class="hljs-keyword">python</span> manage.<span class="hljs-keyword">py</span> makemigrations<br># <span class="hljs-number">2</span>. 将生成的<span class="hljs-keyword">py</span>文件应用到数据库<br><span class="hljs-keyword">python</span> manage.<span class="hljs-keyword">py</span> migrate<br></code></pre></td></tr></table></figure>
+
+<p>在views.py文件里就可以获取数据库的数据</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs routeros">def create(request):<br>    # 新建一个对象的方法有以下几种：<br>    Person.objects.create(<span class="hljs-attribute">name</span>=<span class="hljs-string">&#x27;xiaoli&#x27;</span>, <span class="hljs-attribute">age</span>=18)<br>    # p = Person(<span class="hljs-attribute">name</span>=<span class="hljs-string">&quot;WZ&quot;</span>, <span class="hljs-attribute">age</span>=23)<br>    # p = Person(<span class="hljs-attribute">name</span>=<span class="hljs-string">&quot;TWZ&quot;</span>)<br>    # p.age = 23<br>    # p.save()<br>    # 这种方法是防止重复很好的方法，但是速度要相对慢些，返回一个元组，第一个为Person对象，<br>    # 第二个为<span class="hljs-literal">True</span>或<span class="hljs-literal">False</span>, 新建时返回的是<span class="hljs-literal">True</span>, 已经存在时返回<span class="hljs-literal">False</span><br>    # Person.objects.get_or_create(<span class="hljs-attribute">name</span>=<span class="hljs-string">&quot;WZT&quot;</span>, <span class="hljs-attribute">age</span>=23)<br>    s = Person.objects.<span class="hljs-built_in">get</span>(<span class="hljs-attribute">name</span>=<span class="hljs-string">&#x27;xiaoli&#x27;</span>)<br>    return HttpResponse(str(s))<br></code></pre></td></tr></table></figure>
+
+<h2 id="6-写接口"><a href="#6-写接口" class="headerlink" title="6.写接口"></a>6.写接口</h2><p>接口使用rest_framework，rest_framework是一套基于<a target="_blank" rel="noopener" href="https://link.jianshu.com/?t=https://www.djangoproject.com">Django</a> 的 <a target="_blank" rel="noopener" href="https://link.jianshu.com/?t=https://baike.baidu.com/item/rest/6330506?fr=aladdin">REST</a> 框架，是一个强大灵活的构建 Web API 的工具包。</p>
+<p>写接口三步完成：连接数据库、取数据、数据输出</p>
+<h3 id="1）连接数据库"><a href="#1）连接数据库" class="headerlink" title="1）连接数据库"></a>1）连接数据库</h3><p>在工程目录下的settings.py文件下配置</p>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs pgsql">DATABASES = &#123;<br>    # <span class="hljs-string">&#x27;default&#x27;</span>: &#123;<br>    #     <span class="hljs-string">&#x27;ENGINE&#x27;</span>: <span class="hljs-string">&#x27;django.db.backends.sqlite3&#x27;</span>,<br>    #     <span class="hljs-string">&#x27;NAME&#x27;</span>: os.path.<span class="hljs-keyword">join</span>(BASE_DIR, <span class="hljs-string">&#x27;db.sqlite3&#x27;</span>),<br>    # &#125;<br>    <span class="hljs-string">&#x27;default&#x27;</span>: &#123;<br>        <span class="hljs-string">&#x27;ENGINE&#x27;</span>: <span class="hljs-string">&#x27;django.db.backends.mysql&#x27;</span>,<br>        <span class="hljs-string">&#x27;NAME&#x27;</span>: <span class="hljs-string">&#x27;mysql&#x27;</span>,<br>        <span class="hljs-string">&#x27;USER&#x27;</span>: <span class="hljs-string">&#x27;root&#x27;</span>,<br>        <span class="hljs-string">&#x27;HOST&#x27;</span>: <span class="hljs-string">&#x27;127.0.0.1&#x27;</span>,<br>        <span class="hljs-string">&#x27;PASSWORD&#x27;</span>: <span class="hljs-string">&#x27;123&#x27;</span>,<br>        <span class="hljs-string">&#x27;PORT&#x27;</span>: <span class="hljs-number">3306</span>,<br>        # <span class="hljs-keyword">show</span> variables <span class="hljs-keyword">like</span> <span class="hljs-string">&#x27;character_set_database&#x27;</span>；<br>        # 修改字段字符编码<br>        # <span class="hljs-keyword">alter</span> <span class="hljs-keyword">table</span> spiders_weibo modify <span class="hljs-type">text</span> longtext charset utf8mb4 <span class="hljs-keyword">collate</span> utf8mb4_unicode_ci;<br>        <span class="hljs-string">&#x27;OPTIONS&#x27;</span>: &#123;<span class="hljs-string">&#x27;charset&#x27;</span>: <span class="hljs-string">&#x27;utf8mb4&#x27;</span>&#125;,<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="2）取数据"><a href="#2）取数据" class="headerlink" title="2）取数据"></a>2）取数据</h3><p>既然要取数据，那model肯定得和数据库的一致，我发现一个快捷的方式可以把数据库中的表生成对应的model，在项目目录下执行命令</p>
+<p>python manage.py inspectdb</p>
+<p>可以看到下图</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/827512/201806/2024-01-03-18-10-3941c53041ca20e3e11085e8bc87b2b9-827512-20180605103809526-1776036142-357db5.png" srcset="/img/loading.gif" lazyload></p>
+<p>取我们表的model拷贝到app下的models.py里</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs routeros">class Meizis(models.Model):<br>    mid = models.CharField(<span class="hljs-attribute">max_length</span>=10)<br>    title = models.CharField(<span class="hljs-attribute">max_length</span>=50, <span class="hljs-attribute">blank</span>=<span class="hljs-literal">True</span>, <span class="hljs-attribute">null</span>=<span class="hljs-literal">True</span>)<br>    picname = models.CharField(<span class="hljs-attribute">max_length</span>=10, <span class="hljs-attribute">blank</span>=<span class="hljs-literal">True</span>, <span class="hljs-attribute">null</span>=<span class="hljs-literal">True</span>)<br>    page_url = models.CharField(<span class="hljs-attribute">max_length</span>=50, <span class="hljs-attribute">blank</span>=<span class="hljs-literal">True</span>, <span class="hljs-attribute">null</span>=<span class="hljs-literal">True</span>)<br>    img_url = models.CharField(<span class="hljs-attribute">max_length</span>=50, <span class="hljs-attribute">blank</span>=<span class="hljs-literal">True</span>, <span class="hljs-attribute">null</span>=<span class="hljs-literal">True</span>)<br><br>    class Meta:<br>        managed = <span class="hljs-literal">False</span><br>        db_table = <span class="hljs-string">&#x27;meizi_meizis&#x27;</span><br></code></pre></td></tr></table></figure>
+
+<p>创建一个序列化Serializer类</p>
+<p>提供序列化和反序列化的途径，使之可以转化为，某种表现形式如json。我们可以借助serializer来实现，类似于Django表单（form）的运作方式。在app目录下，创建文件serializers.py。</p>
+<figure class="highlight axapta"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs axapta"><span class="hljs-keyword">class</span> <span class="hljs-title class_">MeiziSerializer</span>(serializers.ModelSerializer):<br>    <span class="hljs-meta"># ModelSerializer和Django中ModelForm功能相似</span><br>    <span class="hljs-meta"># Serializer和Django中Form功能相似</span><br>    <span class="hljs-keyword">class</span> <span class="hljs-title class_">Meta</span>:<br>        model = Meizis<br>        <span class="hljs-meta"># 和&quot;__all__&quot;等价</span><br>        fields = (<span class="hljs-string">&#x27;mid&#x27;</span>, <span class="hljs-string">&#x27;title&#x27;</span>, <span class="hljs-string">&#x27;picname&#x27;</span>, <span class="hljs-string">&#x27;page_url&#x27;</span>, <span class="hljs-string">&#x27;img_url&#x27;</span>)<br><br></code></pre></td></tr></table></figure>
+<p>这样在views.py就可以来获取数据库的数据了</p>
+<figure class="highlight lasso"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs lasso">meizis = Meizis.objects.<span class="hljs-literal">all</span>()<br>serializer = MeiziSerializer(meizis, many=<span class="hljs-literal">True</span>)<br><span class="hljs-keyword">return</span> Response(serializer.<span class="hljs-built_in">data</span>)<br><br></code></pre></td></tr></table></figure>
+<h3 id="3-数据输出客户端或前端"><a href="#3-数据输出客户端或前端" class="headerlink" title="3) 数据输出客户端或前端"></a>3) 数据输出客户端或前端</h3><p> REST框架提供了两种编写API视图的封装。</p>
+<ul>
+<li>@api_view装饰器，基于方法的视图。</li>
+<li>继承APIView类，基于类的视图。</li>
+</ul>
+<p>request.data会自行处理输入的json请求<br>使用格式后缀明确的指向指定的格式，需要添加一个format关键字参数<br>http <a target="_blank" rel="noopener" href="http://127.0.0.1:8000/getlist.json">http://127.0.0.1:8000/getlist.json</a> # JSON 后缀<br><a target="_blank" rel="noopener" href="http://127.0.0.1:8000/getlist.api">http://127.0.0.1:8000/getlist.api</a> # 可视化 API 后缀<br><a target="_blank" rel="noopener" href="http://127.0.0.1:8000/getlist/">http://127.0.0.1:8000/getlist/</a> code&#x3D;”print 123”post</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs kotlin"><span class="hljs-meta">@api_view([<span class="hljs-string">&#x27;GET&#x27;</span>, <span class="hljs-string">&#x27;POST&#x27;</span>])</span><br>def getlist(request, format=None):<br>    <span class="hljs-keyword">if</span> request.method == <span class="hljs-string">&#x27;GET&#x27;</span>:<br>        meizis = Meizis.objects.all()<br>        serializer = MeiziSerializer(meizis, many=True)<br>        <span class="hljs-keyword">return</span> Response(serializer.<span class="hljs-keyword">data</span>)<br><br>    elif request.method == <span class="hljs-string">&#x27;POST&#x27;</span>:<br>        serializer = MeiziSerializer(<span class="hljs-keyword">data</span>=request.<span class="hljs-keyword">data</span>)<br>        <span class="hljs-keyword">if</span> serializer.is_valid():<br>            serializer.save()<br>            <span class="hljs-keyword">return</span> Response(serializer.<span class="hljs-keyword">data</span>, status=status.HTTP_201_CREATED)<br>        <span class="hljs-keyword">return</span> Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)<br></code></pre></td></tr></table></figure>
+
+<h3 id="4）分页"><a href="#4）分页" class="headerlink" title="4）分页"></a>4）分页</h3><p>最后别忘了在urls.py配置URL，通过浏览器就可以看到json数据了。</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/827512/201806/2024-01-03-18-10-51ebdc7244ef0fc1610f8f6e7b2f3615-827512-20180605105201595-1309487419-1812e7.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/827512/201806/2024-01-03-18-10-9092d06c97957cd052ecb5291694805c-827512-20180605105225823-1754220282-13e767.png" srcset="/img/loading.gif" lazyload></p>
+<p> 当然app也是可以调用我们的接口的</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/827512/201806/2024-01-03-18-10-75b031316ab050474eade5fb56afede6-827512-20180605105403515-217219056-b694cd.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/827512/201806/2024-01-03-18-10-ed96be0ad3044561d1e4334161cd6272-827512-20180605105445911-2109047059-453c50.jpeg" srcset="/img/loading.gif" lazyload></p>
+<h3 id="还有个问题"><a href="#还有个问题" class="headerlink" title="还有个问题"></a>还有个问题</h3><p>我们的数据有好几千条，一块返回来很不合理，所以需要分页，当然rest_framework框架提供了这个功能，post请求不支持，需要自己查数据库或者切片来进行返回。来看看rest_framework是如何来分页的。在models.py里创建一个类</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs angelscript"><span class="hljs-keyword">class</span> <span class="hljs-symbol">StandardResultSetPagination</span>(<span class="hljs-symbol">LimitOffsetPagination</span>):<br>    # 默认每页显示的条数<br>    <span class="hljs-symbol">default_limit</span> = <span class="hljs-symbol">20</span><br>    # <span class="hljs-symbol">url</span> 中传入的显示数据条数的参数<br>    <span class="hljs-symbol">limit_query_param</span> = &#x27;<span class="hljs-symbol">limit</span>&#x27;<br>    # <span class="hljs-symbol">url</span>中传入的数据位置的参数<br>    <span class="hljs-symbol">offset_query_param</span> = &#x27;<span class="hljs-symbol">offset</span>&#x27;<br>    # 最大每页显示条数<br>    <span class="hljs-symbol">max_limit</span> = <span class="hljs-symbol">None</span><br></code></pre></td></tr></table></figure>
+
+<p>在serializers.py创建俩个类，为什么是俩个？因为我们有俩个接口，一个明细，一个列表，而列表是不需要把字段的所有数据都返回的</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs kotlin"><span class="hljs-keyword">class</span> <span class="hljs-title class_">ListSerialize</span>(serializers.ModelSerializer):<br>    <span class="hljs-keyword">class</span> <span class="hljs-title class_">Meta</span>:<br>        <span class="hljs-type">model</span> = <span class="hljs-title">Meizis</span><br>        fields = (<span class="hljs-string">&#x27;mid&#x27;</span>, <span class="hljs-string">&#x27;title&#x27;</span>)<br><br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">ListPicSerialize</span>(serializers.ModelSerializer):<br>    <span class="hljs-keyword">class</span> <span class="hljs-title class_">Meta</span>:<br>        <span class="hljs-type">model</span> = <span class="hljs-title">Meizis</span><br>        fields = <span class="hljs-string">&quot;__all__&quot;</span><br></code></pre></td></tr></table></figure>
+
+<p>在views.py里编写</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><code class="hljs less"><span class="hljs-variable">@api_view</span>([<span class="hljs-string">&#x27;GET&#x27;</span>])<br>def <span class="hljs-built_in">getlist</span>(request, format=None):<br>    if request.method == <span class="hljs-string">&#x27;GET&#x27;</span>:<br>        meizis = Meizis.objects.<span class="hljs-built_in">values</span>(<span class="hljs-string">&#x27;mid&#x27;</span>,<span class="hljs-string">&#x27;title&#x27;</span>).<span class="hljs-built_in">distinct</span>()<br>        # <span class="hljs-attribute">http</span>: <span class="hljs-comment">// 127.0.0.1:8000 / getlist?limit = 20</span><br>        # <span class="hljs-attribute">http</span>: <span class="hljs-comment">// 127.0.0.1:8000 / getlist?limit = 20 &amp; offset = 20</span><br>        # <span class="hljs-attribute">http</span>: <span class="hljs-comment">// 127.0.0.1:8000 / getlist?limit = 20 &amp; offset = 40</span><br>        # 根据url参数 获取分页数据<br>        obj = <span class="hljs-built_in">StandardResultSetPagination</span>()<br>        page_list = obj.<span class="hljs-built_in">paginate_queryset</span>(meizis, request)<br>        # 对数据序列化 普通序列化 显示的只是数据<br>        ser = <span class="hljs-built_in">ListSerialize</span>(instance=page_list, many=True)  # 多个many=True # instance：把对象序列化<br>        response = obj.<span class="hljs-built_in">get_paginated_response</span>(ser.data)<br>        return response<br><br><br><span class="hljs-variable">@api_view</span>([<span class="hljs-string">&#x27;GET&#x27;</span>, <span class="hljs-string">&#x27;POST&#x27;</span>])<br>def <span class="hljs-built_in">getlispic</span>(request, format=None):<br>    if request.method == <span class="hljs-string">&#x27;GET&#x27;</span>:<br>        mid = request.GET[<span class="hljs-string">&#x27;mid&#x27;</span>]<br>        if mid is <span class="hljs-keyword">not</span> <span class="hljs-attribute">None</span>:<br>            # get是用来获取一个对象的，如果需要获取满足条件的一些数据，就要用到filter<br>            meizis = Meizis.objects.<span class="hljs-built_in">filter</span>(mid=mid)<br>            obj = <span class="hljs-built_in">StandardResultSetPagination</span>()<br>            page_list = obj.<span class="hljs-built_in">paginate_queryset</span>(meizis, request)<br>            ser = <span class="hljs-built_in">ListPicSerialize</span>(instance=page_list, many=True)<br>            response = obj.<span class="hljs-built_in">get_paginated_response</span>(ser.data)<br>            return response<br>        <span class="hljs-attribute">else</span>:<br>            return <span class="hljs-built_in">Response</span>(<span class="hljs-built_in">str</span>(<span class="hljs-string">&#x27;请传mid&#x27;</span>))<br></code></pre></td></tr></table></figure>
+
+<p>到这里就完成了接口的编写，都是对框架的简单使用，希望对大家有帮助。</p>
+<p>GitHub地址，欢迎star</p>
+<p>爬虫项目：<a target="_blank" rel="noopener" href="https://github.com/peiniwan/Spider2">https://github.com/peiniwan/Spider2</a><a target="_blank" rel="noopener" href="https://github.com/peiniwan/Spider2">  
+</a></p>
+<p>Web项目：<a target="_blank" rel="noopener" href="https://github.com/peiniwan/mysite">https://github.com/peiniwan/mysite</a> </p>
+<p>APP项目：<a target="_blank" rel="noopener" href="https://github.com/peiniwan/Ganhuo">https://github.com/peiniwan/Ganhuo</a></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%85%B6%E4%BB%96%E8%AF%AD%E8%A8%80/" class="category-chain-item">其他语言</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E5%85%B6%E4%BB%96%E8%AF%AD%E8%A8%80/Python/" class="category-chain-item">Python</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Python用Django写restfulapi接口</div>
+      <div>http://peiniwan.github.io/2025/12/755ae620edb1.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>六月的雨</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年12月16日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/12/c554a1bfcf8b.html" title="分布式系统">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">分布式系统</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/12/01566d3167fc.html" title="Python基础语法">
+                        <span class="hidden-mobile">Python基础语法</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"OwNIdaopOn1rwNhtotGOGC0B-gzGzoHsz","appKey":"eadytQ2XqWmxuvAKeg08XX83","path":"window.location.pathname","placeholder":null,"avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":true,"recordIP":false,"serverURLs":"https://ownidaop.lc-cn-n1-shared.com","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

@@ -1,0 +1,760 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="六月的雨">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Android动画原理：不停修改view的不同属性，刷新 动画实现方式GIf一般Gif或者帧动画 的性能差是由于图过多，每秒种几十帧，每一帧都是一张图。一个小动画往往需要几十张图。如果变成资源下载，资源包体积难以控制。 原生Native 动画是属性动画或者补间动画。性能相比较gif而言性能比较好，但是有大量动画的需求时，往往生产力是不够的，一开始手动码动画，一个动画最多时写了3000多行code。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="6.Android动画">
+<meta property="og:url" content="http://peiniwan.github.io/2025/12/b6a0fdf8c755.html">
+<meta property="og:site_name" content="六月的雨的笔记">
+<meta property="og:description" content="Android动画原理：不停修改view的不同属性，刷新 动画实现方式GIf一般Gif或者帧动画 的性能差是由于图过多，每秒种几十帧，每一帧都是一张图。一个小动画往往需要几十张图。如果变成资源下载，资源包体积难以控制。 原生Native 动画是属性动画或者补间动画。性能相比较gif而言性能比较好，但是有大量动画的需求时，往往生产力是不够的，一开始手动码动画，一个动画最多时写了3000多行code。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android%E5%8A%A8%E7%94%BB.resources/2023/09/15/18-47-55-522340c178b8984a99995fb222c6c7b4-unknown_filename-1e6462.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android%E5%8A%A8%E7%94%BB.resources/2023/09/15/18-47-55-1406b168996cde1f32fda877b18e5ec1-Image-161916.jpg">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android%E5%8A%A8%E7%94%BB.resources/2023/09/15/18-47-55-6a8855482bd0b0799c0207a8793380d8-Image.1-c0e21b.jpg">
+<meta property="article:published_time" content="2025-12-16T13:59:22.392Z">
+<meta property="article:modified_time" content="2024-03-13T07:31:00.000Z">
+<meta property="article:author" content="六月的雨">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android%E5%8A%A8%E7%94%BB.resources/2023/09/15/18-47-55-522340c178b8984a99995fb222c6c7b4-unknown_filename-1e6462.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>6.Android动画 - 六月的雨的笔记</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"peiniwan.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>六月的雨的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="6.Android动画"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-12-16 21:59" pubdate>
+          2025年12月16日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          20 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">6.Android动画</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="Android动画"><a href="#Android动画" class="headerlink" title="Android动画"></a>Android动画</h1><p>原理：不停修改view的不同属性，刷新</p>
+<h3 id="动画实现方式"><a href="#动画实现方式" class="headerlink" title="动画实现方式"></a>动画实现方式</h3><h4 id="GIf"><a href="#GIf" class="headerlink" title="GIf"></a>GIf</h4><p>一般Gif或者帧动画 的性能差是由于图过多，每秒种几十帧，每一帧都是一张图。一个小动画往往需要几十张图。如果变成资源下载，资源包体积难以控制。</p>
+<h4 id="原生"><a href="#原生" class="headerlink" title="原生"></a>原生</h4><p>Native 动画是属性动画或者补间动画。性能相比较gif而言性能比较好，但是有大量动画的需求时，往往生产力是不够的，一开始手动码动画，一个动画最多时写了3000多行code。<br>Native 动画优缺点：<br>开发成本高<br>必须发版<br>不能完全100%还原复杂动画，调参数比较繁<br>图片资源大,影响apk包大小</p>
+<h4 id="SVG"><a href="#SVG" class="headerlink" title="SVG"></a>SVG</h4><p>SVG图片格式，一种矢量图形。另一个角度来讲一张图或者一个动画，是由很多上下层级的图层构成。比如当前的简单的图，看到的是一张图，但在设计工具中是三个图层构成，有着不同的上下层级顺序。<br>原理：通过设置帧率，来生成一个配置文件，使得每一帧都有一个配置，每一帧都是关键帧，通过帧率去刷每一帧的画面，这个思路跟gif很像，但是通过配置使得动画过程中图片都可以得到复用。性能就提升上来了。</p>
+<h4 id="Lottie"><a href="#Lottie" class="headerlink" title="Lottie"></a>Lottie</h4><p>完全按照设计工具的设计思路来进行还原，将动画脚本导出并解析。动画脚本非常的轻量。将所有的动画拆成多个层级,每个层级layer都有一个动画配置，播放时解析多个layer的配置，并给每个layer做相应的动画。也达到了图片可以复用。当需要解析高阶插值（二次线性方程，贝塞尔曲线方程）时，性能相对而言差一点。</p>
+<p><strong>Lottie使用注意</strong><br>都是canvas 画布操作<br>lottie动画很卡顿，不流畅&#x2F;&#x2F;硬件加速，开启之后瞬间丝滑<br>遮罩或者蒙版，性能将会受到影响。<br>如果你在一个列表中使用动画, 我们建议你配置 LottieAnimationView.setAnimation(String, CacheStrategy) 的第二个参数——缓存策略，这样动画就不必每次都反序列化。</p>
+<h3 id="Android中的动画"><a href="#Android中的动画" class="headerlink" title="Android中的动画"></a>Android中的动画</h3><p>三种：补间动画、帧动画、属性动画。<br>补间动画是放置到res&#x2F;anim&#x2F;下面<br>帧动画是放置到res&#x2F;drawable&#x2F;下面，子节点为animation-list，在这里定义要显示的图片和每张图片的显示时长</p>
+<p>上下左右浮动效果</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">ObjectAnimator</span> <span class="hljs-variable">objectAnimator</span> <span class="hljs-operator">=</span> ObjectAnimator.ofFloat(<span class="hljs-built_in">this</span>, <span class="hljs-string">&quot;translationY&quot;</span>, -<span class="hljs-number">6.0f</span>,<span class="hljs-number">6.0f</span>,-<span class="hljs-number">6.0f</span>);<br>   objectAnimator.setRepeatCount(ValueAnimator.INFINITE);<br>   objectAnimator.setDuration(<span class="hljs-number">800</span>);<br>   objectAnimator.start();<br>   <br>          animator2 = ObjectAnimator.ofFloat(ivHand2, <span class="hljs-string">&quot;translationY&quot;</span>, -<span class="hljs-number">20</span>,<span class="hljs-number">20</span>,-<span class="hljs-number">20</span>);<br>        animator2.setRepeatMode(ValueAnimator.RESTART);<br>           animator2.setRepeatCount(-<span class="hljs-number">1</span>);<br>           animator2.setDuration(<span class="hljs-number">1000</span>);<br>           animator2.start();<br>   <br>    <br></code></pre></td></tr></table></figure>
+
+
+<h2 id="帧动画"><a href="#帧动画" class="headerlink" title="帧动画"></a>帧动画</h2><p>传统的动画方法，通过顺序的播放排列好的图片来实现，类似电影，一张张图片不断的切换，形成动画效果，要自己指定每一帧。</p>
+<ul>
+<li><p>帧动画使用xml定义<br>  在drawable目录下定义xml文件，子节点为animation-list，在这里定义要显示的图片和每张图片的显示时长</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">animation-list</span> <span class="hljs-attr">xmlns:androandroid:oneshot</span>=<span class="hljs-string">&quot;false&quot;</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">item</span> <span class="hljs-attr">android:drawable</span>=<span class="hljs-string">&quot;@drawable/g1&quot;</span> <span class="hljs-attr">android:duration</span>=<span class="hljs-string">&quot;200&quot;</span> /&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">item</span> <span class="hljs-attr">android:drawable</span>=<span class="hljs-string">&quot;@drawable/g2&quot;</span> <span class="hljs-attr">android:duration</span>=<span class="hljs-string">&quot;200&quot;</span> /&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">item</span> <span class="hljs-attr">android:drawable</span>=<span class="hljs-string">&quot;@drawable/g3&quot;</span> <span class="hljs-attr">android:duration</span>=<span class="hljs-string">&quot;200&quot;</span> /&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">animation-list</span>&gt;</span><br></code></pre></td></tr></table></figure>
+</li>
+<li><p>在屏幕上播放帧动画</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">ImageView</span> <span class="hljs-variable">iv</span> <span class="hljs-operator">=</span> (ImageView) findViewById(R.id.iv);<br>    <span class="hljs-comment">//把动画文件设置为imageView的背景</span><br>    iv.setBackgroundResource(R.drawable.animations);<br>    <span class="hljs-type">AnimationDrawable</span> <span class="hljs-variable">ad</span> <span class="hljs-operator">=</span> (AnimationDrawable) iv.getBackground();<br>    <span class="hljs-comment">//播放动画</span><br>    ad.start();<br></code></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="补间动画"><a href="#补间动画" class="headerlink" title="补间动画"></a>补间动画</h2><ol>
+<li>如果动画中的图像变换比较有规律时，例如图像的移动（TranslateAnimation）、旋转（RotateAnimation）、缩放（ScaleAnimation）、透明度渐变（AlphaAnimation），这些图像变化过程中的图像都可以根据一定的算法自动生成，我们只需要指定动画的第一帧和最后一帧图像即可，这种自动生成中间图像的动画就是补间动画。</li>
+<li>补间动画，只是一个动画效果，组件其实还在原来的位置上，xy没有改变</li>
+</ol>
+<h2 id="属性动画"><a href="#属性动画" class="headerlink" title="属性动画"></a>属性动画</h2><ol>
+<li>补间动画改变了View的显示效果而已，而不会真正去改变View的属性，比如说，屏幕的左上角有一个按钮，然后通过补间动画将它移动到了屏幕的右下角，现在去尝试点击这个按钮，点击事件是绝对不会触发的，因为实际上这个按钮还是停留在屏幕的左上角，只不过补间动画将这个按钮绘制到了屏幕的右下角而已。</li>
+<li>动画的对象除了传统的View对象，还可以是Object对象，动画结束后，Object对象的属性值被实实在在的改变了。</li>
+</ol>
+<h3 id="ViewPropertyAnimator"><a href="#ViewPropertyAnimator" class="headerlink" title="ViewPropertyAnimator"></a>ViewPropertyAnimator</h3><p>使⽤ View.animate() 创建对象，以及使⽤ViewPropertyAnimator.translationX() 等⽅法来设置动画；<br>可以连续调⽤来设置多个动画；<br>可以⽤ setDuration() 来设置持续时间；<br>可以⽤ setStartDelay() 来设置开始延时；<br>以及其他⼀些便捷⽅法。</p>
+<p>view.animate().translationX(500);<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android%E5%8A%A8%E7%94%BB.resources/2023/09/15/18-47-55-522340c178b8984a99995fb222c6c7b4-unknown_filename-1e6462.png" srcset="/img/loading.gif" lazyload alt="unknown_filename"></p>
+<h3 id="ValueAnimator"><a href="#ValueAnimator" class="headerlink" title="ValueAnimator"></a>ValueAnimator</h3><p>ValueAnimator是整个属性动画机制当中最核心的一个类，属性动画的运行机制是通过不断地对值进行操作来实现的，我们只需要将初始值和结束值提供给ValueAnimator，并且告诉它动画所需运行的时长，那么ValueAnimator就会自动帮我们完成从初始值平滑地过渡到结束值这样的效果。除此之外，ValueAnimator还负责管理动画的播放次数、播放模式、以及对动画设置监听器等，是一个非常重要的类。<br>可以在动画多的时候用</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">ValueAnimator</span> <span class="hljs-variable">anim</span> <span class="hljs-operator">=</span> ValueAnimator.ofFloat(<span class="hljs-number">0f</span>, <span class="hljs-number">1f</span>);  <br>anim.setDuration(<span class="hljs-number">300</span>);  <br>anim.addUpdateListener(<span class="hljs-keyword">new</span> <span class="hljs-title class_">ValueAnimator</span>.AnimatorUpdateListener() &#123;  <br>    <span class="hljs-meta">@Override</span>  <br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">onAnimationUpdate</span><span class="hljs-params">(ValueAnimator animation)</span> &#123; <br>        <span class="hljs-type">float</span> <span class="hljs-variable">currentValue</span> <span class="hljs-operator">=</span> (<span class="hljs-type">float</span>) animation.getAnimatedValue();  <br>        Log.d(<span class="hljs-string">&quot;TAG&quot;</span>, <span class="hljs-string">&quot;cuurent value is &quot;</span> + currentValue);  <br>    &#125;  <br>&#125;);  <br>anim.start();  <br></code></pre></td></tr></table></figure>
+<h3 id="ObjectAnimator"><a href="#ObjectAnimator" class="headerlink" title="ObjectAnimator"></a>ObjectAnimator</h3><p>相比于ValueAnimator，ObjectAnimator可能才是我们最常接触到的类，因为ValueAnimator只不过是对值进行了一个平滑的动画过渡。而ObjectAnimator则就不同了，<strong>它是可以直接对任意对象的任意属性进行动画操作的，比如说View的alpha属性。</strong> 它其实是继承自ValueAnimator的，底层的动画实现机制也是基于ValueAnimator来完成的，因此ValueAnimator仍然是整个属性动画当中最核心的一个类。</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">ObjectAnimator</span> oa = ObjectAnimator.ofFloat(bt, <span class="hljs-string">&quot;translationX&quot;</span>, <span class="hljs-number">0</span>, <span class="hljs-number">100</span>) ;//位移<br><span class="hljs-attribute">ObjectAnimator</span> oa = ObjectAnimator.ofFloat(bt, <span class="hljs-string">&quot;scaleY&quot;</span>, <span class="hljs-number">0</span>.<span class="hljs-number">1</span>f, <span class="hljs-number">2</span>);//缩放<br><span class="hljs-attribute">ObjectAnimator</span> oa = ObjectAnimator.ofFloat(bt, <span class="hljs-string">&quot;alpha&quot;</span>, <span class="hljs-number">0</span>.<span class="hljs-number">1</span>f, <span class="hljs-number">1</span>);//透明<br> <span class="hljs-attribute">ObjectAnimator</span> oa = ObjectAnimator.ofFloat(bt, <span class="hljs-string">&quot;rotation&quot;</span>, <span class="hljs-number">20</span>, <span class="hljs-number">270</span>);//旋转<br> <span class="hljs-attribute">oa</span>.start();<br></code></pre></td></tr></table></figure>
+<p>属性动画的优势在于，可以为⾃定义属性设置动画。</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">ObjectAnimator</span> animator = ObjectAnimator.ofObject(view,<span class="hljs-string">&quot;radius&quot;</span>, Utils.dp2px(<span class="hljs-number">200</span>));<br></code></pre></td></tr></table></figure>
+<p>另外，⾃定义属性需要设置 getter 和 setter ⽅法，并且 setter ⽅法⾥需要调⽤invalidate() 来触发重绘：</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs csharp"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-built_in">float</span> <span class="hljs-title">getRadius</span>()</span> &#123;<br><span class="hljs-keyword">return</span> radius;<br>&#125;<br><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setRadius</span>(<span class="hljs-params"><span class="hljs-built_in">float</span> radius</span>)</span> &#123;<br><span class="hljs-keyword">this</span>.radius = radius;<br>invalidate();<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>设置旋转起点</p>
+<figure class="highlight pf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs pf">mArrowImageView.<span class="hljs-built_in">set</span>PivotX(mArrowImageView.getMeasureWidth() / <span class="hljs-number">2</span>);<br>mArrowImageView.<span class="hljs-built_in">set</span>PivotY(mArrowImageView.getMeasureHeight() / <span class="hljs-number">2</span>);<br>ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(<br>                mArrowImageView, <span class="hljs-string">&quot;rotate&quot;</span>, <span class="hljs-keyword">from</span>D<span class="hljs-literal">egress</span>, <span class="hljs-keyword">to</span>D<span class="hljs-literal">egress</span>);<br>objectAnimator.<span class="hljs-built_in">set</span>Duration(<span class="hljs-number">100</span>);<br>objectAnimator.start();<br></code></pre></td></tr></table></figure>
+<p>可以使用reverse，就不需要重新创建个动画了</p>
+<h3 id="Interpolator"><a href="#Interpolator" class="headerlink" title="Interpolator"></a>Interpolator</h3><p>插值器，⽤于设置时间完成度到动画完成度的计算公式，直⽩地说即设置动画的速度曲线，通过 setInterpolator(Interpolator) ⽅法来设置。常⽤的有 AccelerateDecelerateInterpolator、<br>AccelerateInterpolator、DecelerateInterpolator、LinearInterpolator 。</p>
+<p><em>差值器和估值器是什么?</em><br>Interpolator 负责控制动画变化的速率，使得基本动画能够以匀速、加速、减速、抛物线速率等各种速率变化。<br>TypeEvaluator 设置属性值，从初始值过度到结束值的变化具体数值。</p>
+<h3 id="PropertyValuesHolder"><a href="#PropertyValuesHolder" class="headerlink" title="PropertyValuesHolder"></a>PropertyValuesHolder</h3><p>⽤于设置更加详细的动画，例如多个属性应⽤于同⼀个对象：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">PropertyValuesHolder</span> <span class="hljs-variable">holder1</span> <span class="hljs-operator">=</span> PropertyValuesHolder.ofFloat(<span class="hljs-string">&quot;radius&quot;</span>, <br>Utils.dp2px(<span class="hljs-number">200</span>));<br><span class="hljs-type">PropertyValuesHolder</span> <span class="hljs-variable">holder2</span> <span class="hljs-operator">=</span> PropertyValuesHolder.ofFloat(<span class="hljs-string">&quot;offset&quot;</span>, Utils.dp2px(<span class="hljs-number">100</span>));<br><span class="hljs-type">ObjectAnimator</span> <span class="hljs-variable">animator</span> <span class="hljs-operator">=</span> PropertyValuesHolder.ofPropertyValuesHolder(view, holder1, holder2);<br></code></pre></td></tr></table></figure>
+<p>或者，配合使⽤ Keyframe ，对⼀个属性分多个段：</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">Keyframe</span> keyframe1 = Keyframe.ofFloat(<span class="hljs-number">0</span>,Utils.dpToPixel(<span class="hljs-number">100</span>));<br><span class="hljs-attribute">Keyframe</span> keyframe2 = Keyframe.ofFloat(<span class="hljs-number">0</span>.<span class="hljs-number">5</span>f,Utils.dpToPixel(<span class="hljs-number">250</span>));<br><span class="hljs-attribute">Keyframe</span> keyframe3 = Keyframe.ofFloat(<span class="hljs-number">1</span>,Utils.dpToPixel(<span class="hljs-number">200</span>));<br><span class="hljs-attribute">PropertyValuesHolder</span> holder =PropertyValuesHolder.ofKeyframe(<span class="hljs-string">&quot;radius&quot;</span>, keyframe1,<br><span class="hljs-attribute">keyframe2</span>, keyframe3);<br><span class="hljs-attribute">ObjectAnimator</span> animator =ObjectAnimator.ofPropertyValuesHolder(view, holder);<br></code></pre></td></tr></table></figure>
+<h3 id="AnimatorSet"><a href="#AnimatorSet" class="headerlink" title="AnimatorSet"></a>AnimatorSet</h3><p>将多个 Animator 合并在⼀起使⽤，先后顺序或并列顺序都可以：</p>
+<figure class="highlight haxe"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs haxe">AnimatorSet animatorSet = <span class="hljs-keyword">new</span> <span class="hljs-type">AnimatorSet</span>();<br>animatorSet.playTogether(animator1, animator2);<br>animatorSet.start();<br></code></pre></td></tr></table></figure>
+<h3 id="TypeEvaluator"><a href="#TypeEvaluator" class="headerlink" title="TypeEvaluator"></a>TypeEvaluator</h3><p>⽤于设置动画完成度到属性具体值的计算公式。默认的 ofInt() ofFloat() 已经有了⾃带的 IntEvaluator FloatEvaluator ，但有的时候需要⾃⼰设置Evaluator。例如，对于颜⾊，需要为 int 类型的颜⾊设置 ArgbEvaluator，⽽不是让它们使⽤ IntEvaluator</p>
+<figure class="highlight haxe"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs haxe">animator.setEvaluator(<span class="hljs-keyword">new</span> <span class="hljs-type">ArgbEvaluator</span>());<br></code></pre></td></tr></table></figure>
+<p>如果你对 ArgbEvaluator 的效果不满意，也可以⾃⼰写⼀个 HsvEvaluator ：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs typescript"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">HsvEvaluator</span> <span class="hljs-keyword">implements</span><br><span class="hljs-title class_">TypeEvaluator</span>&lt;<span class="hljs-title class_">Integer</span>&gt; &#123;<br><span class="hljs-meta">@Override</span><br><span class="hljs-keyword">public</span> <span class="hljs-title class_">Object</span> <span class="hljs-title function_">evaluate</span>(<span class="hljs-params">float fraction, <span class="hljs-built_in">Object</span></span><br><span class="hljs-params">startValue, <span class="hljs-built_in">Object</span> endValue</span>) &#123;<br>...<br>&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>另外，对于不⽀持的类型，也可以使⽤ ofObject() 来在创建 Animator 的同时就设置上 Evaluator，⽐如 NameEvaluator ：</p>
+<figure class="highlight haxe"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs haxe"><span class="hljs-keyword">public</span> <span class="hljs-title class_"><span class="hljs-keyword">class</span> <span class="hljs-title">NameEvaluator</span> <span class="hljs-title">implements</span>        </span><br><span class="hljs-title class_"><span class="hljs-title">TypeEvaluator</span>&lt;<span class="hljs-title">String</span>&gt; </span>&#123;   <br>List&lt;<span class="hljs-keyword">String</span>&gt; names = ...;   <br><span class="hljs-meta">@Override    </span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">String</span> evaluate(float fraction, <span class="hljs-keyword">String</span>  startValue, <span class="hljs-keyword">String</span> endValue) &#123;       <br><span class="hljs-keyword">if</span> (!names.contains(startValue)) &#123;            <br><span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-type">IllegalArgumentException</span>(<span class="hljs-string">&quot;Start value not existed&quot;</span>);       <br>&#125;       <br><span class="hljs-keyword">if</span> (!names.contains(endValue)) &#123;            <br><span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-type">IllegalArgumentException</span>(<span class="hljs-string">&quot;Endvalue not existed&quot;</span>);       <br>&#125;       <br>int index = (int) ((names.indexOf(endValue) - names.indexOf(startValue)) * fraction);        <br><span class="hljs-keyword">return</span> names.<span class="hljs-keyword">get</span>(index);    <br>&#125;<br>&#125;<br>ObjectAnimator animator = ObjectAnimator.ofObject(view, <span class="hljs-string">&quot;name&quot;</span>, <span class="hljs-keyword">new</span>  <span class="hljs-type">NameEvaluator</span>(), <span class="hljs-string">&quot;Jack&quot;</span>);<br></code></pre></td></tr></table></figure>
+<h3 id="硬件加速"><a href="#硬件加速" class="headerlink" title="硬件加速"></a>硬件加速</h3><p><strong>硬件加速是什么</strong><br>使⽤ CPU 绘制到 Bitmap，然后把 Bitmap 贴到屏幕，就是软件绘制；<br>使⽤ CPU 把绘制内容转换成 GPU 操作，交给 GPU，由 GPU 负责真正的绘制，就叫硬件绘制；<br>使⽤ GPU 绘制就叫做硬件加速<br><strong>怎么就加速了？</strong><br>GPU 分摊了⼯作<br>GPU 绘制简单图形（例如⽅形、圆形、直线）在硬件设计上具有先天优势，会更快流程得到优化（重绘流程涉及的内容更少）<br><strong>硬件加速的缺陷：</strong><br>兼容性。由于使⽤ GPU 的绘制（暂时）⽆法完成某些绘制，因此对于⼀些特定的API，需要关闭硬件加速来转回到使⽤ CPU 进⾏绘制。</p>
+<h3 id="view动画的特殊使用场景"><a href="#view动画的特殊使用场景" class="headerlink" title="view动画的特殊使用场景"></a>view动画的特殊使用场景</h3><p>activity overridePendingTransition，可以是补间（下面的），也可以是熟悉动画<br>FragmentTransaction中的 setCustomAnimations 方法（不能是属性动画）</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android%E5%8A%A8%E7%94%BB.resources/2023/09/15/18-47-55-1406b168996cde1f32fda877b18e5ec1-Image-161916.jpg" srcset="/img/loading.gif" lazyload alt="Image"><br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android%E5%8A%A8%E7%94%BB.resources/2023/09/15/18-47-55-6a8855482bd0b0799c0207a8793380d8-Image.1-c0e21b.jpg" srcset="/img/loading.gif" lazyload alt="Image.1"></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Android/" class="category-chain-item">Android</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/Android/view/" class="category-chain-item">view</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>6.Android动画</div>
+      <div>http://peiniwan.github.io/2025/12/b6a0fdf8c755.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>六月的雨</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年12月16日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/12/8def896b4756.html" title="7.Android屏幕适配">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">7.Android屏幕适配</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/12/d170891dd6f9.html" title="5.requestLayout">
+                        <span class="hidden-mobile">5.requestLayout</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"OwNIdaopOn1rwNhtotGOGC0B-gzGzoHsz","appKey":"eadytQ2XqWmxuvAKeg08XX83","path":"window.location.pathname","placeholder":null,"avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":true,"recordIP":false,"serverURLs":"https://ownidaop.lc-cn-n1-shared.com","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

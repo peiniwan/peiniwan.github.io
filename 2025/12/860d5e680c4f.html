@@ -1,0 +1,829 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="六月的雨">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="在实践操作当中，可以从三个方面着手减小内存使用，首先是减小对象的内存占用，其次是内存对象的重复利用，最后是避免对象的内存泄露。也可以从从设备分级、Bitmap 优化和内存泄露这三个方面入手。 减小内存占用Bitmap 优化[[4.图片、glide优化]]  资源和图片压缩，对于低端机用户可以关闭复杂的动画、或者某些功能；使用 565 格式的图片 一个空进程也会占用 10M 的内存，减少应用启动的进">
+<meta property="og:type" content="article">
+<meta property="og:title" content="1.Android内存优化">
+<meta property="og:url" content="http://peiniwan.github.io/2025/12/860d5e680c4f.html">
+<meta property="og:site_name" content="六月的雨的笔记">
+<meta property="og:description" content="在实践操作当中，可以从三个方面着手减小内存使用，首先是减小对象的内存占用，其次是内存对象的重复利用，最后是避免对象的内存泄露。也可以从从设备分级、Bitmap 优化和内存泄露这三个方面入手。 减小内存占用Bitmap 优化[[4.图片、glide优化]]  资源和图片压缩，对于低端机用户可以关闭复杂的动画、或者某些功能；使用 565 格式的图片 一个空进程也会占用 10M 的内存，减少应用启动的进">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android%E5%86%85%E5%AD%98%E4%BC%98%E5%8C%96.resources/2023/09/15/18-49-43-7a03ecb64c07e5a1600c55194e5cf24c-unknown_filename.2-63fa83.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android%E5%86%85%E5%AD%98%E4%BC%98%E5%8C%96.resources/2023/09/15/18-49-43-dd496c41d503d49dec142e2022f176a2-unknown_filename.1-35efb0.jpeg">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android%E5%86%85%E5%AD%98%E4%BC%98%E5%8C%96.resources/2023/09/15/18-49-43-92a4462c3b07dfc7942c3fcc6d160dc4-unknown_filename-5b6b3f.jpeg">
+<meta property="article:published_time" content="2025-12-16T13:59:22.406Z">
+<meta property="article:modified_time" content="2024-03-26T02:03:00.000Z">
+<meta property="article:author" content="六月的雨">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android%E5%86%85%E5%AD%98%E4%BC%98%E5%8C%96.resources/2023/09/15/18-49-43-7a03ecb64c07e5a1600c55194e5cf24c-unknown_filename.2-63fa83.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>1.Android内存优化 - 六月的雨的笔记</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"peiniwan.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>六月的雨的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="1.Android内存优化"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-12-16 21:59" pubdate>
+          2025年12月16日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          34 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">1.Android内存优化</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>在实践操作当中，可以从三个方面着手减小内存使用，首先是减小对象的内存占用，其次是内存对象的重复利用，最后是避免对象的内存泄露。<br>也可以从从设备分级、Bitmap 优化和内存泄露这三个方面入手。</p>
+<h2 id="减小内存占用"><a href="#减小内存占用" class="headerlink" title="减小内存占用"></a>减小内存占用</h2><h3 id="Bitmap-优化"><a href="#Bitmap-优化" class="headerlink" title="Bitmap 优化"></a>Bitmap 优化</h3><p>[[4.图片、glide优化]]</p>
+<ol>
+<li>资源和图片压缩，对于低端机用户可以关闭复杂的动画、或者某些功能；使用 565 格式的图片</li>
+<li>一个空进程也会占用 10M 的内存，减少应用启动的进程数，减少常驻进程、有节操的保活，对低端机内存优化非常重要。</li>
+<li>Serializable全部改成 Parcelable（&#x2F;ˈpɑːrsl&#x2F;）[[Serializable 与 Parcelable]]</li>
+<li>arraymap，sarparray 代替 hashmap [[SparseArray 和 ArrayMap]]</li>
+</ol>
+<h2 id="内存对象的重复利用"><a href="#内存对象的重复利用" class="headerlink" title="内存对象的重复利用"></a>内存对象的重复利用</h2><ol>
+<li>使用线程池（对象池）</li>
+<li>避免创建不必要的对象，单例</li>
+<li>合理的使用缓存，使用lrucache，比如图片是很耗内存</li>
+<li>内存抖动</li>
+</ol>
+<h3 id="内存抖动"><a href="#内存抖动" class="headerlink" title="内存抖动"></a>内存抖动</h3><p>内存抖动是指在短时间内有大量的对象被创建或者被回收的现象，内存抖动出现原因主要是频繁（在循环里）创建对象（短时间内产生大量对象，需要大量内存，就可能会需要回收内存以用于产生对象，垃圾回收机制就自然会频繁运行了）。频繁内存抖动会导致垃圾回收频繁运行。解决的方法：</p>
+<ol>
+<li>尽量避免在循环体内创建对象，应该把对象创建移到循环体外。</li>
+<li>注意自定义View的onDraw()方法会被频繁调用，所以在这里面不应该频繁的创建对象。</li>
+<li>当需要大量使用Bitmap的时候，把它们缓存在数组中实现复用。</li>
+<li>对于能够复用的对象，可以使用对象池将它们缓存起来。</li>
+<li>允许复用的情况下，使用对象池进行缓存，如：Handler的Message单链表(obtain);</li>
+</ol>
+<ul>
+<li><p><strong>RecyclerView滚动优化</strong></p>
+<ul>
+<li>问题：<code>onBindViewHolder</code>中创建Bitmap&#x2F;Paint</li>
+<li>现象：快速滚动时明显卡顿</li>
+<li>方案：ViewHolder复用+对象池</li>
+</ul>
+</li>
+<li><p><strong>动画资源泄漏</strong>    </p>
+<ul>
+<li>问题：未复用<code>ValueAnimator</code>&#x2F;<code>ObjectAnimator</code></li>
+<li>现象：连续触发动画时内存锯齿状波动</li>
+<li>方案：使用<code>AnimatorSet</code>复用动画对象<figure class="highlight haxe"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs haxe"><span class="hljs-keyword">if</span> (mShowSearchContainerAnimatorSet == <span class="hljs-literal">null</span>) &#123;  <br>    AnimatorSetBuilder builder = <span class="hljs-keyword">new</span> <span class="hljs-type">AnimatorSetBuilder</span>();  <br>    PropertySetter.AnimatedPropertySetter setter = <span class="hljs-keyword">new</span> <span class="hljs-type">PropertySetter</span>.AnimatedPropertySetter(<span class="hljs-number">300</span>, builder);  <br>    setter.setViewAlpha(mCategoryContainer, <span class="hljs-number">0</span>, Interpolators.LINEAR);  <br>    setter.setViewAlpha(mSearchContainer, <span class="hljs-number">1</span>, Interpolators.LINEAR);  <br>    mShowSearchContainerAnimatorSet = builder.build();  <br>&#125;  <br>mShowSearchContainerAnimatorSet.start();<br></code></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ul>
+<h3 id="根本原因"><a href="#根本原因" class="headerlink" title="根本原因"></a>根本原因</h3><p>[[3.内存泄漏简单问]]</p>
+<p>Handler 都不能算是罪魁祸首，罪魁祸首（根本原因）都是他们的头头——线程。内部类引用就引用吧，无所谓，但是这个内部类是长期存在的就不行</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android%E5%86%85%E5%AD%98%E4%BC%98%E5%8C%96.resources/2023/09/15/18-49-43-7a03ecb64c07e5a1600c55194e5cf24c-unknown_filename.2-63fa83.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.2"></p>
+<p>handle. post<br>view 中使用的 Context 就是当前的 Activity，而这个 runnable 一旦被 post，就会一直存在于队列里面，直到时间到了，被执行。<br>主线程 —&gt; threadlocal —&gt; Looper —&gt; MessageQueue —&gt; Message —&gt; Handler-&gt;view —&gt; Activity</p>
+<h3 id="常见内存泄漏"><a href="#常见内存泄漏" class="headerlink" title="常见内存泄漏"></a>常见内存泄漏</h3><h4 id="非静态内部类持有外部类的引用"><a href="#非静态内部类持有外部类的引用" class="headerlink" title="非静态内部类持有外部类的引用"></a>非静态内部类持有外部类的引用</h4><p>内部类的构造函数中会传入外部类的实例，然后就可以通过 this$0访问外部类的成员<br><em>this$0</em>的意思就是所说的隐式持有外部 Activity 引用, 内部类可以访问外部类的成员变量, 靠的就是 this$0, 这个东西是编译器自动加上的, 不需要手动定义, 在反编译的 smali 文件中很容易看到~(当然如果有多层内部类的嵌套, 会有 this$1, this$2)</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs scala"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SdkDialogFragment</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">DialogFragment</span> </span>&#123;  <br>  <br>    <span class="hljs-keyword">private</span> <span class="hljs-type">Dialog</span> mDialog;  <br>  <br>    public <span class="hljs-type">SdkDialogFragment</span>(<span class="hljs-type">Dialog</span> dialog) &#123;  <br>        mDialog = dialog;  <br>    &#125;  <br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>非静态内部类改为静态内部类,如使用Application Context</p>
+<h4 id="匿名内部类持有外部类的引用"><a href="#匿名内部类持有外部类的引用" class="headerlink" title="匿名内部类持有外部类的引用"></a>匿名内部类持有外部类的引用</h4><p>在 Activity 中使用非静态的内部类，并开启一个长时间运行的线程，因为内部类持有 Activity 的引用，会导致 Activity 长期得不到回收，例如 handler（使用静态内部类加上弱引用的方式实现），或者 mHandler.removeCallbacksAndMessages(null);</p>
+<p>匿名内部类，例如：AsyncTask 和 Runnable ，那么它们将持有其所在 Activity 的隐式引用。如果任务在 Activity 销毁之前还未完成，那么将导致 Activity 的内存资源无法被回收，从而造成内存泄漏。（将 AsyncTask 和 Runnable 类独立出来或者使用静态内部类）</p>
+<p>解决方法：<strong>静态+弱引用</strong></p>
+<ul>
+<li>内部类 Handler 对象会隐式地持有一个外部类对象（通常是一个 Activity）的引用（不然你怎么可能通过 Handler 来操作 Activity 中的 View？）</li>
+<li>PS: 在 Java 中，非静态的内部类和匿名内部类都会隐式地持有其外部类的引用，静态的内部类不会持有外部类的引用。静态类不持有外部类的对象，所以你的 Activity 可以随意被回收。</li>
+<li>由于 Handler 不再持有外部类对象的引用，导致程序不允许你在 Handler 中操作 Activity 中的对象了。所以你需要在 Handler 中增加一个对 Activity 的弱引用（WeakReference）。</li>
+<li><em>使用弱引用注意判空</em></li>
+</ul>
+<p>泄漏例子：在 ondestory 里 ref1没问题，ref2就内存泄漏, ref2是匿名内部类<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android%E5%86%85%E5%AD%98%E4%BC%98%E5%8C%96.resources/2023/09/15/18-49-43-dd496c41d503d49dec142e2022f176a2-unknown_filename.1-35efb0.jpeg" srcset="/img/loading.gif" lazyload alt="unknown_filename.1"></p>
+<p>在反编译的时候经常会看到 xxxxx$1. class, xxxxxx$2. class, 这些就是匿名内部类, 经常的书写格式一般是 new xxxxxx () {    类的成员变量, 成员方法     }. xxxxx ();<br>其实我们经常用</p>
+<figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs aspectj">leak_single.setOnClickListener (<span class="hljs-keyword">new</span> View.OnClickListener () &#123;<br>    <span class="hljs-meta">@Override</span><br> <span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">onClick</span> <span class="hljs-params">(View view)</span> </span>&#123;<br>        Intent intent = <span class="hljs-keyword">new</span> Intent (MainActivity. <span class="hljs-keyword">this</span>, LeakSingleTestActivity. <span class="hljs-class"><span class="hljs-keyword">class</span>)</span>;<br>        startActivity (intent);<br>    &#125;<br>&#125;);<br></code></pre></td></tr></table></figure>
+
+
+<h4 id="HandlerThread-泄露"><a href="#HandlerThread-泄露" class="headerlink" title="HandlerThread 泄露"></a>HandlerThread 泄露</h4><figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs pgsql">HandlerThread thread = <span class="hljs-built_in">new</span> HandlerThread(&quot;xxx&quot;);<br>thread.<span class="hljs-keyword">start</span>();<br><span class="hljs-keyword">Handler</span> <span class="hljs-keyword">handler</span> = <span class="hljs-built_in">new</span> <span class="hljs-keyword">Handler</span>(thread.getLooper());<br><span class="hljs-keyword">handler</span>.postDelayed(<span class="hljs-built_in">new</span> Runnable() &#123;<br>    @Override<br>    <span class="hljs-built_in">public</span> <span class="hljs-type">void</span> run() &#123;<br>       <span class="hljs-keyword">view</span>.setVisibility(<span class="hljs-keyword">View</span>.GONE);<br>    &#125;<br>&#125;, <span class="hljs-number">10000</span>);<br><br>thread.quit();<br></code></pre></td></tr></table></figure>
+
+<p>在 HandlerThread 中还有一个方法: quitSafely, 简单提一下, 实际执行的是 removeAllFutureMessageLocked 方法, 只会清空 MessageQueue 消息池中所有的延迟消息, 并将所有非延迟消息派发出去让 Handler 处理, 相比于 quit, 更安全一些, 这个看需求吧, 一般 Activity 都退出了, 消息派不派发都没有实际意义了</p>
+<h4 id="单例"><a href="#单例" class="headerlink" title="单例"></a>单例</h4><p>由于单例的静态特性使得其生命周期和应用的生命周期一样长，如果一个对象已经不再需要使用了，而单例对象还持有该对象的引用，就会使得该对象不能被正常回收，从而导致了内存泄漏。（使用 Application 的 context）</p>
+<h4 id="资源未关闭造成"><a href="#资源未关闭造成" class="headerlink" title="资源未关闭造成"></a>资源未关闭造成</h4><p>BraodcastReceiver，ContentObserver，数据库Cursor，IO，Bitmap（close 或取消注册）、线程池 shutdown、handlerThread quick. 属性动画当设置成无限循环时，需要 cancel</p>
+<p>listener 也要置为 null（getViewTreeObserver）</p>
+<p><em>注册和取消注册成对出现</em>，在对象合适的生命周期进行监听的注销</p>
+<p>WebView 造成的泄露（当我们不要使用 WebView 对象时，应该调用它的 destory ()函数来销毁它，并释放其占用的内存，否则其长期占用的内存也不能被回收，从而造成内存泄露）。在客户端刚启动时，就初始化一个全局的 WebView 待用，并隐藏；当用户访问了 WebView 时，直接使用这个 WebView 加载对应网页，并展示。这种方法可以比较有效的减少初始化 WebView 的时间。</p>
+<p><em>不要多余的成员变量或临时变量</em>。成员变量（全局变量）。activity 持有成员变量的引用，比如说 arraylist，集合容器中的内存泄露（在退出程序之前，将集合里的东西 clear，然后置为 null，再退出程序。或者创建成局部变量 (短内存泄漏)在堆上，多了也占内存</p>
+<h4 id="生命周期"><a href="#生命周期" class="headerlink" title="生命周期"></a>生命周期</h4><p><em>尽量不要用一个生命周期长于 Activity 的对象来持有 Activity 的引用</em></p>
+<h6 id="三种静态"><a href="#三种静态" class="headerlink" title="三种静态"></a>三种静态</h6><ol>
+<li>静态内部类：尽量不要用一个生命周期长于Activity的对象来持有Activity的引用。声明handler为static，这样内部类就不再持有外部类的引用了，就不会阻塞Activity的释放。在<strong>Activity中尽量避免使用生命周期不受控制的非静态类型的内部类</strong>，可以使用<strong>静态内部类</strong>加上弱引用的方式实现。</li>
+<li><em>静态变量</em>：不要直接或者间接引用Activity、Service等。这会使用Activity以及它所引用的所有对象无法释放，然后，用户操作时间一长，内存就会狂升。</li>
+<li>静态引用：应该避免 static 成员变量引用资源耗费过多的实例，比如 Context。尽量使用 getApplicationContext，因为 Application 的 Context 的生命周期比较长，引用它不会出现内存泄露的问题，而不是用 activity 的 context。可以通过调用 Context.getApplicationContext () or Activity.getApplication ()来获得</li>
+</ol>
+<p>当某个 View 初始化时耗费大量资源, 而且要求 Activity 生命周期内保持不变, 这个时候很多业务组可能会吧 view 变成 static,加载到视图树上 (View Hierachy)，像这样, 当 <code>Activity</code> 被销毁时，应当释放资源。但很可能会带来泄露问题, View 是跟 Context 紧密关联, 使用不当就会出现泄露问题, 需要特别注意.<br>我在使用 View 的时候没操作 Context? 怎么会有 Activity 的引用呢?</p>
+<p>其实 View 的代码中是默认有 Context<br>Context 是什么时候给到 View 的呢? View 创建的时候, new View, 有的时候是我们写代码时自己 new, 更多的时候是 setContentView 时将 Activity 作为 context 传给 View</p>
+<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs scss"><span class="hljs-keyword">@Override</span>  <br>protected void onCreate(Bundle savedInstanceState) &#123;  <br>    super<span class="hljs-selector-class">.onCreate</span>(savedInstanceState);  <br>    <span class="hljs-built_in">setContentView</span>(R.layout.activity_main);<br></code></pre></td></tr></table></figure>
+
+<p><strong>解决办法:</strong><br><strong>1: 通过设计改变 static 为普通变量, 不要在 Android 中使用 static 修饰 View, 完全避免此种可能, 推荐</strong><br>2: 在 onDestroy 时将 static view 置为 null</p>
+<h6 id="静态方法"><a href="#静态方法" class="headerlink" title="静态方法"></a>静态方法</h6><p><strong>静态对象实例存在于堆中<br>静态方法在 stack，运行完就出栈了<br>静态成员变量在方法区<br>局部变量是不能静态的</strong></p>
+<p><em>类的静态成员变量（static成员变量）存储在方法区（Method Area）中</em>，而非堆内存。静态成员变量独立于对象而存在，它们属于类本身而不是对象的一部分。</p>
+<p><strong>为什么 Java 静态方法引用的属性也必须是静态的</strong></p>
+<ul>
+<li>静态方法不需要 new 对象，只要 class 文件被 ClassLoader   load 进入<strong>JVM 的 stack</strong>，该静态方法即可被调用。当然此时静态方法是存取不到 heap 中的对象属性的。  </li>
+<li>非静态方法执行前，要先new对象，在heap中分配数据，并把stack中的地址指针交给非静态方法，这样程序技术器依次执行指令，而指令代码此时能够访问到heap数据区了。</li>
+</ul>
+<p><strong>和静态方法没关系，主要是静态变量持有activity的引用</strong></p>
+<figure class="highlight haxe"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs haxe"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Fragment <span class="hljs-keyword">new</span><span class="hljs-type">Instance</span>(ArrayList&lt;SpeakKey&gt; data, int parentIndex) &#123;<br>    LearnSpeakScoreFragment fragment = <span class="hljs-keyword">new</span> <span class="hljs-type">LearnSpeakScoreFragment</span>();<br>    Bundle bundle = <span class="hljs-keyword">new</span> <span class="hljs-type">Bundle</span>();<br>    bundle.putInt(<span class="hljs-string">&quot;parentIndex&quot;</span>, parentIndex);<br>    fragment.setArguments(bundle);<br>    <span class="hljs-keyword">return</span> fragment;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>不会内存泄漏，因为LearnSpeakScoreFragment又没持有activity的引用。方法运行完了就出栈了</p>
+<h3 id="标准的-handler-写法"><a href="#标准的-handler-写法" class="headerlink" title="标准的 handler 写法"></a>标准的 handler 写法</h3><p>静态内部类</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">MyHandler</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Handler</span> &#123;<br>        <span class="hljs-keyword">private</span> WeakReference&lt;Context&gt; reference;<br>        <span class="hljs-keyword">public</span> <span class="hljs-title function_">MyHandler</span><span class="hljs-params">(Context context)</span> &#123;<br>            reference = <span class="hljs-keyword">new</span> <span class="hljs-title class_">WeakReference</span>&lt;&gt;(context);<br>        &#125;<br>        <span class="hljs-meta">@Override</span><br>        <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">handleMessage</span><span class="hljs-params">(Message msg)</span> &#123;<br>            <span class="hljs-type">MainActivity</span> <span class="hljs-variable">activity</span> <span class="hljs-operator">=</span> (MainActivity) reference.get();<br>            <span class="hljs-keyword">if</span>(activity != <span class="hljs-literal">null</span>)&#123;<br><span class="hljs-comment">//                activity.mTextView.setText(&quot;&quot;);</span><br>            &#125;<br>        &#125;<br>    &#125;<br><br><span class="hljs-comment">//标准的单例</span><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> AppManager instance;<br>    <span class="hljs-keyword">private</span> Context context;<br>    <span class="hljs-keyword">private</span> <span class="hljs-title function_">AppManager</span><span class="hljs-params">(Context context)</span> &#123;<br>        <span class="hljs-built_in">this</span>.context = context.getApplicationContext();<span class="hljs-comment">// 使用Application 的context</span><br>    &#125;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> AppManager <span class="hljs-title function_">getInstance</span><span class="hljs-params">(Context context)</span> &#123;<br>        <span class="hljs-keyword">if</span> (instance == <span class="hljs-literal">null</span>) &#123;<br>            instance = <span class="hljs-keyword">new</span> <span class="hljs-title class_">AppManager</span>(context);<br>        &#125;<br>        <span class="hljs-keyword">return</span> instance;<br>    &#125;<br><br></code></pre></td></tr></table></figure>
+
+<p>（特别对于 Context,View,Fragmet,Activity 对象），如果要将其放进类内部的容器对象或者静态类中引用，请一直用 WeakReference 包装！比如在 TabLayout 的源码中，在 TabLayoutOnPageChangeListener 中，就为 TabLayout 做了 WeakReference wrap。</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android%E5%86%85%E5%AD%98%E4%BC%98%E5%8C%96.resources/2023/09/15/18-49-43-92a4462c3b07dfc7942c3fcc6d160dc4-unknown_filename-5b6b3f.jpeg" srcset="/img/loading.gif" lazyload alt="unknown_filename"></p>
+<h3 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h3><p>对象的引用分为四种级别，从而使程序更加灵活的控制对象的生命周期。这四种级别由高到低依次为：强引用、软引用、弱引用和虚引用。</p>
+<ol>
+<li>强引用是Java的默认引用实现, 它会尽可能长时间的存活于 JVM（虚拟机） 内， 当没有任何对象指向它时（显式地将引用赋值为nul）才会在合适的时间，进行垃圾回收。</li>
+<li>软引用 如果内存空间不足了，就会回收这些对象的内存。</li>
+<li>弱引用 WeakReference  弱引用的对象拥有更短的生命周期，只要垃圾回收器扫描到它，不管内存空间充足与否，都会回收它的内存。</li>
+<li>虚引用 PhantomReference  虚引用和前面的软引用、弱引用不同，它并不影响对象的生命周期。如果一个对象与虚引用关联，则跟没有引用与之关联一样，在任何时候都可能被垃圾回收器回收。</li>
+</ol>
+<h3 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h3><p><strong>Android 系统中 GC 内存泄漏的原因</strong></p>
+<p>主动回收内存System.gc();、getruntime.runtime.gc<br>导致内存泄漏主要的原因是，<em>申请了内存空间而忘记了释放</em>。如果程序中存在对象的引用，这个对象就被定义为”有效的活动（引用可达）”，无法让垃圾回收器GC验证这些对象是否不再需要，这些对象就会驻留内存，消耗内存。典型的做法就是把对象数据成员设为null或者从集合中移除该对象。但当局部变量不需要时，不需明显的设为null，因为一个方法执行完毕时，这些引用会自动被清理。</p>
+<p><strong>什么是 GC</strong></p>
+<p>GC垃圾收集器，它让创建的对象不需要像c&#x2F;c++那样delete、free掉，GC的时间系统自身决定，时间不可预测。 对超出作用域的对象或引用置为空的对象进行清理，删除不使用的对象，腾出内存空间。</p>
+<p><strong>内存溢出和内存泄漏</strong></p>
+<p>内存泄露 memory leak，是指程序在申请内存后，忘了释放，就出现了内存泄漏，一次内存泄露危害可以忽略，但内存泄露堆积后果很严重，无论多少内存,迟早会被占光。memory leak会最终会导致out of memory！</p>
+<p>内存溢出是要求分配的内存超出了系统能给的，系统不能满足需求，于是产生溢出。</p>
+<p>Java 带垃圾回收的机制,为什么还会内存泄露呢?</p>
+<p>举个例子 当你堆里某个对象没有被引用时，然后再过一段时间，垃圾回收机制才会回收，那么</p>
+<figure class="highlight coffeescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs coffeescript"><span class="hljs-keyword">while</span>（<span class="hljs-literal">true</span>）&#123;<span class="hljs-built_in">String</span> str=<span class="hljs-keyword">new</span> <span class="hljs-built_in">String</span>(<span class="hljs-string">&quot;ni hao ni hao &quot;</span>);&#125;<br></code></pre></td></tr></table></figure>
+<p>一直循环创建 String对象。。。你觉得堆不会溢出嘛。。。</p>
+<p><strong>内存泄露的根本原因就是保存了不可能再被访问的变量类型的引用和回收的不确定性</strong></p>
+<h4 id="GC-Roots"><a href="#GC-Roots" class="headerlink" title="GC Roots"></a>GC Roots</h4><p>GC Roots算法<em>判定一个对象需要被回收</em>，GC Roots一般在JVM的栈区域里产生。<br>![[6.JVM#GC Roots]]</p>
+<h2 id="具体例子"><a href="#具体例子" class="headerlink" title="具体例子"></a>具体例子</h2><p>不使用 application 作为 context。当 context 为 application 时，会把 imageView 是生命周期延长到整个运行过程中，imageView 不能被回收，从而造成 OOM 异常。</p>
+<p>((App) getApplication ()). leakviews.add (view);</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs scala">public <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">App</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Application</span> </span>&#123;<br>    public <span class="hljs-type">ArrayList</span>&lt;<span class="hljs-type">Object</span>&gt; leakviews = <span class="hljs-keyword">new</span> <span class="hljs-type">ArrayList</span>&lt;&gt;();<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<p>在子线程调了其他类的方法，而其他类里用到了 context，是 activity 的 context，从而导致内存泄露</p>
+<p>eventbus、webview（h5接口）、多进程<br>[[多进程Binder#内存泄露]]</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Override</span><br><span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">onDestroy</span><span class="hljs-params">()</span> &#123;<br>    <span class="hljs-keyword">if</span>( mWebView!=<span class="hljs-literal">null</span>) &#123;<br><br>        <span class="hljs-comment">// 如果先调用destroy()方法，则会命中if (isDestroyed()) return;这一行代码，需要先onDetachedFromWindow()，再</span><br>        <span class="hljs-comment">// destory()</span><br>        <span class="hljs-type">ViewParent</span> <span class="hljs-variable">parent</span> <span class="hljs-operator">=</span> mWebView.getParent();<br>        <span class="hljs-keyword">if</span> (parent != <span class="hljs-literal">null</span>) &#123;<br>            ((ViewGroup) parent).removeView(mWebView);<br>        &#125;<br><br>        mWebView.stopLoading();<br>        <span class="hljs-comment">// 退出时调用此方法，移除绑定的服务，否则某些特定系统会报错</span><br>        mWebView.getSettings().setJavaScriptEnabled(<span class="hljs-literal">false</span>);<br>        mWebView.clearHistory();<br>        mWebView.clearView();<br>        mWebView.removeAllViews();<br>        mWebView.destroy();<br><br>    &#125;<br>    <span class="hljs-built_in">super</span>.on <span class="hljs-title function_">Destroy</span><span class="hljs-params">()</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>postDelayed,几分钟之后打点统计、或者做其他操作,都是不合理的~或者在Message中处理非常耗时的操作,最后造成消息堆积,无法得到及时处理,最后造成内存泄露<br>Runnable(Thread)泄露相对更容易理解,主要是异步线程持有外部Activity 的引用,而回调Activity onDestroy方法时,线程没有执行完成,导致内存泄露</p>
+<p>handler. removeCallbacksAndMessages (null);<br>removeCallbacks (Runnable r) 和 removeMessages (int what)</p>
+<p><strong>1:在Activity的onDestroy执行时,Handler泄露可手动调用Handler的removeCallbacksAndMessages,清除异步消息,Runnable(Thread)泄露则可通过终止线程(控制逻辑需要自己写),切断引用链~推荐</strong><br><strong>2:将Handler,Runnable(Thread)定义为静态内部类,推荐</strong>，通过此方式,不会隐式持有外部Activity的引用<br>3:如果确实需要使用Activity做相关操作,建议使用弱引用,或者使用ApplicationContext,推荐<br>4:如果确实有耗时操作,建议使用jobschedule去做,推荐</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Android/" class="category-chain-item">Android</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/Android/%E4%BC%98%E5%8C%96/" class="category-chain-item">优化</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>1.Android内存优化</div>
+      <div>http://peiniwan.github.io/2025/12/860d5e680c4f.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>六月的雨</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年12月16日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/12/2923418e8129.html" title="2.ANR及问题排查">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">2.ANR及问题排查</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/12/fc4a00731331.html" title="NestedScrollingParent">
+                        <span class="hidden-mobile">NestedScrollingParent</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"OwNIdaopOn1rwNhtotGOGC0B-gzGzoHsz","appKey":"eadytQ2XqWmxuvAKeg08XX83","path":"window.location.pathname","placeholder":null,"avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":true,"recordIP":false,"serverURLs":"https://ownidaop.lc-cn-n1-shared.com","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

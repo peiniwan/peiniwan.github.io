@@ -1,0 +1,761 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="六月的雨">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="原理揭秘RxJava的实现原理RxJava是响应式编程，基于观察者模式，事件流将从上往下，从订阅源传递到观察者。Rx框架的优点，它可以避免回调嵌套，更优雅地切换线程实现异步处理数据。配合一些操作符，可以让处理事件流的代码更加简洁，逻辑更加清晰。 Subscriber（观察者、订阅者） 和 Observable（订阅源，被观察者） 显著的；觉察得到的；看得见的subscribeOn 用于指定被观察者">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Rxjava">
+<meta property="og:url" content="http://peiniwan.github.io/2025/12/5ee9edc8d405.html">
+<meta property="og:site_name" content="六月的雨的笔记">
+<meta property="og:description" content="原理揭秘RxJava的实现原理RxJava是响应式编程，基于观察者模式，事件流将从上往下，从订阅源传递到观察者。Rx框架的优点，它可以避免回调嵌套，更优雅地切换线程实现异步处理数据。配合一些操作符，可以让处理事件流的代码更加简洁，逻辑更加清晰。 Subscriber（观察者、订阅者） 和 Observable（订阅源，被观察者） 显著的；觉察得到的；看得见的subscribeOn 用于指定被观察者">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Rxjava.resources/2023/09/15/17-54-30-db3229cab38c995a35621dd903959946-unknown_filename-2b6d14.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Rxjava.resources/2023/09/15/17-54-30-181200cab7782c883ddeacc28b03eed1-rxjava-8cf75c.png">
+<meta property="article:published_time" content="2025-12-16T13:59:22.356Z">
+<meta property="article:modified_time" content="2024-03-26T14:45:00.000Z">
+<meta property="article:author" content="六月的雨">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Rxjava.resources/2023/09/15/17-54-30-db3229cab38c995a35621dd903959946-unknown_filename-2b6d14.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>Rxjava - 六月的雨的笔记</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"peiniwan.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>六月的雨的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Rxjava"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-12-16 21:59" pubdate>
+          2025年12月16日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.9k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          25 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Rxjava</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h3 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h3><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/TellH/article/details/71534704">揭秘RxJava的实现原理</a><br>RxJava是响应式编程，基于观察者模式，事件流将从上往下，从订阅源传递到观察者。<br>Rx框架的优点，它可以避免回调嵌套，更优雅地切换线程实现异步处理数据。配合一些操作符，可以让处理事件流的代码更加简洁，逻辑更加清晰。</p>
+<p>Subscriber（观察者、订阅者） 和 Observable（订阅<strong>源</strong>，被观察者） 显著的；觉察得到的；看得见的<br>subscribeOn 用于指定被观察者（Observable）执行的线程环境，只能指定一次，多次指定以第一次为准<br>observeOn 用于指定观察者（Subscriber）执行的线程环境，每次指定完都在下一步生效。<br><strong>正好相反</strong></p>
+<p>每个 Observable 里面有一个 OnSubscribe 对象，只有一个方法（void call(Subscriber&lt;? super T&gt; subscriber);），用来产生数据流，这是典型的命令模式。<br>Flowable，retrofit返回。</p>
+<p><strong>原理</strong><br>RxJava是响应式编程，基于观察者模式，事件流将从上往下，从订阅源传递到观察者，源码思路就是写个接口（OnSubscribe的call），然后在数据源里调用这个接口的方法。订阅者去监听这个接口的回调。<br>每调用一次操作符的方法，就相当于在上层数据源和下层观察者之间桥接了一个新的Observable。他去传给下面的订阅者数据<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Rxjava.resources/2023/09/15/17-54-30-db3229cab38c995a35621dd903959946-unknown_filename-2b6d14.png" srcset="/img/loading.gif" lazyload alt="unknown_filename"></p>
+<p><strong>Scheduler（调度器）</strong><br>调用的 Executors 的线程池，请求完数据通过handler设置到主线程。<br>SchedulerPoolFactory</p>
+<figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs arduino">  <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-type">static</span> ScheduledExecutorService <span class="hljs-title">create</span><span class="hljs-params">(ThreadFactory factory)</span> </span>&#123;<br>        <span class="hljs-keyword">final</span> ScheduledExecutorService exec = Executors.<span class="hljs-built_in">newScheduledThreadPool</span>(<span class="hljs-number">1</span>, factory);<br>        <span class="hljs-built_in">tryPutIntoPool</span>(PURGE_ENABLED, exec);<br>        <span class="hljs-keyword">return</span> exec;<br>    &#125;<br><br><br><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-type">static</span> <span class="hljs-built_in">Scheduler</span> <span class="hljs-title">mainThread</span><span class="hljs-params">()</span> </span>&#123; <span class="hljs-keyword">return</span> <span class="hljs-built_in">getInstance</span>().mainThreadScheduler; &#125;<br><br><br></code></pre></td></tr></table></figure>
+<p><strong>自动取消</strong><br>AutoDispose<br>.<code>as</code>(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this)))<br>在Activity销毁时自己onDispose<br>不需要Disposable</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs kotlin"><span class="hljs-keyword">class</span> <span class="hljs-title class_">MyActivity</span> &#123;<br>    <br>  <span class="hljs-keyword">var</span> mDisposable: Disposable? = <span class="hljs-literal">null</span><br>    <br>  <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">onCreate</span><span class="hljs-params">(savedInstanceState: <span class="hljs-type">Bundle</span>?)</span></span> &#123;<br>      <span class="hljs-keyword">var</span> disposable = Observable.subscribeWith(aObserver)<br>      mDisposable?.add(disposable)<br>  &#125;<br><br>  <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">onDestroy</span><span class="hljs-params">()</span></span> &#123;<br>      mDisposable?.dispose()<br>  &#125;&#125;<br></code></pre></td></tr></table></figure>
+<h3 id="基础操作"><a href="#基础操作" class="headerlink" title="基础操作"></a>基础操作</h3><p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Rxjava.resources/2023/09/15/17-54-30-181200cab7782c883ddeacc28b03eed1-rxjava-8cf75c.png" srcset="/img/loading.gif" lazyload alt="rxjava"></p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs typescript"> <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 处理数组集合</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-built_in">void</span> <span class="hljs-title function_">just</span>(<span class="hljs-params"></span>) &#123;<br><span class="hljs-comment">//        Observable observable=Observable.just(&quot;一二三四五&quot;,&quot;上山打老虎&quot;,&quot;老虎一发威&quot;,&quot;武松就发怵&quot;);</span><br>        <span class="hljs-title class_">Integer</span>[] items1 = &#123;<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">5</span>, <span class="hljs-number">6</span>&#125;;<br>        <span class="hljs-title class_">Integer</span>[] items2 = &#123;<span class="hljs-number">3</span>, <span class="hljs-number">5</span>, <span class="hljs-number">6</span>, <span class="hljs-number">8</span>, <span class="hljs-number">3</span>, <span class="hljs-number">8</span>&#125;;<br>        <span class="hljs-title class_">Observable</span> observable = <span class="hljs-title class_">Observable</span>.<span class="hljs-title function_">just</span>(items1, items2);<span class="hljs-comment">//俩个数组变成一个了</span><br>        observable.<span class="hljs-title function_">subscribe</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Subscriber</span>&lt;<span class="hljs-title class_">Integer</span>[]&gt;() &#123;<br>            <span class="hljs-meta">@Override</span><br>            <span class="hljs-keyword">public</span> <span class="hljs-built_in">void</span> <span class="hljs-title function_">onCompleted</span>(<span class="hljs-params"></span>) &#123;<br>                <span class="hljs-title class_">Log</span>.<span class="hljs-title function_">i</span>(<span class="hljs-variable constant_">TAG</span>, <span class="hljs-string">&quot;onCompleted&quot;</span>);<br>            &#125;<br><br>            <span class="hljs-meta">@Override</span><br>            <span class="hljs-keyword">public</span> <span class="hljs-built_in">void</span> <span class="hljs-title function_">onError</span>(<span class="hljs-params">Throwable e</span>) &#123;<br>                <span class="hljs-title class_">Log</span>.<span class="hljs-title function_">i</span>(<span class="hljs-variable constant_">TAG</span>, e.<span class="hljs-title function_">getMessage</span>());<br>            &#125;<br><br>            <span class="hljs-meta">@Override</span><br>            <span class="hljs-keyword">public</span> <span class="hljs-built_in">void</span> <span class="hljs-title function_">onNext</span>(<span class="hljs-params">Integer[] o</span>) &#123;<br>                <span class="hljs-keyword">for</span>(int i=<span class="hljs-number">0</span>;i&lt;o.<span class="hljs-property">length</span>;i++)&#123;<br>                    <span class="hljs-title class_">Log</span>.<span class="hljs-title function_">i</span>(<span class="hljs-variable constant_">TAG</span>,<span class="hljs-string">&quot;next:&quot;</span>+o[i]);<br>                &#125;<br>            &#125;<br>        &#125;);<br>    &#125;<br></code></pre></td></tr></table></figure>
+<ul>
+<li><p>Subscriber 对 Observer 接口进行了一些扩展， Subscriber 有 onStart()（ 事件还未发送之前被调用，可以用于做一些准备工作，例如数据的清零或重置 ）、可以返回一个Subscription，取消订阅unsubscribe()</p>
+</li>
+<li><p>创建被观察者create，from(数组)，just（不变参数&#x2F;俩个数组合并）等</p>
+</li>
+<li><p>创建观察者：new Subscriber ()，也可以new Action()（相当于onnext）rxjava2是 Consumer（肯书妹儿，消费者 ），最后的简化</p>
+</li>
+</ul>
+<h3 id="操作符"><a href="#操作符" class="headerlink" title="操作符"></a>操作符</h3><h4 id="map和flatmap"><a href="#map和flatmap" class="headerlink" title="map和flatmap"></a>map和flatmap</h4><p><strong>map</strong><br>对集合或数据进行转化；<br>map只能单一转换，单一只的是只能一对一进行转换，指一个对象可以转化为另一个对象但是不能转换成对象数组（map返回结果集不能直接使用from&#x2F;just再次进行事件分发，一旦转换成对象数组的话，再处理集合&#x2F;数组的结果时需要利用for一一遍历取出（看下面例子），而使用RxJava就是为了剔除这样的嵌套结构，使得整体的逻辑性更强。）</p>
+<p><strong>flatmap</strong><br>适用于嵌套结构(list,数组)<br>可以单一转换也可以一对多&#x2F;多对多转换，<strong>flatmap 要求返回 Observable</strong>，因此可以再内部进行from&#x2F;just的再次事件分发，一一取出单一对象（转换对象的能力不同）</p>
+<p><strong>举例说明</strong><br>一个Student类中只有一个name，而一个Student却有多门课程（Course）</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs swift"><span class="hljs-type">List</span>&lt;<span class="hljs-type">Student</span>&gt; students <span class="hljs-operator">=</span> new <span class="hljs-type">ArrayList</span>&lt;<span class="hljs-type">Student</span>&gt;();<br>students.add<span class="hljs-operator">...</span><br><span class="hljs-operator">...</span><br>    <br><span class="hljs-type">Action1</span>&lt;<span class="hljs-type">List</span>&lt;<span class="hljs-type">Course</span>&gt;&gt; action1 <span class="hljs-operator">=</span> new <span class="hljs-type">Action1</span>&lt;<span class="hljs-type">List</span>&lt;<span class="hljs-type">Course</span>&gt;&gt;() &#123;<br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> void call(<span class="hljs-type">List</span>&lt;<span class="hljs-type">Course</span>&gt; courses) &#123;<br>        <span class="hljs-comment">//遍历courses，输出cuouses的name</span><br>         <span class="hljs-keyword">for</span> (int i <span class="hljs-operator">=</span> <span class="hljs-number">0</span>; i <span class="hljs-operator">&lt;</span> courses.size(); i<span class="hljs-operator">++</span>)&#123;<br>            <span class="hljs-type">Log</span>.i(<span class="hljs-type">TAG</span>, courses.get(i).getName());<br>        &#125;<br>    &#125;<br>&#125;;<br><span class="hljs-type">Observable</span>.from(students)<br>        .map(new <span class="hljs-type">Func1</span>&lt;<span class="hljs-type">Student</span>, <span class="hljs-type">List</span>&lt;<span class="hljs-type">Course</span>&gt;&gt;() &#123;<br>            <span class="hljs-meta">@Override</span><br>            <span class="hljs-keyword">public</span> <span class="hljs-type">List</span>&lt;<span class="hljs-type">Course</span>&gt; call(<span class="hljs-type">Student</span> student) &#123;<br>                <span class="hljs-comment">//返回coursesList</span><br>                <span class="hljs-keyword">return</span> student.getCoursesList();<br>            &#125;<br>        &#125;)<br>        .subscribe(action1);<br></code></pre></td></tr></table></figure>
+<p>使用flatMap</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs csharp">List&lt;Student&gt; students = <span class="hljs-keyword">new</span> ArrayList&lt;Student&gt;();<br>students.<span class="hljs-keyword">add</span>...<br>...<br>    <br>Observable.<span class="hljs-keyword">from</span>(students)<br>        .flatMap(<span class="hljs-keyword">new</span> Func1&lt;Student, Observable&lt;Course&gt;&gt;() &#123;<br>            @Override<br>            <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">Observable</span>&lt;<span class="hljs-title">Course</span>&gt; <span class="hljs-title">call</span>(<span class="hljs-params">Student student</span>)</span> &#123;<br>                <span class="hljs-keyword">return</span> Observable.<span class="hljs-keyword">from</span>(student.getCoursesList());<br>            &#125;<br>        &#125;)<br>        .subscribe(<span class="hljs-keyword">new</span> Action1&lt;Course&gt;() &#123;<br>            @Override<br>            <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">call</span>(<span class="hljs-params">Course course</span>)</span> &#123;<br>                Log.i(TAG, course.getName());<br>            &#125;<br>        &#125;);<br>    <br></code></pre></td></tr></table></figure>
+
+<h4 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h4><p>merge：合并俩个任务；<br>filter:对集合或数据进行过滤；<br>toSortedList() :为事件中的数据排序<br>interval(1, TimeUnit.SECONDS) 创建一个每隔一秒发送一次事件的对象<br>timestamp() :为每个事件加上一个时间戳<br>take：取出集合中的前几个<br>skip：跳过前几个元素<br>each：遍历集合</p>
+<figure class="highlight lasso"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs lasso">       Observable.from(integers)<br>                    .filter(<span class="hljs-literal">new</span> Func1&lt;<span class="hljs-built_in">Integer</span>, <span class="hljs-built_in">Boolean</span>&gt;() &#123;<br>                        <span class="hljs-comment">//泛型第一个是传入的参数，第二个是返回的参数</span><br>                        @Override<br>                        <span class="hljs-keyword">public</span> <span class="hljs-built_in">Boolean</span> call(<span class="hljs-built_in">Integer</span> <span class="hljs-built_in">integer</span>) &#123;<br>                            <span class="hljs-keyword">return</span> <span class="hljs-built_in">integer</span> % <span class="hljs-number">2</span> != <span class="hljs-number">0</span>;<br>                        &#125;   <br>                    <span class="hljs-comment">//取前四个,从1开始</span><br>                    .<span class="hljs-keyword">take</span>(<span class="hljs-number">4</span>)<br>                    <span class="hljs-comment">//取前四个中的后两个</span><br>                    .takeLast(<span class="hljs-number">2</span>)<br></code></pre></td></tr></table></figure>
+<p>concat操作符处理多数据源<br>concat会三个数据源都会请求的。如何使得哪层有数据就用哪层的，之后就不走后面的逻辑了。 <br>可以配合first()操作符来实现这样的效果。例如 对缓存进行检查，如：内存缓存、本地缓存、网络，哪一层有数据立即返回。<br>注意：Observable.concat只接受相同泛型的参数。</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs typescript"><span class="hljs-title class_">Observable</span>.<span class="hljs-title function_">concat</span>(memorySource, diskSource, networkSource)<br>                        .<span class="hljs-title function_">first</span>()<br>                        .<span class="hljs-title function_">observeOn</span>(<span class="hljs-title class_">AndroidSchedulers</span>.<span class="hljs-title function_">mainThread</span>())<br>                        .<span class="hljs-title function_">subscribe</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Action1</span>&lt;<span class="hljs-title class_">String</span>&gt;() &#123;<br>                            <span class="hljs-meta">@Override</span><br>                            <span class="hljs-keyword">public</span> <span class="hljs-built_in">void</span> <span class="hljs-title function_">call</span>(<span class="hljs-params"><span class="hljs-built_in">String</span> s</span>) &#123;<br>                                <span class="hljs-title function_">printLog</span>(tvLogs, <span class="hljs-string">&quot;Getting data from &quot;</span>, s);<br>                            &#125;<br>                        &#125;, <span class="hljs-keyword">new</span> <span class="hljs-title class_">Action1</span>&lt;<span class="hljs-title class_">Throwable</span>&gt;() &#123;<br>                            <span class="hljs-meta">@Override</span><br>                            <span class="hljs-keyword">public</span> <span class="hljs-built_in">void</span> <span class="hljs-title function_">call</span>(<span class="hljs-params">Throwable throwable</span>) &#123;<br>                                throwable.<span class="hljs-title function_">printStackTrace</span>();<br>                                <span class="hljs-title function_">printLog</span>(tvLogs, <span class="hljs-string">&quot;Error: &quot;</span>, throwable.<span class="hljs-title function_">getMessage</span>());<br>                            &#125;<br>                        &#125;);<br></code></pre></td></tr></table></figure>
+<p><strong>compose</strong><br>减少一些相同的操作</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs stylus"><span class="hljs-selector-class">.subscribeOn</span>(Schedulers<span class="hljs-selector-class">.io</span>())<br><span class="hljs-selector-class">.observeOn</span>(AndroidSchedulers<span class="hljs-selector-class">.mainThread</span>())<br><span class="hljs-selector-class">.subscribe</span>(consumer)<br></code></pre></td></tr></table></figure>
+<p><strong>zip 操作符</strong><br>可以将多个 Observable （多个网络请求）的数据结合为一个数据源再发射出去。</p>
+<p><strong>flatMap 和 concatMap</strong></p>
+<ul>
+<li>concatMap是有序的，flatMap是无序的，concatMap最终输出的顺序与原序列保持一致，而flatMap则不一定，有可能出现交错。</li>
+<li>concatMap和flatMap的功能是一样的， 将一个发射数据的Observable变换为多个Observables，然后将它们发射的数据放进一个单独的Observable。只不过最后合并Observables flatMap采用的merge，而concatMap采用的是连接(concat)。</li>
+<li>flatMap一般用来链式调用接口，请求完一个接口又请求另一个接口</li>
+</ul>
+<p><strong>subscribe和subscribeWith</strong><br>一般subscribeWith用到使用Rx请求接口的这种情况,订阅后把请求参数返回回去,可以添加到CompositeDisposable中方便绑定Activity生命周期取消<br>subscribe返回值是void所以在请求接口时，最好还是使用subscribeWith,添加订阅关系更方便了</p>
+<p><strong>single没有继续</strong></p>
+<h3 id="线程"><a href="#线程" class="headerlink" title="线程"></a>线程</h3><ul>
+<li>Schedulers.newThread() 代表一个常规的新线程；通过内部的 Handler 把任务放到主线程去做。</li>
+<li>AndroidSchedulers.mainThread() 代表Android的主线程</li>
+<li>Schedulers.io(): I&#x2F;O 操作（读写文件、读写数据库、网络信息交互等）所使用的 Scheduler。行为模式和 newThread() 差不多，区别在于 io() 的内部实现是是用一个无数量上限的线程池，可以重用空闲的线程，因此多数情况下 io() 比 newThread() 更有效率。不要把计算工作放在 io() 中，可以避免创建不必要的线程。</li>
+<li>Schedulers.computation(): 用于计算任务，如事件循环或和回调处理，不要用于IO操作(IO操作请使用</li>
+<li>Schedulers.io())；默认线程数等于处理器的数量</li>
+</ul>
+<p>比如传统的创建线程：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs typescript"><span class="hljs-keyword">new</span> <span class="hljs-title class_">Thread</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Runnable</span>() &#123; <span class="hljs-meta">@Override</span> <span class="hljs-keyword">public</span> <span class="hljs-built_in">void</span> <span class="hljs-title function_">run</span>(<span class="hljs-params"></span>) &#123; <span class="hljs-comment">// TODO &#125; &#125;).start();</span><br></code></pre></td></tr></table></figure>
+<p>在RxJava中，我们可以这样实现，这样的好处是我们可以直接使用RxJava的线程调度逻辑。还可以在合适的时机终止线程</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs java">Scheduler.<span class="hljs-type">Worker</span> <span class="hljs-variable">worker</span> <span class="hljs-operator">=</span> Schedulers.io().createWorker();<br>worker.schedule(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Action0</span>() &#123;<br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">call</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-comment">// TODO</span><br>    &#125;<br>&#125;);<br>worker.unsubscribe();<br></code></pre></td></tr></table></figure>
+<p>还有个好处是更容易的实现延迟执行和周期执行：</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs less"><span class="hljs-comment">// 延迟</span><br><span class="hljs-selector-tag">Schedulers</span><span class="hljs-selector-class">.computation</span>()<span class="hljs-selector-class">.createWorker</span>()<span class="hljs-selector-class">.schedule</span>(new <span class="hljs-built_in">Action0</span>() &#123;<br>    <span class="hljs-variable">@Override</span><br>    public void <span class="hljs-built_in">call</span>() &#123;<br>        <span class="hljs-comment">// TODO</span><br>    &#125;&#125;, <span class="hljs-number">500</span>, TimeUnit.MILLISECONDS);<br><br><br><span class="hljs-comment">// 周期</span><br><span class="hljs-selector-tag">Schedulers</span><span class="hljs-selector-class">.computation</span>()<span class="hljs-selector-class">.createWorker</span>()<span class="hljs-selector-class">.schedulePeriodically</span>(new <span class="hljs-built_in">Action0</span>() &#123;<br>    <span class="hljs-variable">@Override</span><br>    public void <span class="hljs-built_in">call</span>() &#123;<br>        <span class="hljs-comment">// TODO</span><br>    &#125;&#125;, <span class="hljs-number">500</span>, <span class="hljs-number">250</span>, TimeUnit.MILLISECONDS);<br></code></pre></td></tr></table></figure>
+<h3 id="处理Activity的生命周期"><a href="#处理Activity的生命周期" class="headerlink" title="处理Activity的生命周期"></a>处理Activity的生命周期</h3><p>1.在configuration改变（比如转屏）之后继续之前的Subscription。<br>比如你使用Retrofit发出了一个REST请求，接着想在listview中展示结果。如果在网络请求的时候用户旋转了屏幕怎么办？你当然想继续刚才的请求，但是怎么搞？<br>2.Observable持有Context导致的内存泄露<br>这个问题是因为创建subscription的时候，以某种方式持有了context的引用，尤其是当你和view交互的时候，这太容易发生！如果Observable没有及时结束，内存占用就会越来越大。<br>解决方案<br>在生命周期的某个时刻取消订阅。一个很常见的模式就是使用 CompositeDisposable 来持有所有的Subscriptions，然后在onDestroy()或者onDestroyView()里取消所有的订阅。mDisposable.dispose();</p>
+<h3 id="真实项目运用"><a href="#真实项目运用" class="headerlink" title="真实项目运用"></a>真实项目运用</h3><p>链式调用，就不用调完一个回调再调另一个这样子了</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><code class="hljs typescript">      <span class="hljs-title class_">Subscription</span> subscription = <span class="hljs-title class_">LoginNetManager</span>.<span class="hljs-title function_">getIP</span>()<br>                    .<span class="hljs-title function_">filter</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Func1</span>&lt;<span class="hljs-title class_">RspIqbDefault</span>&lt;<span class="hljs-title class_">IPModel</span>&gt;, <span class="hljs-title class_">Boolean</span>&gt;() &#123;<br>                        <span class="hljs-meta">@Override</span><br>                        <span class="hljs-keyword">public</span> <span class="hljs-title class_">Boolean</span> <span class="hljs-title function_">call</span>(<span class="hljs-params">RspIqbDefault&lt;IPModel&gt; rsp</span>) &#123;<br>                            <span class="hljs-keyword">return</span> rsp != <span class="hljs-literal">null</span> &amp;&amp; rsp.<span class="hljs-property">isSuccess</span> &amp;&amp; rsp.<span class="hljs-title function_">getResultEntity</span>() != <span class="hljs-literal">null</span>;<br>                        &#125;<br>                    &#125;)<br>                    .<span class="hljs-title function_">flatMap</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Func1</span>&lt;<span class="hljs-title class_">RspIqbDefault</span>&lt;<span class="hljs-title class_">IPModel</span>&gt;, <span class="hljs-title class_">Observable</span>&lt;<span class="hljs-title class_">RspIqbDefault</span>&lt;<span class="hljs-title class_">SmsCodeLoginModel</span>&gt;&gt;&gt;() &#123;<br>                        <span class="hljs-meta">@Override</span><br>                        <span class="hljs-keyword">public</span> <span class="hljs-title class_">Observable</span>&lt;<span class="hljs-title class_">RspIqbDefault</span>&lt;<span class="hljs-title class_">SmsCodeLoginModel</span>&gt;&gt; <span class="hljs-title function_">call</span>(<span class="hljs-params">RspIqbDefault&lt;IPModel&gt; rsp</span>) &#123;<br>                            <span class="hljs-title class_">IPModel</span> entity = rsp.<span class="hljs-title function_">getResultEntity</span>();<br>                            <span class="hljs-keyword">return</span> <span class="hljs-title class_">VerifySmsNetManager</span>.<span class="hljs-title function_">smsCodeLogin</span>(entity.<span class="hljs-property">ip</span>, code, phone_number, sms_id, action);<br>                        &#125;<br>                    &#125;)<br>                    .<span class="hljs-title function_">observeOn</span>(<span class="hljs-title class_">AndroidSchedulers</span>.<span class="hljs-title function_">mainThread</span>())<br>                    .<span class="hljs-title function_">subscribe</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Subscriber</span>&lt;<span class="hljs-title class_">RspIqbDefault</span>&lt;<span class="hljs-title class_">SmsCodeLoginModel</span>&gt;&gt;() &#123;<br>                        <span class="hljs-meta">@Override</span><br>                        <span class="hljs-keyword">public</span> <span class="hljs-built_in">void</span> <span class="hljs-title function_">onCompleted</span>(<span class="hljs-params"></span>) &#123;<br>                        &#125;<br>    <br>    <br>                        <span class="hljs-meta">@Override</span><br>                        <span class="hljs-keyword">public</span> <span class="hljs-built_in">void</span> <span class="hljs-title function_">onError</span>(<span class="hljs-params">Throwable e</span>) &#123;<br>                            <span class="hljs-keyword">if</span> (mView != <span class="hljs-literal">null</span>) &#123;<br>                                mView.<span class="hljs-title function_">smsCodeLogin</span>(<span class="hljs-literal">null</span>, -<span class="hljs-number">1</span>, <span class="hljs-literal">null</span>);<br>                            &#125;<br>                        &#125;<br>    <br>                        <span class="hljs-meta">@Override</span><br>                        <span class="hljs-keyword">public</span> <span class="hljs-built_in">void</span> <span class="hljs-title function_">onNext</span>(<span class="hljs-params">RspIqbDefault&lt;SmsCodeLoginModel&gt; rsp</span>) &#123;<br>                            <span class="hljs-keyword">if</span> (rsp != <span class="hljs-literal">null</span>) &#123;<br>                                <span class="hljs-keyword">if</span> (mView != <span class="hljs-literal">null</span>) &#123;<br>                                    mView.<span class="hljs-title function_">smsCodeLogin</span>(rsp.<span class="hljs-title function_">getResultEntity</span>(), rsp.<span class="hljs-title function_">getErrorCode</span>(), rsp.<span class="hljs-title function_">getErrorMessage</span>());<br>                                &#125;<br>                            &#125; <span class="hljs-keyword">else</span> &#123;<br>                                <span class="hljs-keyword">if</span> (mView != <span class="hljs-literal">null</span>) &#123;<br>                                    mView.<span class="hljs-title function_">smsCodeLogin</span>(<span class="hljs-literal">null</span>, -<span class="hljs-number">1</span>, <span class="hljs-literal">null</span>);<br>                                &#125;<br>                            &#125;<br>                        &#125;<br>                    &#125;);<br>            compositeSubscription.<span class="hljs-title function_">add</span>(subscription);<br>    <br></code></pre></td></tr></table></figure>
+
+<p><strong>RxBinding</strong><br>基于RxJava的对于Android原生组件的绑定，是RxJava风格的，相当于代替了OnClick,Listener这些东西</p>
+<p><strong>doOnNext</strong><br>doOnNext()函数执行的地方跟subcribe()中的onNext()执行的地方没有必然联系。 doOnNext()的执行在onNext()之前，可以对数据进行相关处理。例如网络解析返回来的数据先进行处理。也可以直接代替Subscriber</p>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><code class="hljs pgsql">   userInfoEntityObservable.doOnNext(<span class="hljs-built_in">new</span> Action1&lt;UserInfoEntity&gt;() &#123;<br>                    @Override<br>                    <span class="hljs-built_in">public</span> <span class="hljs-type">void</span> <span class="hljs-keyword">call</span>(UserInfoEntity userInfoEntity) &#123;<br>                        PublicMessage publicMsg = <span class="hljs-built_in">new</span> PublicMessage(roomId);<br>                        EventBus.getDefault().post(event);<br>                    &#125;<br>                &#125;).subscribe();//doOnNext后面可以直接subscribe，不需要参数<br>//输出[<span class="hljs-number">1</span>,<span class="hljs-number">2</span>,<span class="hljs-number">3</span>,<span class="hljs-number">4</span>,<span class="hljs-number">5</span>,<span class="hljs-number">6</span>,<span class="hljs-number">7</span>,<span class="hljs-number">8</span>,<span class="hljs-number">9</span>,<span class="hljs-number">10</span>]中第三个和第四个奇数，take(i) 取前i个事件 takeLast(i) 取后i个事件 doOnNext(Action1) 每次观察者中的onNext调用之前调用，输出<span class="hljs-keyword">before</span> onNext（），<span class="hljs-number">5</span>，<span class="hljs-keyword">before</span> onNext（），<span class="hljs-number">7</span><br>Observable.<span class="hljs-keyword">from</span>(number<br>                .<span class="hljs-keyword">filter</span>(<span class="hljs-built_in">new</span> Func1&lt;<span class="hljs-type">Integer</span>, <span class="hljs-type">Boolean</span>&gt;() &#123;<br>                    @Override<br>                    <span class="hljs-built_in">public</span> <span class="hljs-type">Boolean</span> <span class="hljs-keyword">call</span>(<span class="hljs-type">Integer</span> <span class="hljs-type">integer</span>) &#123;<br>                        <span class="hljs-keyword">return</span> <span class="hljs-type">integer</span> % <span class="hljs-number">2</span> != <span class="hljs-number">0</span>;<br>                    &#125;<br>                &#125;)<br>                //取前四个,从<span class="hljs-number">1</span>开始<br>                .take(<span class="hljs-number">4</span>)<br>                //取前四个中的后两个<br>                .takeLast(<span class="hljs-number">2</span>)<br>                .doOnNext(<span class="hljs-built_in">new</span> Action1&lt;<span class="hljs-type">Integer</span>&gt;() &#123;<br>                    @Override<br>                    <span class="hljs-built_in">public</span> <span class="hljs-type">void</span> <span class="hljs-keyword">call</span>(<span class="hljs-type">Integer</span> <span class="hljs-type">integer</span>) &#123;<br>                        mText.append(&quot;before onNext（）\n&quot;);<br>                    &#125;<br>                &#125;)<br>                .subscribe(<span class="hljs-built_in">new</span> Action1&lt;<span class="hljs-type">Integer</span>&gt;() &#123;<br>                    @Override<br>                    <span class="hljs-built_in">public</span> <span class="hljs-type">void</span> <span class="hljs-keyword">call</span>(<span class="hljs-type">Integer</span> <span class="hljs-type">integer</span>) &#123;<br>                        mText.append(&quot;onNext()---&gt;&quot; + <span class="hljs-type">integer</span> + &quot;\n&quot;);<br>                    &#125;<br>                &#125;);<br>    &#125;<br></code></pre></td></tr></table></figure>
+<h3 id="PublishSubject"><a href="#PublishSubject" class="headerlink" title="PublishSubject"></a>PublishSubject</h3><p>PublishSubject比较容易理解，相对比其他Subject常用，它的Observer只会接收到PublishSubject被订阅之后发送的数据。示例代码如下：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs typescript"><span class="hljs-title class_">PublishSubject</span> publishSubject = <span class="hljs-title class_">PublishSubject</span>.<span class="hljs-title function_">create</span>();<br>  publishSubject.<span class="hljs-title function_">onNext</span>(<span class="hljs-string">&quot;publishSubject1&quot;</span>);<br>  publishSubject.<span class="hljs-title function_">onNext</span>(<span class="hljs-string">&quot;publishSubject2&quot;</span>);<br>  publishSubject.<span class="hljs-title function_">subscribe</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Observer</span>() &#123;<br>          <span class="hljs-meta">@Override</span><br>          <span class="hljs-keyword">public</span> <span class="hljs-built_in">void</span> <span class="hljs-title function_">onCompleted</span>(<span class="hljs-params"></span>) &#123;<br>          &#125;<br><br>          <span class="hljs-meta">@Override</span><br>          <span class="hljs-keyword">public</span> <span class="hljs-built_in">void</span> <span class="hljs-title function_">onError</span>(<span class="hljs-params">Throwable e</span>) &#123;<br>          &#125;<br><br>          <span class="hljs-meta">@Override</span><br>          <span class="hljs-keyword">public</span> <span class="hljs-built_in">void</span> <span class="hljs-title function_">onNext</span>(<span class="hljs-params"><span class="hljs-built_in">String</span> s</span>) &#123;<br>              <span class="hljs-title class_">LogUtil</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&quot;publishSubject observer1:&quot;</span>+s);<br>          &#125;<br>      &#125;);<br>  publishSubject.<span class="hljs-title function_">onNext</span>(<span class="hljs-string">&quot;publishSubject3&quot;</span>);<br>  publishSubject.<span class="hljs-title function_">onNext</span>(<span class="hljs-string">&quot;publishSubject4&quot;</span>);<br></code></pre></td></tr></table></figure>
+<p>以上代码，Observer只会接收到”behaviorSubject3”、”behaviorSubject4”。</p>
+<h3 id="Transformer"><a href="#Transformer" class="headerlink" title="Transformer"></a>Transformer</h3><p>将一个 Observable&#x2F;Flowable&#x2F;Single&#x2F;Completable&#x2F;Maybe 对象转换成另一个 Observable&#x2F;Flowable&#x2F;Single&#x2F;Completable&#x2F;Maybe 对象，和调用一系列的内联操作符是一模一样的。<br>举个简单的例子，写一个transformer()方法将一个发射整数的Observable转换为发射字符串的Observable。</p>
+<figure class="highlight haxe"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs haxe"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> &lt;<span class="hljs-keyword">String</span>&gt; ObservableTransformer&lt;Integer, java.lang.<span class="hljs-keyword">String</span>&gt; transformer() &#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-type">ObservableTransformer</span>&lt;Integer, java.lang.<span class="hljs-keyword">String</span>&gt;() &#123;<br>            <span class="hljs-meta">@Override</span><br>            <span class="hljs-keyword">public</span> ObservableSource&lt;java.lang.<span class="hljs-keyword">String</span>&gt; apply(<span class="hljs-meta">@NonNull Observable&lt;Integer&gt; upstream) &#123;</span><br>                <span class="hljs-keyword">return</span> upstream.map(<span class="hljs-keyword">new</span> <span class="hljs-type">Function</span>&lt;Integer, java.lang.<span class="hljs-keyword">String</span>&gt;() &#123;<br>                    <span class="hljs-meta">@Override</span><br>                    <span class="hljs-keyword">public</span> java.lang.<span class="hljs-keyword">String</span> apply(<span class="hljs-meta">@NonNull Integer integer) throws Exception &#123;</span><br>                        <span class="hljs-keyword">return</span> java.lang.<span class="hljs-keyword">String</span>.valueOf(integer);<br>                    &#125;<br>                &#125;);<br>            &#125;<br>        &#125;;<br>    &#125;<br><br>Observable.just(<span class="hljs-number">123</span>,<span class="hljs-number">456</span>)<br>       .compose(transformer())<br>       .subscribe(<span class="hljs-keyword">new</span> <span class="hljs-type">Consumer</span>&lt;<span class="hljs-keyword">String</span>&gt;() &#123;<br>              <span class="hljs-meta">@Override</span><br>               <span class="hljs-keyword">public</span> void accept(<span class="hljs-meta">@io.reactivex.annotations.NonNull String s) throws Exception &#123;</span><br>                   System.out.println(<span class="hljs-string">&quot;s=&quot;</span>+s);<br>                    &#125;<br>                &#125;);<br></code></pre></td></tr></table></figure>
+<p><strong>RxJava全局错误处理</strong><br>在RxJava中rx.pluginsRxJavaPlugins这个类是用来处理发生的错误的，在RxJava的源码中用RxJavaPlugins.getInstance().getErrorHandler().handleError(e);这句来处理错误，这个默认是没有对错误进行任何处理的，我们需要自己来实现这个，<br> RxJavaPlugins.getInstance().registerErrorHandler(new RxJavaErrorHandler() { @Override public void handleError(Throwable e) { &#x2F;&#x2F;在这里处理错误 } });</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Android/" class="category-chain-item">Android</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Rxjava</div>
+      <div>http://peiniwan.github.io/2025/12/5ee9edc8d405.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>六月的雨</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年12月16日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/12/bbd7df3b8a30.html" title="断点技巧">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">断点技巧</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/12/7db93f300422.html" title="Countly 日志">
+                        <span class="hidden-mobile">Countly 日志</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"OwNIdaopOn1rwNhtotGOGC0B-gzGzoHsz","appKey":"eadytQ2XqWmxuvAKeg08XX83","path":"window.location.pathname","placeholder":null,"avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":true,"recordIP":false,"serverURLs":"https://ownidaop.lc-cn-n1-shared.com","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

@@ -1,0 +1,857 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="[[晴天小庭]]">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="笔者作为一个日常Jetpack Compose开发者，对Compose的理解也在逐渐加深中，最近回顾当初学习和实践的过程中，犯了不少错误和踩了很多坑，本篇文章作为小总结分享给大家，同时文章会持续更新。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="刚学Jetpack Compose?最好不要踩这些新手容易碰到的坑">
+<meta property="og:url" content="http://peiniwan.github.io/2025/12/a44707c93b7b.html">
+<meta property="og:site_name" content="六月的雨的笔记">
+<meta property="og:description" content="笔者作为一个日常Jetpack Compose开发者，对Compose的理解也在逐渐加深中，最近回顾当初学习和实践的过程中，犯了不少错误和踩了很多坑，本篇文章作为小总结分享给大家，同时文章会持续更新。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/mis/202512162150578.webp">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/mis/202512162150579.webp">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/mis/202512162150580.webp">
+<meta property="article:published_time" content="2025-12-16T13:59:22.502Z">
+<meta property="article:modified_time" content="2025-12-16T13:50:22.147Z">
+<meta property="article:author" content="六月的雨">
+<meta property="article:tag" content="clippings">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/mis/202512162150578.webp">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>刚学Jetpack Compose?最好不要踩这些新手容易碰到的坑 - 六月的雨的笔记</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"peiniwan.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>六月的雨的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="刚学Jetpack Compose?最好不要踩这些新手容易碰到的坑"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-12-16 21:59" pubdate>
+          2025年12月16日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          4.1k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          34 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">刚学Jetpack Compose?最好不要踩这些新手容易碰到的坑</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="一、ViewModel传递到子可组合项"><a href="#一、ViewModel传递到子可组合项" class="headerlink" title="一、ViewModel传递到子可组合项"></a>一、ViewModel传递到子可组合项</h2><p>Jetpack Compose的 <strong>状态管理</strong> 是极其重要的一环，当一个可组合项的状态较少时，我们需要使用状态对象来封装状态，而屏幕级的状态对象我们最常用的就是 <code>ViewModel</code> 。</p>
+<p>关于状态管理可以参考下面这篇开发者文档：</p>
+<p><a href="https://link.juejin.cn/?target=https://developer.android.google.cn/topic/architecture/ui-layer/stateholders?hl=zh-cn%23state-holders" title="https://developer.android.google.cn/topic/architecture/ui-layer/stateholders?hl=zh-cn#state-holders">状态容器和界面状态 | Android 开发者 | Android Developers (google.cn)</a></p>
+<p>继续回到话题，使用 <code>ViewModel</code> 来管理屏幕级状态时的代码大致如下所示：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs kotlin"><span class="hljs-keyword">class</span> <span class="hljs-title class_">MyScreenViewModel</span>(<span class="hljs-comment">/* ... */</span>) &#123;<br>  <span class="hljs-keyword">val</span> uiState: StateFlow&lt;MyScreenUiState&gt; = <span class="hljs-comment">/* ... */</span><br>  <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">doSomething</span><span class="hljs-params">()</span></span> &#123; <span class="hljs-comment">/* ... */</span> &#125;<br>  <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">doAnotherThing</span><span class="hljs-params">()</span></span> &#123; <span class="hljs-comment">/* ... */</span> &#125;<br>  <span class="hljs-comment">// ...</span><br>&#125;<br><br><span class="hljs-meta">@Composable</span><br><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">MyScreen</span><span class="hljs-params">(</span></span><br><span class="hljs-params"><span class="hljs-function">  modifier: <span class="hljs-type">Modifier</span> = Modifier,</span></span><br><span class="hljs-params"><span class="hljs-function">  viewModel: <span class="hljs-type">MyScreenViewModel</span> = viewModel()</span></span>,<br>  state: MyScreenState = rememberMyScreenState(<br>    someState = viewModel.uiState.map &#123; it.toSomeState() &#125;,<br>    doSomething = viewModel::doSomething<br>  ),<br>  <span class="hljs-comment">// ...</span><br>) &#123;<br>  <span class="hljs-comment">/* ... */</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>可以看到 <code>ViewModel</code> 通过参数的方式直接传递到了 <code>MyScreen</code> 可组合项中，这样做是没问题的而且非常便利，可组合项可以通过 <code>ViewModel</code> 直接获取到所需的状态，同时也可以通过 <code>ViewModel</code> 的方法来访问各种逻辑函数。</p>
+<p>正因为这样太便利了，很多Compose新手会直接把 <code>ViewModel</code> 进一步传递到子可组合项，让子可组合项也能“便利”地访问到状态和逻辑函数，写出这样的代码：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs kotlin"><span class="hljs-meta">@Composable</span><br><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">MyScreen</span><span class="hljs-params">(</span></span><br><span class="hljs-params"><span class="hljs-function">    modifier: <span class="hljs-type">Modifier</span> = Modifier,</span></span><br><span class="hljs-params"><span class="hljs-function">    viewModel: <span class="hljs-type">MyScreenViewModel</span> = viewModel()</span></span>,<br>    state: MyScreenState = rememberMyScreenState(<br>        someState = viewModel.uiState.map &#123; it.toSomeState() &#125;,<br>        doSomething = viewModel::doSomething<br>    ),<br>    <span class="hljs-comment">// ...</span><br>) &#123;<br>    <span class="hljs-comment">/* ... */</span><br>    SonComposable(viewModel)<br>&#125;<br><br><span class="hljs-meta">@Composable</span><br><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">SonComposable</span><span class="hljs-params">(</span></span><br><span class="hljs-params"><span class="hljs-function">    viewModel: <span class="hljs-type">MyScreenViewModel</span> = viewModel()</span></span>,<br>)&#123;<br>    <span class="hljs-comment">/* ... */</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>🤩哇喔，通过参数将 <code>ViewModel</code> 传入了子组合项，让子组合项也拥有访问 <code>ViewModel</code> 的状态和方法的能力，看起来非常完美，代码跑起来也没问题。</p>
+<p><strong>但是，这样的方式是错误的，同时也会带来内存泄漏的隐患。</strong></p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/mis/202512162150578.webp" srcset="/img/loading.gif" lazyload alt="fe7dadd5b96afc8c3efb8633c33b15df_MD5"></p>
+<p>基于官方文档，笔者总结出 <code>ViewModel</code> 在Compose中的正确方式：</p>
+<p>1.ViewModel仅用于最顶层的屏幕级可组合项，即离Activity或者Fragment的setContent{}方法最近的那个可组合项。</p>
+<p>2.遵循单一数据源规范，ViewModel将状态传递给子可组合项，子可组合项将事件向上传递给顶层的可组合项，不能将ViewModel直接传递给子可组合项。</p>
+<p><em>注：很久以前官方文档还会提到ViewModel可能会导致子可组合项的内存泄漏，因为ViewModel的生命周期会比子可组合项更长，一些lambda或者匿名方法会导致可组合项被ViewModel持有导致内存泄漏。</em></p>
+<p>我们按照原则（<em>状态下传，事件上传</em>）将代码改造成如下即可：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs kotlin"><span class="hljs-meta">@Composable</span><br><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">MyScreen</span><span class="hljs-params">(</span></span><br><span class="hljs-params"><span class="hljs-function">    modifier: <span class="hljs-type">Modifier</span> = Modifier,</span></span><br><span class="hljs-params"><span class="hljs-function">    viewModel: <span class="hljs-type">MyScreenViewModel</span> = viewModel()</span></span>,<br>    state: MyScreenState = rememberMyScreenState(<br>        someState = viewModel.uiState.map &#123; it.toSomeState() &#125;,<br>        doSomething = viewModel::doSomething<br>    ),<br>    <span class="hljs-comment">// ...</span><br>) &#123;<br>    <span class="hljs-comment">/* ... */</span><br>    SonComposable(viewModel.content, onContentChange = &#123;<br>        viewModel.onContentChange(it)<br>    &#125;)<br>&#125;<br>​<br><span class="hljs-meta">@Composable</span><br><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">SonComposable</span><span class="hljs-params">(</span></span><br><span class="hljs-params"><span class="hljs-function">    content:<span class="hljs-type">String</span>,</span></span><br><span class="hljs-params"><span class="hljs-function">    onContentChange:(<span class="hljs-type">String</span>)-&gt;<span class="hljs-type">Unit</span>=&#123;&#125;</span></span><br><span class="hljs-params"><span class="hljs-function">)</span></span>&#123;<br>    <span class="hljs-comment">/* ... */</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="二、不恰当的参数导致-Preview不能预览"><a href="#二、不恰当的参数导致-Preview不能预览" class="headerlink" title="二、不恰当的参数导致@Preview不能预览"></a>二、不恰当的参数导致@Preview不能预览</h2><p>也许你的一些可组合项会出现无法预览的问题，导致这个问题的原因有很多，大多数都是一个原因导致的： <strong>即预览系统遇到了异常</strong> 。</p>
+<ul>
+<li>一个常见的错误就是对使用 <code>ViewModel</code> 的屏幕级可组合项使用 <code>@Preview</code> ，会出现无法预览的问题，如下：</li>
+</ul>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/mis/202512162150579.webp" srcset="/img/loading.gif" lazyload alt="5535c8a4c6d12813cbb54db1ebcbdc43_MD5"></p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/mis/202512162150580.webp" srcset="/img/loading.gif" lazyload alt="30ff7b6cdce3905268071259b5e87edd_MD5"></p>
+<p>✅ 解决方案：把 UI 和数据逻辑分离<br>解决思路是：让预览只看“纯 UI”，不碰“数据逻辑”。</p>
+<p>怎么做？就是你代码里写的那种方式：</p>
+<p>第一步：拆分 Composable<br>把原来的屏幕组件拆成两个函数：</p>
+<p>MvRankScreen：负责和 ViewModel 打交道（真实运行时用）<br>MvRankContent(state)：只接收状态数据，负责显示 UI（预览时用）</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs kotlin"><span class="hljs-meta">@Composable</span><br><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">MvRankScreen</span><span class="hljs-params">(</span></span><br><span class="hljs-params"><span class="hljs-function">    viewModel: <span class="hljs-type">MvRankViewModel</span> = viewModel()</span></span>,<br>) &#123;<br>    <span class="hljs-comment">// 从 ViewModel 拿到状态</span><br>    <span class="hljs-keyword">val</span> state <span class="hljs-keyword">by</span> viewModel.rankState.collectAsState()<br>    <br>    <span class="hljs-comment">// 把状态传给纯 UI 组件</span><br>    MvRankContent(state)<br>&#125;<br><br><span class="hljs-meta">@Composable</span><br><span class="hljs-keyword">private</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">MvRankContent</span><span class="hljs-params">(rankState: <span class="hljs-type">RankState</span>)</span></span> &#123;<br>    <span class="hljs-comment">// 这里只根据 state 显示 UI，不访问 ViewMode</span><br>    <span class="hljs-comment">// 可以安全地预览</span><br>    Column &#123;<br>        Text(<span class="hljs-string">&quot;排行榜标题：<span class="hljs-subst">$&#123;rankState.title&#125;</span>&quot;</span>)<br>        LazyColumn &#123;<br>            items(rankState.items) &#123; item -&gt;<br>                Text(item.name)<br>            &#125;<br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>第二步：给纯 UI 组件加预览</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs less"><span class="hljs-variable">@Preview</span>(showBackground = true)<br><span class="hljs-variable">@Composable</span><br>private fun <span class="hljs-built_in">PreviewMvRankContent</span>() &#123;<br>    <span class="hljs-selector-tag">MvRankContent</span>(<br>        remember &#123;<br>            <span class="hljs-selector-tag">RankState</span>(<br>                title = <span class="hljs-string">&quot;热门MV排行榜&quot;</span>,<br>                items = <span class="hljs-built_in">listOf</span>(<br>                    <span class="hljs-built_in">MvItem</span>(<span class="hljs-string">&quot;告白气球&quot;</span>, <span class="hljs-string">&quot;周杰伦&quot;</span>),<br>                    <span class="hljs-built_in">MvItem</span>(<span class="hljs-string">&quot;演员&quot;</span>, <span class="hljs-string">&quot;薛之谦&quot;</span>)<br>                )<br>            )<br>        &#125;<br>    )<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+<ul>
+<li>另外一个常见的错误就是使用了项目中的其他类，该类只能android运行时才能获取，也会导致预览系统的崩溃，例如下面的一个类：  <figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs kotlin"><span class="hljs-keyword">object</span> MyClass&#123;<br>    <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">getDesc</span><span class="hljs-params">()</span></span>:String&#123;<br>        <span class="hljs-keyword">return</span> MyApplication.getInstance().getDesc()<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure></li>
+</ul>
+<p>该类的方法会从自定义的Application的实例获取一个字符串参数，而这个自定义的Application在预览系统中是不存在的，在Compose中直接使用此类也会导致预览系统的错误。</p>
+<p><strong>解决方法：</strong></p>
+<p>和一些View依赖于运行时才能获取的状态导致无法预览的问题类似，Compose也提供了一些方法来区分项目实际运行中和预览中的状态，如下所示：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs kotlin"><span class="hljs-meta">@Composable</span><br><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">MyTest</span><span class="hljs-params">()</span></span>&#123;<br>    Text(<br>        text=<span class="hljs-keyword">if</span>(LocalInspectionMode.current) <span class="hljs-string">&quot;预览中&quot;</span> <span class="hljs-keyword">else</span> MyClass.getDesc()<br>    )<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>我们可以通过 <code>LocalInspectionMode.current</code> 来判断当前Compose是否运行于预览系统中，如果处于预览系统，我们使用固定的字符串，防止了直接访问getDesc()导致Compose预览崩溃。</p>
+<h2 id="三、没有正确理解重组和处理附带效应"><a href="#三、没有正确理解重组和处理附带效应" class="headerlink" title="三、没有正确理解重组和处理附带效应"></a>三、没有正确理解重组和处理附带效应</h2><p>很多刚上手的Compose新手可能会写出这种代码，然后发现Compose没有按照自己预期的方式显示结果，这是没有理解Compose的重组机制导致的，每次重组就是重新执行一遍可组合函数，这会导致函数中的变量被重新声明和创建。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs kotlin"><span class="hljs-meta">@Composable</span><br><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">WrongScreen</span><span class="hljs-params">()</span></span>&#123;<br>    <span class="hljs-keyword">var</span> num=<span class="hljs-number">0</span><br>    Button(onClick = &#123; num++ &#125;) &#123;<br>        Text(<span class="hljs-string">&quot;加一&quot;</span>)<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>笔者写过的一篇文章大致阐述了Compose的重组概念以及如何使用几种官方的附带效应Api解决附带效应的问题，读者可以自行阅读。</p>
+<p><a target="_blank" rel="noopener" href="https://juejin.cn/post/7244420350753144891" title="https://juejin.cn/post/7244420350753144891">妈！Jetpack Compose太难学了，别怕，这里帮你理清几个概念 - 掘金 (juejin.cn)</a></p>
+<h2 id="四、预览时不遵循Compose的规范"><a href="#四、预览时不遵循Compose的规范" class="headerlink" title="四、预览时不遵循Compose的规范"></a>四、预览时不遵循Compose的规范</h2><p>很多Compose新手在写预览代码时，简单的认为预览系统不是正式运行的代码，只是提供界面预览而已，因此不注重附带效应的处理，会写出下面这种代码：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs kotlin"><span class="hljs-meta">@Composable</span><br><span class="hljs-meta">@Preview</span><br><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">PreviewTest</span><span class="hljs-params">()</span></span>&#123;<br>    <span class="hljs-keyword">var</span> a=<span class="hljs-number">1</span><br>    Text(<span class="hljs-string">&quot;<span class="hljs-variable">$a</span>&quot;</span>)<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>这样的代码表面上是不会影响预览的，但是是一种很错误的行为。</p>
+<p>首先，在预览中不注重Compose的规范（如果你看不懂上述代码有什么问题可以去看笔者第三节提到的另外一篇文章），只会让你写实际的Compose代码时养成不好的编码习惯，写出错误的代码。</p>
+<p>其次，当可组合项很复杂的时候，特别是涉及较多重组的场景下，不正确处理好附带效应的问题，只会得到错误的预览。</p>
+<p>因此笔者 <strong>特别建议</strong> 不要把预览当成是一种简单的UI预览，而是把预览的代码当成是实际的运行的项目代码来编写，这样项目运行时才可以得到正确的UI。</p>
+<h2 id="五、提前读取导致性能下降"><a href="#五、提前读取导致性能下降" class="headerlink" title="五、提前读取导致性能下降"></a>五、提前读取导致性能下降</h2><p>[[7-从重组谈谈页面性能优化思路，狠狠优化一笔#3.使用lambda间接传值&#x2F;跳过阶段]]</p>
+<p>很多新手会尝试在较高层的可组合项直接读取一些该组合项用不到的状态，这样的问题是：可被观察的状态变化时，会导致它所在的重组作用域发生重组，而它所在的重组作用域并不直接使用这个状态。我们看一个案例：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs kotlin"><span class="hljs-meta">@Composable</span><br><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">SnackDetail</span><span class="hljs-params">()</span></span> &#123;<br>    Box(Modifier.fillMaxSize()) &#123; <span class="hljs-comment">// 重组作用域开始</span><br>        <span class="hljs-keyword">val</span> scroll = rememberScrollState(<span class="hljs-number">0</span>)<br>        <span class="hljs-comment">// ...</span><br>        Title(snack, scroll.value)<br>        <span class="hljs-comment">// ...</span><br>    &#125; <span class="hljs-comment">// 重组作用域结束</span><br>&#125;<br><br><span class="hljs-meta">@Composable</span><br><span class="hljs-keyword">private</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">Title</span><span class="hljs-params">(snack: <span class="hljs-type">Snack</span>, scroll: <span class="hljs-type">Int</span>)</span></span> &#123;<br>    <span class="hljs-keyword">val</span> offset = with(LocalDensity.current) &#123; scroll.toDp() &#125;<br>    Column(<br>        modifier = Modifier<br>            .offset(y = offset)<br>    ) &#123;<br>        <span class="hljs-comment">// ...</span><br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>我们逐步分析上面这段代码：</p>
+<p>1.<code>scroll.value</code> 所在的重组作用域是 <code>SnackDetail</code> ，因为Box是内联函数，编译后实际不是函数。</p>
+<p>2.实际使用 <code>scroll.value</code> 的是 <code>Title</code> 。</p>
+<p>3.<code>scroll.value</code> 变化时，发生重组的不仅仅是 <code>Title</code> ，还有它的父可组合项 <code>SnackDetail</code> ，因为scroll在 <code>SnackDetail</code> 中。</p>
+<p>因此， <code>scroll</code> 导致了不必要的重组，因为 <code>scroll</code> 理应只影响 <code>Title</code> ，现在还导致了父可组合项的重组。</p>
+<p><strong>解决方法有两种：</strong></p>
+<p>1.将 <code>scroll</code> 作为参数传入到 <code>Title</code> 中，<em>在 <code>Title</code> 中调用 <code>scroll.value</code> ，使scroll.value的重组作用域变成Title</em></p>
+<p>2.将scroll.value的读取转化为lambda，仅在使用时调用lambda函数，如下所示：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs kotlin"><span class="hljs-meta">@Composable</span><br><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">SnackDetail</span><span class="hljs-params">()</span></span> &#123;<br>    <span class="hljs-comment">// ...</span><br><br>    Box(Modifier.fillMaxSize()) &#123; <span class="hljs-comment">// 重组作用域开始</span><br>        <span class="hljs-keyword">val</span> scroll = rememberScrollState(<span class="hljs-number">0</span>)<br>        <span class="hljs-comment">// ...</span><br>        Title(snack) &#123; scroll.value &#125;<br>        <span class="hljs-comment">// ...</span><br>    &#125; <span class="hljs-comment">// 重组作用域结束</span><br>&#125;<br><br><span class="hljs-meta">@Composable</span><br><span class="hljs-keyword">private</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">Title</span><span class="hljs-params">(snack: <span class="hljs-type">Snack</span>, scrollProvider: () -&gt; <span class="hljs-type">Int</span>)</span></span> &#123;<br>    <span class="hljs-comment">// ...</span><br>    <span class="hljs-keyword">val</span> offset = with(LocalDensity.current) &#123; scrollProvider().toDp() &#125;<br>    Column(<br>        modifier = Modifier<br>            .offset(y = offset)<br>    ) &#123;<br>    <span class="hljs-comment">// ...</span><br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><strong>此外，还有一个巨大的优化点就是，Modifier.offset使用lambda版本</strong></p>
+<p>对Title的代码改造成如下：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs kotlin"><span class="hljs-meta">@Composable</span><br><span class="hljs-keyword">private</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">Title</span><span class="hljs-params">(snack: <span class="hljs-type">Snack</span>, scrollProvider: () -&gt; <span class="hljs-type">Int</span>)</span></span> &#123;<br>    <span class="hljs-comment">// ...</span><br>    Column(<br>        modifier = Modifier<br>            .offset &#123; IntOffset(x = <span class="hljs-number">0</span>, y = scrollProvider()) &#125;<br>    ) &#123;<br>      <span class="hljs-comment">// ...</span><br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>这样做有什么意义呢， <code>offset</code> 的非lambda版本会在scroll发生变化的时候导致整个重组作用域发生重组，这就有点不必要了，因为scroll值的变化仅会导致可组合项发生位移，我们并不需要重组，只需要重新绘制或者重新布局就行了。</p>
+<p>使用offset的lambda版本就可以实现这种方式，我们看看该方法的部分注释：</p>
+<blockquote>
+<p>This modifier is designed to be used for offsets that change, possibly due to user interactions. It avoids recomposition when the offset is changing, and also adds a graphics layer that prevents unnecessary redrawing of the context when the offset is changing.</p>
+<p>翻译：</p>
+<p>此Modifier设计用于可能由于用户交互而发生变化的偏移量。它避免了偏移量变化时的重新组合，并且还添加了图形层，以防止偏移量变化时不必要的上下文重绘。</p>
+</blockquote>
+<p>可以看出，lambda版本的offset避免了重组，只会在测量的时候重新修改可组合项的位置关系，这样性能进一步提高了。</p>
+<p>总而言之就是，<em>尽可能将读取状态的行为延后</em>。</p>
+<h2 id="六、LazyColumn、LazyRow等没有使用key"><a href="#六、LazyColumn、LazyRow等没有使用key" class="headerlink" title="六、LazyColumn、LazyRow等没有使用key"></a>六、LazyColumn、LazyRow等没有使用key</h2><p>实际上在绝大部分的声明式UI框架中，懒加载的列表与安卓的传统列表开发不同，在 <code>RecyclerView</code> 中，在修改了数据源后，我们需要手动通过 <code>Adapter</code> 告知列表，刚才修改了数据源的哪项数据，例如删除了某项，修改了某项，移动了某项，这样 <code>RecyclerView</code> 才能正确处理UI和数据源的关系。</p>
+<p>但是声明式UI框架中，例如Compose，我们是没有“通知”这个行为的，只需要传递整个列表，LazyColumn等可组合项就自动完成列表构建了，这到底发生了什么？</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs kotlin"><span class="hljs-meta">@Composable</span><br><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">MessageList</span><span class="hljs-params">(messages: <span class="hljs-type">List</span>&lt;<span class="hljs-type">Message</span>&gt;)</span></span> &#123;<br>    LazyColumn &#123;<br>        items(<br>            items = messages,<br>        ) &#123; message -&gt;<br>            MessageRow(message)<br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>遗憾的是，什么都没特别的，LazyColumn只是100%重新构建了整个列表，类似 <code>RecyclerView</code> 的 <code>notifyDataSetChanged()</code> 。</p>
+<p>what？哪怕你只是添加了一条数据，或者修改了某一条数据的某一个小参数，都会导致整个列表重新构建。这是无法接受的，特别是列表项特别多元素时。</p>
+<p>因此，要完成高效的重组，列表必须定位出当前列表和旧列表的变化，鉴定出这种变化必须了解每一个项的以下两点内容：</p>
+<ol>
+<li>我是谁</li>
+<li>我有什么内容</li>
+</ol>
+<p>第一点用于让列表了解，每一个项的独一无二的标志是什么，这让列表可以知道项的位置关系是否发生了变化，项是否是新增的或者已经被移除了。</p>
+<p>第二点用于让列表了解，每一个项自身的元素是否发生了变化。</p>
+<p>第二点，Compose的延迟列表中是使用对象自身的equals方法来完成的，而对于第一点，则是使用 <strong>key</strong> 。</p>
+<p>将代码改造成如下：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs kotlin"><span class="hljs-meta">@Composable</span><br><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">MessageList</span><span class="hljs-params">(messages: <span class="hljs-type">List</span>&lt;<span class="hljs-type">Message</span>&gt;)</span></span> &#123;<br>    LazyColumn &#123;<br>        items(<br>            items = messages,<br>            key = &#123; message -&gt;<br>                message.id<br>            &#125;<br>        ) &#123; message -&gt;<br>            MessageRow(message)<br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>我们多传入一个参数key，即使用message中的id，必须要清楚的是，这个key必须是独一无二的，因为当存在两个相同的key时，列表将无法确定item的唯一性。</p>
+<p>这样的好处就是，列表可以清楚感知每一个item的唯一性，当数据源只发生了项的位置的变化，或者部分项被新增或者移除了，列表只需要处理那些 <strong>发生过变化的项对应的可组合项</strong> 即可，不需要重组整个列表。这样列表的性能提高了一个数量级。</p>
+<p><strong>额外内容：</strong></p>
+<p>一个很多人不知道的点是，哪怕不是Lazy系列的可组合项，也可以使用key来提高性能，例如普通的Column可以通过key来提高重组效率！</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs kotlin"><span class="hljs-meta">@Composable</span><br><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">NiceColumn</span><span class="hljs-params">(list:<span class="hljs-type">List</span>&lt;<span class="hljs-type">String</span>&gt;)</span></span>&#123;<br>    Column&#123;<br>        list.forEach &#123;<br>            key(it)&#123;<br>                Text(text=it)<br>            &#125;<br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>如果你有一个不断变化的列表，也可以使用key这个可组合函数来完成对项的唯一性声明，当列表变化时，避免其他项被重组。</p>
+<h2 id="七、业务对象入侵可组合函数"><a href="#七、业务对象入侵可组合函数" class="headerlink" title="七、业务对象入侵可组合函数"></a>七、业务对象入侵可组合函数</h2><p>许多可组合函数的业务就是显示一些后台返回的数据，假设你有一个这样的后台对象：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs kotlin"><span class="hljs-keyword">data</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Message</span>(<br>    <span class="hljs-keyword">val</span> content:String,<br>    <span class="hljs-keyword">val</span> id:<span class="hljs-built_in">Int</span><br>)<br></code></pre></td></tr></table></figure>
+
+<p>业务需要在一个列表中展示所有的这些对象，因此很多人会尝试写一个这样的可组合项：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs kotlin"><span class="hljs-meta">@Composable</span><br><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">MessageContent</span><span class="hljs-params">(</span></span><br><span class="hljs-params"><span class="hljs-function">    message:<span class="hljs-type">Message</span></span></span><br><span class="hljs-params"><span class="hljs-function">)</span></span>&#123;<br>    Text(message.content)<br>&#125;<br><br><span class="hljs-meta">@Composable</span><br><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">MessageList</span><span class="hljs-params">(list:<span class="hljs-type">List</span>&lt;<span class="hljs-type">Message</span>&gt;)</span></span>&#123;<br>    LazyColumn&#123;<br>        items(list)&#123;<br>            MessageContent(it)<br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>这样是不存在任何代码上的问题的，但是千万别忘记， <strong>业务是会发生变化和重合的</strong> 。当另外一个业务，或者另外一个接口也使用到这个可组合项的时候呢，就会非常难受，因为该可组合项已经和某个后台对应的实体类发生耦合了（特别是一些使用了Retrofit网络框架的项目，每一个接口都有一个对应的实体类）。</p>
+<p>因此，我们应该避免把可组合项和某个业务绑定起来，在设计可组合项的状态对象时，不应该考虑只和某个业务的对象绑定（除非你非常明确该可组合项只用于某个特定的业务），脱离业务去设计状态对象即可。当某个业务想使用该可组合项时，例如可组合项要显示接口返回的列表， <strong>我们应该将该接口的实体类映射成可组合项的状态类，再传入可组合项，避免业务和某个可组合项发生耦合</strong> 。</p>
+<p>这其实是 <strong>Jetpack Compose 架构设计中的关键思想之一：UI 状态与业务模型解耦</strong>。<br>你已经理解了问题的本质 —— <strong>不要让可组合函数直接依赖网络实体类或业务数据结构</strong>。</p>
+<hr>
+<h2 id="✅-问题复现"><a href="#✅-问题复现" class="headerlink" title="✅ 问题复现"></a>✅ 问题复现</h2><p>原写法中：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs kotlin"><span class="hljs-meta">@Composable</span><br><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">MessageContent</span> <span class="hljs-params">(message: <span class="hljs-type">Message</span>)</span></span> &#123;<br>    Text (message. content)<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><code>Message</code> 是后端接口实体类（比如来自 <code>Retrofit</code>），一旦接口字段变化、命名变化，UI 层就要跟着改，非常脆弱。</p>
+<hr>
+<h2 id="✅-正确的优化思路：引入「UI-状态模型」层（ViewState-UiModel）"><a href="#✅-正确的优化思路：引入「UI-状态模型」层（ViewState-UiModel）" class="headerlink" title="✅ 正确的优化思路：引入「UI 状态模型」层（ViewState &#x2F; UiModel）"></a>✅ 正确的优化思路：引入「UI 状态模型」层（ViewState &#x2F; UiModel）</h2><h3 id="1️⃣-定义独立于业务的-UI-状态类"><a href="#1️⃣-定义独立于业务的-UI-状态类" class="headerlink" title="1️⃣ 定义独立于业务的 UI 状态类"></a>1️⃣ 定义独立于业务的 UI 状态类</h3><p>比如定义：</p>
+<p><code>data class MessageUiState(     val content: String )</code></p>
+<p>这个类完全不依赖你的后端结构，<br>只表示 UI 层渲染所需的数据。</p>
+<hr>
+<h3 id="2️⃣-修改可组合函数，接受-UI-状态而非业务实体"><a href="#2️⃣-修改可组合函数，接受-UI-状态而非业务实体" class="headerlink" title="2️⃣ 修改可组合函数，接受 UI 状态而非业务实体"></a>2️⃣ 修改可组合函数，接受 UI 状态而非业务实体</h3><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs kotlin"><span class="hljs-meta">@Composable</span><br><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">MessageContent</span><span class="hljs-params">(message: <span class="hljs-type">MessageUiState</span>)</span></span> &#123;<br>    Text(message.content)<br>&#125;<br><br><span class="hljs-meta">@Composable</span><br><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">MessageList</span><span class="hljs-params">(list: <span class="hljs-type">List</span>&lt;<span class="hljs-type">MessageUiState</span>&gt;)</span></span> &#123;<br>    LazyColumn &#123;<br>        items(list) &#123; msg -&gt;<br>            MessageContent(msg)<br>        &#125;<br>    &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>✅ 优点：</p>
+<ul>
+<li><p>UI 层与数据层彻底解耦；</p>
+</li>
+<li><p>UI 只依赖渲染所需的最小字段；</p>
+</li>
+<li><p>接口结构变化时，只改映射逻辑，不改 UI。</p>
+</li>
+</ul>
+</blockquote>
+<hr>
+<h3 id="3️⃣-在-ViewModel-中做映射（Model-→-UiState）"><a href="#3️⃣-在-ViewModel-中做映射（Model-→-UiState）" class="headerlink" title="3️⃣ 在 ViewModel 中做映射（Model → UiState）"></a>3️⃣ 在 ViewModel 中做映射（Model → UiState）</h3><p>假设你接口返回：</p>
+<p><code>data class Message(     val id: Int,     val content: String,     val sender: String )</code></p>
+<p>ViewModel：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs kotlin"><span class="hljs-keyword">class</span> <span class="hljs-title class_">MessageViewModel</span> : <span class="hljs-type">ViewModel</span> () &#123;<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">val</span> _uiState = MutableStateFlow&lt;List&lt;MessageUiState&gt;&gt;(emptyList())<br>    <span class="hljs-keyword">val</span> uiState: StateFlow&lt;List&lt;MessageUiState&gt;&gt; = _uiState<br><br>    <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">loadMessages</span><span class="hljs-params">()</span></span> &#123;<br>        viewModelScope.launch &#123;<br>            <span class="hljs-keyword">val</span> result = repository.getMessages() <span class="hljs-comment">// 返回 List&lt;Message&gt;</span><br>            _uiState.value = result.map &#123; it.toUiState() &#125;<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> Message.<span class="hljs-title">toUiState</span><span class="hljs-params">()</span></span> = MessageUiState(<br>        content = content<br>    )<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+<hr>
+<h3 id="4️⃣-在-UI-层使用："><a href="#4️⃣-在-UI-层使用：" class="headerlink" title="4️⃣ 在 UI 层使用："></a>4️⃣ 在 UI 层使用：</h3><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs kotlin"><span class="hljs-meta">@Composable</span><br><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">MessageScreen</span> <span class="hljs-params">(viewModel: <span class="hljs-type">MessageViewModel</span> = viewModel ()</span></span>) &#123;<br>    <span class="hljs-keyword">val</span> list <span class="hljs-keyword">by</span> viewModel.uiState.collectAsState ()<br><br>    MessageList(list)<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+<hr>
+<h2 id="✅-总结：这才是理想的-Compose-解耦结构"><a href="#✅-总结：这才是理想的-Compose-解耦结构" class="headerlink" title="✅ 总结：这才是理想的 Compose 解耦结构"></a>✅ 总结：这才是理想的 Compose 解耦结构</h2><table>
+<thead>
+<tr>
+<th>层级</th>
+<th>职责</th>
+<th>数据类型</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Data 层 (API&#x2F;DB)</strong></td>
+<td>定义实体类，与服务器结构一致</td>
+<td><code>Message</code></td>
+</tr>
+<tr>
+<td><strong>Domain 层 (UseCase)</strong></td>
+<td>做业务逻辑、转换</td>
+<td><code>Message</code> → <code>MessageUiState</code></td>
+</tr>
+<tr>
+<td><strong>UI 层 (Compose)</strong></td>
+<td>只关心展示的数据</td>
+<td><code>MessageUiState</code></td>
+</tr>
+</tbody></table>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%85%B6%E4%BB%96%E8%AF%AD%E8%A8%80/" class="category-chain-item">其他语言</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/clippings/" class="print-no-link">#clippings</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>刚学Jetpack Compose?最好不要踩这些新手容易碰到的坑</div>
+      <div>http://peiniwan.github.io/2025/12/a44707c93b7b.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>[[晴天小庭]]</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年12月16日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"OwNIdaopOn1rwNhtotGOGC0B-gzGzoHsz","appKey":"eadytQ2XqWmxuvAKeg08XX83","path":"window.location.pathname","placeholder":null,"avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":true,"recordIP":false,"serverURLs":"https://ownidaop.lc-cn-n1-shared.com","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

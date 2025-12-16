@@ -1,0 +1,765 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="六月的雨">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="RecycleView 嵌套卡顿https:&#x2F;&#x2F;blog.csdn.net&#x2F;qq_30983519&#x2F;article&#x2F;details&#x2F;81280274  共用 RecycledViewPool，holder. innerRecyclerView. setRecycledViewPool (viewPool)2. setInitialPrefetchItemCount (int) 来优化嵌套时预加载性">
+<meta property="og:type" content="article">
+<meta property="og:title" content="4.RecycleView 嵌套卡顿">
+<meta property="og:url" content="http://peiniwan.github.io/2025/12/a0bad8cfa7a3.html">
+<meta property="og:site_name" content="六月的雨的笔记">
+<meta property="og:description" content="RecycleView 嵌套卡顿https:&#x2F;&#x2F;blog.csdn.net&#x2F;qq_30983519&#x2F;article&#x2F;details&#x2F;81280274  共用 RecycledViewPool，holder. innerRecyclerView. setRecycledViewPool (viewPool)2. setInitialPrefetchItemCount (int) 来优化嵌套时预加载性">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-12-16T13:59:22.387Z">
+<meta property="article:modified_time" content="2024-03-23T11:55:00.000Z">
+<meta property="article:author" content="六月的雨">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>4.RecycleView 嵌套卡顿 - 六月的雨的笔记</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"peiniwan.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>六月的雨的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="4.RecycleView 嵌套卡顿"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-12-16 21:59" pubdate>
+          2025年12月16日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.5k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          13 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">4.RecycleView 嵌套卡顿</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="RecycleView-嵌套卡顿"><a href="#RecycleView-嵌套卡顿" class="headerlink" title="RecycleView 嵌套卡顿"></a>RecycleView 嵌套卡顿</h2><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_30983519/article/details/81280274">https://blog.csdn.net/qq_30983519/article/details/81280274</a></p>
+<ol>
+<li>共用 RecycledViewPool，holder. innerRecyclerView. setRecycledViewPool (viewPool)<br>2. <em>setInitialPrefetchItemCount</em> (int) 来优化嵌套时预加载性能</li>
+<li>设置 recycleview 的子项缓存 rv. setItemViewCacheSize (200);</li>
+<li>rv. setHasFixedSize (true);</li>
+<li>recyclerview 嵌套 recyclerview 的时候, adapter 全局变量</li>
+</ol>
+<h2 id="区别"><a href="#区别" class="headerlink" title="区别"></a>区别</h2><p><strong>setInitialPrefetchItemCount</strong></p>
+<p>位置：LinearLayoutManager、GridLayoutManager<br>作用：控制预取 (prefetch) 的数量。<br>当 RecyclerView 嵌套 RecyclerView（比如外层是列表，内层是横向的 banner&#x2F;卡片列表）时，外层滑到某个 item，系统会提前帮你把内层 RecyclerView 的子 item 创建&#x2F;绑定好，避免用户滑动到时才加载导致卡顿。<br>默认值一般是 2（也就是提前加载 2 个子项）。</p>
+<p>👉 优化点：<br>减少「卡顿感」，让用户滑动到新区域时内容已经准备好。<br>（主要是滑动流畅度）</p>
+<p><strong>setItemViewCacheSize</strong></p>
+<p>位置：RecyclerView 本身<br>作用：设置 RecyclerView 缓存区 (cache) 能保留多少个离屏的 ViewHolder。<br>默认是 2，也就是说屏幕外的 2 个 item 不会立刻回收，而是放到缓存里，滑回来时可以直接复用，减少重新绑定数据和创建 ViewHolder 的开销。</p>
+<p>👉 优化点：<br>减少频繁的创建和绑定 ViewHolder，在来回滚动时更高效。<br>（主要是 CPU 开销和回收&#x2F;复用性能）</p>
+<p><strong>对比总结</strong></p>
+<p>![[Pasted image 20250909141809.png]]</p>
+<p><strong>使用建议</strong><br>嵌套场景（横向列表 inside 纵向列表）：调大 setInitialPrefetchItemCount，<em>一般设成横向列表一屏能展示的数量</em>。<br>单层长列表：可以根据内存情况调大 setItemViewCacheSize，比如设成 10，减少频繁回收。</p>
+<h2 id="NestedScrollView-嵌套-recyclerView"><a href="#NestedScrollView-嵌套-recyclerView" class="headerlink" title="NestedScrollView 嵌套 recyclerView"></a>NestedScrollView 嵌套 recyclerView</h2><p><strong>NestedScrollview 和 recycler View 嵌套的时候, recyclerview 的缓存机制失效了, 这种情况有没有什么好的解决办法呢?</strong><br><em>NestedScrollView 传递给子 View 的测量模式为 UNSPECIFIED</em>，RecyclerView 在 UNSPECIFIED 的测量模式下，会不限制自身的高度，即 RecyclerView 的窗口高度将会变成所有 item 高度累加后加上 paddding 的高度。因此，表现出来就是 item 一次性全部加载完成。<br>这样做在 RecyclerView 的 item 数量较少的时候可能没什么问题，但是如果 item 数量比较多，随之带来的性能问题就会很严重。</p>
+<p>推荐使用 RecyclerView 的多样式布局实现，毕竟 RecyclerView 自带滑动，没必要外层套一个 ScrollerView 或者 NestedScrollView</p>
+<p>必须嵌套，解决方案：<br><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/f3f18db711ce">懒饭详情页嵌套效果仿写（View&#x2F;Compose 实现） - 简书</a><br>问题本质上其实就是因为高度不确定导致复用失效了，那其实指定 RecyclerView 的高度即可，例如屏幕的高。</p>
+<ul>
+<li><p><strong>在未到达临界高度之前</strong></p>
+<ul>
+<li>所有滚动（scroll &#x2F; fling）都由外层 <code>NestedScrollView</code> 消费</li>
+</ul>
+</li>
+<li><p><strong>到达临界高度之后</strong></p>
+<ul>
+<li>外层不再滚动</li>
+<li>剩余的滚动和 fling 交由内部 <code>RecyclerView</code> 处理</li>
+</ul>
+</li>
+</ul>
+<p>![[Pasted image 20250703145905.png]]</p>
+<p>[[NestedScrollingParent]]</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 开始滑动时，子视图会优先回调该方法。父容器可以处理自己的滚动操作，之后将剩余的滚动偏移量传回给子视图。</span><br><span class="hljs-comment">   （可由 NestedScrollingChild2的 dispatchNestedPreScroll 方法触发）</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">void</span> <span class="hljs-title function_">onNestedPreScroll</span> <span class="hljs-params">(<span class="hljs-meta">@NonNull</span> View target, <span class="hljs-type">int</span> dx, <span class="hljs-type">int</span> dy, <span class="hljs-meta">@NonNull</span> <span class="hljs-type">int</span>[] consumed, <span class="hljs-meta">@NestedScrollType</span> <span class="hljs-type">int</span> type)</span>;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 子视图处理完剩余的滚动偏移量后，若还有剩余，则将剩余的滚动偏移量再通过该回调传给父容器处理。</span><br><span class="hljs-comment">   （可由 NestedScrollingChild2的 dispatchNestedScroll 方法触发）</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">void</span> <span class="hljs-title function_">onNestedScroll</span><span class="hljs-params">(<span class="hljs-meta">@NonNull</span> View target, <span class="hljs-type">int</span> dxConsumed, <span class="hljs-type">int</span> dyConsumed, <span class="hljs-type">int</span> dxUnconsumed, <span class="hljs-type">int</span> dyUnconsumed, <span class="hljs-meta">@NestedScrollType</span> <span class="hljs-type">int</span> type)</span>;<br></code></pre></td></tr></table></figure>
+
+<h3 id="实例"><a href="#实例" class="headerlink" title="实例"></a>实例</h3><p>scrollViewHeadHeight</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><code class="hljs java">override fun <span class="hljs-title function_">onNestedPreScroll</span><span class="hljs-params">(target: View, dx: Int, dy: Int, consumed: IntArray, type: Int)</span> &#123;<br>		<span class="hljs-keyword">if</span> (scrollY &lt; scrollViewHeadHeight) &#123;<br>            <span class="hljs-keyword">if</span> (scrollY + dy &lt; scrollViewHeadHeight) &#123;<br>                scrollBy(<span class="hljs-number">0</span>, dy)<br>                consumed[<span class="hljs-number">1</span>] = dy<br>            &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (scrollY + dy &gt; scrollViewHeadHeight) &#123;<br>                <span class="hljs-type">val</span> <span class="hljs-variable">scrollViewNeedScrollY</span> <span class="hljs-operator">=</span> scrollViewHeadHeight - scrollY<br>                <span class="hljs-title function_">scrollBy</span><span class="hljs-params">(<span class="hljs-number">0</span>, scrollViewNeedScrollY)</span><br>                consumed[<span class="hljs-number">1</span>] = scrollViewNeedScrollY<br>            &#125;<br>    &#125;<br>&#125;<br><br>override fun <span class="hljs-title function_">fling</span><span class="hljs-params">(velocityY: Int)</span> &#123;<br>    <span class="hljs-type">val</span> <span class="hljs-variable">dy</span> <span class="hljs-operator">=</span> FlingUtil.getDistanceByVelocity(context, velocityY)<br>    <span class="hljs-keyword">if</span> (scrollY &lt; scrollViewHeadHeight) &#123;<br>        <span class="hljs-keyword">if</span> (scrollY + dy &lt;= scrollViewHeadHeight) &#123;<br>            <span class="hljs-built_in">super</span>.fling(velocityY)<br>        &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (scrollY + dy &gt; scrollViewHeadHeight) &#123;<br>            <span class="hljs-type">val</span> <span class="hljs-variable">scrollViewNeedScrollY</span> <span class="hljs-operator">=</span> scrollViewHeadHeight - scrollY<br>            <span class="hljs-comment">//让NestedScrollView先处理所有的滚动事件</span><br>            <span class="hljs-type">val</span> <span class="hljs-variable">scrollViewNeedVelocity</span> <span class="hljs-operator">=</span> FlingUtil.getVelocityByDistance(context, scrollViewNeedScrollY.toDouble())<br>            <span class="hljs-keyword">if</span> (velocityY &gt; <span class="hljs-number">0</span>) &#123;<br>                <span class="hljs-built_in">super</span>.fling(scrollViewNeedVelocity)<br>            &#125; <span class="hljs-keyword">else</span> &#123;<br>                <span class="hljs-built_in">super</span>.fling(-scrollViewNeedVelocity)<br>            &#125;<br>            <span class="hljs-comment">//把剩余的滚动事件交给RecyclerView处理</span><br>            <span class="hljs-type">val</span> <span class="hljs-variable">recyclerViewScrollY</span> <span class="hljs-operator">=</span> dy - scrollViewNeedScrollY<br>            <span class="hljs-type">val</span> <span class="hljs-variable">recyclerViewNeedVelocity</span> <span class="hljs-operator">=</span> FlingUtil.getVelocityByDistance(context, recyclerViewScrollY)<br>            <span class="hljs-keyword">if</span> (velocityY &gt; <span class="hljs-number">0</span>) &#123;<br>                getChildRecyclerView(<span class="hljs-built_in">this</span>)?.fling(<span class="hljs-number">0</span>, recyclerViewNeedVelocity)<br>            &#125; <span class="hljs-keyword">else</span> &#123;<br>                getChildRecyclerView(<span class="hljs-built_in">this</span>)?.fling(<span class="hljs-number">0</span>, -recyclerViewNeedVelocity)<br>            &#125;<br>        &#125;<br>    &#125;<br>&#125; <br></code></pre></td></tr></table></figure>
+
+<p>上面的代码是针对嵌套滚动的情况进行处理的。根据代码的逻辑，可以理解如下：</p>
+<ol>
+<li><p><code>onNestedPreScroll()</code> 方法用于处理嵌套滚动前的预处理。当嵌套滚动发生时，会调用该方法。参数说明如下：</p>
+<ul>
+<li><code>target</code>: 嵌套滚动的目标视图。</li>
+<li><code>dx</code>: 水平方向上的滚动距离。</li>
+<li><code>dy</code>: 垂直方向上的滚动距离。</li>
+<li><code>consumed</code>: 用于传递消耗的滚动距离的数组。</li>
+<li><code>type</code>: 滚动事件类型。</li>
+</ul>
+<p>在代码中，首先判断当前滚动的位置 <code>scrollY</code> 是否小于 <code>scrollViewHeadHeight</code>（一个预设的阈值）。如果小于该阈值，表示需要对滚动进行处理。</p>
+<ul>
+<li>如果 <code>scrollY + dy</code> 小于 <code>scrollViewHeadHeight</code>，直接进行滚动并消耗全部的垂直滚动距离 <code>dy</code>，将其存入 <code>consumed</code> 数组中。</li>
+<li>如果 <code>scrollY + dy</code> 大于 <code>scrollViewHeadHeight</code>，则需要将滚动限制在 <code>scrollViewHeadHeight</code> 的位置，即将滚动距离限制为 <code>scrollViewHeadHeight - scrollY</code>，<em>并将此消耗的滚动距离存入 <code>consumed</code> 数组中</em>。</li>
+</ul>
+</li>
+<li><p><code>fling()</code> 方法用于处理滑动手势的快速滚动。当手指快速滑动屏幕时，会调用该方法。参数说明如下：</p>
+<ul>
+<li><code>velocityY</code>: 垂直方向上的滑动速度。</li>
+</ul>
+<p>在代码中，首先判断当前滚动的位置 <code>scrollY</code> 是否小于 <code>scrollViewHeadHeight</code>。</p>
+<ul>
+<li>如果小于该阈值，表示需要对滚动进行处理。</li>
+<li>如果 <code>scrollY + dy</code> 小于等于 <code>scrollViewHeadHeight</code>，直接调用父类的 <code>super.fling(velocityY)</code> 方法进行滚动。</li>
+<li>如果 <code>scrollY + dy</code> 大于 <code>scrollViewHeadHeight</code>，则需要将滚动限制在 <code>scrollViewHeadHeight</code> 的位置，即将滚动距离限制为 <code>scrollViewHeadHeight - scrollY</code>，并将此消耗的滚动距离存入 <code>scrollViewNeedScrollY</code>。</li>
+<li>接下来，根据滚动速度 <code>velocityY</code> 计算出 <code>scrollViewNeedScrollY</code> 所对应的速度 <code>scrollViewNeedVelocity</code>。</li>
+<li>如果 <code>velocityY</code> 大于 0，表示向上滑动，调用父类的 <code>super.fling(scrollViewNeedVelocity)</code> 方法进行滚动。</li>
+<li>如果 <code>velocityY</code> 小于等于 0，表示向下滑动，调用父类的 <code>super.fling(-scrollViewNeedVelocity)</code> 方法进行滚动。</li>
+<li>然后，剩余的滚动距离为 <code>dy - scrollViewNeedScrollY</code>，根据剩余距离计算出对应的速度 <code>recyclerViewNeedVelocity</code>。</li>
+<li>最后，通过 <code>getChildRecyclerView(this)?.fling(0, recyclerViewNeedVelocity)</code> 将剩余的滚动事件交给嵌套的 RecyclerView 处理。</li>
+</ul>
+</li>
+</ol>
+<p>这段代码的目的是在特定的条件下对滚动和快速滑动进行限制和分发，以实现特定的滚动效果和交互行为。具体的实现细节和逻辑可能还需要结合其他代码来全面理解其功能和效果。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Android/" class="category-chain-item">Android</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>4.RecycleView 嵌套卡顿</div>
+      <div>http://peiniwan.github.io/2025/12/a0bad8cfa7a3.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>六月的雨</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年12月16日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/12/d170891dd6f9.html" title="5.requestLayout">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">5.requestLayout</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/12/28af756907fe.html" title="3.RecycleView_ ListView原理">
+                        <span class="hidden-mobile">3.RecycleView_ ListView原理</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"OwNIdaopOn1rwNhtotGOGC0B-gzGzoHsz","appKey":"eadytQ2XqWmxuvAKeg08XX83","path":"window.location.pathname","placeholder":null,"avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":true,"recordIP":false,"serverURLs":"https://ownidaop.lc-cn-n1-shared.com","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

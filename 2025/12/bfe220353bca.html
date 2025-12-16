@@ -1,0 +1,805 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="六月的雨">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="同步屏障和异步消息其实在 Handler 机制中，有三种消息类型：  同步消息。也就是普通的消息。 异步消息。通过 setAsynchronous (true) 设置的消息。 同步屏障消息。通过 postSyncBarrier 方法添加的消息，特点是 target 为空，也就是没有对应的 handler。也是通过屏障的时间，确定屏障消息插入的位置  这三者之间的关系如何呢？  正常情况下，同步消息">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2.Handler 里的各种消息">
+<meta property="og:url" content="http://peiniwan.github.io/2025/12/bfe220353bca.html">
+<meta property="og:site_name" content="六月的雨的笔记">
+<meta property="og:description" content="同步屏障和异步消息其实在 Handler 机制中，有三种消息类型：  同步消息。也就是普通的消息。 异步消息。通过 setAsynchronous (true) 设置的消息。 同步屏障消息。通过 postSyncBarrier 方法添加的消息，特点是 target 为空，也就是没有对应的 handler。也是通过屏障的时间，确定屏障消息插入的位置  这三者之间的关系如何呢？  正常情况下，同步消息">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/mis/202512161425009.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/mis/202512161425010.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/mis/202512161425011.png">
+<meta property="article:published_time" content="2025-12-16T13:59:22.734Z">
+<meta property="article:modified_time" content="2024-04-01T02:28:00.000Z">
+<meta property="article:author" content="六月的雨">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/mis/202512161425009.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>2.Handler 里的各种消息 - 六月的雨的笔记</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"peiniwan.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>六月的雨的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="2.Handler 里的各种消息"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-12-16 21:59" pubdate>
+          2025年12月16日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          20 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">2.Handler 里的各种消息</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="同步屏障和异步消息"><a href="#同步屏障和异步消息" class="headerlink" title="同步屏障和异步消息"></a>同步屏障和异步消息</h2><p>其实在 Handler 机制中，有三种消息类型：</p>
+<ul>
+<li>同步消息。也就是普通的消息。</li>
+<li>异步消息。通过 setAsynchronous (true) 设置的消息。</li>
+<li>同步屏障消息。通过 postSyncBarrier 方法添加的消息，<em>特点是 target 为空</em>，也就是没有对应的 handler。也是通过屏障的时间，确定屏障消息插入的位置<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/mis/202512161425009.png" srcset="/img/loading.gif" lazyload alt="Pasted image 20250820142310"></li>
+</ul>
+<p>这三者之间的关系如何呢？</p>
+<ul>
+<li>正常情况下，同步消息和异步消息都是正常被处理，也就是根据时间 when 来取消息，处理消息。</li>
+<li>如果当前消息是一个同步屏障，那么就会从当前消息之后的消息开始寻找，并将找到的下一个异步消息赋给 msg，直到找到异步消息或遍历完整个消息队列。</li>
+</ul>
+<p>取消息，next () 方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">Message</span> <span class="hljs-variable">msg</span> <span class="hljs-operator">=</span> mMessages;<br><span class="hljs-keyword">if</span> (msg != <span class="hljs-literal">null</span> &amp;&amp; msg.target == <span class="hljs-literal">null</span>) &#123;<br>	<span class="hljs-keyword">do</span> &#123;<br>		prevMsg = msg;<br>		msg = msg.next;<br>	&#125; <span class="hljs-keyword">while</span> (msg != <span class="hljs-literal">null</span> &amp;&amp; !msg.isAsynchronous());<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>也就是说同步屏障消息不会被返回，他只是一个标志，一个工具，遇到它就代表要去先行处理异步消息了，提高优先级。<br>所以同步屏障和异步消息的存在的意义就在于有些消息需要“<em>加急处理</em>”。<br>同步障碍会阻碍同步消息，只允许通过异步消息</p>
+<h2 id="Choreographer"><a href="#Choreographer" class="headerlink" title="Choreographer"></a>Choreographer</h2><p><strong>Choreographer 本质上是 Android 的“帧调度器”。</strong></p>
+<p>它的作用是：<br><strong>在每一次屏幕刷新（VSYNC）到来时，统一调度一帧中必须完成的三件事——输入、动画、绘制，保证 UI 和屏幕刷新节奏严格同步，避免掉帧。</strong></p>
+<p>它解决的核心问题<br>手机屏幕是按固定频率刷新的（比如 60Hz &#x2F; 120Hz），<br>而 App 的 UI 更新如果不和这个节奏对齐，就会出现：</p>
+<ul>
+<li>一帧画不完 → 掉帧</li>
+<li>多次无意义绘制 → 浪费性能</li>
+<li>动画和触摸不同步 → 卡顿、抖动</li>
+</ul>
+<p><strong>Choreographer 就是用来“对齐 App 和屏幕节奏”的。</strong></p>
+<p>它是怎么工作的</p>
+<blockquote>
+<p><strong>每次 VSYNC 到来，Choreographer 就会触发一次 UI 帧回调，按顺序执行输入 → 动画 → 绘制，然后把这一帧准时提交给屏幕。</strong></p>
+</blockquote>
+<p>它在一帧里主要干三件事（重点）</p>
+<ol>
+<li><p><strong>处理输入（Input）</strong></p>
+<ul>
+<li>比如触摸、滑动事件</li>
+</ul>
+</li>
+<li><p><strong>执行动画（Animation）</strong></p>
+<ul>
+<li>属性动画、View 动画的进度计算</li>
+</ul>
+</li>
+<li><p><strong>绘制 UI（Traversal &#x2F; Draw）</strong></p>
+<ul>
+<li>measure → layout → draw<br>👉 <strong>一帧中只有这三类事情，且顺序是固定的。</strong></li>
+</ul>
+</li>
+</ol>
+<p>和开发者最直接的关系</p>
+<ul>
+<li>当你调用 <code>View.invalidate()</code> &#x2F; <code>requestLayout()</code> 时</li>
+<li>并不会立刻绘制</li>
+<li>而是告诉 Choreographer：<br>  <strong>“下一个 VSYNC 来了记得叫我画一帧”</strong></li>
+</ul>
+<p>所以：</p>
+<blockquote>
+<p>UI 更新永远是“等 VSYNC 再统一执行”，而不是随调随画。</p>
+</blockquote>
+<p>为什么会掉帧<br>在 60Hz 屏幕下，一帧只有 <strong>16.6ms</strong>：</p>
+<ul>
+<li>如果你在这一帧里：<ul>
+<li>做了重计算</li>
+<li>主线程 IO     </li>
+<li>复杂布局</li>
+</ul>
+</li>
+<li>导致三件事没在 16.6ms 内完成<br>👉 <strong>Choreographer 就会错过这个 VSYNC，直接掉一帧。</strong></li>
+</ul>
+<p>监听掉帧卡顿是否流畅，看两帧之间的时间间隔（即<strong>每帧的实际耗时</strong>）</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">FrameMonitor</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">Choreographer</span>.FrameCallback &#123;<br>    <span class="hljs-keyword">private</span> <span class="hljs-type">long</span> <span class="hljs-variable">mLastFrameTimeNanos</span> <span class="hljs-operator">=</span> <span class="hljs-number">0</span>;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">doFrame</span><span class="hljs-params">(<span class="hljs-type">long</span> frameTimeNanos)</span> &#123;<br>        <span class="hljs-keyword">if</span> (mLastFrameTimeNanos != <span class="hljs-number">0</span>) &#123;<br>            <span class="hljs-type">long</span> <span class="hljs-variable">frameCostMs</span> <span class="hljs-operator">=</span> (frameTimeNanos - mLastFrameTimeNanos) / <span class="hljs-number">1_000_000</span>;<br>            <span class="hljs-keyword">if</span> (frameCostMs &gt; <span class="hljs-number">16</span>) &#123;<br>                Log.w(<span class="hljs-string">&quot;FrameMonitor&quot;</span>, <span class="hljs-string">&quot;一帧耗时: &quot;</span> + frameCostMs + <span class="hljs-string">&quot;ms， 已掉帧！&quot;</span>);<br>            &#125;<br>        &#125;<br>        mLastFrameTimeNanos = frameTimeNanos;<br>        Choreographer.getInstance().postFrameCallback(<span class="hljs-built_in">this</span>); <span class="hljs-comment">// 继续监听下一帧</span><br>    &#125;<br>&#125;<br>	<span class="hljs-comment">// 启动监听: Choreographer.getInstance().postFrameCallback(new FrameMonitor());</span><br></code></pre></td></tr></table></figure>
+<p>Handler 包装 dispatchMessage<br>能帮助定位原因：是因为处理这个消息花了太长时间，导致了卡顿。</p>
+<p><strong>Choreographer 调度一帧的流程</strong> 👇</p>
+<ol>
+<li><strong>Vsync 信号到来</strong> → Choreographer 收到回调，开始这一帧。</li>
+<li><strong>Input Handling</strong> → 处理输入事件（触摸&#x2F;按键）。</li>
+<li><strong>Animation</strong> → 执行动画数值更新。</li>
+<li><strong>Measure&#x2F;Layout&#x2F;Draw</strong> → 视图树测量、布局、绘制。</li>
+<li><strong>Render</strong> → 把绘制结果提交给 GPU。</li>
+<li><strong>Display</strong> → SurfaceFlinger 合成并最终显示到屏幕。<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/mis/202512161425010.png" srcset="/img/loading.gif" lazyload alt="Pasted image 20250820153519"></li>
+</ol>
+<h2 id="同步屏障和异步消息的使用场景"><a href="#同步屏障和异步消息的使用场景" class="headerlink" title="同步屏障和异步消息的使用场景"></a>同步屏障和异步消息的使用场景</h2><p>系统把插入屏障和构造异步 Handler 这些东西标记为 @UnsupportedAppUsage，意思就是<em>这些 API 是系统自己用的，不想让开发者调用</em>。那系统是什么时候用的呢？</p>
+<p>View 绘制的起点是 ViewRootImpl 的 requestLayout () 开始的，这个方法会去执行上面的三大绘制任务：测量、布局、绘制。调用 requestLayout () 方法之后，<em>并不会马上开始进行绘制任务，而是会给主线程设置一个同步屏幕</em>，并设置 Vsync 信号监听。当 Vsync 信号的到来，会发送一个异步消息到主线程 Handler，执行我们上一步设置的绘制监听任务，并移除同步屏障。</p>
+<p>requestLayout 调用 scheduleTraversals<br>绘制方法 scheduleTraversals，刷新帧率</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">void</span> <span class="hljs-title function_">scheduleTraversals</span><span class="hljs-params">()</span> &#123;  <br>      <span class="hljs-keyword">if</span> (!mTraversalScheduled) &#123;  <br>          mTraversalScheduled = <span class="hljs-literal">true</span>;  <br>	<span class="hljs-comment">// 同步屏障，阻塞所有的同步消息  </span><br>          mTraversalBarrier = mHandler.getLooper().getQueue().postSyncBarrier();  <br>	<span class="hljs-comment">//监听Vsync信号，然后发送异步消息 -&gt; 执行绘制任务</span><br>          mChoreographer.postCallback(  <br>                  Choreographer.CALLBACK_TRAVERSAL, mTraversalRunnable, <span class="hljs-literal">null</span>);  <br>      &#125;  <br>  &#125;  <br><br></code></pre></td></tr></table></figure>
+
+<p>postCallback 方法里执行  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">Message</span> <span class="hljs-variable">msg</span> <span class="hljs-operator">=</span> mHandler.obtainMessage(MSG_DO_SCHEDULE_CALLBACK, action);  <br>msg.arg1 =callbackType;  <br>msg.setAsynchronous(<span class="hljs-literal">true</span>);  <br>mHandler.sendMessageAtTime(msg,dueTime);<br></code></pre></td></tr></table></figure>
+
+<p>在该方法中加入了同步屏障，后续加入一个异步消息 MSG_DO_SCHEDULE_CALLBACK，最后会执行到 FrameDisplayEventReceiver，<em>用于申请 VSYNC 信号</em>。</p>
+<p>在等待 Vsync 信号的时候主线程什么事都没干，这样的好处是保证在 Vsync 信号到来时，绘制任务可以被及时执行，不会造成界面卡顿。<br>这样的话，我们发送的普通消息可能会被延迟处理，<em>在 Vsync 信号到了</em>之后，移除屏障，才得以处理普通消息。</p>
+<p><strong>同步屏障的移除</strong><br>在 MessageQueue. java 的 removeSyncBarrier () 方法。<br>删除屏障消息的方法很简单，就是不断遍历消息队列，知道找到屏障消息，退出循环的条件有两个，一是 p.target &#x3D;&#x3D; null，说明是屏障消息，二是 p.arg1 &#x3D;&#x3D; token，也说明 p 是屏障消息，因为在屏障消息入队的时候，设置过 msg. arg1 &#x3D; token。找到屏障消息后，把它从消息队列中删除并回收。</p>
+<blockquote>
+<p>postSyncBarrier () 和 removeSyncBarrier () 必须成对出现，否则会导致消息队列出现假死情况。</p>
+</blockquote>
+<p>如果不异常同步屏障消息，队列中已经没有了异步消息，但是存在普通消息，所以会一直等异步消息，普通消息得不到执行机会</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/mis/202512161425011.png" srcset="/img/loading.gif" lazyload alt="deepseek_mermaid_20250905_cc1d26"></p>
+<h2 id="Surface"><a href="#Surface" class="headerlink" title="Surface"></a>Surface</h2><p>在 WMS 中会为这个 Window 分配 Surface，并确定显示层级，可见负责显示界面的是画布 Surface，而不是窗口本身，WMS 将他管理的 Surface 交由 SurfaceFlinger 处理，SurfaceFlinger <em>将这些 Surface 合并后放入到 buffer 中</em>，屏幕会定时从 buffer 中获取显示数据，显示到屏幕上。<br>[[6-系统源码#SurfaceView]]</p>
+<h2 id="刷新率"><a href="#刷新率" class="headerlink" title="刷新率"></a>刷新率</h2><p>在 Android 系统中，屏幕定时从 buffer 中获取显示数据的时间通常是以屏幕刷新率（刷新频率）来衡量的。常见的屏幕刷新率包括60Hz 和120Hz，表示屏幕每秒刷新60次或120次。</p>
+<p>具体的刷新时间取决于屏幕刷新率和 VSync 信号的触发。VSync（垂直同步信号）是一个由硬件生成的信号，用于同步屏幕刷新和显示数据的传输。<strong>在每个 VSync 信号触发时，GPU会从 buffer 中获取最新的显示数据，并将其显示在屏幕上</strong>。</p>
+<p>以60Hz 的屏幕刷新率为例，每秒刷新60次，因此每次刷新的时间间隔约为16.67毫秒（1秒&#x2F;60 &#x3D; 0.0167秒 ≈ 16.67毫秒）。这意味着，<em>屏幕会大约每16.67毫秒获取一次 buffer 中的显示数据，并更新到屏幕上</em>。</p>
+<p>需要注意的是，具体的屏幕刷新率和 VSync 触发时间可能因设备而异。某些设备可能具有不同的刷新率（例如90Hz 或120Hz），因此屏幕获取显示数据的时间间隔也会相应变化。此外，硬件和系统的性能也可能影响刷新时间的准确性。</p>
+<h2 id="VSYNC"><a href="#VSYNC" class="headerlink" title="VSYNC"></a>VSYNC</h2><p> Android 系统每隔16ms 发出 VSYNC 信号，触发对 UI 进行渲染，如果每次渲染都成功，这样就能够达到流畅的画面所需要的60fps，为了能够实现60fps，这意味着程序的大多数操作都必须在16ms 内完成。如果你的某个操作花费时间是24ms，系统在得到 VSYNC 信号的时候就无法进行正常渲染，这样就发生了丢帧现象。那么用户在32ms 内看到的会是同一帧画面。</p>
+<p>用户容易在 UI 执行动画或者滑动 ListView 的时候感知到卡顿不流畅，是因为这里的操作相对复杂，容易发生丢帧的现象，从而感觉卡顿。<strong>有很多原因可以导致丢帧，也许是因为你的 layout 太过复杂，无法在16ms 内完成渲染，有可能是因为你的 UI 上有层叠太多的绘制单元，还有可能是因为动画执行的次数过多</strong>。这些都会导致 CPU 或者 GPU 负载过重。<br>vsync 信号是由底层发出的</p>
+<h2 id="cpu、gpu功能"><a href="#cpu、gpu功能" class="headerlink" title="cpu、gpu功能"></a>cpu、gpu功能</h2><ul>
+<li>cpu 负责计算 measure layout draw </li>
+<li>gpu 负责渲染 display &#x3D;&gt;位图</li>
+<li>每个16ms 会发送一次垂直同步信号 vsync</li>
+<li>每次信号发送的时候都会从 <em>gpu 的 buffer 中取出渲染好的位图显示在屏幕上</em>，同时如果有需要还会进行下一次的 cpu 计算, 计算好后放入 buffer 中</li>
+<li>如果计算时间超过了两次 vsync 之间的时间即16ms 则 vsync 信号会把上一次 gpu buffer 中的信息展示出来这时候就是卡顿</li>
+<li>另外如果页面没有变化屏幕还是一样会去 buffer 中取出上一次的刷新, 只不过 cpu 不再去计算而已</li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%BA%90%E7%A0%81/" class="category-chain-item">源码</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>2.Handler 里的各种消息</div>
+      <div>http://peiniwan.github.io/2025/12/bfe220353bca.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>六月的雨</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年12月16日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/12/66ad799b2a01.html" title="4.IdleHandler">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">4.IdleHandler</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/12/32fa1f4007bf.html" title="1.Handler消息机制">
+                        <span class="hidden-mobile">1.Handler消息机制</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"OwNIdaopOn1rwNhtotGOGC0B-gzGzoHsz","appKey":"eadytQ2XqWmxuvAKeg08XX83","path":"window.location.pathname","placeholder":null,"avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":true,"recordIP":false,"serverURLs":"https://ownidaop.lc-cn-n1-shared.com","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

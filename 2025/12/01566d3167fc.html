@@ -1,0 +1,1962 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="六月的雨">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Python基础语法基础print &#39;I\&#39;m \&quot;OK\&quot;!&#39;   a &#x3D; 123  # a是整数 print a a &#x3D; &#39;ABC&#39;  # a变为字符串 print a   a &#x3D; 100 if a &gt;&#x3D; 0:  # 注意冒号     print a else:     print -a # int转成string，函数int(">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Python基础语法">
+<meta property="og:url" content="http://peiniwan.github.io/2025/12/01566d3167fc.html">
+<meta property="og:site_name" content="六月的雨的笔记">
+<meta property="og:description" content="Python基础语法基础print &#39;I\&#39;m \&quot;OK\&quot;!&#39;   a &#x3D; 123  # a是整数 print a a &#x3D; &#39;ABC&#39;  # a变为字符串 print a   a &#x3D; 100 if a &gt;&#x3D; 0:  # 注意冒号     print a else:     print -a # int转成string，函数int(">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-12-16T13:59:22.564Z">
+<meta property="article:modified_time" content="2024-03-13T03:59:00.000Z">
+<meta property="article:author" content="六月的雨">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>Python基础语法 - 六月的雨的笔记</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"peiniwan.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>六月的雨的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Python基础语法"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-12-16 21:59" pubdate>
+          2025年12月16日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          6.2k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          52 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Python基础语法</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="Python基础语法"><a href="#Python基础语法" class="headerlink" title="Python基础语法"></a>Python基础语法</h1><h3 id="基础"><a href="#基础" class="headerlink" title="基础"></a>基础</h3><pre><code class="hljs">print &#39;I\&#39;m \&quot;OK\&quot;!&#39;
+ 
+a = 123  # a是整数
+print a
+a = &#39;ABC&#39;  # a变为字符串
+print a
+ 
+a = 100
+if a &gt;= 0:  # 注意冒号
+    print a
+else:
+    print -a
+# int转成string，函数int(string)
+# string转成int，函数str(number)
+print len(u&#39;ABC&#39;)
+print &#39;Hi, %s, you have $%d.&#39; % (&#39;Michael&#39;, 1000000)
+print &#39;Age: %s. Gender: %s&#39; % (25, True)
+ 
+classmates = [&#39;Michael&#39;, &#39;Bob&#39;, &#39;Tracy&#39;]
+classmates.append(&#39;Adam&#39;)
+classmates.insert(1, &#39;Jack&#39;)
+classmates.pop()
+classmates.pop(1)
+classmates[1] = 123  # 类型可以不同
+# 相等的
+print classmates
+print classmates[len(classmates) - 1] == classmates[-1]
+print classmates[len(classmates) - 2] == classmates[-2]
+ 
+# tuple和list非常类似，但是tuple一旦初始化就不能修改，没有append()，insert()这样的方法
+# 可以正常地使用classmates[-1]，但不能赋值成另外的元素
+t = (&#39;Michael&#39;, &#39;Bob&#39;, &#39;Tracy&#39;)
+t = (1,);  # 只有1个元素的tuple定义时必须加一个逗号,，来消除歧义
+t = (1, 2)
+print t
+ 
+# 如果在某个判断上是True，把该判断对应的语句执行后，就忽略掉剩下的elif和else
+# 下面打印  teenager
+age = 20
+if age &gt;= 6:
+    print &#39;teenager&#39;
+elif age &gt;= 18:
+    print &#39;adult&#39;
+else:
+    print &#39;kid&#39;
+ 
+sum = 0
+for x in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]:
+    sum = sum + x
+print sum
+sum = 0
+for x in range(101):
+    sum = sum + x
+print sum
+ 
+sum = 0
+n = 99
+while n &gt; 0:
+    sum = sum + n
+    n = n - 2
+print sum
+ 
+# 打印
+# name = raw_input(&#39;please enter your name: &#39;)
+# print &#39;hello,&#39;, name
+ 
+d = &#123;&#39;Michael&#39;: 95, &#39;Bob&#39;: 75, &#39;Tracy&#39;: 85&#125;
+print d[&#39;Michael&#39;]
+d[&#39;Adam&#39;] = 67
+print d[&#39;Adam&#39;]
+# 要避免key不存在的错误
+print &#39;Thomas&#39; in d
+print d.get(&#39;Thomas&#39;)
+print d.get(&#39;Thomas&#39;, -1)
+d.pop(&#39;Bob&#39;)
+key = [1, 2, 3]
+# key的对象就不能变,而list是可变的，就不能作为key
+# d[key] = &#39;a list&#39;
+print d
+# 要创建一个set，需要提供一个list作为输入集合
+s1 = set([1, 2, 3])
+# 重复元素在set中自动被过滤
+s1 = set([1, 1, 2, 2, 3, 3])
+s1.add(4)
+s1.remove(4)
+s2 = set([2, 3, 4])
+# 交集、并集
+print s1 &amp; s2, s1 | s2
+ 
+# 对于可变对象，比如list，对list进行操作，list内部的内容是会变化的
+a = [&#39;c&#39;, &#39;b&#39;, &#39;a&#39;]
+a.sort()
+print a
+# 对于不变对象来说，调用对象自身的任意方法，也不会改变该对象自身的内容。
+# 相反，这些方法会创建新的对象并返回，这样，就保证了不可变对象本身永远是不可变的。
+a = &#39;abc&#39;
+b = a.replace(&#39;a&#39;, &#39;A&#39;)
+print a, b
+</code></pre>
+<h3 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h3><pre><code class="hljs"># 函数
+# 比较函数
+print cmp(1, 2)
+# 数据类型转换
+print int(&#39;123&#39;)
+print int(12.34)
+str(1.23)
+unicode(100)
+bool(1)
+bool(&#39;&#39;)
+ 
+ 
+# 定义函数，如果没有return语句，函数执行完毕后也会返回结果，只是结果为None。
+# return None可以简写为return，函数执行完毕没有return语句时，自动return None。
+# 只允许整数和浮点数类型的参数。数据类型检查可以用内置函数isinstance实现
+def my_abs(x):
+    if not isinstance(x, (int, float)):
+        raise TypeError(&#39;bad operand type&#39;)
+    if x &gt;= 0:
+        return x
+    else:
+        return -x
+ 
+ 
+a = my_abs  # 变量a指向abs函数
+print a(-1)  # 所以也可以通过a调用abs函数
+ 
+ 
+# 空函数
+# 如果想定义一个什么事也不做的空函数，可以用pass语句
+# pass可以用来作为占位符，比如现在还没想好怎么写函数的代码，就可以先放一个pass，让代码能运行起来
+# 缺少了pass，代码运行就会有语法错误。
+def nop():
+    pass
+ 
+ 
+# 可以返回多个值,实际是返回tuple，这样写起来方便
+def move(x, y, step, angle=0):
+    nx = x + step * math.cos(angle)
+    ny = y - step * math.sin(angle)
+    return nx, ny
+ 
+ 
+x, y = move(100, 100, 60, math.pi / 6)
+print x, y
+r = move(100, 100, 60, math.pi / 6)
+print r
+ 
+ 
+# 默认参数,必选参数在前，默认参数在后
+# 当函数有多个参数时，把变化大的参数放前面，变化小的参数放后面。变化小的参数就可以作为默认参数。
+def power(x, n=2):
+    s = 1
+    while n &gt; 0:
+        n = n - 1
+        s = s * x
+    return s
+ 
+ 
+print power(5), power(5, 3)
+ 
+ 
+def enroll(name, gender, age=6, city=&#39;Beijing&#39;):
+    print &#39;name:&#39;, name
+    print &#39;gender:&#39;, gender
+    print &#39;age:&#39;, age
+    print &#39;city:&#39;, city
+ 
+ 
+print  enroll(&#39;Sarah&#39;, &#39;F&#39;)
+print enroll(&#39;Bob&#39;, &#39;M&#39;, 7)
+# 当不按顺序提供部分默认参数时，需要把参数名写上
+print enroll(&#39;Adam&#39;, &#39;M&#39;, city=&#39;Tianjin&#39;)
+ 
+ 
+def add_end(L=[]):
+    L.append(&#39;END&#39;)
+    return L
+ 
+ 
+print add_end()
+print add_end()  # [&#39;END&#39;, &#39;END&#39;]，不对
+ 
+ 
+# 默认参数必须指向不变对象！,修改上面的例子,否则运行会有逻辑错误！
+def add_end(L=None):
+    if L is None:
+        L = []
+    L.append(&#39;END&#39;)
+    return L
+ 
+ 
+# 可变参数，在参数前面加了一个*号
+def calc(*numbers):
+    sum = 0
+    for n in numbers:
+        sum = sum + n * n
+    return sum
+ 
+ 
+print calc(1, 2)
+print calc()
+ 
+# 如果已经有一个list或者tuple，要调用一个可变参数怎么办？
+nums = [1, 2, 3]
+print calc(nums[0], nums[1], nums[2])
+print calc(*nums)
+ 
+ 
+# 关键字参数,可以扩展函数的功能
+# 比如，在person函数里，我们保证能接收到name和age这两个参数，
+# 但是，如果调用者愿意提供更多的参数，我们也能收到
+def person(name, age, **kw):
+    print &#39;name:&#39;, name, &#39;age:&#39;, age, &#39;other:&#39;, kw
+ 
+ 
+person(&#39;Michael&#39;, 30)
+# name: Michael age: 30 other: &#123;&#125;
+person(&#39;Bob&#39;, 35, city=&#39;Beijing&#39;)
+# name: Bob age: 35 other: &#123;&#39;city&#39;: &#39;Beijing&#39;&#125;
+person(&#39;Adam&#39;, 45, gender=&#39;M&#39;, job=&#39;Engineer&#39;)
+# name: Adam age: 45 other: &#123;&#39;gender&#39;: &#39;M&#39;, &#39;job&#39;: &#39;Engineer&#39;&#125;
+ 
+kw = &#123;&#39;city&#39;: &#39;Beijing&#39;, &#39;job&#39;: &#39;Engineer&#39;&#125;
+person(&#39;Jack&#39;, 24, city=kw[&#39;city&#39;], job=kw[&#39;job&#39;])
+person(&#39;Jack&#39;, 24, **kw)
+ 
+ 
+# 参数组合
+# 在Python中定义函数，可以用必选参数、默认参数、可变参数和关键字参数，这4种参数都可以一起使用
+# 注意，参数定义的顺序必须是：必选参数、默认参数、可变参数和关键字参数。
+def func(a, b, c=0, *args, **kw):
+    print &#39;a =&#39;, a, &#39;b =&#39;, b, &#39;c =&#39;, c, &#39;args =&#39;, args, &#39;kw =&#39;, kw
+ 
+ 
+print func(1, 2)
+# a = 1 b = 2 c = 0 args = () kw = &#123;&#125;
+print func(1, 2, c=3)
+# a = 1 b = 2 c = 3 args = () kw = &#123;&#125;
+print func(1, 2, 3, &#39;a&#39;, &#39;b&#39;)
+# a = 1 b = 2 c = 3 args = (&#39;a&#39;, &#39;b&#39;) kw = &#123;&#125;
+print func(1, 2, 3, &#39;a&#39;, &#39;b&#39;, x=99)
+# a = 1 b = 2 c = 3 args = (&#39;a&#39;, &#39;b&#39;) kw = &#123;&#39;x&#39;: 99&#125;
+ 
+# 要注意定义可变参数和关键字参数的语法：
+# *args是可变参数，args接收的是一个tuple；
+# **kw是关键字参数，kw接收的是一个dict。
+args = (1, 2, 3, 4)  # tuple
+kw = &#123;&#39;x&#39;: 99&#125;  # dict
+print func(*args, **kw)
+ 
+ 
+# a = 1 b = 2 c = 3 args = (4,) kw = &#123;&#39;x&#39;: 99&#125;
+ 
+# 递归
+def fact(n):
+    if n == 1:
+        return 1
+    return n * fact(n - 1)
+ 
+ 
+# 尾递归
+def fact(n):
+    return fact_iter(n, 1)
+ 
+ 
+# 切片
+def fact_iter(num, product):
+    if num == 1:
+        return product
+    return fact_iter(num - 1, num * product)
+ 
+ 
+L = [&#39;Michael&#39;, &#39;Sarah&#39;, &#39;Tracy&#39;, &#39;Bob&#39;, &#39;Jack&#39;]
+r = []
+n = 3
+for i in range(n):
+    r.append(L[i])
+ 
+# 迭代
+print r
+# 切片（Slice）操作符,取前3个元素，用一行代码就可以完成
+print L[0:3]
+# 如果第一个索引是0，还可以省略
+print L[:3]
+# 取倒数第一个元素
+print L[-2:-1]
+# 取后俩个元素
+print L[-2:]
+# 原样复制一个list：
+print L[:]
+# tuple也是一种list，唯一区别是tuple不可变。因此，tuple也可以用切片操作，只是操作的结果仍是tuple：
+print (0, 1, 2, 3, 4, 5)[:3]
+print &#39;ABCDEFG&#39;[:3]
+ 
+# 只要是可迭代对象，无论有无下标，都可以迭代，比如dict就可以迭代
+# 遍历key
+d = &#123;&#39;a&#39;: 1, &#39;b&#39;: 2, &#39;c&#39;: 3&#125;
+for key in d:
+    print key
+# 遍历value
+for value in d.itervalues():
+    print value
+# 遍历key,value
+for k, v in d.iteritems():
+    print k, &#39;=&#39;, v
+ 
+for ch in &#39;ABC&#39;:
+    print ch
+ 
+from collections import Iterable
+ 
+print isinstance([1, 2, 3], Iterable)  # list是否可迭代
+print isinstance(&#39;abc&#39;, Iterable)  # str是否可迭代
+print isinstance(123, Iterable)  # 整数是否可迭代，false
+print isinstance(x, str)  # 判断一个变量是不是字符串
+ 
+# 这样就可以在for循环中同时迭代索引和元素本身
+for i, value in enumerate([&#39;A&#39;, &#39;B&#39;, &#39;C&#39;]):
+    print i, value
+ 
+for x, y in [(1, 1), (2, 4), (3, 9)]:
+    print x, y
+ 
+# 列表生成式
+print range(1, 11)
+L = []
+# [1x1, 2x2, 3x3, ..., 10x10]
+for x in range(1, 11):
+    L.append(x * x)
+print [x * x for x in range(1, 11)]
+# 筛选出仅偶数的平方
+print [x * x for x in range(1, 11) if x % 2 == 0]
+# 两层循环，可以生成全排列
+print [m + n for m in &#39;ABC&#39; for n in &#39;XYZ&#39;]
+# 列出当前目录下的所有文件和目录名
+print [d for d in os.listdir(&#39;.&#39;)]  # os.listdir可以列出文件和目录
+L = [&#39;Hello&#39;, &#39;World&#39;, &#39;IBM&#39;, &#39;Apple&#39;]
+# 一个list中所有的字符串变成小写
+print [s.lower() for s in L]
+ 
+# 生成器:如果列表元素可以按照某种算法推算出来，这样就不必创建完整的list，从而节省大量的空间
+# 和g的区别仅在于最外层的[]和()，L是一个list，而g是一个generator
+L = [x * x for x in range(10)]
+g = (x * x for x in range(10))
+print g.next()
+for n in g:
+    print n
+ 
+ 
+# 如果一个函数定义中包含yield关键字，那么这个函数就不再是一个普通函数，而是一个generator
+def odd():
+    print &#39;step 1&#39;
+    yield 1
+    print &#39;step 2&#39;
+    yield 3
+    print &#39;step 3&#39;
+    yield 5
+ 
+ 
+# 在执行过程中，遇到yield就中断，下次又继续执行
+# 基本上从来不会用next()来调用它，而是直接使用for循环来迭代
+o = odd()
+print o.next()
+print o.next()
+print o.next()
+ 
+ 
+# 函数式编程的一个特点就是，允许把函数本身作为参数传入另一个函数，还允许返回一个函数！
+# 函数的名字也是变量
+def add(x, y, f):
+    return f(x) + f(y)
+ 
+ 
+print(add(-5, 6, abs))
+ 
+ 
+def f(x):
+    return x * x
+ 
+ 
+# map()函数接收两个参数，一个是函数，一个是Iterable，
+# map将传入的函数依次作用到序列的每个元素，并把结果作为新的Iterator返回
+r = map(f, [1, 2, 3, 4, 5, 6, 7, 8, 9])
+print list(r)
+# for也能实现，太麻烦
+L = []
+for n in [1, 2, 3, 4, 5, 6, 7, 8, 9]:
+    L.append(f(n))
+print(L)
+print list(map(str, [1, 2, 3, 4, 5, 6, 7, 8, 9]))
+ 
+ 
+# reduce把结果继续和序列的下一个元素做累积计算
+# reduce(f, [x1, x2, x3, x4]) = f(f(f(x1, x2), x3), x4)
+def add(x, y):
+    return x + y
+ 
+ 
+print reduce(add, [1, 3, 5, 7, 9]) \
+    # 求和运算可以直接用Python内建函数sum()，没必要动用reduce。
+ 
+ 
+# print sum([1, 3, 5, 7, 9])
+ 
+ 
+def fn(x, y):
+    return x * 10 + y
+ 
+ 
+print reduce(fn, [1, 3, 5, 7, 9])
+ 
+ 
+def char2num(s):
+    digits = &#123;&#39;0&#39;: 0, &#39;1&#39;: 1, &#39;2&#39;: 2, &#39;3&#39;: 3, &#39;4&#39;: 4, &#39;5&#39;: 5, &#39;6&#39;: 6, &#39;7&#39;: 7, &#39;8&#39;: 8, &#39;9&#39;: 9&#125;
+    return digits[s]
+ 
+ 
+print reduce(fn, map(char2num, &#39;13579&#39;))
+ 
+# 简化
+DIGITS = &#123;&#39;0&#39;: 0, &#39;1&#39;: 1, &#39;2&#39;: 2, &#39;3&#39;: 3, &#39;4&#39;: 4, &#39;5&#39;: 5, &#39;6&#39;: 6, &#39;7&#39;: 7, &#39;8&#39;: 8, &#39;9&#39;: 9&#125;
+ 
+ 
+def str2int(s):
+    def fn(x, y):
+        return x * 10 + y
+ 
+    def char2num(s):
+        return DIGITS[s]
+ 
+    return reduce(fn, map(char2num, s))
+ 
+ 
+# 用lambda函数进一步简化
+def char2num(s):
+    return DIGITS[s]
+ 
+ 
+def str2int(s):
+    return reduce(lambda x, y: x * 10 + y, map(char2num, s))
+ 
+ 
+print str2int(&#39;13579&#39;)
+ 
+ 
+# filter()函数用于过滤序列
+# 根据返回值是True还是False决定保留还是丢弃该元素
+def is_odd(n):
+    return n % 2 == 1
+ 
+ 
+print list(filter(is_odd, [1, 2, 4, 5, 6, 9, 10, 15]))
+ 
+ 
+def not_empty(s):
+    return s and s.strip()
+ 
+ 
+print list(filter(not_empty, [&#39;A&#39;, &#39;&#39;, &#39;B&#39;, None, &#39;C&#39;, &#39;  &#39;]))
+ 
+print sorted([36, 5, -12, 9, -21])
+print sorted([36, 5, -12, 9, -21], key=abs)
+print sorted([&#39;bob&#39;, &#39;about&#39;, &#39;Zoo&#39;, &#39;Credit&#39;])
+# 排序应该忽略大小写，按照字母序排序
+print sorted([&#39;bob&#39;, &#39;about&#39;, &#39;Zoo&#39;, &#39;Credit&#39;], key=str.lower)
+print sorted([&#39;bob&#39;, &#39;about&#39;, &#39;Zoo&#39;, &#39;Credit&#39;], key=str.lower, reverse=True)
+ 
+ 
+def lazy_sum(*args):
+    def sum():
+        ax = 0
+        for n in args:
+            ax = ax + n
+        return ax
+ 
+    return sum
+ 
+ 
+# 闭包，函数作为返回值
+# 返回的函数并没有立刻执行，而是直到调用了f()才执行。
+f1 = lazy_sum(1, 3, 5, 7, 9)
+f2 = lazy_sum(1, 3, 5, 7, 9)
+print f1() == f2()  # true,比较的值
+print f1 == f2  # false,引用不同，所以f1()和f2()的调用结果互不影响。
+ 
+ 
+def count():
+    fs = []
+    for i in range(1, 4):
+        def f():
+            return i * i
+ 
+        fs.append(f)
+    return fs
+ 
+ 
+# 全部都是9！原因就在于返回的函数引用了变量i，但它并非立刻执行。
+# 等到3个函数都返回时，它们所引用的变量i已经变成了3，因此最终结果为9
+# 返回闭包时牢记一点：返回函数不要引用任何循环变量，或者后续会发生变化的变量。
+f1, f2, f3 = count()
+ 
+ 
+def count():
+    def f(j):
+        def g():
+            return j * j
+ 
+        return g
+ 
+    fs = []
+    for i in range(1, 4):
+        fs.append(f(i))  # f(i)立刻被执行，因此i的当前值被传入f()
+    return fs
+ 
+ 
+f1, f2, f3 = count()  # 1，4，9
+ 
+# 匿名函数
+# 冒号前面的x表示函数参数
+print list(map(lambda x: x * x, [1, 2, 3, 4, 5, 6, 7, 8, 9]))
+ 
+ 
+# 匿名函数lambda x: x * x,实际上就是
+def f(x):
+    return x * x
+ 
+ 
+# 可以把匿名函数赋值给一个变量，再利用变量来调用该函数
+# 也可以把匿名函数作为返回值返回
+f = lambda x: x * x
+print f(4)
+ 
+ 
+# 假设我们要增强now()函数的功能，比如，在函数调用前后自动打印日志，但又不希望修改now()函数的定义，
+# 这种在代码运行期间动态增加功能的方式，称之为“装饰器”（Decorator）。
+def log(func):
+    def wrapper(*args, **kw):
+        print(&#39;call %s():&#39; % func.__name__)
+        return func(*args, **kw)
+ 
+    return wrapper
+ 
+ 
+@log
+def now():
+    print(&#39;2015-3-25&#39;)
+ 
+ 
+print now()
+ 
+# 偏函数：当函数的参数个数太多，需要简化时，使用functools.partial可以创建一个新的函数，
+# 这个新函数可以固定住原函数的部分参数，从而在调用时更简单。
+int2 = functools.partial(int, base=2)
+ 
+ 
+# 不需要我们自己定义
+def int3(x, base=2):
+    return int(x, base)
+ 
+ 
+print int2(&#39;1000000&#39;)
+print int3(&#39;1000000&#39;)
+ 
+# 作者
+__author__ = &#39;Michael Liao&#39;
+ 
+ 
+def _private_1(name):
+    return &#39;Hello, %s&#39; % name
+ 
+ 
+def _private_2(name):
+    return &#39;Hi, %s&#39; % name
+ 
+ 
+# 类似_xxx和__xxx这样的函数或变量就是非公开的（private），不应该被直接引用
+# 公开greeting()函数，而把内部逻辑用private函数隐藏起来
+def greeting(name):
+    if len(name) &gt; 3:
+        return _private_1(name)
+    else:
+        return _private_2(name)
+</code></pre>
+<h3 id="面向对象"><a href="#面向对象" class="headerlink" title="面向对象"></a>面向对象</h3><pre><code class="hljs"># 面向过程
+import logging
+import types
+ 
+std1 = &#123;&#39;name&#39;: &#39;Michael&#39;, &#39;score&#39;: 98&#125;
+std2 = &#123;&#39;name&#39;: &#39;Bob&#39;, &#39;score&#39;: 81&#125;
+ 
+ 
+def print_score(std):
+    print(&#39;%s: %s&#39; % (std[&#39;name&#39;], std[&#39;score&#39;]))
+ 
+ 
+# 面向对象
+class Student(object):
+ 
+    def __init__(self, name, score):
+        self.__name = name
+        self.score = score
+ 
+    # self指向创建的实例本身，可以不传
+    # 实现数据的封装
+    def print_score(self):
+        print(&#39;%s: %s&#39; % (self.__name, self.score))
+ 
+    def get_name(self):
+        return self.__name
+ 
+    def set_name(self, name):
+        self.__name = name
+ 
+ 
+bart = Student(&#39;Bart Simpson&#39;, 59)
+lisa = Student(&#39;Lisa Simpson&#39;, 87)
+bart.print_score()
+lisa.print_score()
+print lisa.get_name(), lisa.score
+ 
+ 
+class Animal(object):
+    def run(self):
+        print &#39;Animal is running...&#39;
+ 
+ 
+class Dog(Animal):
+    def run(self):
+        print &#39;Dog is running...&#39;
+ 
+ 
+class Cat(Animal):
+    def run(self):
+        print &#39;Cat is running...&#39;
+ 
+ 
+# 多态
+def run_twice(animal):
+    if (isinstance(animal, Animal)):
+        animal.run()
+    else:
+        print &quot;类型错误&quot;
+ 
+ 
+print run_twice(Cat())
+print run_twice(Student(&#39;Bart Simpson&#39;, 59));
+ 
+# 对于class的继承关系来说，使用type()就很不方便。
+# 我们要判断class的类型，可以使用isinstance()函数。
+print type(&#39;abc&#39;) == types.StringType
+print type(u&#39;abc&#39;) == types.UnicodeType
+print type([]) == types.ListType
+print type(str) == types.TypeType
+ 
+print  dir(&#39;ABC&#39;)
+ 
+ 
+class Student(object):
+    pass
+ 
+ 
+s = Student()
+s.name = &#39;Michael&#39;  # 动态给实例绑定一个属性
+print s.name
+ 
+ 
+def set_age(self, age):  # 定义一个函数作为实例方法
+    self.age = age
+ 
+ 
+from types import MethodType
+ 
+s.set_age = MethodType(set_age, s, Student)  # 给实例绑定一个方法
+s.set_age(25)  # 调用实例方法
+print s.age  # 测试结果
+s2 = Student()  # 创建新的实例
+ 
+ 
+# print s2.set_age(25)  # 尝试调用方法,不能
+ 
+ 
+def set_score(self, score):
+    self.score = score
+ 
+ 
+# 为了给所有实例都绑定方法，可以给class绑定方法
+Student.set_score = MethodType(set_score, None, Student)
+ 
+ 
+# 定义一个特殊的__slots__变量，来限制该class能添加的属性，但对子类不起作用
+class Student(object):
+    __slots__ = (&#39;name&#39;, &#39;age&#39;)  # 用tuple定义允许绑定的属性名称
+ 
+ 
+s = Student()  # 创建新的实例
+s.name = &#39;Michael&#39;  # 绑定属性&#39;name&#39;
+s.age = 25  # 绑定属性&#39;age&#39;
+ 
+ 
+# s.score = 99  # 不能绑定属性&#39;score&#39;
+ 
+# 该属性不是直接暴露的，而是通过getter和setter方法来实现
+class Student(object):
+ 
+    @property
+    def score(self):
+        return self._score
+ 
+    @score.setter
+    def score(self, value):
+        if not isinstance(value, int):
+            raise ValueError(&#39;score must be an integer!&#39;)
+        if value &lt; 0 or value &gt; 100:
+            raise ValueError(&#39;score must between 0 ~ 100!&#39;)
+        self._score = value
+ 
+ 
+s = Student()
+s.score = 60  # OK，实际转化为s.set_score(60)
+s.score  # OK，实际转化为s.get_score()
+# s.score = 9999
+print s.score  # 实际转化为s.get_score()
+ 
+ 
+# 还可以定义只读属性，只定义getter方法，不定义setter方法就是一个只读属性：
+class Student(object):
+ 
+    @property
+    def birth(self):
+        return self._birth
+ 
+    @birth.setter
+    def birth(self, value):
+        self._birth = value
+ 
+    @property
+    def age(self):
+        return 2014 - self._birth
+ 
+ 
+# 可以多继承
+# class Dog(Mammal, RunnableMixin, CarnivorousMixin):
+#     pass
+ 
+ 
+# 定制类
+# __str__()返回用户看到的字符串，而__repr__()返回程序开发者看到的字符串
+class Student(object):
+    def __init__(self, name):
+        self.name = name
+ 
+    def __str__(self):
+        return &#39;Student object (name=%s)&#39; % self.name
+ 
+    __repr__ = __str__
+ 
+ 
+s = Student(&#39;Michael&#39;)
+print s
+print Student(&#39;Michael&#39;)
+ 
+ 
+# 要表现得像list那样按照下标取出元素，需要实现__getitem__()方法
+class Fib(object):
+    def __getitem__(self, n):
+        a, b = 1, 1
+        for x in range(n):
+            a, b = b, a + b
+        return a
+ 
+ 
+f = Fib()
+ 
+ 
+# print f(0), f(100)
+ 
+# 只有在没有找到属性的情况下，才调用__getattr__，已有的属性，不会在__getattr__中查找。
+class Student(object):
+ 
+    def __getattr__(self, attr):
+        if attr == &#39;age&#39;:
+            # return 25
+            return lambda: 25  # 可以retrun函数，调用方式不一样了
+        raise AttributeError(&#39;\&#39;Student\&#39; object has no attribute \&#39;%s\&#39;&#39; % attr)
+ 
+ 
+s = Student()
+print s.age()
+ 
+ 
+class Chain(object):
+ 
+    def __init__(self, path=&#39;&#39;):
+        self._path = path
+ 
+    def __getattr__(self, path):
+        return Chain(&#39;%s/%s&#39; % (self._path, path))
+ 
+    def __str__(self):
+        return self._path
+ 
+ 
+print Chain().status.user.timeline.list
+ 
+ 
+# 任何类，只需要定义一个__call__()方法，就可以直接对实例进行调用(像方法一样)
+class Student(object):
+    def __init__(self, name):
+        self.name = name
+ 
+    def __call__(self):
+        print(&#39;My name is %s.&#39; % self.name)
+ 
+ 
+s = Student(&#39;Michael&#39;)
+print s()
+ 
+ 
+# 怎么判断一个变量是对象还是函数呢？
+# print callable(Student())
+# print callable([1, 2, 3])
+ 
+def foo(s):
+    return 10 / int(s)
+ 
+ 
+def bar(s):
+    return foo(s) * 2
+ 
+ 
+# logging模块可以非常容易地记录错误信息
+def main():
+    try:
+        bar(&#39;0&#39;)
+    except StandardError, e:
+        logging.exception(e)
+        print &#39;Error!&#39;
+    finally:
+        print &#39;finally...&#39;
+ 
+ 
+# 只要main()捕获到了，就可以处理
+print main()
+ 
+ 
+# assert的意思是，表达式n != 0应该是True，否则，后面的代码就会出错。
+# 如果断言失败，assert语句本身就会抛出AssertionError：
+def foo(s):
+    n = int(s)
+    assert n != 0, &#39;n is zero!&#39;
+    return 10 / n
+ 
+ 
+def main():
+    foo(&#39;0&#39;)
+ 
+ 
+# 和assert比，logging不会抛出错误，而且可以输出到文件
+logging.basicConfig(level=logging.INFO)
+s = &#39;0&#39;
+n = int(s)
+logging.info(&#39;n = %d&#39; % n)
+print 10 / n
+</code></pre>
+<h3 id="线程"><a href="#线程" class="headerlink" title="线程"></a>线程</h3><pre><code class="hljs"># 新线程执行的代码:
+# 主线程实例的名字叫MainThread，子线程的名字在创建时指定，我们用LoopThread命名子线程
+import threading
+import time
+ 
+ 
+def loop():
+    print &#39;thread %s is running...&#39; % threading.current_thread().name
+    n = 0
+    while n &lt; 5:
+        n = n + 1
+        print &#39;thread %s &gt;&gt;&gt; %s&#39; % (threading.current_thread().name, n)
+        time.sleep(1)
+    print &#39;thread %s ended.&#39; % threading.current_thread().name
+ 
+ 
+print &#39;thread %s is running...&#39; % threading.current_thread().name
+t = threading.Thread(target=loop, name=&#39;LoopThread&#39;)
+t.start()
+t.join()
+print &#39;thread %s ended.&#39; % threading.current_thread().name
+ 
+# 线程间通讯问题(生产者消费者)
+# 假定这是你的银行存款:
+balance = 0
+ 
+ 
+def change_it(n):
+    # 先存后取，结果应该为0:
+    global balance
+    balance = balance + n
+    balance = balance - n
+ 
+ 
+# def run_thread(n):
+#     for i in range(100000):
+#         change_it(n)
+ 
+# 需要上锁
+lock = threading.Lock()
+ 
+ 
+def run_thread(n):
+    for i in range(100000):
+        # 先要获取锁:
+        lock.acquire()
+        try:
+            # 放心地改吧:
+            change_it(n)
+        finally:
+            # 改完了一定要释放锁:
+            lock.release()
+ 
+ 
+t1 = threading.Thread(target=run_thread, args=(5,))
+t2 = threading.Thread(target=run_thread, args=(8,))
+t1.start()
+t2.start()
+t1.join()
+t2.join()
+print balance
+ 
+# 创建全局ThreadLocal对象
+# 每个Thread对它都可以读写student属性，但互不影响。也不用加锁
+# ThreadLocal最常用的地方就是为每个线程绑定一个数据库连接，HTTP请求，用户身份信息等，
+# 这样一个线程的所有调用到的处理函数都可以非常方便地访问这些资源。
+local_school = threading.local()
+ 
+ 
+def process_student():
+    print &#39;Hello, %s (in %s)&#39; % (local_school.student, threading.current_thread().name)
+ 
+ 
+def process_thread(name):
+    # 绑定ThreadLocal的student:
+    local_school.student = name
+    process_student()
+ 
+ 
+t1 = threading.Thread(target=process_thread, args=(&#39;Alice&#39;,), name=&#39;Thread-A&#39;)
+t2 = threading.Thread(target=process_thread, args=(&#39;Bob&#39;,), name=&#39;Thread-B&#39;)
+t1.start()
+t2.start()
+t1.join()
+t2.join()
+ 
+ 
+# 协程
+# consumer函数是一个generator（生成器），把一个consumer传入produce后：
+# 首先调用c.next()启动生成器；
+# 然后，一旦生产了东西，通过c.send(n)切换到consumer执行；
+# consumer通过yield拿到消息，处理，又通过yield把结果传回；
+ 
+# produce拿到consumer处理的结果，继续生产下一条消息；
+# produce决定不生产了，通过c.close()关闭consumer，整个过程结束。
+# 整个流程无锁，由一个线程执行，produce和consumer协作完成任务，所以称为“协程”，而非线程的抢占式多任务。
+ 
+def consumer():
+    r = &#39;&#39;
+    while True:
+        n = yield r
+        if not n:
+            return
+        print(&#39;[CONSUMER] Consuming %s...&#39; % n)
+        time.sleep(1)
+        r = &#39;200 OK&#39;
+ 
+ 
+def produce(c):
+    c.next()
+    n = 0
+    while n &lt; 5:
+        n = n + 1
+        print(&#39;[PRODUCER] Producing %s...&#39; % n)
+        r = c.send(n)
+        print(&#39;[PRODUCER] Consumer return: %s&#39; % r)
+    c.close()
+ 
+ 
+if __name__ == &#39;__main__&#39;:
+    c = consumer()
+    produce(c)
+</code></pre>
+<h3 id="IO操作"><a href="#IO操作" class="headerlink" title="IO操作"></a>IO操作</h3><pre><code class="hljs"># os模块封装了操作系统的目录和文件操作，要注意这些函数有的在os模块中，有的在os.path模块中
+# 要读取二进制文件，比如图片、视频等等，用&#39;rb&#39;模式打开文件
+import codecs
+import json
+import os
+import random
+import threading
+import time
+ 
+try:
+    f = open(&#39;D:\heihei.txt&#39;, &#39;r&#39;)
+    print f.read()
+    # 如果文件很小，read()一次性读取最方便；
+    # 如果不能确定文件大小，反复调用read(size)比较保险；
+    # 如果是配置文件，调用readlines()最方便
+    for line in f.readlines():
+        print(line.strip())  # 把末尾的&#39;\n&#39;删掉
+finally:
+    if f:
+        f.close()
+ 
+# 上面太繁琐引入了with语句来自动帮我们调用close()方法
+with open(&#39;D:\heihei.txt&#39;, &#39;r&#39;) as f:
+    print f.read()
+ 
+# 判断文件是否存在
+if os.path.isdir(f):
+    pass
+else:
+    os.makedirs(f)
+ 
+ 
+# 直接读出unicode
+# with codecs.open(&#39;D:/gbk.txt&#39;, &#39;r&#39;, &#39;gbk&#39;) as f:
+#     f.read() # u&#39;\u6d4b\u8bd5&#39;
+ 
+ 
+print os.name  # 操作系统名字
+print os.environ
+print os.getenv(&#39;PATH&#39;)
+ 
+# 查看当前目录的绝对路径:
+print os.path.abspath(&#39;.&#39;)
+# # 在某个目录下创建一个新目录，
+# # 首先把新目录的完整路径表示出来:
+# os.path.join(os.path.abspath(&#39;.&#39;), &#39;testdir&#39;)
+# # 然后创建一个目录:
+# os.mkdir(os.path.abspath(&#39;.&#39;) + &#39;/testdir&#39;)
+# # 删掉一个目录:
+# os.rmdir(os.path.abspath(&#39;.&#39;) + &#39;/testdir&#39;)
+ 
+# 分离路径和名字
+print os.path.split(&#39;/Users/michael/testdir/file.txt&#39;)
+# 可以轻松拿到扩展名
+print os.path.splitext(&#39;/path/to/file.txt&#39;)
+ 
+# 对文件重命名（需要有这个文件）
+# os.rename(&#39;test.txt&#39;, &#39;test.py&#39;)
+# 删除文件
+# os.remove(&#39;test.py&#39;)
+ 
+# 列出当前目录下的所有目录
+print [x for x in os.listdir(&#39;.&#39;) if os.path.isdir(x)]
+# 列出所有的.py文件
+print [x for x in os.listdir(&#39;.&#39;) if os.path.isfile(x) and os.path.splitext(x)[1] == &#39;.py&#39;]
+ 
+try:
+    import cPickle as pickle
+except ImportError:
+    import pickle
+ 
+# 序列化
+d = dict(name=&#39;Bob&#39;, age=20, score=88)
+# 方法1：pickle.dumps()方法把任意对象序列化成一个str，然后，就可以把这个str写入文件
+s = pickle.dumps(d)
+# 反序列化
+d = pickle.loads(s)
+print d
+ 
+# 方法2：pickle.dump()直接把对象序列化后写入一个file-like Object：
+f = open(&#39;dump.txt&#39;, &#39;wb&#39;)
+pickle.dump(d, f)
+f.close()
+# 反序列化
+f = open(&#39;dump.txt&#39;, &#39;rb&#39;)
+d = pickle.load(f)
+f.close()
+print d
+ 
+# 字典转化成json,也有俩种方法
+d = dict(name=&#39;Bob&#39;, age=20, score=88)
+s = json.dumps(d)
+print json.loads(s)
+ 
+ 
+# 对象序列号
+class Student(object):
+    def __init__(self, name, age, score):
+        self.name = name
+        self.age = age
+        self.score = score
+ 
+ 
+s = Student(&#39;Bob&#39;, 20, 88)
+ 
+ 
+def student2dict(std):
+    return &#123;
+        &#39;name&#39;: std.name,
+        &#39;age&#39;: std.age,
+        &#39;score&#39;: std.score
+    &#125;
+ 
+ 
+# Student实例首先被student2dict()函数转换成dict，然后再被顺利序列化为JSON
+print(json.dumps(s, default=student2dict))
+# 把任意class的实例变为dict
+s = json.dumps(s, default=lambda obj: obj.__dict__)
+print(s)
+ 
+ 
+# 反序列化
+def dict2student(d):
+    return Student(d[&#39;name&#39;], d[&#39;age&#39;], d[&#39;score&#39;])
+ 
+ 
+print(json.loads(s, object_hook=dict2student))
+ 
+# 进程和线程
+# mac里这样创建
+# print &#39;Process (%s) start...&#39; % os.getpid()
+# pid = os.fork()  # 创建一个进程
+# if pid == 0:
+#     print &#39;I am child process (%s) and my parent is %s.&#39; % (os.getpid(), os.getppid())
+# else:
+#     print &#39;I (%s) just created a child process (%s).&#39; % (os.getpid(), pid)
+ 
+from multiprocessing import Process, Pool, Queue
+ 
+ 
+# windows下，子进程要执行的代码
+def run_proc(name):
+    print &#39;Run child process %s (%s)...&#39; % (name, os.getpid())
+ 
+ 
+# 如果要启动大量的子进程，可以用进程池的方式批量创建子进程
+if __name__ == &#39;__main__&#39;:
+    print &#39;Parent process %s.&#39; % os.getpid()
+    p = Process(target=run_proc, args=(&#39;test&#39;,))
+    print &#39;Process will start.&#39;
+    p.start()
+    p.join()
+    print &#39;Process end.&#39;
+ 
+ 
+def long_time_task(name):
+    print &#39;Run task %s (%s)...&#39; % (name, os.getpid())
+    start = time.time()
+    time.sleep(random.random() * 3)
+    end = time.time()
+    print &#39;Task %s runs %0.2f seconds.&#39; % (name, (end - start))
+ 
+ 
+if __name__ == &#39;__main__&#39;:
+    print &#39;Parent process %s.&#39; % os.getpid()
+    p = Pool()
+    for i in range(5):
+        p.apply_async(long_time_task, args=(i,))
+    print &#39;Waiting for all subprocesses done...&#39;
+    p.close()
+    p.join()
+    print &#39;All subprocesses done.&#39;
+ 
+ 
+# 进程间通信
+# 写数据进程执行的代码:
+def write(q):
+    for value in [&#39;A&#39;, &#39;B&#39;, &#39;C&#39;]:
+        print &#39;Put %s to queue...&#39; % value
+        q.put(value)
+        time.sleep(random.random())
+ 
+ 
+# 读数据进程执行的代码:
+def read(q):
+    while True:
+        value = q.get(True)
+        print &#39;Get %s from queue.&#39; % value
+ 
+ 
+if __name__ == &#39;__main__&#39;:
+    # 父进程创建Queue，并传给各个子进程：
+    q = Queue()
+    pw = Process(target=write, args=(q,))
+    pr = Process(target=read, args=(q,))
+    # 启动子进程pw，写入:
+    pw.start()
+    # 启动子进程pr，读取:
+    pr.start()
+    # 等待pw结束:
+    pw.join()
+    # pr进程里是死循环，无法等待其结束，只能强行终止:
+    pr.terminate()
+</code></pre>
+<h3 id="网络编程"><a href="#网络编程" class="headerlink" title="网络编程"></a>网络编程</h3><pre><code class="hljs"># 客户端
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+# 建立连接:
+s.connect((&#39;192.168.202.2&#39;, 9999))
+# 接收欢迎消息:
+print s.recv(1024)
+for data in [&#39;Michael&#39;, &#39;Tracy&#39;, &#39;Sarah&#39;]:
+    # 发送数据:
+    s.send(data)
+    print s.recv(1024)
+s.send(&#39;exit&#39;)
+s.close()
+ 
+ 
+# tcp
+# 服务器要能够区分一个Socket连接是和哪个客户端绑定的。
+# 一个Socket依赖4项：服务器地址、服务器端口、客户端地址、客户端端口来唯一确定一个Socket。
+# 创建一个socket:
+import socket
+ 
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+# 建立连接:
+s.connect((&#39;www.sina.com.cn&#39;, 80))
+# 发送数据:
+s.send(&#39;GET / HTTP/1.1\r\nHost: www.sina.com.cn\r\nConnection: close\r\n\r\n&#39;)
+# 接收数据:
+buffer = []
+while True:
+    # 每次最多接收1k字节:
+    d = s.recv(1024)
+    if d:
+        buffer.append(d)
+    else:
+        break
+data = &#39;&#39;.join(buffer)
+# 关闭连接:
+s.close()
+ 
+header, html = data.split(&#39;\r\n\r\n&#39;, 1)
+print header
+# 把接收的数据写入文件:
+with open(&#39;sina.html&#39;, &#39;wb&#39;) as f:
+    f.write(html)
+
+
+
+# 服务端
+def tcplink(sock, addr):
+    print &#39;Accept new connection from %s:%s...&#39; % addr
+    sock.send(&#39;Welcome!&#39;)
+    while True:
+        data = sock.recv(1024)
+        time.sleep(1)
+        if data == &#39;exit&#39; or not data:
+            break
+        sock.send(&#39;Hello, %s!&#39; % data)
+    sock.close()
+    print &#39;Connection from %s:%s closed.&#39; % addr
+ 
+ 
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+# 监听端口:
+s.bind((&#39;192.168.202.2&#39;, 9999))
+s.listen(5)
+print &#39;Waiting for connection...&#39;
+while True:
+    # 接受一个新连接:
+    sock, addr = s.accept()
+    # 创建新线程来处理TCP连接:
+    t = threading.Thread(target=tcplink, args=(sock, addr))
+    t.start()
+</code></pre>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%85%B6%E4%BB%96%E8%AF%AD%E8%A8%80/" class="category-chain-item">其他语言</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E5%85%B6%E4%BB%96%E8%AF%AD%E8%A8%80/Python/" class="category-chain-item">Python</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Python基础语法</div>
+      <div>http://peiniwan.github.io/2025/12/01566d3167fc.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>六月的雨</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年12月16日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/12/755ae620edb1.html" title="Python用Django写restfulapi接口">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Python用Django写restfulapi接口</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/12/fcf34e3c7a6d.html" title="Python写爬虫爬妹子">
+                        <span class="hidden-mobile">Python写爬虫爬妹子</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"OwNIdaopOn1rwNhtotGOGC0B-gzGzoHsz","appKey":"eadytQ2XqWmxuvAKeg08XX83","path":"window.location.pathname","placeholder":null,"avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":true,"recordIP":false,"serverURLs":"https://ownidaop.lc-cn-n1-shared.com","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

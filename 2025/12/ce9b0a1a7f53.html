@@ -1,0 +1,854 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="六月的雨">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="AOSP看分析文章，看源码，调试源码，自己实现，是四个完全不同的层级，每一级对源码的理解都不一样Android Open Source Project  引用：   Android Frameworkhttps:&#x2F;&#x2F;github.com&#x2F;yuandaimaahao&#x2F;AndroidFrameworkTutorial使用 Android Studio 开发系统 App系统开发专用版 Android S">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AOSP总结">
+<meta property="og:url" content="http://peiniwan.github.io/2025/12/ce9b0a1a7f53.html">
+<meta property="og:site_name" content="六月的雨的笔记">
+<meta property="og:description" content="AOSP看分析文章，看源码，调试源码，自己实现，是四个完全不同的层级，每一级对源码的理解都不一样Android Open Source Project  引用：   Android Frameworkhttps:&#x2F;&#x2F;github.com&#x2F;yuandaimaahao&#x2F;AndroidFrameworkTutorial使用 Android Studio 开发系统 App系统开发专用版 Android S">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/AOSP.resources/2023/09/15/17-21-45-5f6a8510df59588834a839d1a1bf792f-unknown_filename-677872.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%BA%90%E7%A0%81%E7%BC%96%E8%AF%91.resources/2023/09/15/17-43-51-0d757e05ff2bc085b0c2f1d1ae861bdf-unknown_filename-cf14ca.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/picgo/picgo-clipboard-images/2023-09-19-10-45-986307ec847097835d58ba2a0bd55475-20230919104546-5784a9.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/picgo/picgo-clipboard-images/2023-09-19-10-58-825b451301b535ef2b94db40d5a251bd-20230919105803-118a80.png">
+<meta property="article:published_time" content="2025-12-16T13:59:22.691Z">
+<meta property="article:modified_time" content="2024-03-27T02:08:00.000Z">
+<meta property="article:author" content="六月的雨">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/AOSP.resources/2023/09/15/17-21-45-5f6a8510df59588834a839d1a1bf792f-unknown_filename-677872.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>AOSP总结 - 六月的雨的笔记</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"peiniwan.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>六月的雨的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="AOSP总结"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-12-16 21:59" pubdate>
+          2025年12月16日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.7k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          31 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">AOSP总结</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="AOSP"><a href="#AOSP" class="headerlink" title="AOSP"></a>AOSP</h1><p>看分析文章，看源码，调试源码，自己实现，是四个完全不同的层级，每一级对源码的理解都不一样<br>Android Open Source Project</p>
+<p> 引用： </p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://yuandaimaahao.github.io/AndroidFrameworkTutorialPages/002.%E7%8E%A9%E8%BD%ACAOSP%E7%AF%87/001.%20AOSP%E6%9E%81%E9%80%9F%E4%B8%8A%E6%89%8B.html">Android Framework</a><br><a target="_blank" rel="noopener" href="https://github.com/yuandaimaahao/AndroidFrameworkTutorial">https://github.com/yuandaimaahao/AndroidFrameworkTutorial</a><br><a target="_blank" rel="noopener" href="https://juejin.cn/post/7207358268804579386">使用 Android Studio 开发系统 App</a><br><a target="_blank" rel="noopener" href="https://juejin.cn/post/7277799790287912960?utm_source=gold_browser_extension">系统开发专用版 Android Studio 上手指南 - 掘金</a></p>
+</blockquote>
+<h1 id="编译源码"><a href="#编译源码" class="headerlink" title="编译源码"></a>编译源码</h1><h2 id="命令"><a href="#命令" class="headerlink" title="命令"></a>命令</h2><p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/197096d3206d">下载AOSP源码编译、调试、刷机</a><br><a target="_blank" rel="noopener" href="https://juejin.cn/post/6942379122077204517">Ubuntu 20.04 添加新的Swap分区 - 掘金</a></p>
+<p>下载源码</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs bash">git config --global user.email <span class="hljs-string">&quot;&quot;</span> <br>git config --global user.name <span class="hljs-string">&quot;&quot;</span><br><br><span class="hljs-built_in">mkdir</span> aosp11 <br><span class="hljs-built_in">cd</span> aosp11<br><span class="hljs-comment">#初始化仓库,-b 指示分支，这里使用 android10</span><br>repo init -u https://mirrors.tuna.tsinghua.edu.cn/git/AOSP/platform/manifest -b android-11.0.0_r4<br><span class="hljs-comment">#同步远程代码</span><br>repo <span class="hljs-built_in">sync</span><br></code></pre></td></tr></table></figure>
+
+<p>编译源码</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs vim"><span class="hljs-keyword">source</span> build/envsetup.<span class="hljs-keyword">sh</span><br>lunch aosp_x86_64-eng<br><span class="hljs-keyword">make</span> -j1   <span class="hljs-number">12</span>  <span class="hljs-keyword">m</span><br><span class="hljs-keyword">make</span> clean<br></code></pre></td></tr></table></figure>
+
+<h2 id="源码文件目录结构"><a href="#源码文件目录结构" class="headerlink" title="源码文件目录结构"></a>源码文件目录结构</h2><p><a target="_blank" rel="noopener" href="https://juejin.cn/post/7202826051541532727?searchId=202401241808311012EC739EC068115F5F">【视频文稿】车载Android应用开发与分析 - AOSP的下载与编译 - 掘金</a></p>
+<ul>
+<li>package<br>应用层（Application）源码。系统应用就在这里了，比如说系统设置，桌面，相机，电话之类的。</li>
+<li>frameworks<br>系统框架（Framework）层源码。</li>
+<li>hardware<br>硬件抽象（HAL）层源码。</li>
+<li>out<br>输出目录。编译以后生成的目录，相关的产出就在这里了<br>在 Android 的源代码编译系统中，<em>out&#x2F;soong 通常是一个存放编译过程中生成的临时文件和最终构建产物的目录</em>。</li>
+<li>build<br>用于构建 Android 系统的工具。也就是用于编译 Android 系统的</li>
+</ul>
+<h2 id="遇到的问题"><a href="#遇到的问题" class="headerlink" title="遇到的问题"></a>遇到的问题</h2><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/liudi_ly/article/details/108773356">同步用python 3.8，编译用2.7</a><br>切换Python配置</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql">sudo <span class="hljs-keyword">update</span><span class="hljs-operator">-</span>alternatives <span class="hljs-comment">--config python</span><br></code></pre></td></tr></table></figure>
+
+<p>如果可能，尝试清理构建环境并重新编译（例如运行 make clean 或者直接删除整个 out&#x2F;soong&#x2F;.intermediates&#x2F; 目录后再次编译）。</p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/didayuye/article/details/130462203">AOSP编译问题</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/mingmigndfds/article/details/113884464">ubuntu16.04 编译Android AOSP源码 android10</a></p>
+<h2 id="Android-bp"><a href="#Android-bp" class="headerlink" title="Android.bp"></a>Android.bp</h2><p>Android.bp 文件是用于构建 Android 系统或 Android 应用的<em>构建描述文件</em>。它是在 Android Open Source Project (AOSP) 中引入的一种构建系统脚本语言，<strong>取代了旧版本的 Makefile，一种新的编译文件</strong>。</p>
+<p><em>Android.bp 文件用于定义项目的模块、依赖关系、编译选项以及其他构建规则</em>。通过编写 Android.bp 文件，可以指定项目的源代码文件、资源文件、库依赖关系、编译选项等信息，以及生成最终构建产物（例如 APK 文件）所需的各个步骤和过程。</p>
+<p>使用 Android.bp 文件进行构建有以下优势：</p>
+<p>可读性好：相比于 Makefile，Android.bp 文件更易于阅读和理解，使构建配置更加清晰明了。<br>扩展性强：Android.bp 提供了丰富的构建规则和函数，可以方便地扩展和定制构建流程。<br>并行构建：Android.bp 支持并行构建，提高构建效率。<br>需要注意的是，Android.bp 文件通常与 Soong 构建系统配合使用。Soong 是 Android 中的新构建系统，用于替代旧的 Make 构建系统。Android.bp 文件是 Soong 构建系统的配置文件之一，用于描述单个模块的构建规则。</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/AOSP.resources/2023/09/15/17-21-45-5f6a8510df59588834a839d1a1bf792f-unknown_filename-677872.png" srcset="/img/loading.gif" lazyload alt="unknown_filename"></p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs json">android_app <span class="hljs-punctuation">&#123;</span><br>    name<span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;FirstSystemApp&quot;</span><span class="hljs-punctuation">,</span><br>    srcs<span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;src/**/*.java&quot;</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span><br>    resource_dirs<span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;res&quot;</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span><br>    manifest<span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;AndroidManifest.xml&quot;</span><span class="hljs-punctuation">,</span><br>    platform_apis<span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span><br><br>    sdk_version<span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;&quot;</span><span class="hljs-punctuation">,</span><br>    certificate<span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;platform&quot;</span><span class="hljs-punctuation">,</span><br>    product_specific<span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span><br>    <span class="hljs-comment">//依赖</span><br>    static_libs<span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;androidx.appcompat_appcompat&quot;</span><span class="hljs-punctuation">,</span><br>                 <span class="hljs-string">&quot;com.google.android.material_material&quot;</span><span class="hljs-punctuation">,</span><br>                 <span class="hljs-string">&quot;androidx-constraintlayout_constraintlayout&quot;</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span><br><span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure>
+
+
+
+<h2 id="AIDEGen"><a href="#AIDEGen" class="headerlink" title="AIDEGen"></a>AIDEGen</h2><p>AIDEGen，我叫它 “爱得跟”，大概是 Android10 中，google 推出的一个工具，用于方便开发者使用 IDE 来查看和修改系统源码,使用 “爱得跟” 之前我们需要做一些准备工作，编译 sdk：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">source</span> build/envsetup.sh<br>lunch sdk-eng<br><span class="hljs-comment"># or</span><br><span class="hljs-comment">#lunch sdk-userdebug</span><br><span class="hljs-comment"># or</span><br><span class="hljs-comment">#lunch sdk-user</span><br>make sdk<br></code></pre></td></tr></table></figure>
+<p>接着我们需要去 google 官方下载 Android Studio，这里推荐3.6.3版本，并将其放到 &#x2F;opt 目录下。</p>
+<p>接下来，选择我们的目标 Product：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">source</span> build/envsetup.sh<br>lunch aosp_x86_64-eng<br></code></pre></td></tr></table></figure>
+
+<p>做好以上准备工作后，我们就可以打开系统模块了，这里我们以 Settings 为例：</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs css"># Settings 更换为其他模块名或是模块存在的路径即可打开其他模块<br>aidegen Settings -<span class="hljs-selector-tag">i</span> s  # -<span class="hljs-selector-tag">i</span> 表示使用ide，s 表示 Android Studio<br><br>aidegen Launcher3 -<span class="hljs-selector-tag">i</span> s  <br></code></pre></td></tr></table></figure>
+<p><em>settings的路径</em>：aosp&#x2F;packages&#x2F;app&#x2F;Settings</p>
+<h2 id="模拟器"><a href="#模拟器" class="headerlink" title="模拟器"></a>模拟器</h2><figure class="highlight maxima"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs maxima">emulator -<span class="hljs-built_in">verbose</span>    查看日志<br>emulator -<span class="hljs-built_in">verbose</span> -cores <span class="hljs-number">4</span> -<span class="hljs-built_in">show</span>-kernel<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%BA%90%E7%A0%81%E7%BC%96%E8%AF%91.resources/2023/09/15/17-43-51-0d757e05ff2bc085b0c2f1d1ae861bdf-unknown_filename-cf14ca.png" srcset="/img/loading.gif" lazyload alt="unknown_filename"><br><a target="_blank" rel="noopener" href="https://www.cnblogs.com/chiefhsing/p/5175624.html">https://www.cnblogs.com/chiefhsing/p/5175624.html</a></p>
+<h2 id="mm和mmm的主要区别"><a href="#mm和mmm的主要区别" class="headerlink" title="mm和mmm的主要区别"></a>mm和mmm的主要区别</h2><p>在Android源码编译中，mm和mmm的主要区别在于它们编译的范围。</p>
+<ol>
+<li>mm：这个命令用于<em>在当前目录下编译模块</em>。所谓模块，就是一个可执行文件、库或者APK等。比如你正在某个应用的目录下（例如packages&#x2F;apps&#x2F;Calculator），执行mm将会只编译这个计算器应用。</li>
+<li>mmm：这个命令与mm类似，但是它<em>允许你指定一个路径来编译模块</em>。例如，在源代码根目录下执行mmm packages&#x2F;apps&#x2F;Calculator将会只编译计算器应用。<br>总结一下，如果你已经处在需要编译的模块目录下，则使用mm；如果你不在需要编译的模块目录下，则使用mmm并指定相对应的路径。</li>
+</ol>
+<h2 id="mm和mma"><a href="#mm和mma" class="headerlink" title="mm和mma"></a>mm和mma</h2><p>在Android源码编译中，<code>mma</code>和<code>mm</code>命令都是用于编译模块的，但它们之间存在一些区别：</p>
+<ol>
+<li><code>mm</code>: 这个命令只会编译当前目录下的模块，<em>并且不包括依赖项</em>。这意味着如果你正在尝试编译一个模块，而这个模块依赖于另一个尚未编译的模块，则该命令可能会失败。因此，使用 <code>mm</code> 前需要确保所有依赖项都已经被正确地构建了。</li>
+<li><code>mma</code>: 这个命令将会编译当前目录下的模块<em>以及其所有依赖项</em>。也就是说，如果你正在尝试构建一个有很多依赖项的大型项目或者库文件，那么使用 <code>mma</code> 可能更为方便。</li>
+</ol>
+<p>总结来说, mm 是单独对某一组件进行增量式构建, 不考虑其相关联组件；而 mma 则会考虑到相关联组件进行增量式构建</p>
+<h2 id="编译某个单独的模块"><a href="#编译某个单独的模块" class="headerlink" title="编译某个单独的模块"></a>编译某个单独的模块</h2><p>如果我们要编译系统的Settings应用模块，这就属于源码单编某一个模块，在AOSP根目录执行：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">source</span> build/envsetup.sh<br>lunch aosp_x86_64-eng<br></code></pre></td></tr></table></figure>
+
+<p>进入Settings的目录：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">cd</span> packages/apps/Settings<br></code></pre></td></tr></table></figure>
+<p>通过mm编译当前目录下的模块，不编译依赖模块。</p>
+<p>编译成功后会有提示生成文件的存放路径。除了Settings.odex文件，还会在out&#x2F;target&#x2F;product&#x2F;generic_x86&#x2F;system&#x2F;priv-app&#x2F;Settings目录下生成Settings.apk。</p>
+<p>如果对系统模块的源码进行修改，查看生成的APK文件，有两种方式：</p>
+<ul>
+<li>通过adb push或者adb install 来安装APK。</li>
+<li>使用make snod命令，重新生成 system.img，运行模拟器查看。</li>
+</ul>
+<h2 id="熟悉模块"><a href="#熟悉模块" class="headerlink" title="熟悉模块"></a>熟悉模块</h2><p>熟悉Android framework中一个或数个功能模块框架，如GPS、WiFi、BT，Camera，音视频编解码，Telephony ，系统应用(Settings，SystemUl， Launcher) 等</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/Launcher3-dev/Launcher3">Launcher3-dev&#x2F;Launcher3: 来源 AOSP Launcher3 源码，单层桌面请查看Launcher-mx项目：</a><br>[[8-Launcher学习]]</p>
+<h2 id="调试系统App-Settings"><a href="#调试系统App-Settings" class="headerlink" title="调试系统App Settings"></a>调试系统App Settings</h2><p>首先，我们开一个新的终端，打开模拟器：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">source</span> build/envsetup.sh<br>lunch aosp_x86_64-eng<br>emulator<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>接着我们在 Settings&#x2F;AndroidManifest.xml 查找到 Settings App 的首 Activity 为 SettingsHomepageActivity，我们在其 onCreate 出打一个断点</li>
+<li>接着在 Android 模拟器中打开 Settings 应用。</li>
+<li>点击 android studio 的 debug 按钮，选择进程，和普通APP一样</li>
+</ul>
+<h2 id="添加-Product"><a href="#添加-Product" class="headerlink" title="添加 Product"></a>添加 Product</h2><p>Android 的系统源码，经过简单的配置，可以打包出不同的系统镜像，<em>用于不同的产品。例如小米 12s，小米12s pro</em>，小米12s ultra 均源于骁龙8+平台。<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/picgo/picgo-clipboard-images/2023-09-19-10-45-986307ec847097835d58ba2a0bd55475-20230919104546-5784a9.png" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<p>添加自己的product</p>
+<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs mipsasm"><span class="hljs-keyword">Jelly/</span><br><span class="hljs-keyword"></span>└── Rice14<br>    ├── <span class="hljs-keyword">AndroidProducts.mk</span><br><span class="hljs-keyword"></span>    ├── <span class="hljs-keyword">BoardConfig.mk</span><br><span class="hljs-keyword"></span>    └── Rice14.mk<br></code></pre></td></tr></table></figure>
+<p>BoardConfig.mk 包含了硬件芯片架构配置，分区大小配置等信息</p>
+<p>Rice14.mk 修改最后4行</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs makefile"><span class="hljs-comment"># Overrides</span><br>PRODUCT_BRAND := Jelly<br>PRODUCT_NAME := Rice14<br>PRODUCT_DEVICE := Rice14<br>PRODUCT_MODEL := Android SDK built for x86_64 Rice14<br></code></pre></td></tr></table></figure>
+
+<p>AndroidProducts.mk 内容如下：</p>
+<figure class="highlight livescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs livescript">PRODUCT_MAKEFILES := <span class="hljs-string">\</span><br>    $(LOCAL_DIR)/Rice14.mk<br><br>COMMON_LUNCH_CHOICES := <span class="hljs-string">\</span><br>    Rice14-eng <span class="hljs-string">\</span><br>    Rice14-userdebug <span class="hljs-string">\</span><br>    Rice14-user <span class="hljs-string">\</span><br></code></pre></td></tr></table></figure>
+
+<p>最后</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs vim"><span class="hljs-keyword">source</span> build/envsetup.<span class="hljs-keyword">sh</span><br>lunch Rice14-eng<br><span class="hljs-keyword">make</span> -j16<br>emulator<br></code></pre></td></tr></table></figure>
+
+<h2 id="ARM-Android-行业流程与-Android-分区"><a href="#ARM-Android-行业流程与-Android-分区" class="headerlink" title="ARM + Android 行业流程与 Android 分区"></a>ARM + Android 行业流程与 Android 分区</h2><p>ARM + Android 这个行业，一个简化的普遍流程：</p>
+<ol>
+<li>Google 开发迭代 AOSP + Kernel</li>
+<li>芯片厂商，针对自己的芯片特点，移植 AOSP 和 Kernel，使其可以在自己的芯片上跑起来。</li>
+<li>方案厂商（很多芯片厂商也扮演了方案厂商的角色），设计电路板，给芯片添加外设，在芯片厂商源码基础上开发外设相关软件，主要是驱动和 hal，改进性能和稳定性。</li>
+<li>产品厂商，主要是系统软件开发，UI 定制以及硬件上的定制(添加自己的外设)，改进性能和稳定性.</li>
+</ol>
+<p><em>不同产品之间公共的部分放在 System 和 Vender 分区，差异的部分放在 Odm 和 Product 分区</em>。<br>硬件上，产品 A 可能用的是京东方的屏，产品 B 可能用的是三星的屏；差异硬件相关的软件部分都会放在 Odm 分区<br>产品 A 可能是带广告的版本，产品 B 可能是不带广告的版本。这些有差异的软件部分都放在 Product 分区</p>
+<h2 id="删除已有模块"><a href="#删除已有模块" class="headerlink" title="删除已有模块"></a>删除已有模块</h2><p>有的时候，我们需要删除系统中已有的模块，比如我们系统的应用场景是广告牌、电视，那我们就需要删除电话，通信录等应用。下面以删除通信录（Contacts）为例，演示如何操作：</p>
+<p>在源码的 build 目录下，先查找<br>grep -r “Contacts” .</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs java">./make/target/product/handheld_product.mk:    Contacts \<br>./make/target/product/mainline_arm64.mk:  system/priv-app/Contacts/Contacts.apk \<br>./make/target/product/base_system.mk:    ContactsProvider \<br>./make/core/build-system.html:Dialer, Contacts, etc.  This will probably change or go away when we <span class="hljs-keyword">switch</span><br></code></pre></td></tr></table></figure>
+
+<p>在源码的 build 目录下的 .&#x2F;make&#x2F;target&#x2F;product&#x2F;handheld_product.mk 中删除 PRODUCT_PACKAGES 变量的 Contacts</p>
+<p>接着重新编译启动模拟器：</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs vim"><span class="hljs-keyword">source</span> build/envsetup.<span class="hljs-keyword">sh</span><br>lunch Rice14-eng<br><span class="hljs-keyword">make</span> clean<br><span class="hljs-keyword">make</span> -j16<br>emulator<br></code></pre></td></tr></table></figure>
+
+<p>可以看到，Contacts 应用已经没有了</p>
+<h2 id="新建一个系统-App-项目"><a href="#新建一个系统-App-项目" class="headerlink" title="新建一个系统 App 项目"></a>新建一个系统 App 项目</h2><p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/picgo/picgo-clipboard-images/2023-09-19-10-58-825b451301b535ef2b94db40d5a251bd-20230919105803-118a80.png" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<ol>
+<li>创建as项目</li>
+<li>修改已添加的 Android.bp 文件<figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs dts"><span class="hljs-title class_">android_app</span> <span class="hljs-punctuation">&#123;</span><br><span class="hljs-symbol">    name:</span> <span class="hljs-string">&quot;FirstSystemApp&quot;</span>,<br><span class="hljs-symbol"></span><br><span class="hljs-symbol">    srcs:</span> [<span class="hljs-string">&quot;src/**/*.java&quot;</span>],<br><span class="hljs-symbol"></span><br><span class="hljs-symbol">    resource_dirs:</span> [<span class="hljs-string">&quot;res&quot;</span>],<br><span class="hljs-symbol"></span><br><span class="hljs-symbol">    manifest:</span> <span class="hljs-string">&quot;AndroidManifest.xml&quot;</span>,<br><span class="hljs-symbol"></span><br><span class="hljs-symbol">    platform_apis:</span> true,<br><span class="hljs-symbol">    </span><br><span class="hljs-symbol">    sdk_version:</span> <span class="hljs-string">&quot;&quot;</span>,<br><span class="hljs-symbol"></span><br><span class="hljs-symbol">    certificate:</span> <span class="hljs-string">&quot;platform&quot;</span>,<br><span class="hljs-symbol"></span><br><span class="hljs-symbol">    product_specific:</span> true,<br><br>    <span class="hljs-comment">//依赖</span><br><span class="hljs-symbol">    static_libs:</span> [<span class="hljs-string">&quot;androidx.appcompat_appcompat&quot;</span>,<br>                 <span class="hljs-string">&quot;com.google.android.material_material&quot;</span>,<br>                 <span class="hljs-string">&quot;androidx-constraintlayout_constraintlayout&quot;</span>],<br><br><span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure></li>
+<li>接着在我们的 Product 中添加这个App，修改 <code>device/Jelly/Rice14/Rice14.mk</code>：</li>
+</ol>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs makefile"><span class="hljs-comment"># 添加以下内容</span><br>PRODUCT_PACKAGES += FirstSystemApp<br></code></pre></td></tr></table></figure>
+
+<ol start="4">
+<li>接着编译系统，启动虚拟机，打开 app</li>
+</ol>
+<p>当我们的系统 App 需要引入一个库的时候，通常会在 prebuilds 目录下查找：</p>
+<ul>
+<li>androidx 相关库引入，先在 prebuilts&#x2F;sdk&#x2F;current&#x2F;androidx 下寻找配置好的 bp 文件</li>
+<li>其他库引入，先在 prebuilts&#x2F;tools&#x2F;common&#x2F;m2 下寻找寻找配置好的 bp 文件</li>
+</ul>
+<h3 id="以-aar-包形式引入"><a href="#以-aar-包形式引入" class="headerlink" title="以 aar 包形式引入"></a>以 aar 包形式引入</h3><figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs armasm"><span class="hljs-symbol">liblottie</span>/<br>├── Android.<span class="hljs-keyword">bp</span><br>└── lottie-<span class="hljs-number">5</span>.<span class="hljs-number">2</span>.<span class="hljs-number">0</span>.aar<br></code></pre></td></tr></table></figure>
+<p>其中 Android.bp 的内容如下：</p>
+<figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs dts"><span class="hljs-title class_">android_library_import</span> <span class="hljs-punctuation">&#123;</span><br><span class="hljs-symbol">    name:</span> <span class="hljs-string">&quot;lib-lottie&quot;</span>,<br><span class="hljs-symbol">    aars:</span> [<span class="hljs-string">&quot;lottie-5.2.0.aar&quot;</span>],<br><span class="hljs-symbol">    sdk_version:</span> <span class="hljs-string">&quot;current&quot;</span>,<br><span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure>
+<p><strong>static_libs</strong> :添加依赖库<br>然后我们修改 FirstSystemApp 中的 Android.bp 引入这个库：</p>
+<figure class="highlight avrasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs avrasm"><span class="hljs-symbol">static_libs:</span> [<span class="hljs-string">&quot;androidx.appcompat_appcompat&quot;</span>,<br>              <span class="hljs-string">&quot;com.google.android.material_material&quot;</span>,<br>              <span class="hljs-string">&quot;androidx-constraintlayout_constraintlayout&quot;</span>,<br>              <span class="hljs-string">&quot;FirstSystemAndroidLibrary&quot;</span>,<br>               <span class="hljs-string">&quot;lib-lottie&quot;</span>],<br></code></pre></td></tr></table></figure>
+<p>这样就可以在 App 中使用 lottie 库了</p>
+<h3 id="系统-App-与-普通-App-的差异"><a href="#系统-App-与-普通-App-的差异" class="headerlink" title="系统 App 与 普通 App 的差异"></a>系统 App 与 普通 App 的差异</h3><h4 id="系统-App-可以使用更多的-api"><a href="#系统-App-可以使用更多的-api" class="headerlink" title="系统 App 可以使用更多的 api"></a>系统 App 可以使用更多的 api</h4><p>调用 Hide 的 Api<br>当 platform_apis 为 true 时，sdk_version 必须为空。这种情况下我们的 app 会使用平台 API 进行编译而不是 SDK，这样我们的 App 就能访问到非 SDK API 了</p>
+<h4 id="系统-App-的签名"><a href="#系统-App-的签名" class="headerlink" title="系统 App 的签名"></a>系统 App 的签名</h4><p>AOSP 内置了 apk 签名文件，我们可以在 Android.bp 中通过 certificate 配置系统 app 的签名文件</p>
+<h4 id="系统-App-能使用更多的权限"><a href="#系统-App-能使用更多的权限" class="headerlink" title="系统 App 能使用更多的权限"></a>系统 App 能使用更多的权限</h4><h4 id="系统-App-能更轻松地实现进程保活"><a href="#系统-App-能更轻松地实现进程保活" class="headerlink" title="系统 App 能更轻松地实现进程保活"></a>系统 App 能更轻松地实现进程保活</h4><p>三方 App 为了不被杀掉，可以说是用尽了千方百计。保活对于系统 App 其实是非常简单的：</p>
+<p>在 AndroidManifest.xml 中添加如下参数即可：</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs routeros">&lt;application<br>    android:<span class="hljs-attribute">persistent</span>=<span class="hljs-string">&quot;true&quot;</span>&gt;<br></code></pre></td></tr></table></figure>
+
+<h3 id="系统-App-添加依赖"><a href="#系统-App-添加依赖" class="headerlink" title="系统 App 添加依赖"></a>系统 App 添加依赖</h3><p>在 <code>Android.bp</code> 中引入：</p>
+<figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs dts"><span class="hljs-title class_">android_library_import</span> <span class="hljs-punctuation">&#123;</span><br><span class="hljs-symbol">    name:</span> <span class="hljs-string">&quot;androidx.recyclerview_recyclerview-nodeps&quot;</span>,<br><span class="hljs-symbol">    aars:</span> [<span class="hljs-string">&quot;m2repository/androidx/recyclerview/recyclerview/1.1.0-alpha07/recyclerview-1.1.0-alpha07.aar&quot;</span>],<br><span class="hljs-symbol">    sdk_version:</span> <span class="hljs-string">&quot;current&quot;</span>,<br><span class="hljs-symbol">    min_sdk_version:</span> <span class="hljs-string">&quot;14&quot;</span>,<br><span class="hljs-symbol">    static_libs:</span> [<br>        <span class="hljs-string">&quot;androidx.annotation_annotation&quot;</span>,<br>        <span class="hljs-string">&quot;androidx.collection_collection&quot;</span>,<br>        <span class="hljs-string">&quot;androidx.core_core&quot;</span>,<br>        <span class="hljs-string">&quot;androidx.customview_customview&quot;</span>,<br>    ],<br><span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure>
+
+
+<h1 id="其他概念"><a href="#其他概念" class="headerlink" title="其他概念"></a>其他概念</h1><h2 id="Android里AIDEGen和Idegen"><a href="#Android里AIDEGen和Idegen" class="headerlink" title="Android里AIDEGen和Idegen"></a>Android里AIDEGen和Idegen</h2><p>Idegen 编译成android.ipr 和 android.iml  方便查看源码<br>AIDEGen 方便开发者使用 IDE 来查看和修改系统源码。</p>
+<p> <strong>aidegen介绍</strong><br> [[Android 系统开发工具推荐#^3b8a5e| 如何编译aidegen]]<br>aidegen是AOSP中自带的一个工具，可以将源码中的某个工程导入进IDE，从而可以使用IDE的智能提示，提高编码效率。而源码中的工程并不是独立存在的，还会依赖其他工程中的各种模块，aidegen 会主动把对应的模块编译一遍，同时把这些依赖都整理好导入到IDE中，从而避免因为找不到依赖而爆红的问题。</p>
+<h2 id="mk文件"><a href="#mk文件" class="headerlink" title="mk文件"></a>mk文件</h2><p>在软件开发中，.mk 文件通常是用于构建（build）和编译（compile）代码的 Makefile 文件的扩展名。Makefile 是一种脚本文件，其中包含了一系列构建和编译源代码的规则、命令和依赖关系。</p>
+<p>Makefile 文件使用 Make 工具来根据规则中定义的依赖关系和命令来自动化代码构建过程。Make 工具会解析 Makefile 文件，并根据需要执行相应的构建命令，以确保源代码正确地编译成可执行文件、库文件或其他所需的目标。</p>
+<p>在 .mk 文件中，您可以定义变量、规则（例如编译规则、链接规则等）和其他构建相关的配置。这些文件通常由开发人员根据项目的需要进行编写和维护。</p>
+<h2 id="fastboot"><a href="#fastboot" class="headerlink" title="fastboot"></a>fastboot</h2><p>Android fastboot 是一种用于在 Android 设备上执行各种操作的命令行工具。它是 Android 平台上的一个工具集之一，通常与 Android SDK（软件开发工具包）一起使用。</p>
+<p>Fastboot 提供了一种与设备进行通信并执行一系列操作的方式，包括但不限于以下内容：</p>
+<p>刷写固件：通过 fastboot 命令，您可以将新的固件（如操作系统、引导程序等）刷写到 Android 设备中，从而更新或修改设备的软件。</p>
+<p>进入 bootloader 模式：通过 fastboot 命令，您可以将 Android 设备设置为 bootloader 模式，这是设备的引导程序。在 bootloader 模式下，您可以执行诸如刷写固件、解锁引导加载程序等操作。</p>
+<p>解锁引导加载程序：某些 Android 设备的引导加载程序（bootloader）可能被锁定，以防止未经授权的固件刷写。fastboot 命令可以用于解锁引导加载程序，以便您可以自由刷写或修改设备的固件。</p>
+<p>查看设备状态：fastboot 命令可以用于获取有关设备的信息，例如设备序列号、产品型号、固件版本等。</p>
+<p>请注意，使用 fastboot 命令需要在计算机上安装 Android SDK，并在 USB 调试模式下连接支持 fastboot 的 Android 设备。</p>
+<p>使用 fastboot 命令需要谨慎操作，因为错误的使用可能导致设备出现问题或数据丢失。在使用 fastboot 前，请确保您对操作有足够的了解或按照官方文档和指南进行操作。</p>
+<h2 id="HIDL"><a href="#HIDL" class="headerlink" title="HIDL"></a>HIDL</h2><p>HIDL，全称为Hardware Interface Definition Language（硬件接口定义语言），是Android 8.0引入的一种新的硬件抽象层（HAL）框架。</p>
+<p>在以往的Android系统版本中，HAL是通过C语言实现的，并且通常与特定版本的Android系统紧密耦合。这就意味着当Android系统升级时，相关的硬件驱动也需要更新以适配新版系统。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/AOSP/" class="category-chain-item">AOSP</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>AOSP总结</div>
+      <div>http://peiniwan.github.io/2025/12/ce9b0a1a7f53.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>六月的雨</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年12月16日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/12/75b9a8195245.html" title="Linux相关">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Linux相关</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/12/01510837f138.html" title="adb快捷键">
+                        <span class="hidden-mobile">adb快捷键</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"OwNIdaopOn1rwNhtotGOGC0B-gzGzoHsz","appKey":"eadytQ2XqWmxuvAKeg08XX83","path":"window.location.pathname","placeholder":null,"avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":true,"recordIP":false,"serverURLs":"https://ownidaop.lc-cn-n1-shared.com","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

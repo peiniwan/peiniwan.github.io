@@ -1,0 +1,989 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="六月的雨">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="移动端网络优化连接层优化  HttpDns     [[3-关于httpdns]]，HTTPDNS 利用 HTTP 协议与 DNS 服务器交互，代替了传统的基于 UDP 协议的 DNS 交互，绕开了运营商的 Local DNS，有效防止了域名劫持，提高域名解析效率。另外也减少了平均访问的的延迟、降低了用户连接的失败率。后期观察效果好的话，可以推广所有域名使用。 开启 Keep-Alive → 避免">
+<meta property="og:type" content="article">
+<meta property="og:title" content="5.网络相关知识">
+<meta property="og:url" content="http://peiniwan.github.io/2025/12/499fe98e8149.html">
+<meta property="og:site_name" content="六月的雨的笔记">
+<meta property="og:description" content="移动端网络优化连接层优化  HttpDns     [[3-关于httpdns]]，HTTPDNS 利用 HTTP 协议与 DNS 服务器交互，代替了传统的基于 UDP 协议的 DNS 交互，绕开了运营商的 Local DNS，有效防止了域名劫持，提高域名解析效率。另外也减少了平均访问的的延迟、降低了用户连接的失败率。后期观察效果好的话，可以推广所有域名使用。 开启 Keep-Alive → 避免">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%BD%91%E7%BB%9C%E7%9B%B8%E5%85%B3%E7%9F%A5%E8%AF%86.resources/2023/09/15/18-24-33-70041d525309b82d40b70aef257f43e2-%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20200106162425-ac9ed4.jpg">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%BD%91%E7%BB%9C%E7%9B%B8%E5%85%B3%E7%9F%A5%E8%AF%86.resources/2023/09/15/18-24-33-29ace7c2e4c48cff4f2b6ddc8cfa28c5-unknown_filename.2-24b40a.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%BD%91%E7%BB%9C%E7%9B%B8%E5%85%B3%E7%9F%A5%E8%AF%86.resources/2023/09/15/18-24-33-9b39893ad0c1b0e07a6540c8c308707f-unknown_filename.1-a0fd1b.png">
+<meta property="article:published_time" content="2025-12-16T13:59:22.463Z">
+<meta property="article:modified_time" content="2024-03-29T06:58:00.000Z">
+<meta property="article:author" content="六月的雨">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%BD%91%E7%BB%9C%E7%9B%B8%E5%85%B3%E7%9F%A5%E8%AF%86.resources/2023/09/15/18-24-33-70041d525309b82d40b70aef257f43e2-%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20200106162425-ac9ed4.jpg">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>5.网络相关知识 - 六月的雨的笔记</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"peiniwan.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>六月的雨的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="5.网络相关知识"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-12-16 21:59" pubdate>
+          2025年12月16日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          7.4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          62 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">5.网络相关知识</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="移动端网络优化"><a href="#移动端网络优化" class="headerlink" title="移动端网络优化"></a>移动端网络优化</h2><p><strong>连接层优化</strong></p>
+<ul>
+<li>HttpDns     [[3-关于httpdns]]，HTTPDNS 利用 HTTP 协议与 DNS 服务器交互，代替了传统的基于 UDP 协议的 DNS 交互，绕开了运营商的 Local DNS，有效防止了域名劫持，提高域名解析效率。另外也减少了平均访问的的延迟、降低了用户连接的失败率。后期观察效果好的话，可以推广所有域名使用。</li>
+<li>开启 <strong>Keep-Alive</strong> → 避免频繁建连。在请求头中添加（已经默认开启了）</li>
+<li>CDN 优化，CDN 说是可以使用最近的网络节点提供服务</li>
+<li>IP 直连：省去 DNS 解析过程，DNS 全名 Domain Name System，解析意指根据域名得到其对应的 IP 地址。如 <a target="_blank" rel="noopener" href="http://www.codekk.com/">http://www.codekk.com</a> 的域名解析结果就是 104.236.147.76。首次域名解析一般需要几百毫秒，可通过直接向 IP 而非域名请求，节省掉这部分时间，同时可以预防域名劫持等带来的风险。当然为了安全和扩展考虑，这个 IP 可能是一个动态更新的 IP 列表，并在 IP 不可用情况下通过域名访问。</li>
+</ul>
+<p><strong>请求层优化</strong></p>
+<ul>
+<li>请求合并：如果某个页面内请求过多，可以将多个请求合并为一个请求，减少握手和头部开销。</li>
+<li>对请求体（如 JSON）也可以<em>压缩后传输</em>。</li>
+<li>减小请求数据和返回数据大小： 对于 POST 请求，请求体可以做 Gzip 压缩，如日志，response.setHeader (“Content-Encoding”, “gzip”) ;</li>
+<li>可以在获取图片时告知服务器需要的图片的宽高, 以便服务器给出合适的图片, 避免浪费. oss</li>
+<li>用户无网时展示本地缓存数据，避免白屏。</li>
+</ul>
+<ul>
+<li>批量上报日志&#x2F;埋点，而不是一条请求一次。</li>
+<li>区分 Wi-Fi &#x2F; 4G &#x2F; 5G &#x2F; 弱网环境。</li>
+</ul>
+<p><strong>Android P 要求网络请求必须为Https，Http请求会抛异常</strong><br>Volley底层使用HttpUrlConnection实现，而HttpUrlConnection底层实质是OkHttp</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-meta">&lt;?xml version=<span class="hljs-string">&quot;1.0&quot;</span> encoding=<span class="hljs-string">&quot;utf-8&quot;</span>?&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">network-security-config</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">base-config</span> <span class="hljs-attr">cleartextTrafficPermitted</span>=<span class="hljs-string">&quot;true&quot;</span> /&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">network-security-config</span>&gt;</span><br>android:networkSecurityConfig=&quot;@xml/network_security_config&quot;<br></code></pre></td></tr></table></figure>
+<h2 id="HTTP"><a href="#HTTP" class="headerlink" title="HTTP"></a>HTTP</h2><p><strong>一次http网络请求的过程</strong><br>浏览器发起请求-&gt; 解析域名得到 ip 进行 TCP 连接 -&gt;浏览器发送 HTTP 请求和头信息发送-&gt;服务器对浏览器进行应答，响应头信息和浏览器所需的内容-&gt; 关闭 TCP 连接或保持-&gt; 浏览器得到数据数据进行操作。</p>
+<p>对于HTTP协议工作原理:就是客户端向服务器发出一条HTTP请求，服务器收到请求之后会返回一些数据给客户端，然后客户端再对这些数据进行解析和处理。<br>先找到对方 ip 地址，然后用指定的传输协议传送到指定的端口。</p>
+<p><strong>HTTP分层</strong></p>
+<ul>
+<li>Application Layer 应用层：HTTP、FTP、DNS</li>
+<li>Transport Layer 传输层（通讯规则、传输协议）：TCP、UDP（负责传输，找到端口）</li>
+<li>Internet Layer 网络层：IP（负责连接，找到IP）</li>
+<li>Link Layer 数据链路层：以太网、Wi-Fi（以太网：网线，为网络提供现实世界（物理设备的支持））</li>
+</ul>
+<p>为什什么要分层？<br>因为网络的不稳定性，所以要url分块传输</p>
+<p><strong>常见通讯规则、传输协议：TCP&#x2F;UDP</strong></p>
+<p>UDP（面向无连接）–&gt;聊天、网络视频会议、步话机<br>DatagramSocket<br>将数据及源和目的封装成数据包中，不需要建立连接<br>每个数据包的大小限制在64k内<br>因无连接，是不可靠的协议<br>不需要建立连接，速度快</p>
+<p>TCP（面向连接）–&gt;下载，打电话<br>ServiceSocket<br>建立连接，形成传输数据的通道<br>在连接中进行大数据量的传输<br>通过三次握手完成连接，是可靠的协议<br>必须建立连接，效率会稍低</p>
+<p><strong>丢包</strong><br>todo：失败了会重连吗</p>
+<p><strong>什么是iP地址</strong><br>Internet上的主机有两种方式表示地址： 域名：<a target="_blank" rel="noopener" href="http://www.baidu.com/">www.baidu.com</a>, IP 地址：202.108.35.210 ，域名容易记忆，当在连接网络时输入一个主机的域名后，域名服务器（DNS）负责将域名转化成IP地址，这样才能和主机建立连接。</p>
+<p><strong>什么是端口</strong><br>用于标识进程的逻辑地址，不同进程的标识，有效地址0<del>65535，其中0</del>1024系统使用或保留端口。</p>
+<p><strong>HTTP 协议版本</strong></p>
+<p>HTTP&#x2F;1.0</p>
+<ul>
+<li>链接后，只能获取一个web资源。</li>
+<li>链接后，发送请求，服务器做出响应，链接立即断开。</li>
+</ul>
+<p>HTTP&#x2F;1.1</p>
+<ul>
+<li>链接后，可以获取多个web资源。</li>
+<li>链接后，发送请求，服务器做出响应，链接不会立即断开。再次发送请求，直接有一段时间没操作，自动断开。（服务端可以配置）</li>
+</ul>
+<p><strong>三次握手</strong></p>
+<p>SYN，SYN&#x2F;ACK，ACK</p>
+<p>syn 客户端发送syn包给服务器，进入服务状态<br>syn-ack 服务器收到，客户端确实并发送给syn.这时进去接受状态<br>ack 客户端收到服务端的syn-ack，并向服务器确认，此时链接成功！</p>
+<p>第一次本方发送请求，第二次对方确认连接，第三次本方再次发送确认信息告诉对方，这样双方就都知道了，从而才能建立连接。</p>
+<p>三次握手的目的，两次行不行？<br>为了防止已失效的连接请求报文段突然又传送到了服务端，因而产生错误的问题。网络不好的话不知道双方的状态</p>
+<p><strong>四次挥手</strong></p>
+<ol>
+<li>我不要消息了</li>
+<li>我知道了</li>
+<li>我没有消息给你发了</li>
+<li>我知道了</li>
+</ol>
+<blockquote>
+<p>为什么 TCP 连接在断开时是四次挥手而不是三次？<br>因为在客户端停止向服务器发送消息时，也许服务器还有消息需要向客户端发送，因此在它对客户端的「Fin」（即「我不再给你发送消息」，这个词不必记住）消息进行回应时，不需要立即附加上「我也不再向你发送消息」。在稍后服务器的消息发送完毕之后，才需要向客户端发送通知。</p>
+</blockquote>
+<p>fin 发送请求连接<br>ack 同意断开连接<br>fin+ack 服务端断开连接<br>ack 同意断开</p>
+<p><strong>Keep-Alive</strong></p>
+<p>从 HTTP&#x2F;1.1起，默认都开启了 Keep-Alive，保持连接特性，简单地说，当一个网页打开完成后，客户端和服务器之间用于传输 HTTP 数据的 TCP 连接不会关闭，如果客户端再次访问这个服务器上的网页，会继续使用这一条已经建立的连接 Keep-Alive 不会永久保持连接，它有一个保持时间，可以在不同的服务器软件（如 Apache）中设定这个时间。虽然这里使用 TCP 连接保持了一段时间，但是这个时间是有限范围的，到了时间点依然是会关闭的，所以我们还把其看做是每次连接完成后就会关闭。</p>
+<p><strong>HTTP 的缺点</strong></p>
+<p>通信使用明文, 内容可能被窃听<br>不验证通信方身份, 因此有可能遭遇伪装</p>
+<p><strong>WWW</strong></p>
+<p>HTTP 协议同时具备极强的扩展性，虽然浏览器请求的是 <a target="_blank" rel="noopener" href="http://www.sina.com.cn/%E7%9A%84%E9%A6%96%E9%A1%B5">http://www.sina.com.cn/的首页</a> ，但是新浪在 HTML 中可以链入其他服务器的资源，比如 XXX，从而将请求压力分散到各个服务器上，并且，一个站点可以链接到其他站点，无数个站点互相链接起来，就形成了 World Wide Web，简称 WWW。</p>
+<h2 id="HTTPS"><a href="#HTTPS" class="headerlink" title="HTTPS"></a>HTTPS</h2><ul>
+<li>HTTPS并不是一个单独的协议，对于一些隐秘性比较高的数据可以用https协议。（ 它是在TCP层与http层之间加了个SSl&#x2F;TLS。TLS是SSL v3.0的升级版，而SSL协议，是一种安全传输协议。）</li>
+<li>SSL&#x2F;TLS层负责客户端和服务器之间的加解密算法协商、密钥交换、通信连接的建立。<br>  主要用到对称加密、非对称加密、证书，等技术进行客户端与服务器的数据加密传输，最终达到保证整个通信的安全性。</li>
+<li>说白了就是加密通信的 HTTP</li>
+</ul>
+<p>第三步：请求网址后返回证书的公钥和数字证书，客户端验证数字证书的有效性，是ca的，怎么验证的？数字签名，都有标准的，x509<br>第四步：客户端通过后，<em>使用公钥（对称加密里的）加密内容，非对称加密分别对公钥和内容信息摘要加密</em>（hash，数字签名），发送<br>第六步：服务端使用非对称加密解密对称加密的 key，然后通过对称加密的 key 解密内容。并验证数字签名，看是否篡改过。后台返回数据<br>第七步：客户端用对称加密的 key 解密内容</p>
+<p>服务器返回的是 <strong>数字证书（X.509）</strong>，里面包含：</p>
+<ul>
+<li>服务器公钥</li>
+<li>域名（CN &#x2F; SAN）</li>
+<li>有效期</li>
+<li>签名算法</li>
+<li><strong>CA 对证书内容做的数字签名</strong></li>
+</ul>
+<p>操作系统 &#x2F; JVM &#x2F; Android 内置：</p>
+<ul>
+<li><strong>根 CA 证书列表</strong></li>
+<li>每个根 CA 证书里都有 <strong>CA 的公钥</strong></li>
+</ul>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%BD%91%E7%BB%9C%E7%9B%B8%E5%85%B3%E7%9F%A5%E8%AF%86.resources/2023/09/15/18-24-33-70041d525309b82d40b70aef257f43e2-%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20200106162425-ac9ed4.jpg" srcset="/img/loading.gif" lazyload alt="微信图片_20200106162425"></p>
+<p><strong>详细</strong></p>
+<p>HTTPS 要使客户端与服务器端的通信过程得到安全保证，必须使用的对称加密算法传输数据（效率），但是协商对称加密算法的过程，需要使用非对称加密算法（不适合大量数据）来保证安全（<em>用非对称加密来给对称加密里的秘钥进行加密</em>），然而直接使用非对称加密的过程本身也不安全，会有中间人篡改公钥的可能性，所以客户端与服务器不直接使用公钥，而是使用数字证书签发机构生成的证书来保证非对称加密过程本身的安全。这样通过这些机制协商出一个对称加密算法，就此双方使用该算法进行加密解密。从而解决了客户端与服务器端之间的通信安全问题。</p>
+<p>证书就是HTTPS中数字证书，证书编号就是数字签名，而第三方机构就是指数字证书签发机构（CA）。</p>
+<p><strong>更详细</strong></p>
+<p>SSL&#x2F;TLS防止的安全风险：</p>
+<ol>
+<li>窃听风险</li>
+<li>篡改风险</li>
+<li>冒充风险</li>
+</ol>
+<p>SSL&#x2F;TLS防止的安全风险原理：</p>
+<ol>
+<li>加密：非对称加密+对称加密，主要解决的是窃听风险</li>
+<li>校验：数字签名，主要解决的是篡改风险</li>
+<li>证书：数字证书，主要解决的是冒充风险</li>
+</ol>
+<h4 id="非对称加密"><a href="#非对称加密" class="headerlink" title="非对称加密"></a>非对称加密</h4><ul>
+<li>对称加密的问题：秘钥如何保存和传输（非对称加密算法）</li>
+<li>“非对称加密”加密算法，特点是<strong>公钥加密后的密文，只有私钥可以解密</strong>，私钥加密后的密文，公钥都可以解密。私钥只有一个人有，而公钥可以发给所有的人。</li>
+<li>非对称加密一般不会单独拿来使用，他并不是为了取代对称加密而出现的，非对称加密速度比对称加密慢 很多，极端情况下会慢 1000 倍，所以一般不会用来加密大量数据，通常我们经常会将对称加密和非对称 加密两种技术联合起来使用，例如用非对称加密来给称加密里的秘钥进行加密(即秘钥交换)。</li>
+</ul>
+<p>RSA 加密简单过程</p>
+<ol>
+<li>服务端生成配对的公钥和私钥</li>
+<li>私钥保存在服务端，公钥发送给客户端</li>
+<li>客户端使用公钥加密明文传输给服务端</li>
+<li>服务端使用私钥解密密文得到明文</li>
+</ol>
+<h4 id="数字签名"><a href="#数字签名" class="headerlink" title="数字签名"></a>数字签名</h4><p>数字签名技术结合Hash算法和加密算法，<em>来防止消息被篡改和进行身份认证</em>。<br><strong>数字签名就是：发送方使用自己的私钥对信息摘要加密产生</strong></p>
+<ol>
+<li>发送方使用Hash算法对原文产生信息摘要，原文不变则信息摘要不变。</li>
+<li>发送方使用自己的私钥对信息摘要加密产生数字签名，并和加密的原文一起发送。</li>
+<li>接收方使用发送方的公钥解密获取数字签名</li>
+<li>接收方使用Hash算法对<em>原文计算信息摘要与解密的信息摘要比对</em>，成功表示未篡改、未成功表示篡改。</li>
+</ol>
+<p>sign &#x3D; SHA256 (“amount&#x3D;100&amp;timestamp&#x3D;169392&amp;uid&#x3D;123&amp;key&#x3D;abc123”)，定义一个算法</p>
+<h4 id="数字证书"><a href="#数字证书" class="headerlink" title="数字证书"></a>数字证书</h4><p>数字证书（Digital Certificate），就是一种 <strong>电子身份证</strong>，由 <strong>权威的第三方机构 CA（Certificate Authority，证书颁发机构）</strong> 签发，用来证明一个公钥的真实性。</p>
+<p>它里面包含：</p>
+<ul>
+<li>公钥（Public Key）</li>
+<li>持有者信息（域名、组织名称、有效期等）</li>
+<li>签发机构（CA）信息</li>
+<li>数字签名（由 CA 用私钥签发，保证证书内容没被改）</li>
+</ul>
+<p>📌 通俗理解：</p>
+<ul>
+<li><strong>数字签名</strong> 是「签个名，证明这段数据没改过」。</li>
+<li><strong>数字证书</strong> 是「权威机构给你办了张身份证，别人信任你」。</li>
+</ul>
+<p><strong>在 Android 网络请求里的作用</strong></p>
+<p>在 Android 里，数字证书最常见的就是 <strong>HTTPS 通信</strong>：</p>
+<ul>
+<li>当你的 App 访问一个 HTTPS 服务器时，服务器会先把数字证书发给客户端。</li>
+<li>客户端检查：<ol>
+<li>证书是不是正规 CA 签发的？</li>
+<li>域名和证书里的信息对得上吗？</li>
+<li>有效期过期了吗？</li>
+</ol>
+</li>
+<li>如果都没问题，就信任这个服务器，并用证书里的 <strong>公钥</strong> 来建立安全连接（SSL&#x2F;TLS 握手）。</li>
+</ul>
+<p><strong>数字签名 vs 数字证书</strong></p>
+<table>
+<thead>
+<tr>
+<th>概念</th>
+<th>作用</th>
+<th>谁生成的</th>
+<th>在 Android 里的常见用法</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>数字签名</strong></td>
+<td>保证数据没被篡改，验证消息完整性</td>
+<td>通常由客户端或服务端自己生成（带密钥）</td>
+<td>API 请求参数签名、支付接口签名</td>
+</tr>
+<tr>
+<td><strong>数字证书</strong></td>
+<td>保证公钥的真实性，验证身份</td>
+<td>第三方权威机构 CA 签发</td>
+<td>HTTPS 请求中验证服务器身份</td>
+</tr>
+</tbody></table>
+<p>📌 简单来说：</p>
+<ul>
+<li>数字签名 &#x3D; <strong>数据防伪</strong></li>
+<li>数字证书 &#x3D; <strong>身份防伪</strong></li>
+<li><strong>数字签名</strong> 解决的是「这条消息对不对」。</li>
+<li><strong>数字证书</strong> 解决的是「这个人是真的假的」。</li>
+</ul>
+<h4 id="在-Android-中使用-HTTPS"><a href="#在-Android-中使用-HTTPS" class="headerlink" title="在 Android 中使用 HTTPS"></a>在 Android 中使用 HTTPS</h4><p>正常情况：直接使用<br>需要自⼰写证书验证过程的场景</p>
+<ul>
+<li>用的是自签名证书（例如只用于内网的 https）</li>
+<li>信息不全，缺乏中间证书机构（可能性不大）</li>
+<li>手机操作系统较旧，没有安装最新加入的根证书</li>
+<li>支付 App、银行 App。</li>
+</ul>
+<p><strong>OKHTTP</strong></p>
+<p>okhttp中就能验证自己的签名，就是为了让自己的签名通过验证。其实证书的验证工作，<strong>Android 系统和网络库已经帮你做掉了</strong>。<br>如果是ca机构的证书，OKHTTP不需要配置直接就可以访问，如果是自定义的证书，OKHTTP就不行了，但是可以信任指定证书或者所有证书来访问。<br>拦截器：网络日志、缓存（okhttp自己也有）</p>
+<p>![[Pasted image 20250909151834.png]]<br>证书失败会报错的</p>
+<h2 id="Socket"><a href="#Socket" class="headerlink" title="Socket"></a>Socket</h2><p>Socket 就是为网络服务提供的一种机制，通讯的两端都必须有 Socket(套接字,就是接口的意思)，<em>网络通讯其实就是 Socket 间的通讯</em>，数据在两个 Socket 间通过 IO 传输，IP 地址标识 Internet 上的计算机，端口号标识正在计算机上运行的进程（程序）。端口号与 IP 地址的组合得出一个网络套接字。</p>
+<p>创建 Socket 连接时，可以指定使用的传输层协议，Socket 可以支持不同的传输层协议（TCP 或 UDP），当使用 TCP 协议进行连接时，该 Socket 连接就是一个 TCP 连接。</p>
+<p><strong>socket 则是对 TCP&#x2F;IP 协议的封装和应用</strong></p>
+<p>1）创建客户端对象： Socket(String host,int port)，指定要接收的IP地址和端口号<br>2）创建服务端对象：ServerSocket(int port)：指定接收的客户端的端口<br>3）Socket accept()：侦听并接受到此套接字的连接，服务器用于接收客户端socket对象的方法<br>主要通过S.getOutputstream和S.getInputSteram<br>注：服务器没有 socket 流，也就没有读写操作的流，服务器是通过获取到客户端的 socket 流（accept）然后获取到其中的读写方法，对数据进行操作的，也正是因为这样服务器与客户端的数据操作才不会错乱</p>
+<h3 id="UDP-传输的流程"><a href="#UDP-传输的流程" class="headerlink" title="UDP 传输的流程"></a><strong>UDP 传输的流程</strong></h3><p>创建 UDPSocket 发送服务对象：DatagramSocket ()，可不指定端口<br>创建 UDPSocket 接收服务对象：DatagramSocket (int port),<br>发送：void send (DatagramPacket p)<br>接收：void receive (DatagramPacket p)</p>
+<h3 id="TCP-传输流程"><a href="#TCP-传输流程" class="headerlink" title="TCP 传输流程"></a><strong>TCP 传输流程</strong></h3><p>Socket (客户端)和 ServiceSocket 服务端()<br>建立客户端和服务端<br>建立连接后，通过 socket 中的 IO 流进行数据的传输<br>关闭 socket</p>
+<p>1）创建客户端对象： Socket (String host, int port)，指定要接收的 IP 地址和端口号<br>2）创建服务端对象：ServerSocket (int port)：指定接收的客户端的端口<br>3）Socket accept ()：侦听并接受到此套接字的连接，服务器用于接收客户端 socket 对象的方法<br>主要通过S.getOutputstream 和S.getInputSteram<br>注：服务器没有 socket 流，也就没有读写操作的流，服务器是通过获取到客户端的 socket 流（accept）然后获取到其中的读写方法，对数据进行操作的，也正是因为这样服务器与客户端的数据操作才不会错乱</p>
+<p>定义 tcp 的服务端  <br>建立服务端的 socket 服务，ServerSocket，并监听一个端口  <br>获取连接过来的客服端对象，通过 ServerSokcet 的 accept 方法。没有连接就会等，所以这个方法阻塞式的。  <br>客户端如果发过来数据，那么服务端要使用对应的客户端对象，并获取到该客户端对象的读取流来读取发过来的数据。  <br>关闭服务端（可选）  <br>    <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs java">```<br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">TCPServerDemo</span> &#123;<br>	<span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> IOException &#123;<br>		<span class="hljs-comment">// 建立服务端的socket服务，并监听一个端口</span><br>		<span class="hljs-type">ServerSocket</span> <span class="hljs-variable">ss</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ServerSocket</span>(<span class="hljs-number">10003</span>);<br>		<span class="hljs-comment">// 通过accept方法获取连接过来的客户端对象</span><br>		<span class="hljs-type">Socket</span> <span class="hljs-variable">socket</span> <span class="hljs-operator">=</span> ss.accept();<br>		<span class="hljs-type">String</span> <span class="hljs-variable">ip</span> <span class="hljs-operator">=</span> socket.getInetAddress().getHostAddress();<br>		System.out.println(ip + <span class="hljs-string">&quot;......connected&quot;</span>);<br>		<span class="hljs-comment">// 获取客户端发过来的数据，那么要使用客户端对象的读取流来获取数据</span><br>		<span class="hljs-type">InputStream</span> <span class="hljs-variable">in</span> <span class="hljs-operator">=</span> socket.getInputStream();<br>		<span class="hljs-type">byte</span>[] buf = <span class="hljs-keyword">new</span> <span class="hljs-title class_">byte</span>[<span class="hljs-number">1024</span>];<br>		<span class="hljs-type">int</span> <span class="hljs-variable">len</span> <span class="hljs-operator">=</span> in.read(buf);<br>		System.out.println(<span class="hljs-keyword">new</span> <span class="hljs-title class_">String</span>(buf, <span class="hljs-number">0</span>, len));<br>		socket.close();<span class="hljs-comment">// 关闭客户端</span><br>		ss.close();<span class="hljs-comment">// 关闭服务端，可选的操作</span><br>	&#125;<br>&#125;<br></code></pre></td></tr></table></figure></p>
+<p>tcp 分为客户端和服务端，客服端对象的对象是 socket，服务端对应的是 serversoceket  <br>客户端，在建立的时候就可以去连接指定的主机  <br>因为 tcp 是面向连接的，所以在建立 socket 时就需要有服务端存在  <br>并连接成功，形成通路，才能在该通道上传输数据  </p>
+<figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs arduino"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">TCPClientDemo</span> &#123;  <br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-type">static</span> <span class="hljs-type">void</span> <span class="hljs-title">main</span><span class="hljs-params">(<span class="hljs-type">String</span>[] args)</span> throws Exception </span>&#123;  <br>        <span class="hljs-comment">//1、创建客户端的socket服务，指定目的主机和端口  </span><br>        Socke1<br>    &#125;  <br>&#125;  <br></code></pre></td></tr></table></figure>
+
+<h2 id="Http缓存"><a href="#Http缓存" class="headerlink" title="Http缓存"></a>Http缓存</h2><p>Pragma和Cache-control共存时，Pragma的优先级是比Cache-Control高的。<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%BD%91%E7%BB%9C%E7%9B%B8%E5%85%B3%E7%9F%A5%E8%AF%86.resources/2023/09/15/18-24-33-29ace7c2e4c48cff4f2b6ddc8cfa28c5-unknown_filename.2-24b40a.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.2"><br>only-if-cached表示不进行网络请求，完全只使用缓存，若缓存不命中，则返回503错误</p>
+<ul>
+<li>max-age:告知缓存多长时间，在没有超过缓存时间的情况下，请求会返回缓存内的数据，在超出max-age的情况下向服务端发起新的请求，请求失败的情况下返回缓存数据（测试中已验证），否则向服务端重新发起请求。</li>
+<li>max-stale:指示客户机可以接收超出max-age时间的响应消息，max-stale在请求设置中有效，在响应设置中无效。因此max-age和max-stale在请求中同时使用的情况下，缓存的时间可以为max-age和max-stale的和。</li>
+</ul>
+<p>OKHTTP 一般控制缓存有两种方式：<br>1、在request里面去设置cacheControl()策略<br>2、在header里面去添加cache-control</p>
+<p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/dbda0bb8d541">Android okhttp缓存真正正确的实现方式</a></p>
+<p>有网时不缓存，没网时设置缓存，通过Cache-Control和max-age</p>
+<figure class="highlight haxe"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><code class="hljs haxe"><span class="hljs-keyword">public</span> <span class="hljs-title class_"><span class="hljs-keyword">class</span> <span class="hljs-title">HttpCacheInterceptor</span> <span class="hljs-keyword"><span class="hljs-keyword">implements</span> <span class="hljs-type">Interceptor</span></span> </span>&#123;<br><br><span class="hljs-meta">@Overridepublic Response intercept</span>(Chain chain) throws IOException &#123;<br>    Request request = chain.request();<br>    <span class="hljs-keyword">if</span> (!NetWorkHelper.isNetConnected(MainApplication.getContext())) &#123;<br>        request = request.<span class="hljs-keyword">new</span><span class="hljs-type">Builder</span>()<br>                .cacheControl(CacheControl.FORCE_CACHE)<br>                .build();<br>    &#125;<br><br>    Response response = chain.proceed(request);<br><br>    <span class="hljs-keyword">if</span> (NetWorkHelper.isNetConnected(MainApplication.getContext())) &#123;<br>        int maxAge = <span class="hljs-number">60</span> * <span class="hljs-number">60</span>; <span class="hljs-comment">// 如果想要不缓存，直接时间设置为0，但是需要保存下来吧</span><br>        response.<span class="hljs-keyword">new</span><span class="hljs-type">Builder</span>()<br>                .removeHeader(<span class="hljs-string">&quot;Pragma&quot;</span>)<br>                .header(<span class="hljs-string">&quot;Cache-Control&quot;</span>, <span class="hljs-string">&quot;public, max-age=&quot;</span> + maxAge)<br>                .build();<br>    &#125; <span class="hljs-keyword">else</span> &#123;<br>        int maxStale = <span class="hljs-number">60</span> * <span class="hljs-number">60</span> * <span class="hljs-number">24</span> * <span class="hljs-number">28</span>; <span class="hljs-comment">// tolerate 4-weeks stale</span><br>        response.<span class="hljs-keyword">new</span><span class="hljs-type">Builder</span>()<br>                .removeHeader(<span class="hljs-string">&quot;Pragma&quot;</span>)<br>                .header(<span class="hljs-string">&quot;Cache-Control&quot;</span>, <span class="hljs-string">&quot;public, only-if-cached, max-stale=&quot;</span> + maxStale)<br>                .build();<br>    &#125;<br>    <span class="hljs-keyword">return</span> response;<br>  &#125;&#125;<br><br>  <span class="hljs-comment">//设置缓存100M</span><br>        Cache cache = <span class="hljs-keyword">new</span> <span class="hljs-type">Cache</span>(<span class="hljs-keyword">new</span> <span class="hljs-type">File</span>(MainApplication.getContext().getCacheDir(),<span class="hljs-string">&quot;httpCache&quot;</span>),<span class="hljs-number">1024</span> * <span class="hljs-number">1024</span> * <span class="hljs-number">100</span>);<br>        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-type">OkHttpClient</span>.Builder()<br>            .cache(cache)<br>            .addNetworkInterceptor(<span class="hljs-keyword">new</span> <span class="hljs-type">HttpCacheInterceptor</span>())<br>            .build();<br><br><br></code></pre></td></tr></table></figure>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p><strong>get和post的区别</strong><br>get提交：提交的信息都显示在地址栏中，对于敏感数据不安全，传送的数据量较小,不能大于2KB，因为地址栏存储体积有限。将信息封装到了请求的请求行中。<br>post提交：提交的信息不显示在地址栏中，对于敏感数据安全，可以提交大体积数据。将信息封装到了请求体中</p>
+<p><strong>Cookie</strong><br>Session和Cookie是一种记录客户端状态的机制的话是由服务器发给客户端特殊信息，而这些信息以文本文件的方式存放在客户端，然后客户端每次向服务器发送请求的时候都会在headers里带上这些特殊的信息</p>
+<p>Cookie 的作⽤<br>会话管理：登录状态、购物⻋<br>个性化：⽤户偏好、主题<br>Tracking：分析⽤户⾏为</p>
+<p><strong>Session</strong><br>不同于Cookie保存在客户端中，他是保存在服务器上。<br>session 的工作原理<br>1．第一步创建Session<br>2．在创建了Session的同时，服务器会为该Session生成唯一的Session id<br>3．在Session被创建之后，就可以调用Session相关的方法往Session中增加内容<br>4．当客户端再次发送请求的时候，会将这个Session id带上，服务器接受到请求之后就会依据Session id找到相应的Session</p>
+<p><strong>cookie和session 的区别</strong><br>1．存放位置不同<br>2．存取方式的不同<br>3．安全性（隐私策略）的不同<br>4．有效期上的不同<br>5．对服务器造成的压力不同</p>
+<p><strong>URI和 URL</strong><br>统一资源标识符（URI）用于标识某一互联网资源，而统一资源定位符（URL）表示资源的地点（互联网上所处的位置）。所以 URL 是 URI 的子集。URI:http：，https：，ftp：，本地文件系统(file：)，和Jar文件(jar：)。</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%BD%91%E7%BB%9C%E7%9B%B8%E5%85%B3%E7%9F%A5%E8%AF%86.resources/2023/09/15/18-24-33-9b39893ad0c1b0e07a6540c8c308707f-unknown_filename.1-a0fd1b.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.1"></p>
+<p><strong>如何上传</strong><br>用post，通过表单，不过结构单一，比较繁琐，还可以通过将数据转换成jsonstring、文件、string（base64）来上传，如果是多个图片可以写个循环上传。在上传的时候可以在head添加content-type告诉服务器这是什么数据</p>
+<p><strong>多线程断点下载</strong><br>单线程的话从输入流的第0个字节读取</p>
+<p>原理：服务器CPU分配给每条线程的时间片相同，服务器带宽平均分配给每条线程，所以客户端开启的线程越多，就能抢占到更多的服务器资源。所以要用多线程去读取。</p>
+<p>请求网络时首先获取资源长度设置被进度条，然后除以要开启的线程数，计算出每个线程应该下载多少字节。然后每个线程去请求网络读取数据。</p>
+<figure class="highlight axapta"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs axapta"><span class="hljs-comment">//设置本次http请求所请求的数据的区间</span><br>conn.setRequestProperty(<span class="hljs-string">&quot;Range&quot;</span>, <span class="hljs-string">&quot;bytes=&quot;</span> + startIndex + <span class="hljs-string">&quot;-&quot;</span> + endIndex);<br><br><span class="hljs-comment">//请求部分数据，相应码是206</span><br><span class="hljs-keyword">if</span>(conn.getResponseCode() == <span class="hljs-number">206</span>)&#123;<br>	<span class="hljs-comment">//流里此时只有1/3原文件的数据</span><br>	InputStream <span class="hljs-keyword">is</span> = conn.getInputStream();<br><span class="hljs-built_in">int</span> length = conn.getContentLength();<br>    <br></code></pre></td></tr></table></figure>
+
+<p>特别注意： 对于移动端来说，如果不是比较大的文件，不建议使用这种方式上传，因为断点续传是通过分片上传实现的，上传单个文件需要进行多次网络请求，效率不高。</p>
+<hr>
+<p><strong>请求</strong></p>
+<p>* 请求行</p>
+<p>* 请求方式</p>
+<p>* POST、GET、HEAD、OPTIONS、DELETE、TRACE、PUT、CONNECT       <br>                    * 请求地址</p>
+<p>* 请求资源</p>
+<p>* 协议版本</p>
+<p>* HTTP&#x2F;1.1</p>
+<p>* 请求头<br>                    * 重要的头</p>
+<p>* If-Modified-Since        必须和响应头信息一起来完成控制本地的缓存。</p>
+<p>* Referer                当前的网页的来源。（防止盗链）</p>
+<p>* User-Agent          判断浏览器的版本（文件下载的时候）<br>                * 空行</p>
+<p>* 请求体</p>
+<p>* 封装post参数列表。</p>
+<p><strong>响应</strong></p>
+<p>* 响应行</p>
+<p>* 协议版本</p>
+<p>* HTTP&#x2F;1.1</p>
+<p>* 状态码</p>
+<p>200 ：请求成功处理，一切OK</p>
+<p>302 ：请求重定向</p>
+<p>304 ：服务器端资源没有改动，通知客户端查找本地缓存</p>
+<p>404 ：客户端访问资源不存在</p>
+<p>500 ：服务器内部出错<br>                * 响应头</p>
+<p>重要的头</p>
+<p>* Location                        和302一起完成重定向。</p>
+<p>* Last-Modified                和请求头If-Modified-Since一起控制缓存。和状态码304</p>
+<p>* Refresh                         完成页面的定时跳转</p>
+<p>* Content-Disposition      设置文件是以附件打开<br>                        * Expires: -1</p>
+<p>* Cache-Control: no-cache</p>
+<p>* Pragma: no-cache</p>
+<p>* 禁用缓存（网银系统）      <br>                * 空行</p>
+<p>* 响应体</p>
+<p>* 存放真正的数据。</p>
+<p>转发：找班长借钱，他自己找富班长借钱，一次请求<br>重定向：找班长借钱，发送一次请求，回了我没钱，返回状态码302，给副班长地址，再去找富班长借钱，又发送了一次</p>
+<p><strong>乱码的处理</strong><br>乱码的出现是因为服务器和客户端码表不一致导致<br>  &#x2F;&#x2F;手动指定码表<br>  text &#x3D; new String(bos.toByteArray(), “UTF-8”);</p>
+<p><strong>网络结构有哪些</strong></p>
+<p>C&#x2F;S  client&#x2F;server<br>特点：<br>该结构的软件，客户端和服务端都需要编写。<br>开发成本较高，维护较为麻烦。<br>好处：<br>客户端在本地可以分担一部分运算。（大型网游）<br>B&#x2F;S  browser&#x2F;server<br>特点：<br>该结构的软件，只开发服务器端，不开发客户端，因为客户端直接由浏览器取代。 <br>开发成本相对低，维护更为简单。（页游）<br>缺点：所有运算都要在服务端完成。</p>
+<p><strong>什么是内网外网</strong><br>私有网段地址， 内网IP有3种：第一种10.0.0.0～10.255.255.255，第二种172.16.0.0～172.31.255.255，第三种192.168.0.0～192.168.255.255</p>
+<p>运营商给你的100.64.* . * 也是私有地址，以前大家大家共享一个地址池，有随机的公网地址，现在公网地址更加紧张，运营商只给客户分配私网地址，然后nat后大家共享一个公网地址</p>
+<p>172.31.40.210内网<br>192.168.17.207外网</p>
+<p><strong>透明代理</strong></p>
+<p>透明代理就像任何其他类型的代理一样，客户端发送到 Web 服务器的请求在到达 Web 服务器之前会先到达透明代理。当您使用透明代理时，网站所有者知道您使用的是“HTTP_VIA”代理，也知道您的真实 IP。<br>HTTP_X_FORWARDED_FOR 标头将携带您的 IP 地址并启用 HTP_VIA，让网站知道该请求来自您，但通过代理服务器。毫无疑问，透明代理安全性比较低，但在某些情况下也是可以使用的，如用作身份验证的网关</p>
+<p><strong>在 Android 上发送 HTTP 请求的方式</strong></p>
+<p>一般有两种，HttpURLConnection和HttpClient，两种方式都支持HTTPS协议、以流的形式进行上传和下载、配置超时时间、IPv6、以及连接池等功能。HttpURLConnection的API提供的比较简单，可以更加容易地去使用和扩展它。而且速度快、还能节省电量。</p>
+<p>HttpURLConnection用法：</p>
+<pre><code class="hljs">发送GET请求
+</code></pre>
+<figure class="highlight abnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs abnf">  URL url <span class="hljs-operator">=</span> new URL(path)<span class="hljs-comment">;</span><br>  //获取连接对象<br>  HttpURLConnection conn <span class="hljs-operator">=</span> (HttpURLConnection) url.openConnection()<span class="hljs-comment">;</span><br>  //设置连接属性<br>  conn.setRequestMethod(<span class="hljs-string">&quot;GET&quot;</span>)<span class="hljs-comment">;</span><br>  conn.setConnectTimeout(<span class="hljs-number">5000</span>)<span class="hljs-comment">;</span><br>  conn.setReadTimeout(<span class="hljs-number">5000</span>)<span class="hljs-comment">;</span><br>  //建立连接，获取响应吗<br>  if(conn.getResponseCode() <span class="hljs-operator">=</span><span class="hljs-operator">=</span> <span class="hljs-number">200</span>)&#123;<br>//获取服务器响应头中的流，流里的数据就是客户端请求的数据<br>                            InputStream is <span class="hljs-operator">=</span> conn.getInputStream()<br>  &#125;<br></code></pre></td></tr></table></figure>
+<pre><code class="hljs">获取服务器返回的流，从流中把html源码读取出来
+流转换成string的方法第一种：
+</code></pre>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-type">byte</span>[] b = <span class="hljs-built_in">new</span> <span class="hljs-type">byte</span>[<span class="hljs-number">1024</span>];<br>  <span class="hljs-type">int</span> <span class="hljs-built_in">len</span> = <span class="hljs-number">0</span>;<br>  ByteArrayOutputStream bos = <span class="hljs-built_in">new</span> ByteArrayOutputStream();<br>  while((<span class="hljs-built_in">len</span> = is.read(b)) != <span class="hljs-number">-1</span>)&#123;<br>      <span class="hljs-comment">//把读到的字节先写入字节数组输出流中存起来</span><br>      bos.write(b, <span class="hljs-number">0</span>, <span class="hljs-built_in">len</span>);<br>  &#125;<br>  <span class="hljs-comment">//把字节数组输出流中的内容转换成字符串</span><br>  <span class="hljs-comment">//默认使用utf-8</span><br>  text = <span class="hljs-built_in">new</span> String(bos.toByteArray());    <br></code></pre></td></tr></table></figure>
+<pre><code class="hljs">//第二种：
+</code></pre>
+<figure class="highlight processing"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs processing"><span class="hljs-built_in">BufferedReader</span> reader = <span class="hljs-keyword">new  </span><span class="hljs-class title_">BufferedReader</span>(<span class="hljs-keyword">new </span><span class="hljs-class title_">InputStreamReader</span>(is));<br>        StringBuilder builder = <span class="hljs-keyword">new </span><span class="hljs-class title_">StringBuilder</span>();<br>        <span class="hljs-built_in">String</span> <span class="hljs-built_in">line</span>;<br>        <span class="hljs-keyword">while</span> ((<span class="hljs-built_in">line</span>=reader.<span class="hljs-property">readLine</span>())!=<span class="hljs-literal">null</span>) &#123;<br>            builder.<span class="hljs-property">append</span>(<span class="hljs-built_in">line</span>);<br>        &#125;<br>        <span class="hljs-built_in">String</span> <span class="hljs-built_in">text</span>=builder.<span class="hljs-property">toString</span>();<br><br></code></pre></td></tr></table></figure>
+<pre><code class="hljs">//第三种    
+</code></pre>
+<figure class="highlight haxe"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs haxe">Reader reader = <span class="hljs-literal">null</span>;<br>    reader = <span class="hljs-keyword">new</span> <span class="hljs-type">InputStreamReader</span>(stream, <span class="hljs-string">&quot;UTF-8&quot;</span>);<br>    char[] buffer = <span class="hljs-keyword">new</span> <span class="hljs-type">char</span>[len];<br>    reader.read(buffer);<br>    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-type">String</span>(buffer);<br><br><span class="hljs-comment">//图片的流</span><br>InputStream <span class="hljs-keyword">is</span> = <span class="hljs-literal">null</span>;<br>...<br>Bitmap bitmap = BitmapFactory.decodeStream(<span class="hljs-keyword">is</span>);<br>ImageView imageView = (ImageView) findViewById(R.id.image_view);<br>imageView.setImageBitmap(bitmap);<br></code></pre></td></tr></table></figure>
+
+<p>post</p>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs pgsql"><span class="hljs-keyword">connection</span>.setRequestMethod(&quot;POST&quot;);<br>DataOutputStream <span class="hljs-keyword">out</span> = <span class="hljs-built_in">new</span> DataOutputStream(<span class="hljs-keyword">connection</span>.getOutputStream());<br><span class="hljs-keyword">out</span>.writeBytes(&quot;username=admin&amp;password=123456&quot;);<br><br></code></pre></td></tr></table></figure>
+
+
+<p><strong>HttpUtils的使用</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">HttpUtil</span> &#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">sendHttpRequest</span><span class="hljs-params">(<span class="hljs-keyword">final</span> String address,</span><br><span class="hljs-params">            <span class="hljs-keyword">final</span> HttpCallbackListener listener)</span> &#123;<br>        <span class="hljs-keyword">new</span> <span class="hljs-title class_">Thread</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Runnable</span>() &#123;<br>            <span class="hljs-meta">@Override</span><br>            <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">run</span><span class="hljs-params">()</span> &#123;<br>                <span class="hljs-type">HttpURLConnection</span> <span class="hljs-variable">connection</span> <span class="hljs-operator">=</span> <span class="hljs-literal">null</span>;<br>                <span class="hljs-keyword">try</span> &#123;<br>                    <span class="hljs-type">URL</span> <span class="hljs-variable">url</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">URL</span>(address);<br>                    connection = (HttpURLConnection) url.openConnection();<br>                    connection.setRequestMethod(<span class="hljs-string">&quot;GET&quot;</span>);<br>                    connection.setConnectTimeout(<span class="hljs-number">8000</span>);<br>                    connection.setReadTimeout(<span class="hljs-number">8000</span>);<br>                    connection.setDoInput(<span class="hljs-literal">true</span>);<br>                    connection.setDoOutput(<span class="hljs-literal">true</span>);<br><br><br>                    <span class="hljs-type">InputStream</span> <span class="hljs-variable">in</span> <span class="hljs-operator">=</span> connection.getInputStream();<br>                    <span class="hljs-type">BufferedReader</span> <span class="hljs-variable">reader</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">BufferedReader</span>(<br>                            <span class="hljs-keyword">new</span> <span class="hljs-title class_">InputStreamReader</span>(in));<br>                    <span class="hljs-type">StringBuilder</span> <span class="hljs-variable">response</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">StringBuilder</span>();<br>                    String line;<br>                    <span class="hljs-keyword">while</span> ((line = reader.readLine()) != <span class="hljs-literal">null</span>) &#123;<br>                        response.append(line);<br>                    &#125;<br>                    <span class="hljs-keyword">if</span> (listener != <span class="hljs-literal">null</span>) &#123;<br>                        <span class="hljs-comment">// 回调onFinish()方法</span><br>                        listener.onFinish(response.toString());<br>                    &#125;<br>                &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;<br>                    <span class="hljs-keyword">if</span> (listener != <span class="hljs-literal">null</span>) &#123;<br>                        <span class="hljs-comment">// 回调onError()方法</span><br>                        listener.onError(e);<br>                    &#125;<br>                &#125; <span class="hljs-keyword">finally</span> &#123;<br>                    <span class="hljs-keyword">if</span> (connection != <span class="hljs-literal">null</span>) &#123;<br>                        connection.disconnect();<br>                    &#125;<br>                &#125;<br>            &#125;<br>        &#125;).start();<br>    &#125;<br>&#125;<br><br><br><br><br>HttpUtil.sendHttpRequest(address, <span class="hljs-keyword">new</span> <span class="hljs-title class_">HttpCallbackListener</span>() &#123;<br><span class="hljs-meta">@Override</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">onFinish</span><span class="hljs-params">(String response)</span> &#123;<br><span class="hljs-comment">// 在这里根据返回内容执行具体的逻辑</span><br>&#125;<br><span class="hljs-meta">@Override</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">onError</span><span class="hljs-params">(Exception e)</span> &#123;<br><span class="hljs-comment">// 在这里对异常情况进行处理</span><br>&#125;<br>&#125;);<br><br></code></pre></td></tr></table></figure>
+
+<p>这样的话，当服务器成功响应的时候我们就可以在 onFinish()方法里对响应数据进行处理了，类似地，如果出现了异常，就可以在 onError()方法里对异常情况进行处理。如此一来，我们就巧妙地利用回调机制将响应数据成功返回给调用方了。<br>另外需要注意的是，onFinish()方法和 onError()方法最终还是在子线程中运行的，因此我们不可以在这里执行任何的 UI操作，如果需要根据返回的结果来更新 UI，则仍然要使用异步消息处理机制。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Java/" class="category-chain-item">Java</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>5.网络相关知识</div>
+      <div>http://peiniwan.github.io/2025/12/499fe98e8149.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>六月的雨</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年12月16日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/12/0c812ea54f22.html" title="6.JVM">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">6.JVM</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/12/ca664aa74806.html" title="4.线程安全">
+                        <span class="hidden-mobile">4.线程安全</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"OwNIdaopOn1rwNhtotGOGC0B-gzGzoHsz","appKey":"eadytQ2XqWmxuvAKeg08XX83","path":"window.location.pathname","placeholder":null,"avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":true,"recordIP":false,"serverURLs":"https://ownidaop.lc-cn-n1-shared.com","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

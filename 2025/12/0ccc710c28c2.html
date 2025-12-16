@@ -1,0 +1,769 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="六月的雨">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="TypeScript语法基本语法 视频教程 ArkTS是HarmonyOS优选的主力应用开发语言。ArkTS围绕应用开发在TypeScript（简称TS，Microsoft）生态基础上做了进一步扩展，继承了TS的所有特性，是TS的超集。因此，在学习ArkTS语言之前，建议开发者具备TS语言开发能力。 基础let 、const、var作用域： var是函数作用域，这意味着如果你在函数内部使用 var">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ArkTS">
+<meta property="og:url" content="http://peiniwan.github.io/2025/12/0ccc710c28c2.html">
+<meta property="og:site_name" content="六月的雨的笔记">
+<meta property="og:description" content="TypeScript语法基本语法 视频教程 ArkTS是HarmonyOS优选的主力应用开发语言。ArkTS围绕应用开发在TypeScript（简称TS，Microsoft）生态基础上做了进一步扩展，继承了TS的所有特性，是TS的超集。因此，在学习ArkTS语言之前，建议开发者具备TS语言开发能力。 基础let 、const、var作用域： var是函数作用域，这意味着如果你在函数内部使用 var">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/picgo/picgo-clipboard-images/2023-11-13-11-28-84949712fa10d604e6d76b81d798dec2-2023-11-13-09-59-84949712fa10d604e6d76b81d798dec2-20231113095958-093387-8b310b.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/uploader/f/2023-11-14-11-25-d82ae865b1ec93ed1f401397c3afc45c-2023-11-14-11-24-d82ae865b1ec93ed1f401397c3afc45c-2023-11-13-11-28-d82ae865b1ec93ed1f401397c3afc45c-7gxOC8QP15pOC8Cf-672f0c-acd3af-8486b4.png">
+<meta property="article:published_time" content="2025-12-16T13:59:22.594Z">
+<meta property="article:modified_time" content="2024-03-13T06:50:00.000Z">
+<meta property="article:author" content="六月的雨">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/picgo/picgo-clipboard-images/2023-11-13-11-28-84949712fa10d604e6d76b81d798dec2-2023-11-13-09-59-84949712fa10d604e6d76b81d798dec2-20231113095958-093387-8b310b.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>ArkTS - 六月的雨的笔记</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"peiniwan.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>六月的雨的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="ArkTS"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-12-16 21:59" pubdate>
+          2025年12月16日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          20 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">ArkTS</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="TypeScript语法"><a href="#TypeScript语法" class="headerlink" title="TypeScript语法"></a>TypeScript语法</h1><p><a target="_blank" rel="noopener" href="https://developer.harmonyos.com/cn/docs/documentation/doc-guides-V3/arkts-get-started-0000001504769321-V3">基本语法</a></p>
+<p><a target="_blank" rel="noopener" href="https://developer.harmonyos.com/cn/docs/documentation/doc-guides-V3/video-tutorials-0000001443535745-V3">视频教程</a><br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/picgo/picgo-clipboard-images/2023-11-13-11-28-84949712fa10d604e6d76b81d798dec2-2023-11-13-09-59-84949712fa10d604e6d76b81d798dec2-20231113095958-093387-8b310b.png" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<p>ArkTS是HarmonyOS优选的主力应用开发语言。ArkTS围绕应用开发在<a target="_blank" rel="noopener" href="https://www.typescriptlang.org/">TypeScript</a>（简称TS，Microsoft）生态基础上做了进一步扩展，继承了TS的所有特性，是TS的超集。因此，在学习ArkTS语言之前，建议开发者具备TS语言开发能力。</p>
+<h2 id="基础"><a href="#基础" class="headerlink" title="基础"></a>基础</h2><p>let 、const、var<br><strong>作用域</strong>： <code>var</code>是函数作用域，这意味着如果你在函数内部使用 <code>var</code> 声明一个变量，那么这个变量在整个函数内部都可以访问。而 <code>let</code> 是块级作用域，只能在声明它的块或子块中访问。<br>使用 let 可以减少由于编程错误或误解引起的bug数量，并且强制执行更强大、更易理解、更可预测的编程模式。</p>
+<p>TypeScript 提供了 <code>string</code> 关键字来表示字符串类型，使用单引号（<code>&#39;</code>）或双引号（<code>&quot;</code>）来表示字符串类型，也可以使用反引号（**&#96;**）来定义多行文本和内嵌表达式。</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs typescript"><span class="hljs-keyword">let</span> <span class="hljs-attr">list</span>: <span class="hljs-built_in">number</span>[] = [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>];<br><span class="hljs-keyword">let</span> <span class="hljs-attr">list</span>: <span class="hljs-title class_">Array</span>&lt;<span class="hljs-built_in">number</span>&gt; = [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>];<br><span class="hljs-comment">//元组</span><br><span class="hljs-keyword">let</span> <span class="hljs-attr">x</span>: [<span class="hljs-built_in">string</span>, <span class="hljs-built_in">number</span>];<br>x = [<span class="hljs-string">&#x27;hello&#x27;</span>, <span class="hljs-number">10</span>]; <span class="hljs-comment">// OK</span><br>x = [<span class="hljs-number">10</span>, <span class="hljs-string">&#x27;hello&#x27;</span>]; <span class="hljs-comment">// Error</span><br><br><span class="hljs-keyword">enum</span> <span class="hljs-title class_">Color</span> &#123;<span class="hljs-title class_">Red</span>, <span class="hljs-title class_">Green</span>, <span class="hljs-title class_">Blue</span>&#125;;<br><span class="hljs-keyword">let</span> <span class="hljs-attr">c</span>: <span class="hljs-title class_">Color</span> = <span class="hljs-title class_">Color</span>.<span class="hljs-property">Green</span>;<br><br><span class="hljs-keyword">let</span> <span class="hljs-attr">notSure</span>: <span class="hljs-built_in">unknown</span> = <span class="hljs-number">4</span>;<br>notSure = <span class="hljs-string">&#x27;maybe a string instead&#x27;</span>;<br>notSure = <span class="hljs-literal">false</span>;<br><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">test</span>(<span class="hljs-params"></span>): <span class="hljs-built_in">void</span> &#123;<br>   <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&#x27;This is function is void&#x27;</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>可选参数</p>
+<figure class="highlight zephir"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs zephir"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">buildName</span><span class="hljs-params">(firstName: <span class="hljs-keyword">string</span>, lastName?: <span class="hljs-keyword">string</span>)</span> </span>&#123;<br>    <span class="hljs-keyword">if</span> (lastName)<br>        <span class="hljs-keyword">return</span> firstName + <span class="hljs-string">&#x27; &#x27;</span> + lastName;<br>    <span class="hljs-keyword">else</span><br>        <span class="hljs-keyword">return</span> firstName;<br>&#125;<br><br><span class="hljs-keyword">let</span> result1 = buildName(<span class="hljs-string">&#x27;Bob&#x27;</span>);<br><span class="hljs-keyword">let</span> result2 = buildName(<span class="hljs-string">&#x27;Bob&#x27;</span>, <span class="hljs-string">&#x27;Adams&#x27;</span>); <br></code></pre></td></tr></table></figure>
+<p><strong>箭头函数</strong><br>ES6版本的TypeScript提供了一个箭头函数，它是定义匿名函数的简写语法，用于函数表达式，它省略了function关键字。箭头函数的定义如下，其函数是一个语句块：</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs dart">( [param1, parma2,…param n] )=&gt; &#123;<br>    <span class="hljs-comment">// 代码块</span><br>&#125;<br></code></pre></td></tr></table></figure>
+<p>其中，括号内是函数的入参，可以有0到多个参数，箭头后是函数的代码块。我们可以将这个箭头函数赋值给一个变量，如下所示：</p>
+<figure class="highlight arcade"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs arcade">let arrowFun = <span class="hljs-function">(<span class="hljs-params"> [param1, parma2,…param n] </span>)=&gt;</span> &#123;<br>    <span class="hljs-comment">// 代码块</span><br>&#125;<br></code></pre></td></tr></table></figure>
+<p>类：和Java类似，有new、extends、this、public、private、protected</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs typescript"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Person</span> &#123;<br>  <span class="hljs-keyword">private</span> <span class="hljs-attr">name</span>: <span class="hljs-built_in">string</span><br>  <span class="hljs-keyword">private</span> <span class="hljs-attr">age</span>: <span class="hljs-built_in">number</span><br><br>  <span class="hljs-title function_">constructor</span>(<span class="hljs-params">name: <span class="hljs-built_in">string</span>, age: <span class="hljs-built_in">number</span></span>) &#123;<br>    <span class="hljs-variable language_">this</span>.<span class="hljs-property">name</span> = name;<br>    <span class="hljs-variable language_">this</span>.<span class="hljs-property">age</span> = age;<br>  &#125;<br><br>  <span class="hljs-keyword">public</span> <span class="hljs-title function_">getPersonInfo</span>(): <span class="hljs-built_in">string</span> &#123;<br>    <span class="hljs-keyword">return</span> <span class="hljs-string">`My name is <span class="hljs-subst">$&#123;<span class="hljs-variable language_">this</span>.name&#125;</span> and age is <span class="hljs-subst">$&#123;<span class="hljs-variable language_">this</span>.age&#125;</span>`</span>;<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>for..of和for..in均可迭代一个列表，但是用于迭代的值却不同：for..in迭代的是对象的键，而for..of则迭代的是对象的值。</p>
+<figure class="highlight maxima"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs maxima"><span class="hljs-built_in">let</span> list = [<span class="hljs-number">4</span>, <span class="hljs-number">5</span>, <span class="hljs-number">6</span>];<br><br><span class="hljs-keyword">for</span> (<span class="hljs-built_in">let</span> i <span class="hljs-keyword">in</span> list) &#123;<br>    console.<span class="hljs-built_in">log</span>(i); // <span class="hljs-string">&quot;0&quot;</span>, <span class="hljs-string">&quot;1&quot;</span>, <span class="hljs-string">&quot;2&quot;</span>,<br>&#125;<br><br><span class="hljs-keyword">for</span> (<span class="hljs-built_in">let</span> i of list) &#123;<br>    console.<span class="hljs-built_in">log</span>(i); // <span class="hljs-string">&quot;4&quot;</span>, <span class="hljs-string">&quot;5&quot;</span>, <span class="hljs-string">&quot;6&quot;</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+<h2 id="module"><a href="#module" class="headerlink" title="module"></a>module</h2><p>随着应用越来越大，通常要将代码拆分成多个文件，即所谓的模块（module）<br>两个模块之间的关系是通过在文件级别上使用 import 和 export 建立的。模块里面的变量、函数和类等在模块外部是不可见的，除非明确地使用 export 导出它们。类似地，我们必须通过 import 导入其他模块导出的变量、函数、类等。</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs typescript"><span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">NewsData</span> &#123;<br>  <span class="hljs-attr">title</span>: <span class="hljs-built_in">string</span>;<br>  <span class="hljs-attr">content</span>: <span class="hljs-built_in">string</span>;<br>  <span class="hljs-attr">imagesUrl</span>: <span class="hljs-title class_">Array</span>&lt;<span class="hljs-title class_">NewsFile</span>&gt;;<br>  <span class="hljs-attr">source</span>: <span class="hljs-built_in">string</span>;<br><br>  <span class="hljs-title function_">constructor</span>(<span class="hljs-params">title: <span class="hljs-built_in">string</span>, content: <span class="hljs-built_in">string</span>, imagesUrl: <span class="hljs-built_in">Array</span>&lt;NewsFile&gt;, source: <span class="hljs-built_in">string</span></span>) &#123;<br>    <span class="hljs-variable language_">this</span>.<span class="hljs-property">title</span> = title;<br>    <span class="hljs-variable language_">this</span>.<span class="hljs-property">content</span> = content;<br>    <span class="hljs-variable language_">this</span>.<span class="hljs-property">imagesUrl</span> = imagesUrl;<br>    <span class="hljs-variable language_">this</span>.<span class="hljs-property">source</span> = source;<br>  &#125;<br>&#125;<br><br><span class="hljs-keyword">import</span> &#123; <span class="hljs-title class_">NewsData</span> &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;../common/bean/NewsData&#x27;</span>;<br></code></pre></td></tr></table></figure>
+
+
+<h1 id="ArkTS"><a href="#ArkTS" class="headerlink" title="ArkTS"></a>ArkTS</h1><h2 id="基本UI描述"><a href="#基本UI描述" class="headerlink" title="基本UI描述"></a>基本UI描述</h2><p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/uploader/f/2023-11-14-11-25-d82ae865b1ec93ed1f401397c3afc45c-2023-11-14-11-24-d82ae865b1ec93ed1f401397c3afc45c-2023-11-13-11-28-d82ae865b1ec93ed1f401397c3afc45c-7gxOC8QP15pOC8Cf-672f0c-acd3af-8486b4.png" srcset="/img/loading.gif" lazyload></p>
+<ul>
+<li>装饰器：用来装饰类、结构体、方法以及变量，赋予其特殊的含义，如上述示例中 @Entry 、 @Component 、 @State 都是装饰器。具体而言， @Component 表示这是个自定义组件； @Entry 则表示这是个入口组件； @State 表示组件中的状态变量，这个状态变化会引起 UI 变更。</li>
+<li>自定义组件：可复用的 UI 单元，可组合其它组件，如上述被 @Component 装饰的 struct Hello。</li>
+</ul>
+<p>ArkTS通过装饰器@Component和@Entry装饰struct关键字声明的数据结构，构成一个自定义组件。自定义组件中提供了一个build函数，开发者需在该函数内以链式调用的方式进行基本的UI描述，UI描述的方法请参考UI描述规范。</p>
+<h3 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h3><ul>
+<li>*<strong>struct</strong>：自定义组件可以基于struct实现，不能有继承关系，对于struct的实例化，可以省略new。</li>
+<li>*<strong>装饰器</strong>：装饰器给被装饰的对象赋予某一种能力，其不仅可以装饰类或结构体，还可以装饰类的属性。多个装饰器可以叠加到目标元素上，定义在同一行中或者分开多行，推荐分开多行定义。<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs less"><span class="hljs-variable">@Entry</span><br><span class="hljs-variable">@Component</span><br>struct MyComponent &#123;<br>&#125;<br></code></pre></td></tr></table></figure></li>
+</ul>
+<ul>
+<li>@Component：装饰struct，结构体在装饰后具有基于组件的能力，需要实现build方法来创建UI。</li>
+<li>@Entry： 装饰struct，组件被装饰后作为页面的入口，页面加载时将被渲染显示</li>
+<li>@Preview：装饰struct， 用@Preview装饰的自定义组件可以在DevEco Studio的预览器上进行实时预览，加载页面时，将创建并显示@Preview装饰的自定义组件。</li>
+</ul>
+<h2 id="状态管理"><a href="#状态管理" class="headerlink" title="状态管理"></a>状态管理</h2><p><a target="_blank" rel="noopener" href="https://developer.harmonyos.com/cn/docs/documentation/doc-guides/ets-state-mgmt-concepts-0000001169868220">基本概念-状态管理-ArkTS语法（声明式UI）-学习ArkTS语言-开发基础知识-入门-HarmonyOS应用开发</a><br>ArkTS提供了多维度的状态管理机制，在UI开发框架中，和UI相关联的数据，不仅可以在组件内使用，还可以在不同组件层级间传递，比如父子组件之间、爷孙组件之间，也可以是全局范围内的传递。另外，从数据的传递形式来看，可分为<strong>只读的单向传递和可变更的双向传递</strong></p>
+<h3 id="页面级变量的状态管理"><a href="#页面级变量的状态管理" class="headerlink" title="页面级变量的状态管理"></a>页面级变量的状态管理</h3><p><a target="_blank" rel="noopener" href="https://developer.harmonyos.com/cn/docs/documentation/doc-guides/ets-state-mgmt-page-level-0000001149818711">页面级变量的状态管理-状态管理-ArkTS语法（声明式UI）-学习ArkTS语言-开发基础知识-入门-HarmonyOS应用开发</a></p>
+<h4 id="State"><a href="#State" class="headerlink" title="@State"></a>@State</h4><p>@State装饰的变量是组件内部的状态数据，<strong>当这些状态数据被修改时，将会调用所在组件的build方法进行UI刷新</strong>。</p>
+<ul>
+<li>支持多种类型数据：支持class、number、boolean、string强类型数据的值类型和引用类型，<strong>不支持object和any</strong>。</li>
+<li>内部私有：标记为@State的属性是私有变量，只能在组件内访问</li>
+<li>需要本地初始化：必须为所有@State变量分配初始值</li>
+</ul>
+<h4 id="Prop"><a href="#Prop" class="headerlink" title="@Prop"></a>@Prop</h4><p>@Prop与@State有相同的语义，但初始化方式不同。@Prop装饰的变量必须使用其父组件提供的@State变量进行初始化，允许组件内部修改@Prop变量，<strong>但变量的更改不会通知给父组件，父组件变量的更改会同步到@prop装饰的变量，即@Prop属于单向数据绑定</strong>。<br>@Prop状态数据具有以下特征：</p>
+<ul>
+<li>支持简单类型：仅支持number、string、boolean等简单数据类型；</li>
+<li>私有：仅支持组件内访问；</li>
+<li>支持多个实例：一个组件中可以定义多个标有@Prop的属性；</li>
+<li>创建自定义组件时将值传递给@Prop变量进行初始化：在创建组件的新实例时，必须初始化所有@Prop变量，<strong>不支持在组件内部进行初始化</strong>。</li>
+</ul>
+<p>&#x3D;&#x3D;实现子组件从父子组件单向状态同步 : @State和@Prop&#x3D;&#x3D;</p>
+<h4 id="Link"><a href="#Link" class="headerlink" title="@Link"></a>@Link</h4><p>@Link装饰的变量可以和父组件的@State变量建立双向数据绑定，@Link变量不能在组件内部进行初始化。<br>我们对于视图更新，可以使用<code>@State</code> 标记变量，但是<code>@State</code>不能进行跨文件使用。这个时候<code>@Link</code>的实现就弥补了<code>@State</code>的不足。使用<code>@Link</code>的话。子组件中被<code>@Link</code>装饰的变量与其父组件中对应的数据源建立双向数据绑定。</p>
+<p>&#x3D;&#x3D;子组件@Link装饰的变量可以和父组件的@State变量建立双向数据绑定。&#x3D;&#x3D;</p>
+<h4 id="Observed和ObjectLink数据管理"><a href="#Observed和ObjectLink数据管理" class="headerlink" title="@Observed和ObjectLink数据管理"></a>@Observed和ObjectLink数据管理</h4><p>当开发者只想针对父组件中某个数据对象的部分信息进行同步时，使用@Link就不能满足要求。如果这些部分信息是一个类对象，就可以使用@ObjectLink配合@Observed来实现，如下图所示。</p>
+<ul>
+<li>@Observed用于类，@ObjectLink用于变量。</li>
+<li>@ObjectLink装饰的变量类型必须为类（class type）。<ul>
+<li>类要被@Observed装饰器所装饰。</li>
+<li>不支持简单类型参数，可以使用@Prop进行单向同步。<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><code class="hljs stylus"><span class="hljs-comment">// xxx.ets</span><br><span class="hljs-comment">// 父组件ViewB中的类对象ClassA与子组件ViewA保持数据同步时，可以使用@ObjectLink和@Observed，绑定该数据对象的父组件和其他子组件同步更新</span><br><span class="hljs-selector-tag">var</span> nextID: number = <span class="hljs-number">0</span><br><br>@Observed<br>class ClassA &#123;<br>  public name: string<br>  public c: number<br>  public id: number<br><br>  <span class="hljs-built_in">constructor</span>(c: number, name: string = <span class="hljs-string">&#x27;OK&#x27;</span>) &#123;<br>    this<span class="hljs-selector-class">.name</span> = name<br>    this<span class="hljs-selector-class">.c</span> = c<br>    this<span class="hljs-selector-class">.id</span> = nextID++<br>  &#125;<br>&#125;<br><br>@Component<br>struct ViewA &#123;<br>  <span class="hljs-selector-tag">label</span>: string = <span class="hljs-string">&#x27;ViewA1&#x27;</span><br>  @ObjectLink <span class="hljs-selector-tag">a</span>: ClassA<br><br>  <span class="hljs-built_in">build</span>() &#123;<br>    <span class="hljs-built_in">Row</span>() &#123;<br>      <span class="hljs-built_in">Button</span>(`ViewA <span class="hljs-selector-attr">[$&#123;this.label&#125;]</span> this<span class="hljs-selector-class">.a</span>.c= $&#123;this<span class="hljs-selector-class">.a</span>.c&#125; +<span class="hljs-number">1</span>`)<br>        <span class="hljs-selector-class">.onClick</span>(() =&gt; &#123;<br>          this<span class="hljs-selector-class">.a</span><span class="hljs-selector-class">.c</span> += <span class="hljs-number">1</span><br>        &#125;)<br>    &#125;<span class="hljs-selector-class">.margin</span>(&#123; <span class="hljs-attribute">top</span>: <span class="hljs-number">10</span> &#125;)<br>  &#125;<br>&#125;<br><br>@Entry<br>@Component<br>struct ViewB &#123;<br>  @State arrA: ClassA<span class="hljs-selector-attr">[]</span> = <span class="hljs-selector-attr">[new ClassA(0), new ClassA(0)]</span><br><br>  <span class="hljs-built_in">build</span>() &#123;<br>    <span class="hljs-built_in">Column</span>() &#123;<br>      <span class="hljs-built_in">ForEach</span>(this<span class="hljs-selector-class">.arrA</span>, (item) =&gt; &#123;<br>        <span class="hljs-built_in">ViewA</span>(&#123; <span class="hljs-selector-tag">label</span>: `#$&#123;item.id&#125;`, <span class="hljs-selector-tag">a</span>: item &#125;)<br>      &#125;, (item) =&gt; item<span class="hljs-selector-class">.id</span><span class="hljs-selector-class">.toString</span>())<br>      <span class="hljs-built_in">ViewA</span>(&#123; <span class="hljs-selector-tag">label</span>: `this<span class="hljs-selector-class">.arrA</span><span class="hljs-selector-attr">[first]</span>`, <span class="hljs-selector-tag">a</span>: this<span class="hljs-selector-class">.arrA</span><span class="hljs-selector-attr">[0]</span> &#125;)<br>      <span class="hljs-built_in">ViewA</span>(&#123; <span class="hljs-selector-tag">label</span>: `this<span class="hljs-selector-class">.arrA</span><span class="hljs-selector-attr">[last]</span>`, <span class="hljs-selector-tag">a</span>: this<span class="hljs-selector-class">.arrA</span><span class="hljs-selector-attr">[this.arrA.length - 1]</span> &#125;)<br><br>      <span class="hljs-built_in">Button</span>(`ViewB: reset array`)<br>        <span class="hljs-selector-class">.margin</span>(&#123; <span class="hljs-attribute">top</span>: <span class="hljs-number">10</span> &#125;)<br>        <span class="hljs-selector-class">.onClick</span>(() =&gt; &#123;<br>          this<span class="hljs-selector-class">.arrA</span> = <span class="hljs-selector-attr">[new ClassA(0), new ClassA(0)]</span><br>        &#125;)<br>      <span class="hljs-built_in">Button</span>(`ViewB: push`)<br>        <span class="hljs-selector-class">.margin</span>(&#123; <span class="hljs-attribute">top</span>: <span class="hljs-number">10</span> &#125;)<br>        <span class="hljs-selector-class">.onClick</span>(() =&gt; &#123;<br>          this<span class="hljs-selector-class">.arrA</span><span class="hljs-selector-class">.push</span>(new <span class="hljs-built_in">ClassA</span>(<span class="hljs-number">0</span>))<br>        &#125;)<br>      <span class="hljs-built_in">Button</span>(`ViewB: shift`)<br>        <span class="hljs-selector-class">.margin</span>(&#123; <span class="hljs-attribute">top</span>: <span class="hljs-number">10</span> &#125;)<br>        <span class="hljs-selector-class">.onClick</span>(() =&gt; &#123;<br>          this<span class="hljs-selector-class">.arrA</span><span class="hljs-selector-class">.shift</span>()<br>        &#125;)<br>    &#125;<span class="hljs-selector-class">.width</span>(<span class="hljs-string">&#x27;100%&#x27;</span>)<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ul>
+<h4 id="Consume和-Provide"><a href="#Consume和-Provide" class="headerlink" title="@Consume和@Provide"></a>@Consume和@Provide</h4><p>@Provide作为数据的提供方，可以更新其子孙节点的数据，并触发页面渲染。@Consume在感知到@Provide数据的更新后，会触发当前自定义组件的重新渲染。</p>
+<h3 id="应用级变量的状态管理"><a href="#应用级变量的状态管理" class="headerlink" title="应用级变量的状态管理"></a>应用级变量的状态管理</h3><p><a target="_blank" rel="noopener" href="https://developer.harmonyos.com/cn/docs/documentation/doc-guides/ets-state-mgmt-application-level-0000001119769576">应用级变量的状态管理-状态管理-ArkTS语法（声明式UI）-学习ArkTS语言-开发基础知识-入门-HarmonyOS应用开发</a></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%85%B6%E4%BB%96%E8%AF%AD%E8%A8%80/" class="category-chain-item">其他语言</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E5%85%B6%E4%BB%96%E8%AF%AD%E8%A8%80/%E9%B8%BF%E8%92%99/" class="category-chain-item">鸿蒙</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>ArkTS</div>
+      <div>http://peiniwan.github.io/2025/12/0ccc710c28c2.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>六月的雨</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年12月16日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/12/cfae37396604.html" title="ArkUI">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">ArkUI</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/12/c8542bc6f406.html" title="长链接NIO">
+                        <span class="hidden-mobile">长链接NIO</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"OwNIdaopOn1rwNhtotGOGC0B-gzGzoHsz","appKey":"eadytQ2XqWmxuvAKeg08XX83","path":"window.location.pathname","placeholder":null,"avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":true,"recordIP":false,"serverURLs":"https://ownidaop.lc-cn-n1-shared.com","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

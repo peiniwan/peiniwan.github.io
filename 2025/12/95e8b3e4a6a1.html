@@ -1,0 +1,864 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="六月的雨">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="数据结构 为了方便查找，图书管理员一般会将书籍分门别类进行“存储”。按照一定规律编号，就是书籍这种“数据”的存储结构。 那我们如何来查找一本书呢？有很多种办法，你当然可以一本一本地找，也可以先根据书籍类别的编号，是人文，还是科学、计算机，来定位书架，然后再依次查找。笼统地说，这些查找方法都是算法。 数据结构和算法是相辅相成的。数据结构是为算法服务的，算法要作用在特定的数据结构之上。 因此，我们无法">
+<meta property="og:type" content="article">
+<meta property="og:title" content="1-数据结构">
+<meta property="og:url" content="http://peiniwan.github.io/2025/12/95e8b3e4a6a1.html">
+<meta property="og:site_name" content="六月的雨的笔记">
+<meta property="og:description" content="数据结构 为了方便查找，图书管理员一般会将书籍分门别类进行“存储”。按照一定规律编号，就是书籍这种“数据”的存储结构。 那我们如何来查找一本书呢？有很多种办法，你当然可以一本一本地找，也可以先根据书籍类别的编号，是人文，还是科学、计算机，来定位书架，然后再依次查找。笼统地说，这些查找方法都是算法。 数据结构和算法是相辅相成的。数据结构是为算法服务的，算法要作用在特定的数据结构之上。 因此，我们无法">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.resources/2023/09/15/17-44-15-913e0ababe43a2d57267df5c5f0832a7-unknown_filename.16-acba32.jpeg">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.resources/2023/09/15/17-44-15-7dd7adc15257de427fe01446db8a18c9-unknown_filename.13-c91c18.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.resources/2023/09/15/17-44-15-d33758af2a9cf078da5ceb2d59a8f7a0-unknown_filename.24-c04d8a.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.resources/2023/09/15/17-44-15-6ea770ad3989b3998f2e62a572332352-unknown_filename.11-9ff0cb.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.resources/2023/09/15/17-44-15-594a537e65a8390b2d77b67e45fe7371-unknown_filename.8-75f05f.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.resources/2023/09/15/17-44-15-8d830b4333fcfdf2d8f572f790be3594-unknown_filename.15-67aeaa.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.resources/2023/09/15/17-44-15-f67fc8ab7ab08d935633ff708a7cd96b-unknown_filename.25-4f5e23.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.resources/2023/09/15/17-44-15-6f0bc75c9d512a528079f9e166b3677a-unknown_filename.12-386fc5.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.resources/2023/09/15/17-44-15-c1e8eee85c6083a1334765e29b16d960-unknown_filename.22-42278b.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.resources/2023/09/15/17-44-15-334df425b32ee7c046b18e7cb04204bb-unknown_filename.1-b72ed3.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.resources/2023/09/15/17-44-15-f816f759f83844448032f157017f3975-unknown_filename.26-6c3292.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.resources/2023/09/15/17-44-15-46b847c856e6e5194cb1311980456aa5-unknown_filename.3-6376cd.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.resources/2023/09/15/17-44-15-0e21814681e3d95dfb9e3492b4fbb559-unknown_filename-3417d5.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.resources/2023/09/15/17-44-15-bbf04e8b5117e73f4453ee9e61b43542-unknown_filename.19-75a406.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.resources/2023/09/15/17-44-15-3ec54c75ca742e6725e67f75b39184ac-unknown_filename.2-1037bb.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.resources/2023/09/15/17-44-15-bd925e9b56b5f4d8b230c0d0fc4be0d0-unknown_filename.20-e24e18.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.resources/2023/09/15/17-44-15-4c1334184a85280e9b357bdce0dab1ae-unknown_filename.5-a3935a.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.resources/2023/09/15/17-44-15-5f94ecf987822bd2802daf0e000847af-unknown_filename.9-2b55ad.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.resources/2023/09/15/17-44-15-bf6c81fec32657538288359a364f96f3-unknown_filename.21-a7e532.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.resources/2023/09/15/17-44-15-57fde4d899369ab60eb4bfb7a955e049-unknown_filename.7-dfcf5c.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.resources/2023/09/15/17-44-15-bad63fe33a968ffdab71d4997e4a0a65-unknown_filename.18-fe507b.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.resources/2023/09/15/17-44-15-65ed79543f9edc84fcccf66e8fc0363a-unknown_filename.10-8b4b95.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.resources/2023/09/15/17-44-15-4a9af6f7051192e56b5ff34d2795c902-unknown_filename.4-e34d5f.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.resources/2023/09/15/17-44-15-8b6bdb3ec5f9523c13718bb9f52574c0-unknown_filename.14-6c050e.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.resources/2023/09/15/17-44-15-b2863aa034a69f9036bce2c796a97a6b-unknown_filename.17-3aa5e4.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.resources/2023/09/15/17-44-15-4fefd6039d1b5ace375660a1df20ec5f-unknown_filename.6-d912cd.png">
+<meta property="article:published_time" content="2025-12-16T13:59:22.634Z">
+<meta property="article:modified_time" content="2024-03-25T06:41:00.000Z">
+<meta property="article:author" content="六月的雨">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.resources/2023/09/15/17-44-15-913e0ababe43a2d57267df5c5f0832a7-unknown_filename.16-acba32.jpeg">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>1-数据结构 - 六月的雨的笔记</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"peiniwan.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>六月的雨的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="1-数据结构"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-12-16 21:59" pubdate>
+          2025年12月16日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          7.6k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          64 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">1-数据结构</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h1><ul>
+<li>为了方便查找，图书管理员一般会将书籍分门别类进行“存储”。按照一定规律编号，就是书籍这种“数据”的存储结构。</li>
+<li>那我们如何来查找一本书呢？有很多种办法，你当然可以一本一本地找，也可以先根据书籍类别的编号，是人文，还是科学、计算机，来定位书架，然后再依次查找。笼统地说，这些查找方法都是算法。</li>
+<li>数据结构和算法是相辅相成的。数据结构是为算法服务的，算法要作用在特定的数据结构之上。 因此，我们无法孤立数据结构来讲算法，也无法孤立算法来讲数据结构</li>
+<li>“存储”需要的就是数据结构，“计算”需要的就是算法</li>
+<li>基础的数据结构就是数组和链表， 而后面更加复杂的 树 队列 图 等等 都可以通过数组和链表等方式存储， 出现树 队列 图 等数据结构的原因 就是为了解决 部分问题处理过程中时间复杂度过高的问题， 所以数据结构就是为了算法而生的！</li>
+</ul>
+<h3 id="常用数据结构与算法"><a href="#常用数据结构与算法" class="headerlink" title="常用数据结构与算法"></a>常用数据结构与算法</h3><p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.resources/2023/09/15/17-44-15-913e0ababe43a2d57267df5c5f0832a7-unknown_filename.16-acba32.jpeg" srcset="/img/loading.gif" lazyload alt="unknown_filename.16"></p>
+<ul>
+<li>10 个数据结构：数组、链表、栈、队列、散列表、二叉树、堆、跳表、图、Trie 树；</li>
+</ul>
+<ul>
+<li>10 个算法：递归、排序、二分查找、搜索、哈希算法、贪心算法、分治算法、回溯算法、动态规划、字符串匹配算法。</li>
+</ul>
+<p>数据结构是相互之间存在一种或多种关系的数据元素的集合。逻辑结构有4种：<br>集合结构（数据元素之间仅以集合的方式体现，元素之间没有别的关系）<br>线性结构（数据元素之间存在一对一的关系）<br>树（数据元素之间为一对多或多对一的关系）<br>图（数据元素之间为多对多的关系）</p>
+<ul>
+<li>线性结构元素之间存在一对一的关系，线性表可通过顺序和链式两种方式来实现。顺序存储结构，是用一段地址连续的存储单元依次存储线性表的数据元素</li>
+</ul>
+<p>　　</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.resources/2023/09/15/17-44-15-7dd7adc15257de427fe01446db8a18c9-unknown_filename.13-c91c18.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.13"></p>
+<ul>
+<li>链式存储结构，用一组任意的存储单元来存储数据元素，不要求物理存储单元的连续性，由一系列结点组成，每个结点除了要存储数据外，还需存储指向后继结点或前驱结点的存储地址。</li>
+</ul>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.resources/2023/09/15/17-44-15-d33758af2a9cf078da5ceb2d59a8f7a0-unknown_filename.24-c04d8a.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.24"></p>
+<p><strong>Stack</strong></p>
+<ol>
+<li>栈是元素的集合，其包含了两个基本操作：push 操作可以用于将元素压入栈，pop 操作可以将栈顶元素移除。遵循后入先出（LIFO）原则。</li>
+<li>pop() ：和peek()一样返回栈顶元素，但是要将栈顶元素移除掉<br> search() - 返回元素在堆栈中的位置</li>
+</ol>
+<p><strong>Queue</strong></p>
+<ol>
+<li>队列是元素的集合，其包含了两个基本操作：enqueue 操作可以用于将元素插入到队列中，而 dequeue 操作则是将元素从队列中移除。</li>
+<li>遵循先入先出原则 (FIFO)。</li>
+</ol>
+<h2 id="复杂度"><a href="#复杂度" class="headerlink" title="复杂度"></a>复杂度</h2><h3 id="基础"><a href="#基础" class="headerlink" title="基础"></a>基础</h3><p>所有代码的执行时间 T(n) 与每行代码的执行次数成正比。<br>T(n) &#x3D;O( f(n) )</p>
+<figure class="highlight excel"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs excel"><span class="hljs-built_in">int</span> cal(<span class="hljs-built_in">int</span> <span class="hljs-built_in">n</span>) &#123;<br>  <span class="hljs-built_in">int</span> <span class="hljs-built_in">sum</span> = <span class="hljs-number">0</span>;<br>  <span class="hljs-built_in">int</span> i = <span class="hljs-number">1</span>;<br>  for (; i &lt;= <span class="hljs-built_in">n</span>; ++i) &#123;<br>    <span class="hljs-built_in">sum</span> = <span class="hljs-built_in">sum</span> + i;<br>  &#125;<br>  return <span class="hljs-built_in">sum</span>;<br>&#125;<br>    <br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>其中第 2、3 行代码都是常量级的执行时间，与 n 的大小无关，所以对于复杂度并没有影响。当 n 无限大的时候，就可以忽略。</li>
+<li>循环执行次数最多的是第 4、5 行代码，所以这块代码要重点分析。前面我们也讲过，这两行代码被执行了 n 次，所以总的时间复杂度就是 O(n)。</li>
+</ul>
+<h3 id="经验"><a href="#经验" class="headerlink" title="经验"></a>经验</h3><ul>
+<li><code>总的时间复杂度就等于量级最大的那段代码的时间复杂度</code></li>
+<li>如果 T1(n)&#x3D;O(f(n))，T2(n)&#x3D;O(g(n))；那么 T(n)&#x3D;T1(n)+T2(n)&#x3D;max(O(f(n)), O(g(n))) &#x3D;O(max(f(n), g(n))).</li>
+<li>假设 T1 (n) &#x3D; O (n)，T2 (n) &#x3D; O (n2)，则 T1 (n) * T2 (n) &#x3D; O (n3)</li>
+</ul>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.resources/2023/09/15/17-44-15-6ea770ad3989b3998f2e62a572332352-unknown_filename.11-9ff0cb.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.11"></p>
+<h4 id="O-1"><a href="#O-1" class="headerlink" title="O(1)"></a>O(1)</h4><p>int i &#x3D; 8; int j &#x3D; 6; int sum &#x3D; i + j;<br>只要<em>代码的执行时间不随 n 的增大而增长</em>，这样代码的时间复杂度我们都记作 O(1)。或者说，一般情况下，只要算法中<em>不存在循环语句、递归语句，即使有成千上万行的代码，其时间复杂度也是Ο(1</em>)。<br>跟数据规模 n 没有关系，都可忽略</p>
+<h4 id="O-logn-、O-nlogn"><a href="#O-logn-、O-nlogn" class="headerlink" title="O(logn)、O(nlogn)"></a>O(logn)、O(nlogn)</h4><figure class="highlight abnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs abnf"><span class="hljs-attribute">i</span><span class="hljs-operator">=</span><span class="hljs-number">1</span><span class="hljs-comment">; while (i &lt;= n)  &#123;   i = i * 2; &#125;</span><br></code></pre></td></tr></table></figure>
+<p>从代码中可以看出，变量 i 的值从 1 开始取，每循环一次就乘以 2。当大于 n 时，循环结束。还记得我们高中学过的等比数列吗？实际上，变量 i 的取值就是一个等比数列。如果我把它一个一个列出来，就应该是这个样子的：<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.resources/2023/09/15/17-44-15-594a537e65a8390b2d77b67e45fe7371-unknown_filename.8-75f05f.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.8"><br>2x&#x3D;n<br>x&#x3D;log2n</p>
+<figure class="highlight abnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs abnf"><span class="hljs-attribute">i</span><span class="hljs-operator">=</span><span class="hljs-number">1</span><span class="hljs-comment">; while (i &lt;= n)  &#123;   i = i * 3; &#125;</span><br></code></pre></td></tr></table></figure>
+<p>这段代码的时间复杂度为 O(log3n)。<br>但是实际上，不管是以 2 为底、以 3 为底，还是以 10 为底，我们可以把所有对数阶的时间复杂度都记为 O(logn)</p>
+<p>O(nlogn)<br>如果一段代码的时间复杂度是 O(logn)，我们循环执行 n 遍，时间复杂度就是 O(nlogn) 了。而且，O(nlogn) 也是一种非常常见的算法时间复杂度。比如，归并排序、快速排序的时间复杂度都是 O(nlogn)</p>
+<h4 id="O-m-n-、O-m-n"><a href="#O-m-n-、O-m-n" class="headerlink" title="O(m+n)、O(m* n)"></a>O(m+n)、O(m* n)</h4><p>代码的复杂度由两个数据的规模来决定</p>
+<figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs arduino"><br><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">cal</span><span class="hljs-params">(<span class="hljs-type">int</span> m, <span class="hljs-type">int</span> n)</span> </span>&#123;<br>  <span class="hljs-type">int</span> sum_1 = <span class="hljs-number">0</span>;<br>  <span class="hljs-type">int</span> i = <span class="hljs-number">1</span>;<br>  <span class="hljs-keyword">for</span> (; i &lt; m; ++i) &#123;<br>    sum_1 = sum_1 + i;<br>  &#125;<br><br>  <span class="hljs-type">int</span> sum_2 = <span class="hljs-number">0</span>;<br>  <span class="hljs-type">int</span> j = <span class="hljs-number">1</span>;<br>  <span class="hljs-keyword">for</span> (; j &lt; n; ++j) &#123;<br>    sum_2 = sum_2 + j;<br>  &#125;<br><br>  <span class="hljs-keyword">return</span> sum_1 + sum_2;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>从代码中可以看出，m 和 n 是表示两个数据规模。我们无法事先评估 m 和 n 谁的量级大，所以我们在表示复杂度的时候，就不能简单地利用加法法则，省略掉其中一个。所以，上面代码的时间复杂度就是 O(m+n)。针对这种情况，原来的加法法则就不正确了</p>
+<h4 id="空间复杂度分析"><a href="#空间复杂度分析" class="headerlink" title="空间复杂度分析"></a>空间复杂度分析</h4><ul>
+<li>时间复杂度的全称是渐进时间复杂度，表示<strong>算法的执行时间与数据规模之间的增长关系</strong>。类比一下，空间复杂度全称就是渐进空间复杂度（asymptotic space complexity），表示<strong>算法的存储空间与数据规模之间的增长关系</strong>。</li>
+<li>我们常见的空间复杂度就是 <strong>O(1)、O(n)、O(n2)</strong> ，像 O(logn)、O(nlogn) 这样的对数阶复杂度平时都用不到。而且，空间复杂度分析比时间复杂度分析要简单很多。<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.resources/2023/09/15/17-44-15-8d830b4333fcfdf2d8f572f790be3594-unknown_filename.15-67aeaa.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.15|600"></li>
+</ul>
+<h2 id="数组"><a href="#数组" class="headerlink" title="数组"></a>数组</h2><p>数组（Array）是一种线性表数据结构。它用一组连续的内存空间，来存储一组具有相同类型的数据。<br>线性表（Linear List）。顾名思义，线性表就是数据排成像一条线一样的结构。每个线性表上的数据最多只有前和后两个方向。其实除了数组，链表、队列、栈等也是线性表结构。<br>而与它相对立的概念是非线性表，比如二叉树、堆、图等。之所以叫非线性，是因为，在非线性表中，数据之间并不是简单的前后关系。</p>
+<h4 id="为什么数组从0开始"><a href="#为什么数组从0开始" class="headerlink" title="为什么数组从0开始"></a>为什么数组从0开始</h4><p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.resources/2023/09/15/17-44-15-f67fc8ab7ab08d935633ff708a7cd96b-unknown_filename.25-4f5e23.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.25"><br>一个数字4个字节<br>计算机会给每个内存单元分配一个地址，计算机通过地址来访问内存中的数据。当计算机需要随机访问数组中的某个元素时，它会首先通过下面的寻址公式，计算出该元素存储的内存地址：</p>
+<figure class="highlight autohotkey"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs autohotkey">a[i]_address = base_address + i * dat<span class="hljs-built_in">a_type</span>_size<br></code></pre></td></tr></table></figure>
+<p>其中 base_address 是首地址，data_type_size 表示数组中每个元素的大小。我们举的这个例子里，数组中存储的是 int 类型数据，所以 data_type_size 就为 4 个字节。根据首地址和下标，通过寻址公式就能直接计算出对应的内存地址。<br>但是，如果数组从 1 开始计数，那我们计算数组元素 a[k] 的内存地址就会变为：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs stylus"><span class="hljs-selector-tag">a</span><span class="hljs-selector-attr">[k]</span>_address = base_address + (k-<span class="hljs-number">1</span>)*type_size<br></code></pre></td></tr></table></figure>
+
+<p>对比两个公式，我们不难发现，从 1 开始编号，每次随机访问数组元素都多了一次减法运算，对于 CPU 来说，就是多了一次减法指令。所以数组从0开始。</p>
+<blockquote>
+<p>一个错误：<br>在面试的时候，常常会问数组和链表的区别，很多人都回答说，“链表适合插入、删除，时间复杂度 O(1)；数组适合查找，查找时间复杂度为 O(1)”。<br>实际上，这种表述是不准确的。数组是适合查找操作，但是查找的时间复杂度并不为 O(1)。即便是排好序的数组，你用二分查找，时间复杂度也是 O(logn)（k在第几个位置）。所以，正确的表述应该是，数组支持随机访问，根据下标随机访问的时间复杂度为 O(1)。</p>
+</blockquote>
+<h3 id="ArrayList"><a href="#ArrayList" class="headerlink" title="ArrayList"></a>ArrayList</h3><p>最大的优势就是可以将很多数组操作的细节封装起来。比如前面提到的数组插入、删除数据时需要搬移其他数据等。另外，它还有一个优势，就是<strong>支持动态扩容</strong>。<br>如果使用 ArrayList，我们就完全不需要关心底层的扩容逻辑，ArrayList 已经帮我们实现好了。每次存储空间不够的时候，<em>它都会将空间自动扩容为 1.5 倍大小</em>。</p>
+<p>Java ArrayList 无法存储基本类型，比如 int、long，需要封装为 Integer、Long 类，所以如果特别关注性能，或者希望使用基本类型，就可以选用数组。</p>
+<h2 id="链表"><a href="#链表" class="headerlink" title="链表"></a>链表</h2><p>从图中看到，数组需要一块连续的内存空间来存储，对内存的要求比较高。如果我们申请一个 100MB 大小的数组，当内存中没有连续的、足够大的存储空间时，即便内存的剩余总可用空间大于 100MB，仍然会申请失败。<br>而链表恰恰相反，它并不需要一块连续的内存空间，它通过“指针”将<strong>一组零散的内存</strong>块串联起来使用，所以如果我们申请的是 100MB 大小的链表，根本不会有问题。<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.resources/2023/09/15/17-44-15-6f0bc75c9d512a528079f9e166b3677a-unknown_filename.12-386fc5.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.12"></p>
+<p>针对链表的插入和删除操作，只需要考虑相邻结点的指针改变，所以对应的时间复杂度是 O(1)。</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.resources/2023/09/15/17-44-15-c1e8eee85c6083a1334765e29b16d960-unknown_filename.22-42278b.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.22"></p>
+<h4 id="双向链表"><a href="#双向链表" class="headerlink" title="双向链表"></a>双向链表</h4><p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.resources/2023/09/15/17-44-15-334df425b32ee7c046b18e7cb04204bb-unknown_filename.1-b72ed3.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.1"></p>
+<p>从结构上来看，双向链表可以支持 O(1) 时间复杂度的情况下找到前驱结点，正是这样的特点，也使双向链表在某些情况下的插入、删除等操作都要比单链表简单、高效。<br>除了插入、删除操作有优势之外，对于一个有序链表，双向链表的按值查询的效率也要比单链表高一些。因为，我们可以记录上次查找的位置 p，每次查询时，根据要查找的值与 p 的大小关系，决定是往前还是往后查找，所以平均只需要查找一半的数据。</p>
+<p><strong>LinkedHashMap</strong> 的实现原理，就会发现其中就用到了双向链表这种数据结构。（用空间换时间）<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.resources/2023/09/15/17-44-15-f816f759f83844448032f157017f3975-unknown_filename.26-6c3292.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.26"></p>
+<h4 id="数组和链表对比"><a href="#数组和链表对比" class="headerlink" title="数组和链表对比"></a>数组和链表对比</h4><p><strong>已知前驱节点</strong><br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.resources/2023/09/15/17-44-15-46b847c856e6e5194cb1311980456aa5-unknown_filename.3-6376cd.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.3"></p>
+<p><strong>数组的缺点是大小固定，一经声明就要占用整块连续内存空间</strong>。如果声明的数组过大，系统可能没有足够的连续内存空间分配给它，导致“内存不足（out of memory）”。如果声明的数组过小，则可能出现不够用的情况。这时只能再申请一个更大的内存空间，把原数组拷贝进去，非常费时。链表本身没有大小的限制，天然地支持动态扩容，我觉得这也是它与数组最大的区别。</p>
+<p>如果你的代码对内存的使用非常苛刻，那数组就更适合你。因为链表中的每个结点都需要消耗额外的存储空间去存储一份指向下一个结点的指针，所以内存消耗会翻倍。而且，对链表进行频繁的插入、删除操作，还会导致频繁的内存申请和释放，容易造成内存碎片，如果是 Java 语言，就有可能会导致频繁的 GC（Garbage Collection，垃圾回收）。</p>
+<h4 id="写链表代码技巧"><a href="#写链表代码技巧" class="headerlink" title="写链表代码技巧"></a>写链表代码技巧</h4><p><strong>技巧一：理解指针或引用的含义</strong></p>
+<p>我们知道，有些语言有“指针”的概念，比如 C 语言；有些语言没有指针，取而代之的是“引用”，比如 Java、Python。不管是“指针”还是“引用”，实际上，它们的意思都是一样的，都是存储所指对象的内存地址。<br><strong>如果你用的是 Java 或者其他没有指针的语言也没关系，你把它理解成“引用”就可以了</strong>。</p>
+<blockquote>
+<p>将某个变量赋值给指针，实际上就是将这个变量的地址赋值给指针，或者反过来说，指针中存储了这个变量的内存地址，指向了这个变量，通过指针就能找到这个变量。</p>
+</blockquote>
+<p>在编写链表代码的时候，我们经常会有这样的代码：p-&gt;next&#x3D;q。这行代码是说，p 结点中的 next 指针存储了 q 结点的内存地址。<br>还有一个更复杂的，也是我们写链表代码经常会用到的：p-&gt;next&#x3D;p-&gt;next-&gt;next。这行代码表示，p 结点的 next 指针存储了 p 结点的下下一个结点的内存地址。</p>
+<p><strong>技巧二：利用哨兵简化实现难度</strong></p>
+<p>针对链表的插入、删除操作，需要对插入第一个结点和删除最后一个结点的情况进行特殊处理。<br>如果我们引入哨兵结点，在任何时候，不管链表是不是空，head 指针都会一直指向这个哨兵结点。我们也把这种有哨兵结点的链表叫带头链表。相反，没有哨兵结点的链表就叫作不带头链表。<br>我画了一个带头链表，你可以发现，哨兵结点是不存储数据的。因为哨兵结点一直存在，所以插入第一个结点和插入其他结点，删除最后一个结点和删除其他结点，都可以统一为相同的代码实现逻辑了。</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.resources/2023/09/15/17-44-15-0e21814681e3d95dfb9e3492b4fbb559-unknown_filename-3417d5.png" srcset="/img/loading.gif" lazyload alt="unknown_filename"><br>利用哨兵简化编程难度的技巧，在很多代码实现中都有用到，比如插入排序、归并排序、动态规划等。</p>
+<p><strong>技巧四：重点留意边界条件处理</strong></p>
+<p>我经常用来检查链表代码是否正确的边界条件有这样几个：</p>
+<ul>
+<li>如果链表为空时，代码是否能正常工作？</li>
+<li>如果链表只包含一个结点时，代码是否能正常工作？</li>
+<li>如果链表只包含两个结点时，代码是否能正常工作？</li>
+<li>代码逻辑在处理头结点和尾结点的时候，是否能正常工作？</li>
+</ul>
+<p><strong>技巧五：举例画图，辅助思考</strong></p>
+<p>举例法和画图法<br>比如往单链表中插入一个数据这样一个操作，我一般都是把各种情况都举一个例子，画出插入前和插入后的链表变化，如图所示：<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.resources/2023/09/15/17-44-15-bbf04e8b5117e73f4453ee9e61b43542-unknown_filename.19-75a406.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.19"></p>
+<p><strong>技巧六：多写多练，没有捷径</strong></p>
+<p>我精选了 5 个常见的链表操作。你只要把这几个操作都能写熟练，不熟就多写几遍，我保证你之后再也不会害怕写链表代码。<br>单链表反转<br>链表中环的检测<br>两个有序的链表合并<br>删除链表倒数第 n 个结点<br>求链表的中间结点<br>练习题LeetCode对应编号：206，141，21，19，876。大家可以去练习</p>
+<h2 id="栈"><a href="#栈" class="headerlink" title="栈"></a>栈</h2><p>当某个数据集合只涉及在一端插入和删除数据，并且满足后进先出、先进后出的特性，我们就应该首选“栈”这种数据结构。</p>
+<h4 id="实现一个栈"><a href="#实现一个栈" class="headerlink" title="实现一个栈"></a>实现一个栈</h4><p>栈既可以用数组来实现，也可以用链表来实现。<em>用数组实现的栈，我们叫作顺序栈，用链表实现的栈，我们叫作链式栈</em>。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">// 基于数组实现的顺序栈</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">ArrayStack</span> &#123;<br>  <span class="hljs-keyword">private</span> String[] items;  <span class="hljs-comment">// 数组</span><br>  <span class="hljs-keyword">private</span> <span class="hljs-type">int</span> count;       <span class="hljs-comment">// 栈中元素个数</span><br>  <span class="hljs-keyword">private</span> <span class="hljs-type">int</span> n;           <span class="hljs-comment">//栈的大小</span><br><br>  <span class="hljs-comment">// 初始化数组，申请一个大小为n的数组空间</span><br>  <span class="hljs-keyword">public</span> <span class="hljs-title function_">ArrayStack</span><span class="hljs-params">(<span class="hljs-type">int</span> n)</span> &#123;<br>    <span class="hljs-built_in">this</span>.items = <span class="hljs-keyword">new</span> <span class="hljs-title class_">String</span>[n];<br>    <span class="hljs-built_in">this</span>.n = n;<br>    <span class="hljs-built_in">this</span>.count = <span class="hljs-number">0</span>;<br>  &#125;<br><br>  <span class="hljs-comment">// 入栈操作</span><br>  <span class="hljs-keyword">public</span> <span class="hljs-type">boolean</span> <span class="hljs-title function_">push</span><span class="hljs-params">(String item)</span> &#123;<br>    <span class="hljs-comment">// 数组空间不够了，直接返回false，入栈失败。</span><br>    <span class="hljs-keyword">if</span> (count == n) <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;<br>    <span class="hljs-comment">// 将item放到下标为count的位置，并且count加一</span><br>    items[count] = item;<br>    ++count;<br>    <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;<br>  &#125;<br>  <br>  <span class="hljs-comment">// 出栈操作</span><br>  <span class="hljs-keyword">public</span> String <span class="hljs-title function_">pop</span><span class="hljs-params">()</span> &#123;<br>    <span class="hljs-comment">// 栈为空，则直接返回null</span><br>    <span class="hljs-keyword">if</span> (count == <span class="hljs-number">0</span>) <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;<br>    <span class="hljs-comment">// 返回下标为count-1的数组元素，并且栈中元素个数count减一</span><br>    <span class="hljs-type">String</span> <span class="hljs-variable">tmp</span> <span class="hljs-operator">=</span> items[count-<span class="hljs-number">1</span>];<br>    --count;<br>    <span class="hljs-keyword">return</span> tmp;<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>不管是顺序栈还是链式栈，我们存储数据只需要一个大小为 n 的数组就够了。在入栈和出栈过程中，只需要一两个临时变量存储空间，所以空间复杂度是 O(1)。<br>注意，这里存储数据需要一个大小为 n 的数组，<strong>并不是说空间复杂度就是 O(n)。因为，这 n 个空间是必须的，无法省掉</strong>。<br>所以我们说空间复杂度的时候，是指除了原本的数据存储空间外，算法运行还需要额外的存储空间。空间复杂度分析是不是很简单？<br>时间复杂度也不难。不管是顺序栈还是链式栈，入栈、出栈只涉及栈顶个别数据的操作，所以时间复杂度都是 O(1)。</p>
+<p>如果要实现一个支持动态扩容的栈，我们只需要底层依赖一个支持动态扩容的数组就可以了。当栈满了之后，我们就申请一个更大的数组，将原来的数据搬移到新数组中。</p>
+<h4 id="栈的应用"><a href="#栈的应用" class="headerlink" title="栈的应用"></a>栈的应用</h4><p><strong>栈在函数调用中的应用</strong></p>
+<p>操作系统给每个线程分配了一块独立的内存空间，这块内存被组织成“栈”这种结构, 用来存储函数调用时的临时变量。每进入一个函数，就会将临时变量作为一个栈帧入栈，当被调用函数执行完成，返回之后，将这个函数对应的栈帧出栈。</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs csharp"><span class="hljs-function"><span class="hljs-built_in">int</span> <span class="hljs-title">main</span>()</span> &#123;<br>   <span class="hljs-built_in">int</span> a = <span class="hljs-number">1</span>; <br>   <span class="hljs-built_in">int</span> ret = <span class="hljs-number">0</span>;<br>   <span class="hljs-built_in">int</span> res = <span class="hljs-number">0</span>;<br>   ret = <span class="hljs-keyword">add</span>(<span class="hljs-number">3</span>, <span class="hljs-number">5</span>);<br>   res = a + ret;<br>   printf(<span class="hljs-string">&quot;%d&quot;</span>, res);<br>   reuturn <span class="hljs-number">0</span>;<br>&#125;<br><br><span class="hljs-function"><span class="hljs-built_in">int</span> <span class="hljs-title">add</span>(<span class="hljs-params"><span class="hljs-built_in">int</span> x, <span class="hljs-built_in">int</span> y</span>)</span> &#123;<br>   <span class="hljs-built_in">int</span> sum = <span class="hljs-number">0</span>;<br>   sum = x + y;<br>   <span class="hljs-keyword">return</span> sum;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.resources/2023/09/15/17-44-15-3ec54c75ca742e6725e67f75b39184ac-unknown_filename.2-1037bb.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.2"></p>
+<h4 id="内存中的堆栈"><a href="#内存中的堆栈" class="headerlink" title="内存中的堆栈"></a>内存中的堆栈</h4><p>内存中的堆栈和数据结构堆栈不是一个概念，可以说内存中的堆栈是真实存在的物理区，数据结构中的堆栈是抽象的数据存储结构。</p>
+<p>[[6.JVM]]<br>静态数据区：存储全局变量、静态变量、常量，常量包括final修饰的常量和String常量。系统自动分配和回收。<br>栈区：存储运行方法的形参、局部变量、返回值。由系统自动分配和回收。<br>堆区：new一个对象的引用或地址存储在栈区，指向该对象存储在堆区中的真实数据。</p>
+<h2 id="队列"><a href="#队列" class="headerlink" title="队列"></a>队列</h2><p>先进者先出，这就是典型的“队列”。队列跟栈一样，也是一种操作受限的线性表数据结构。<br>队列的应用也非常广泛，特别是一些具有某些额外特性的队列，比如循环队列、阻塞队列、并发队列。</p>
+<h4 id="实现队列"><a href="#实现队列" class="headerlink" title="实现队列"></a>实现队列</h4><p>跟栈一样，队列可以用数组来实现，也可以用链表来实现。用数组实现的栈叫作顺序栈，用链表实现的栈叫作链式栈。同样，用数组实现的队列叫作顺序队列，用链表实现的队列叫作链式队列。</p>
+<h4 id="循环队列"><a href="#循环队列" class="headerlink" title="循环队列"></a>循环队列</h4><p>我们刚才用数组来实现队列的时候，在 tail&#x3D;&#x3D;n 时，会有数据搬移操作，这样入队操作性能就会受到影响。那有没有办法能够避免数据搬移呢？我们来看看循环队列的解决思路。<br>循环队列，顾名思义，它长得像一个环。原本数组是有头有尾的，是一条直线。现在我们把首尾相连，扳成了一个环。<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.resources/2023/09/15/17-44-15-bd925e9b56b5f4d8b230c0d0fc4be0d0-unknown_filename.20-e24e18.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.20"><br>图中这个队列的大小为 8，当前 head&#x3D;4，tail&#x3D;7。当有一个新的元素 a 入队时，我们放入下标为 7 的位置。但这个时候，我们并不把 tail 更新为 8，而是将其在环中后移一位，到下标为 0 的位置。当再有一个元素 b 入队时，我们将 b 放入下标为 0 的位置，然后 tail 加 1 更新为 1。所以，在 a，b 依次入队之后，循环队列中的元素就变成了下面的样子：<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.resources/2023/09/15/17-44-15-4c1334184a85280e9b357bdce0dab1ae-unknown_filename.5-a3935a.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.5"></p>
+<h4 id="实现循环队列"><a href="#实现循环队列" class="headerlink" title="实现循环队列"></a>实现循环队列</h4><p>要确定好队空和队满的判定条件。<br>在用数组实现的非循环队列中，队满的判断条件是 tail &#x3D;&#x3D; n，队空的判断条件是 head &#x3D;&#x3D; tail。那针对循环队列，<br>如何判断队空和队满呢？队列为空的判断条件仍然是 head &#x3D;&#x3D; tail。但队列满的判断条件就稍微有点复杂了。我画了一张队列满的图<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.resources/2023/09/15/17-44-15-5f94ecf987822bd2802daf0e000847af-unknown_filename.9-2b55ad.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.9"><br>就像我图中画的队满的情况，tail&#x3D;3，head&#x3D;4，n&#x3D;8，所以总结一下规律就是：(3+1)%8&#x3D;4。多画几张队满的图，你就会发现，当队满时，(tail+1)%n&#x3D;head。<br>你有没有发现，当队列满时，图中的 tail 指向的位置实际上是没有存储数据的。所以，循环队列会浪费一个数组的存储空间。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">CircularQueue</span> &#123;<br>  <span class="hljs-comment">// 数组：items，数组大小：n</span><br>  <span class="hljs-keyword">private</span> String[] items;<br>  <span class="hljs-keyword">private</span> <span class="hljs-type">int</span> <span class="hljs-variable">n</span> <span class="hljs-operator">=</span> <span class="hljs-number">0</span>;<br>  <span class="hljs-comment">// head表示队头下标，tail表示队尾下标</span><br>  <span class="hljs-keyword">private</span> <span class="hljs-type">int</span> <span class="hljs-variable">head</span> <span class="hljs-operator">=</span> <span class="hljs-number">0</span>;<br>  <span class="hljs-keyword">private</span> <span class="hljs-type">int</span> <span class="hljs-variable">tail</span> <span class="hljs-operator">=</span> <span class="hljs-number">0</span>;<br><br>  <span class="hljs-comment">// 申请一个大小为capacity的数组</span><br>  <span class="hljs-keyword">public</span> <span class="hljs-title function_">CircularQueue</span><span class="hljs-params">(<span class="hljs-type">int</span> capacity)</span> &#123;<br>    items = <span class="hljs-keyword">new</span> <span class="hljs-title class_">String</span>[capacity];<br>    n = capacity;<br>  &#125;<br><br>  <span class="hljs-comment">// 入队</span><br>  <span class="hljs-keyword">public</span> <span class="hljs-type">boolean</span> <span class="hljs-title function_">enqueue</span><span class="hljs-params">(String item)</span> &#123;<br>    <span class="hljs-comment">// 队列满了</span><br>    <span class="hljs-keyword">if</span> ((tail + <span class="hljs-number">1</span>) % n == head) <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;<br>    items[tail] = item;<br>    tail = (tail + <span class="hljs-number">1</span>) % n;<br>    <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;<br>  &#125;<br><br>  <span class="hljs-comment">// 出队</span><br>  <span class="hljs-keyword">public</span> String <span class="hljs-title function_">dequeue</span><span class="hljs-params">()</span> &#123;<br>    <span class="hljs-comment">// 如果head == tail 表示队列为空</span><br>    <span class="hljs-keyword">if</span> (head == tail) <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;<br>    <span class="hljs-type">String</span> <span class="hljs-variable">ret</span> <span class="hljs-operator">=</span> items[head];<br>    head = (head + <span class="hljs-number">1</span>) % n;<br>    <span class="hljs-keyword">return</span> ret;<br>  &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<h4 id="阻塞队列和并发队列"><a href="#阻塞队列和并发队列" class="headerlink" title="阻塞队列和并发队列"></a>阻塞队列和并发队列</h4><p><strong>阻塞队列</strong>其实就是在队列基础上增加了阻塞操作。简单来说，就是在队列为空的时候，从队头取数据会被阻塞。因为此时还没有数据可取，直到队列中有了数据才能返回；如果队列已经满了，那么插入数据的操作就会被阻塞，直到队列中有空闲位置后再插入数据，然后再返回。</p>
+<p>上述的定义就是一个“生产者 - 消费者模型”！是的，我们可以使用阻塞队列，轻松实现一个“生产者 - 消费者模型”！<br>这种基于阻塞队列实现的“生产者 - 消费者模型”，可以有效地协调生产和消费的速度。当“生产者”生产数据的速度过快，“消费者”来不及消费时，存储数据的队列很快就会满了。这个时候，生产者就阻塞等待，直到“消费者”消费了数据，“生产者”才会被唤醒继续“生产”。</p>
+<p>基于阻塞队列，我们还可以通过协调“生产者”和“消费者”的个数，来提高数据的处理效率。比如前面的例子，我们可以多配置几个“消费者”，来应对一个“生产者”。<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.resources/2023/09/15/17-44-15-bf6c81fec32657538288359a364f96f3-unknown_filename.21-a7e532.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.21"></p>
+<p>前面我们讲了阻塞队列，在多线程情况下，会有多个线程同时操作队列，这个时候就会存在线程安全问题，那如何实现一个线程安全的队列呢？</p>
+<p>线程安全的队列我们叫作<strong>并发队列</strong>。最简单直接的实现方式是直接在 enqueue()、dequeue() 方法上加锁，但是锁粒度大并发度会比较低，同一时刻仅允许一个存或者取操作。实际上，基于数组的循环队列，利用 CAS 原子操作，可以实现非常高效的并发队列。这也是循环x队列比链式队列应用更加广泛的原因。在实战篇讲 Disruptor 的时候，我会再详细讲并发队列的应用。</p>
+<p>ConcurrentLinkedQueue : 是一个适用于高并发场景下的队列，通过无锁的方式，实现<br>了高并发状态下的高性能<br><strong>CAS理论</strong>：compare and swap 比较并交换。该操作通过将内存中的值与指定数据进行比较，当数值一样时将内存中的数据替换为新的值</p>
+<p> <em>线程池没有空闲线程时，新的任务请求线程资源时，线程池该如何处理？各种处理策略又是如何实现的呢？</em></p>
+<p>我们一般有两种处理策略。第一种是非阻塞的处理方式，直接拒绝任务请求；另一种是阻塞的处理方式，将请求排队，等到有空闲线程时，取出排队的请求继续处理。那如何存储排队的请求呢？</p>
+<p>基于链表的实现方式，可以实现一个支持无限排队的无界队列（unbounded queue），但是可能会导致过多的请求排队等待，请求处理的响应时间过长。所以，针对响应时间比较敏感的系统，基于链表实现的无限排队的线程池是不合适的。</p>
+<p>而基于数组实现的有界队列（bounded queue），队列的大小有限，所以线程池中排队的请求超过队列大小时，接下来的请求就会被拒绝，这种方式对响应时间敏感的系统来说，就相对更加合理。不过，设置一个合理的队列大小，也是非常有讲究的。队列太大导致等待的请求太多，队列太小会导致无法充分利用系统资源、发挥最大性能。</p>
+<p>除了前面讲到队列应用在线程池请求排队的场景之外，队列可以应用在任何有限资源池中，用于排队请求，比如数据库连接池等。<strong>实际上，对于大部分资源有限的场景，当没有空闲资源时，基本上都可以通过“队列”这种数据结构来实现请求排队。</strong></p>
+<h2 id="图"><a href="#图" class="headerlink" title="图"></a>图</h2><h3 id="基础概念"><a href="#基础概念" class="headerlink" title="基础概念"></a>基础概念</h3><p>我们知道，树中的元素我们称为节点，图中的元素我们就叫作顶点（vertex）。从我画的图中可以看出来，图中的一个顶点可以与任意其他顶点建立连接关系。我们把这种建立的关系叫作边（edge）。<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.resources/2023/09/15/17-44-15-57fde4d899369ab60eb4bfb7a955e049-unknown_filename.7-dfcf5c.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.7"></p>
+<p>如何存储微博、微信等社交网络中的好友关系？<br>我们就拿微信举例子吧。我们可以把每个用户看作一个顶点。如果两个用户之间互加好友，那就在两者之间建立一条边。所以，整个微信的好友关系就可以用一张图来表示。其中，每个用户有多少个好友，对应到图中，就叫作顶点的<strong>度（degree），就是跟顶点相连接的边的条数</strong>。<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.resources/2023/09/15/17-44-15-bad63fe33a968ffdab71d4997e4a0a65-unknown_filename.18-fe507b.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.18"></p>
+<p>如果用户 A 关注了用户 B，我们就在图中画一条从 A 到 B 的带箭头的边，来表示边的方向。如果用户 A 和用户 B 互相关注了，那我们就画一条从 A 指向 B 的边，再画一条从 B 指向 A 的边。我们把这种边有方向的图叫作“<strong>有向图</strong>”。以此类推，<strong>我们把边没有方向的图就叫作“无向图”</strong>。</p>
+<p>无向图中有“度”这个概念，表示一个顶点有多少条边。在有向图中，我们把度分为入度（In-degree）和出度（Out-degree）。</p>
+<p>顶点的入度，表示有多少条边指向这个顶点；顶点的出度，表示有多少条边是以这个顶点为起点指向其他顶点。对应到微博的例子，入度就表示有多少粉丝，出度就表示关注了多少人。</p>
+<p><strong>带权图（weighted graph）</strong>。在带权图中，每条边都有一个权重（weight），我们可以通过这个权重来表示 QQ 好友间的亲密度。<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.resources/2023/09/15/17-44-15-65ed79543f9edc84fcccf66e8fc0363a-unknown_filename.10-8b4b95.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.10"></p>
+<p>掌握了图的概念之后，我们再来看下，如何在内存中存储图这种数据结构呢？</p>
+<h3 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h3><h4 id="邻接矩阵"><a href="#邻接矩阵" class="headerlink" title="邻接矩阵"></a>邻接矩阵</h4><p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.resources/2023/09/15/17-44-15-4a9af6f7051192e56b5ff34d2795c902-unknown_filename.4-e34d5f.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.4"><br>我们存储的是<strong>稀疏图</strong>（Sparse Matrix），也就是说，顶点很多，但每个顶点的边并不多，那邻接矩阵的存储方法就更加浪费空间了。比如微信有好几亿的用户，对应到图上就是好几亿的顶点。但是每个用户的好友并不会很多，一般也就三五百个而已。如果我们用邻接矩阵来存储，那绝大部分的存储空间都被浪费了。</p>
+<h4 id="邻接表存储方法"><a href="#邻接表存储方法" class="headerlink" title="邻接表存储方法"></a>邻接表存储方法</h4><p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.resources/2023/09/15/17-44-15-8b6bdb3ec5f9523c13718bb9f52574c0-unknown_filename.14-6c050e.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.14"></p>
+<p>邻接矩阵存储起来比较浪费空间，但是使用起来比较节省时间。<br>邻接表存储起来比较节省空间，但是使用起来就比较耗时间。<br>我们可以将邻接表中的链表改成平衡二叉查找树。实际开发中，我们可以选择用红黑树。这样，我们就可以更加快速地查找两个顶点之间是否存在边了。当然，这里的二叉查找树可以换成其他动态数据结构，比如跳表、散列表等。除此之外，我们还可以将链表改成有序动态数组，可以通过二分查找的方法来快速定位两个顶点之间否是存在边。</p>
+<p>实现无向图</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs csharp"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">Graph</span> &#123; <span class="hljs-comment">// 无向图</span><br>  <span class="hljs-keyword">private</span> <span class="hljs-built_in">int</span> v; <span class="hljs-comment">// 顶点的个数</span><br>  <span class="hljs-keyword">private</span> LinkedList&lt;Integer&gt; adj[]; <span class="hljs-comment">// 邻接表</span><br><br>  <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">Graph</span>(<span class="hljs-params"><span class="hljs-built_in">int</span> v</span>)</span> &#123;<br>    <span class="hljs-keyword">this</span>.v = v;<br>    adj = <span class="hljs-keyword">new</span> LinkedList[v];<br>    <span class="hljs-keyword">for</span> (<span class="hljs-built_in">int</span> i=<span class="hljs-number">0</span>; i&lt;v; ++i) &#123;<br>      adj[i] = <span class="hljs-keyword">new</span> LinkedList&lt;&gt;();<br>    &#125;<br>  &#125;<br><br>  <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">addEdge</span>(<span class="hljs-params"><span class="hljs-built_in">int</span> s, <span class="hljs-built_in">int</span> t</span>)</span> &#123; <span class="hljs-comment">// 无向图一条边存两次</span><br>    adj[s].<span class="hljs-keyword">add</span>(t);<br>    adj[t].<span class="hljs-keyword">add</span>(s);<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<h3 id="搜索"><a href="#搜索" class="headerlink" title="搜索"></a>搜索</h3><p><strong>广度优先搜索（BFS）</strong></p>
+<p>直观地讲，它其实就是一种“地毯式”层层推进的搜索策略，即先查找离起始顶点最近的，然后是次近的，依次往外搜索。<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.resources/2023/09/15/17-44-15-b2863aa034a69f9036bce2c796a97a6b-unknown_filename.17-3aa5e4.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.17"></p>
+<p><strong>深度优先搜索（DFS）</strong><br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.resources/2023/09/15/17-44-15-4fefd6039d1b5ace375660a1df20ec5f-unknown_filename.6-d912cd.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.6"></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E7%AE%97%E6%B3%95/" class="category-chain-item">算法</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>1-数据结构</div>
+      <div>http://peiniwan.github.io/2025/12/95e8b3e4a6a1.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>六月的雨</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年12月16日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/12/03d302ea1475.html" title="2-递归、排序">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">2-递归、排序</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/12/b54530ecb59a.html" title="设计模式3（行为模式）">
+                        <span class="hidden-mobile">设计模式3（行为模式）</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"OwNIdaopOn1rwNhtotGOGC0B-gzGzoHsz","appKey":"eadytQ2XqWmxuvAKeg08XX83","path":"window.location.pathname","placeholder":null,"avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":true,"recordIP":false,"serverURLs":"https://ownidaop.lc-cn-n1-shared.com","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

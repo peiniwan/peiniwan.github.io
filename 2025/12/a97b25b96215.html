@@ -1,0 +1,767 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="六月的雨">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="SurfaceViewSurfaceView 的绘制原理 在 WMS 中会为这个 Window 分配 Surface，并确定显示层级，可见负责显示界面的是画布 Surface，而不是窗口本身，WMS 将他管理的 Surface 交由 SurfaceFlinger 处理，SurfaceFlinger 将这些 Surface 合并后放入到 buffer 中，屏幕会定时从 buffer 中获取显示数据，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="6-系统源码">
+<meta property="og:url" content="http://peiniwan.github.io/2025/12/a97b25b96215.html">
+<meta property="og:site_name" content="六月的雨的笔记">
+<meta property="og:description" content="SurfaceViewSurfaceView 的绘制原理 在 WMS 中会为这个 Window 分配 Surface，并确定显示层级，可见负责显示界面的是画布 Surface，而不是窗口本身，WMS 将他管理的 Surface 交由 SurfaceFlinger 处理，SurfaceFlinger 将这些 Surface 合并后放入到 buffer 中，屏幕会定时从 buffer 中获取显示数据，">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%B3%BB%E7%BB%9F%E6%BA%90%E7%A0%81.resources/2023/09/15/18-23-14-566532bd5ebd93d5f914b24ef6b00830-unknown_filename.2-9ff731.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%B3%BB%E7%BB%9F%E6%BA%90%E7%A0%81.resources/2023/09/15/18-23-14-9564e77420be08d80e487b35d1279a64-unknown_filename.17-d02162.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%B3%BB%E7%BB%9F%E6%BA%90%E7%A0%81.resources/2023/09/15/18-23-14-cd7cb4e3634f82cb911a2d16766b3c2d-unknown_filename.9-4cbd16.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%B3%BB%E7%BB%9F%E6%BA%90%E7%A0%81.resources/2023/09/15/18-23-14-b4e2fbc08e08f9e7481929820cb6d48f-unknown_filename.6-016b82.png">
+<meta property="article:published_time" content="2025-12-16T13:59:22.719Z">
+<meta property="article:modified_time" content="2024-04-01T00:53:00.000Z">
+<meta property="article:author" content="六月的雨">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%B3%BB%E7%BB%9F%E6%BA%90%E7%A0%81.resources/2023/09/15/18-23-14-566532bd5ebd93d5f914b24ef6b00830-unknown_filename.2-9ff731.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>6-系统源码 - 六月的雨的笔记</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"peiniwan.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>六月的雨的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="6-系统源码"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-12-16 21:59" pubdate>
+          2025年12月16日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.7k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          15 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">6-系统源码</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="SurfaceView"><a href="#SurfaceView" class="headerlink" title="SurfaceView"></a>SurfaceView</h2><h4 id="SurfaceView-的绘制原理"><a href="#SurfaceView-的绘制原理" class="headerlink" title="SurfaceView 的绘制原理"></a>SurfaceView 的绘制原理</h4><p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%B3%BB%E7%BB%9F%E6%BA%90%E7%A0%81.resources/2023/09/15/18-23-14-566532bd5ebd93d5f914b24ef6b00830-unknown_filename.2-9ff731.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.2"></p>
+<p>在 WMS 中会为这个 Window 分配 Surface，并确定显示层级，可见负责显示界面的是画布 Surface，而不是窗口本身，WMS 将他管理的 Surface 交由 SurfaceFlinger 处理，SurfaceFlinger 将这些 Surface 合并后放入到 buffer 中，屏幕会定时从 buffer 中获取显示数据，显示到屏幕上。</p>
+<h3 id="SurfaceFlinger"><a href="#SurfaceFlinger" class="headerlink" title="SurfaceFlinger"></a>SurfaceFlinger</h3><ul>
+<li>在 App 进程中创建 PhoneWindow 后会创建 ViewRoot。ViewRoot 的创建会创建一个 Surface。</li>
+<li>图像流的最常见消耗方是 SurfaceFlinger，该系统服务会消耗当前可见的 Surface，并使用窗口管理器中提供的信息将它们合成到显示部分。SurfaceFlinger 是可以修改所显示部分内容的唯一服务。SurfaceFlinger 使用 OpenGL 和 Hardware Composer 来合成一组 Surface</li>
+<li><strong>HWComposer 是基于硬件来产生 VSync 信号的，来通知 SurfaceFlinger 重绘控制显示的帧率。</strong></li>
+<li>图像流生产方可以是生成图形缓冲区以供消耗的任何内容。例如 OpenGL ES、Canvas 2D 和 mediaserver 视频解码器。</li>
+</ul>
+<p>![[Pasted image 20250902172407.png]]</p>
+<h3 id="刷新率"><a href="#刷新率" class="headerlink" title="刷新率"></a>刷新率</h3><p>取的的时间<br>[[2.Handler 里的各种消息]]</p>
+<h2 id="PMS"><a href="#PMS" class="headerlink" title="PMS"></a>PMS</h2><h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><ul>
+<li>应用安装的时候，通过 PackageManagerService 解析 apk 的 AndroidManifest.xml 文件，提取出这个 apk 的信息写入到 system&#x2F;packages.xml 文件中，这些信息包括：权限、应用包名、icon、apk 的安装位置、版本、userID 等等。packages.xml 文件位于系统目录下&#x2F;data&#x2F;system&#x2F;packages.xml。</li>
+<li>同时桌面 Launcher 会为安装过的应用生成不同的应用入口，对应桌面上的应用图标</li>
+</ul>
+<h3 id="PackageManagerService"><a href="#PackageManagerService" class="headerlink" title="PackageManagerService"></a>PackageManagerService</h3><p><a target="_blank" rel="noopener" href="https://juejin.cn/post/7028196921143459870#heading-8">APK安装过程 完全解析</a><br>PackageManagerService运行在SystemServer进程，App端和AMS、PMS进行交互都是通过Binder跨进程完成。AMS负责Activity等四大组件的管理，而PMS则负责 包package 的管理，APK的全称是Android Package，即PMS的作用就是管理APK。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> IPackageManager <span class="hljs-title function_">getPackageManager</span><span class="hljs-params">()</span> &#123;<br>    <span class="hljs-keyword">if</span> (sPackageManager != <span class="hljs-literal">null</span>) &#123;<br>        <span class="hljs-keyword">return</span> sPackageManager;<br>    &#125;<br>    <span class="hljs-keyword">final</span> <span class="hljs-type">IBinder</span> <span class="hljs-variable">b</span> <span class="hljs-operator">=</span> ServiceManager.getService(<span class="hljs-string">&quot;package&quot;</span>);<br>    sPackageManager = IPackageManager.Stub.asInterface(b);<br>    <span class="hljs-keyword">return</span> sPackageManager;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+<h3 id="PMS的初始化"><a href="#PMS的初始化" class="headerlink" title="PMS的初始化"></a>PMS的初始化</h3><p>因为 所有App运行都需要 这些系统服务，所以是 系统开机的时候 完成 PMS、AMS这些的初始化</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">//SystemServer.java</span><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * The main entry point from zygote.</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> &#123;<br>    <span class="hljs-keyword">new</span> <span class="hljs-title class_">SystemServer</span>().run();<br>&#125;<br><br><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">run</span><span class="hljs-params">()</span> &#123;<br>        ...<br>        <span class="hljs-comment">// Here we go!</span><br>        Slog.i(TAG, <span class="hljs-string">&quot;Entered the Android system server!&quot;</span>);<br>        ...<br>        <span class="hljs-comment">// Prepare the main looper thread (this thread).</span><br>        Looper.prepareMainLooper();<br>        ...<br>    <span class="hljs-comment">// Start services. </span><br>        startBootstrapServices(t); <span class="hljs-comment">//系统开启中 具有复杂相互依赖性的 关键服务</span><br>        startCoreServices(t); <span class="hljs-comment">//没有复杂依赖的核心服务</span><br>        startOtherServices(t); <span class="hljs-comment">//其他服务</span><br>        ...<br>    <span class="hljs-comment">// Loop forever.</span><br>    Looper.loop();<br>    <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">RuntimeException</span>(<span class="hljs-string">&quot;Main thread loop unexpectedly exited&quot;</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>在开机系统启动时，zygote 进程会fork一个 SystemServer 进程然后执行上面main方法，这里进行大量的初始化，其中就包括 启动各种服务。 这里我们看 startBootstrapServices():</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">startBootstrapServices</span><span class="hljs-params">(<span class="hljs-meta">@NonNull</span> TimingsTraceAndSlog t)</span> &#123;<br>    ...<br>    <span class="hljs-comment">// Installer </span><br>    <span class="hljs-type">Installer</span> <span class="hljs-variable">installer</span> <span class="hljs-operator">=</span> mSystemServiceManager.startService(Installer.class);<br>    ...<br>    <span class="hljs-comment">//AMS</span><br>    mActivityManagerService = ActivityManagerService.Lifecycle.startService(mSystemServiceManager, atm);<br>    mActivityManagerService.setInstaller(installer);<br>    ...<br>    <span class="hljs-comment">//PMS</span><br>    mPackageManagerService = PackageManagerService.main(mSystemContext, installer,mFactoryTestMode != FactoryTest.FACTORY_TEST_OFF, mOnlyCore);<br>    ...<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>发现这里开启了 AMS、PMS，并且都使用了Installer。Installer 看名字像是安装器，后面再做介绍。 PMS的main方法内用构造方法创建了PMS实例，而它的构造方法内容特别多，我们关注其中一句调用scanDirTracedLI()：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">/** data/app，已安装app的目录 */</span><br><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">File</span> <span class="hljs-variable">sAppInstallDir</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">File</span>(Environment.getDataDirectory(), <span class="hljs-string">&quot;app&quot;</span>);<br><br><span class="hljs-keyword">public</span> <span class="hljs-title function_">PackageManagerService</span><span class="hljs-params">(Injector injector, <span class="hljs-type">boolean</span> onlyCore, <span class="hljs-type">boolean</span> factoryTest)</span>&#123;<br>    ...<br>    <span class="hljs-comment">//读取packages.xml中 上次的包信息，解析后将数据存放到mSettings中</span><br>    mFirstBoot = !mSettings.readLPw(mInjector.getUserManagerInternal().getUsers(<span class="hljs-literal">false</span>));<br>    ...<br>    <span class="hljs-comment">//扫描 data/app</span><br>    scanDirTracedLI(sAppInstallDir, <span class="hljs-number">0</span>, scanFlags | SCAN_REQUIRE_KNOWN, <span class="hljs-number">0</span>,packageParser, executorService);<br>    ...<br>    <span class="hljs-comment">//把新的 mSettings 内容更新到 packages.xml</span><br>    mSettings.writeLPr();<br>    ...<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>packages.xml：记录系统中 所有安装的应用信息，包括基本信息、签名和权限。<br>mSettings：用来保存和PMS相关的一些设置，它保存的内容在解析应用时会用到。</p>
+<p>先读取packages.xml文件，解析后将数据存放到mSettings中，代表上次启动时的应用包信息。然后扫描所有APK目录并解析APK，最后更新packages.xml文件。 而 packages.xml文件 是在 Settings 构造方法中创建。</p>
+<p>data&#x2F;app 是用户已安装App所在的目录，另外还有system&#x2F;app存放 系统App。PMS构造方法中会对 这两个目录在内的多个目录进行扫描，我们这里可以猜想到这是开机时对所有已安装App的初始化。</p>
+<p><strong>总结</strong><br>系统启动后创建并启动了PMS，并且PMS完成了对所有存在APK的目录进行了扫描，解析所有APK的AndroidManifest.xml，然后进一步扫描APK 最后提交包扫描结果到 PMS 的属性中。</p>
+<h2 id="APK的安装过程"><a href="#APK的安装过程" class="headerlink" title="APK的安装过程"></a>APK的安装过程</h2><ul>
+<li>APK用写入Session且包信息和APK安装操作 都提交到了PMS；</li>
+<li>PMS中先把APK拷贝到 &#x2F;data&#x2F;app，然后使用PackageParser2解析APK 获取 四大组件、搜集签名、PackageSetting等信息，并进行校验确保安装成功；</li>
+<li>接着提交信息包更新系统状态及PMS的内存数据；</li>
+<li>然后使用 Installer 准备用户目录&#x2F;data&#x2F;user、进行 dexOpt；</li>
+<li><strong>dexOpt 过程</strong>：目的：将 APK 中的 <code>.dex</code> 字节码转换为优化后的本地机器码</li>
+<li>最后发送安装结果通知UI层。</li>
+</ul>
+<h2 id="crash流程"><a href="#crash流程" class="headerlink" title="crash流程"></a>crash流程</h2><p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%B3%BB%E7%BB%9F%E6%BA%90%E7%A0%81.resources/2023/09/15/18-23-14-9564e77420be08d80e487b35d1279a64-unknown_filename.17-d02162.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.17"></p>
+<hr>
+<h2 id="Context"><a href="#Context" class="headerlink" title="Context"></a>Context</h2><ul>
+<li>Context指：一个应用程序环境的信息,即上下文。Context 是一个接口，ContextImpl 是子类，ContextWapper 是具体实现。</li>
+</ul>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%B3%BB%E7%BB%9F%E6%BA%90%E7%A0%81.resources/2023/09/15/18-23-14-cd7cb4e3634f82cb911a2d16766b3c2d-unknown_filename.9-4cbd16.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.9"></p>
+<p>Activity 因为有了 一层 Theme ，所以中间有个 ContextThemeWrapper ，相当于它是Service和Application 的侄子<br>Context Wrapper 是一个包装类 ，没 任何具体的实现，真正的逻辑都在 Contextlmpl里面</p>
+<ul>
+<li>可以看出每次创建 Application 和 Acitvity 以及 Service 时就会有一个 ContextImpl 实例，ContentProvider 和B roadcastReceiver 的 Context 是其他地方传入的。</li>
+<li>所以 Context 数量 &#x3D; Application 数量 + Activity 数量 + Service 数量，单进程情况下 Application 数量就是 1。</li>
+<li>Application 的 Context 生命周期与应用程序完全相同。Activity 或者 Service 的 Context 与他们各自类生命周期相同。</li>
+<li>Application 通常作为工具类来使用的，Application 中在 onCreate ()方法里去初始化各种全局的变量数据是一种比较推荐的做法，但是如果你想把初始化的时间点提前到极致，也可以去重写 attachBaseContext ()方法。不能写在构造函数里。</li>
+</ul>
+<h4 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h4><p>虽然 Context 神通广大，但是并不是随便拿到一个 Context 实例就可以为所欲为，还是有一些限制的。在绝大多数场景下，Activity、Service 和 Application 这三种类型的 Context 都是通用的，不过也有几种场景比较特殊，比如启动 Activity、弹出 Dialog。Android 是不允许 Activity 或 Dialog 凭空出现的，一个 Activity 的启动必须建立在另外一个 Activity 的基础之上，也就以此形成任务栈。而 Dialog 则必须在一个 Activity 的上面弹出（除非是 System Alert 类型的 Dialog），因此在这种场景下，我们只能使用 Activity 类的 Context。</p>
+<ol>
+<li>使用 ApplicationContext 去启动一个 LaunchMode 为 standard 的 Activity。</li>
+</ol>
+<p> 会报错，因为非 Activity 类型的 Context 没有所谓的任务栈。</p>
+<ol start="2">
+<li>getApplication、getApplicationContext 区别</li>
+</ol>
+<p>在绝大多数场景下，getApplication 和 getApplicationContext 这两个方法完全一致，返回值也相同。区别在于 getApplication 只存在于 Activity 和 Service 对象，对于 BroadcastReceiver 和 ContentProvider 只能使用 getApplicationContext。</p>
+<h4 id="功能"><a href="#功能" class="headerlink" title="功能"></a>功能</h4><ul>
+<li>四大组件的交互，包括启动 Activity、Broadcast、Service，获取 ContentResolver 等</li>
+<li><strong>确定生命周期的</strong>、获取各种资源</li>
+<li>文件、SharedPreference、数据库相关</li>
+<li>获取系统 &#x2F; 应用资源，包括 AssetManager、PackageManager、Resources、SystemService 以及 color、string、drawable 等<br>  <img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%B3%BB%E7%BB%9F%E6%BA%90%E7%A0%81.resources/2023/09/15/18-23-14-b4e2fbc08e08f9e7481929820cb6d48f-unknown_filename.6-016b82.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.6"></li>
+</ul>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/freekiteyu/article/details/79318031">原文链接</a></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%BA%90%E7%A0%81/" class="category-chain-item">源码</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E6%BA%90%E7%A0%81/Framework/" class="category-chain-item">Framework</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>6-系统源码</div>
+      <div>http://peiniwan.github.io/2025/12/a97b25b96215.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>六月的雨</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年12月16日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/12/d61e87c7789d.html" title="7-INPUT">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">7-INPUT</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/12/d52f6c1eb84b.html" title="5-事件分发机制">
+                        <span class="hidden-mobile">5-事件分发机制</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"OwNIdaopOn1rwNhtotGOGC0B-gzGzoHsz","appKey":"eadytQ2XqWmxuvAKeg08XX83","path":"window.location.pathname","placeholder":null,"avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":true,"recordIP":false,"serverURLs":"https://ownidaop.lc-cn-n1-shared.com","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

@@ -1,0 +1,813 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="六月的雨">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="声明式 UI声明式有哪些优势，并带来了哪些问题呢？ 优势: 让开发者摆脱组件的繁琐控制，聚焦于状态处理 习惯 Flutter 开发之后，回到原生平台开发，你会发现当多个组件之间相互关联时，对于 View 的控制非常麻烦。 而在 Flutter 中我们只需要处理好状态即可 (复杂度转移到了状态 -&gt; UI 的映射，也就是 Widget 的构建)。包括 Jetpack Compose、Swift">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2-Flutter 状态管理框架">
+<meta property="og:url" content="http://peiniwan.github.io/2025/12/3f084f516e6f.html">
+<meta property="og:site_name" content="六月的雨的笔记">
+<meta property="og:description" content="声明式 UI声明式有哪些优势，并带来了哪些问题呢？ 优势: 让开发者摆脱组件的繁琐控制，聚焦于状态处理 习惯 Flutter 开发之后，回到原生平台开发，你会发现当多个组件之间相互关联时，对于 View 的控制非常麻烦。 而在 Flutter 中我们只需要处理好状态即可 (复杂度转移到了状态 -&gt; UI 的映射，也就是 Widget 的构建)。包括 Jetpack Compose、Swift">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-12-16T13:59:22.518Z">
+<meta property="article:modified_time" content="2024-03-24T13:20:00.000Z">
+<meta property="article:author" content="六月的雨">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>2-Flutter 状态管理框架 - 六月的雨的笔记</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"peiniwan.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>六月的雨的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="2-Flutter 状态管理框架"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-12-16 21:59" pubdate>
+          2025年12月16日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.3k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          20 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">2-Flutter 状态管理框架</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="声明式-UI"><a href="#声明式-UI" class="headerlink" title="声明式 UI"></a>声明式 UI</h2><p>声明式有哪些优势，并带来了哪些问题呢？</p>
+<p><strong>优势: 让开发者摆脱组件的繁琐控制，聚焦于状态处理</strong></p>
+<p>习惯 Flutter 开发之后，回到原生平台开发，你会发现当多个组件之间相互关联时，对于 View 的控制非常麻烦。</p>
+<p>而在 Flutter 中我们只需要<em>处理好状态</em>即可 (复杂度转移到了状态 -&gt; UI 的映射，也就是 Widget 的构建)。包括 Jetpack Compose、Swift 等技术的最新发展，也是在朝着「声明式」的方向演进。</p>
+<p><strong>声明式开发带来的问题</strong></p>
+<p>没有使用状态管理，直接「声明式」开发的时候，遇到的问题总结有三个:</p>
+<ul>
+<li><p><strong>逻辑和 UI 耦合</strong> ✅<br>  直接在 <code>setState</code> 的组件里写逻辑，确实会造成难以复用、测试的问题。<br>  所以才有 Provider、Riverpod、Bloc 等框架，把逻辑和 UI 解耦。</p>
+</li>
+<li><p><strong>难以跨组件访问数据</strong> ✅<br>  Flutter 的 widget 是树形结构，默认数据传递只能一级一级传（父传子）。<br>  如果层级很深，就会很麻烦，这就是“状态提升”问题。<br>  所以才有 InheritedWidget &#x2F; Provider &#x2F; Riverpod。</p>
+</li>
+<li><p><strong>无法轻松控制刷新范围</strong> ❌（这个表述有点偏）</p>
+<ul>
+<li>setState 的确只能以 widget 为单位刷新，刷新的是“当前组件 + 子树”。</li>
+<li>它不会全局刷新（不会动到整个页面）。</li>
+<li>真正的问题是：如果你的 widget 太大，一个很小的状态变化就会导致整块 widget rebuild，性能会浪费。</li>
+<li>状态管理框架能帮你把数据拆分、精准刷新，不需要重建大块 UI。</li>
+</ul>
+</li>
+</ul>
+<p>所以要使用状态管理框架</p>
+<h2 id="setState"><a href="#setState" class="headerlink" title="setState"></a>setState</h2><p>setState的刷新范围，不是全局刷新。<br>setState 只会触发当前 Widget 及其子树的 build () 方法重新执行。</p>
+<p>当调用 <code>setState</code> 方法时，Flutter 会标记当前的 Widget 为”dirty”，表示该 Widget 需要重新绘制。然后，Flutter 会在下一帧（即下一个绘制周期）中执行重绘操作。<br>在重绘过程中，Flutter 会使用 diff 算法来比较前后两次状态的差异，并只重新绘制发生变化的部分。这意味着，只有受到 <code>setState</code> 调用影响的部分会被重新绘制，而不是整个界面。</p>
+<p>为什么小的状态变化导致较大范围的重建</p>
+<h3 id="1-Flutter-的渲染机制"><a href="#1-Flutter-的渲染机制" class="headerlink" title="1. Flutter 的渲染机制"></a>1. Flutter 的渲染机制</h3><p>Flutter 是 <strong>声明式 UI</strong>：</p>
+<ul>
+<li>你在 <code>build()</code> 方法里声明 UI 的“长相”。</li>
+<li>当 <code>setState</code> 触发时，框架会<strong>丢弃旧的 widget tree</strong>（当前组件和子树），重新执行 <code>build()</code> 得到一棵新的 widget tree。</li>
+<li>然后 Flutter 的 <strong>Element tree</strong> 和 <strong>RenderObject tree</strong> 会做 diff，决定哪些节点需要真正重新渲染。<blockquote>
+<p>也就是说，<strong>rebuild 的范围是 Widget 层（当前组件及子树）</strong>，但最终渲染层（RenderObject）可能会更小，因为 Flutter 做了优化。</p>
+</blockquote>
+</li>
+</ul>
+<h3 id="🔹-2-什么时候会“大范围重建”"><a href="#🔹-2-什么时候会“大范围重建”" class="headerlink" title="🔹 2. 什么时候会“大范围重建”"></a>🔹 2. 什么时候会“大范围重建”</h3><p>问题出在：<br><code>setState</code> 总是作用在<strong>当前 widget 及子树</strong>，所以如果 widget 设计不合理，哪怕只是一个小状态变化，也会导致整块 UI 重建。</p>
+<p>举例：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><code class="hljs scala"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">BigPage</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">StatefulWidget</span> </span>&#123;<br>  <span class="hljs-meta">@override</span><br>  _BigPageState createState() =&gt; _BigPageState();<br>&#125;<br><br><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">_BigPageState</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">State&lt;BigPage&gt;</span> </span>&#123;<br>  int counter = <span class="hljs-number">0</span>;<br><br>  <span class="hljs-meta">@override</span><br>  <span class="hljs-type">Widget</span> build(<span class="hljs-type">BuildContext</span> context) &#123;<br>    print(<span class="hljs-string">&quot;BigPage build&quot;</span>);<br>    <span class="hljs-keyword">return</span> <span class="hljs-type">Scaffold</span>(<br>      appBar: <span class="hljs-type">AppBar</span>(title: <span class="hljs-type">Text</span>(<span class="hljs-string">&quot;Demo&quot;</span>)),<br>      body: <span class="hljs-type">Column</span>(<br>        children: [<br>          <span class="hljs-type">Text</span>(<span class="hljs-string">&quot;Counter: $counter&quot;</span>),<br>          <span class="hljs-type">ElevatedButton</span>(<br>            onPressed: () &#123;<br>              setState(() &#123;<br>                counter++;<br>              &#125;);<br>            &#125;,<br>            child: <span class="hljs-type">Text</span>(<span class="hljs-string">&quot;Add&quot;</span>),<br>          ),<br>          <span class="hljs-comment">// 下面还有很复杂的列表</span><br>          <span class="hljs-type">Expanded</span>(<br>            child: <span class="hljs-type">ListView</span>.builder(<br>              itemCount: <span class="hljs-number">1000</span>,<br>              itemBuilder: (_, i) =&gt; <span class="hljs-type">Text</span>(<span class="hljs-string">&quot;Item $i&quot;</span>),<br>            ),<br>          ),<br>        ],<br>      ),<br>    );<br>  &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+
+<p>这里的问题</p>
+<ul>
+<li>我只是改了 <code>counter</code>，但是 <code>BigPage</code> 整个 <code>build()</code> 重新执行。</li>
+<li>那个 <code>ListView.builder</code> 也被 rebuild（虽然 Flutter 会尽量复用 child，但 <code>itemBuilder</code> 还是会再次调用）。</li>
+<li>如果 UI 很大，逻辑很重，就会性能浪费。</li>
+</ul>
+<h3 id="🔹-3-如何避免大范围重建"><a href="#🔹-3-如何避免大范围重建" class="headerlink" title="🔹 3. 如何避免大范围重建"></a>🔹 3. 如何避免大范围重建</h3><p>核心思想：<strong>拆分 widget，让状态尽量只影响局部</strong>。</p>
+<p>改造上面例子：</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><code class="hljs dart"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">CounterText</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">StatelessWidget</span> </span>&#123;<br>  <span class="hljs-keyword">final</span> <span class="hljs-built_in">int</span> counter;<br>  <span class="hljs-keyword">const</span> CounterText(<span class="hljs-keyword">this</span>.counter);<br><br>  <span class="hljs-meta">@override</span><br>  Widget build(BuildContext context) &#123;<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;CounterText build&quot;</span>);<br>    <span class="hljs-keyword">return</span> Text(<span class="hljs-string">&quot;Counter: <span class="hljs-subst">$counter</span>&quot;</span>);<br>  &#125;<br>&#125;<br><br><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">BigPage</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">StatefulWidget</span> </span>&#123;<br>  <span class="hljs-meta">@override</span><br>  _BigPageState createState() =&gt; _BigPageState();<br>&#125;<br><br><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">_BigPageState</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">State</span>&lt;<span class="hljs-title">BigPage</span>&gt; </span>&#123;<br>  <span class="hljs-built_in">int</span> counter = <span class="hljs-number">0</span>;<br><br>  <span class="hljs-meta">@override</span><br>  Widget build(BuildContext context) &#123;<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;BigPage build&quot;</span>);<br>    <span class="hljs-keyword">return</span> Scaffold(<br>      appBar: AppBar(title: Text(<span class="hljs-string">&quot;Demo&quot;</span>)),<br>      body: Column(<br>        children: [<br>          CounterText(counter), <span class="hljs-comment">// 单独拆分出去</span><br>          ElevatedButton(<br>            onPressed: () &#123;<br>              setState(() &#123;<br>                counter++;<br>              &#125;);<br>            &#125;,<br>            child: Text(<span class="hljs-string">&quot;Add&quot;</span>),<br>          ),<br>          Expanded(<br>            child: HeavyList(), <span class="hljs-comment">// 复杂列表单独做 widget</span><br>          ),<br>        ],<br>      ),<br>    );<br>  &#125;<br>&#125;<br><br><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">HeavyList</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">StatelessWidget</span> </span>&#123;<br>  <span class="hljs-meta">@override</span><br>  Widget build(BuildContext context) &#123;<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;HeavyList build&quot;</span>);<br>    <span class="hljs-keyword">return</span> ListView.builder(<br>      itemCount: <span class="hljs-number">1000</span>,<br>      itemBuilder: (_, i) =&gt; Text(<span class="hljs-string">&quot;Item <span class="hljs-subst">$i</span>&quot;</span>),<br>    );<br>  &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+<p>结果：</p>
+<ul>
+<li>点按钮时，<code>BigPage</code> 和 <code>CounterText</code> 会 rebuild。</li>
+<li>但 <code>HeavyList</code> <strong>不会重新 build</strong>，性能大幅优化。因为是 <em>StatelessWidget</em>，并且拆分出去了</li>
+</ul>
+<h3 id="🔹-4-总结"><a href="#🔹-4-总结" class="headerlink" title="🔹 4. 总结"></a>🔹 4. 总结</h3><p>👉 <strong>小状态变化导致大范围重建</strong>的情况：</p>
+<ul>
+<li>状态放在大组件里（页面级 State）。</li>
+<li><code>setState</code> 导致整个大组件及其子树 rebuild。</li>
+<li>子树里有很复杂的 UI，哪怕它没用到这个状态，也要被 rebuild。</li>
+</ul>
+<p>👉 <strong>解决方法</strong>：</p>
+<ul>
+<li><strong>拆分组件</strong>（局部 widget），减少无关 UI rebuild。</li>
+<li>或者用 <strong>状态管理框架</strong>（Provider、Riverpod、Bloc 等）精准刷新。</li>
+</ul>
+<h2 id="fluuter-boost"><a href="#fluuter-boost" class="headerlink" title="fluuter_boost"></a>fluuter_boost</h2><p>fluuter_boost 跳转页面比较方法。api 统一（原生 flutter），有生命周期，好管理</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/alibaba/flutter_boost/issues/1451">fluuter_boost3.0 不兼容最新的flutter版本，需要修改flutter_boost源码，暂时放弃该方案</a></p>
+<p>FlutterBoost 是阿里开源的 <strong>Flutter 混合开发解决方案</strong>，主要解决 <strong>原生应用（Android&#x2F;iOS）与 Flutter 模块的集成问题</strong>。<br>FlutterBoost 的好处就是让 Flutter 像“原生页面”一样融入现有 App，解决路由、生命周期、引擎复用等问题，让混合开发变得平滑、高效。</p>
+<p><strong>路由与原生一致</strong></p>
+<ul>
+<li>FlutterBoost 提供 <strong>统一的路由栈</strong>，支持原生跳 Flutter，Flutter 跳原生，Flutter 跳 Flutter。</li>
+<li>开发者不用自己维护复杂的 <code>Navigator</code> 和原生交互。<br>👉 保证 Flutter 页面和原生页面一样被管理，不会出现返回栈混乱。</li>
+</ul>
+<h2 id="状态管理框架"><a href="#状态管理框架" class="headerlink" title="状态管理框架"></a>状态管理框架</h2><p><a target="_blank" rel="noopener" href="https://juejin.cn/post/7094520232575762446">Flutter 状态管理框架 Provider 和 Get 分析</a></p>
+<p><strong>解决逻辑和页面 UI 耦合问题</strong><br>我们知道 Dart 是一种单线程的模型，所以不存在多线程下对于对象访问的竞态问题。基于此 Get 借助一个全局单例的 Map 存储对象。通过依赖注入的方式，实现了对 Presenter 层的获取。这样在任意的类中都可以获取到 Presenter。</p>
+<p><strong>解决难以跨组件 (跨页面) 访问数据的问题</strong></p>
+<ul>
+<li>全局单例，任意位置可以存取</li>
+<li>存在类型重复，内存回收问题</li>
+</ul>
+<p> <strong>setState 引起不必要刷新的问题</strong><br> 在 Get 中，只需要提前调用 <code>Get.put</code> 方法存储 <code>Counter</code> 对象，为 <code>GetBuilder</code> 组件指定 <code>Counter</code> 作为泛型。因为 Get 基于单例，所以 <code>GetBuilder</code> 可以直接通过泛型获取到存入的对象，并在 builder 方法中暴露。这样 <code>Counter</code> 便与组件建立了监听关系，之后 <code>Counter</code> 的变动，只会驱动以它作为泛型的 <code>GetBuilder</code> 组件更新。<br> 下面详细解释</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Counter</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">GetxController</span> &#123; <br>	<span class="hljs-type">int</span> <span class="hljs-variable">count</span> <span class="hljs-operator">=</span> <span class="hljs-number">0</span>;<br><br>	<span class="hljs-keyword">void</span> <span class="hljs-title function_">increase</span><span class="hljs-params">()</span> &#123; <br>		count++;<br>		update(); <br>	&#125;<br>&#125;<br><br><span class="hljs-comment">/// 提前进行存储</span><br><span class="hljs-type">final</span> <span class="hljs-variable">counter</span> <span class="hljs-operator">=</span> Get.put(Counter( )); <br><br><span class="hljs-comment">/// 直接通过泛型获取存储好的实例</span><br>GetBuilder&lt;Counter&gt;(<br>	builder: (Counter counter) =&gt; Text(<span class="hljs-string">&#x27;$&#123;counter.count&#125;&#x27;</span>) ); <br></code></pre></td></tr></table></figure>
+
+
+<p><strong>Get 由于全局单例带来的问题</strong><br>Get 通过全局单例，默认以 <code>runtimeType</code> 为 key 进行对象的存储，部分场景可能获取到的对象不符合预期，例如商品详情页之间跳转。由于不同的详情页实例对应的是同一 Class，即 <code>runtimeType</code> 相同。如果不添加 tag 参数，在某个页面调用 <code>Get.find</code> 会获取到其它页面已经存储过的对象。同时 Get 中一定要注意<em>考虑到对象的回收</em>，不然很有可能引起内存泄漏。要么手动在页面 <code>dispose</code> 的时候做 <code>delete</code> 操作，要么完全使用 Get 中提供的组件，例如 <code>GetBuilder</code>，它会在 <code>dispose</code> 中释放。</p>
+<h2 id="GetX使用"><a href="#GetX使用" class="headerlink" title="GetX使用"></a>GetX使用</h2><p><a target="_blank" rel="noopener" href="https://juejin.cn/post/6924104248275763208#heading-0">Flutter GetX使用—简洁的魅力！ - 掘金</a></p>
+<h3 id="GetxController"><a href="#GetxController" class="headerlink" title="GetxController"></a>GetxController</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Counter</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">GetxController</span> &#123; <br>	<span class="hljs-type">int</span> <span class="hljs-variable">count</span> <span class="hljs-operator">=</span> <span class="hljs-number">0</span>;<br><br>	<span class="hljs-keyword">void</span> <span class="hljs-title function_">increase</span><span class="hljs-params">()</span> &#123; <br>		count++;<br>		update(); <br>	&#125;<br>&#125;<br><br><span class="hljs-comment">/// 提前进行存储</span><br><span class="hljs-type">final</span> <span class="hljs-variable">counter</span> <span class="hljs-operator">=</span> Get.put(Counter( )); <br><br><span class="hljs-comment">/// 直接通过泛型获取存储好的实例</span><br>GetBuilder&lt;Counter&gt;(<br>	builder: (Counter counter) =&gt; Text(<span class="hljs-string">&#x27;$&#123;counter.count&#125;&#x27;</span>) ); <br></code></pre></td></tr></table></figure>
+
+<h4 id="🔹-代码整体逻辑"><a href="#🔹-代码整体逻辑" class="headerlink" title="🔹 代码整体逻辑"></a>🔹 代码整体逻辑</h4><p>这是用 <strong>GetX</strong> 的 <strong><code>GetBuilder</code></strong> 做状态管理的典型写法。<br>核心思想</p>
+<ul>
+<li><code>Counter</code> 是一个继承 <strong><code>GetxController</code></strong> 的状态类。</li>
+<li>你把 <code>Counter</code> 实例存到 GetX 的全局容器里（类似单例）。</li>
+<li><code>GetBuilder&lt;Counter&gt;</code> 会去取这个 <code>Counter</code> 实例，并建立监听。</li>
+<li>当 <code>Counter.update()</code> 被调用时，只有用到这个 <code>Counter</code> 的 <code>GetBuilder</code> 才会刷新。</li>
+</ul>
+<h4 id="🔹-逐行解释"><a href="#🔹-逐行解释" class="headerlink" title="🔹 逐行解释"></a>🔹 逐行解释</h4><h3 id="1-定义控制器"><a href="#1-定义控制器" class="headerlink" title="1. 定义控制器"></a>1. 定义控制器</h3><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs scala"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Counter</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">GetxController</span> </span>&#123; <br>	int count = <span class="hljs-number">0</span>;<br><br>	void increase() &#123; <br>		count++;<br>		update(); <br>	&#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<ul>
+<li><code>Counter</code> 继承自 <code>GetxController</code>，说明它是一个 <strong>可管理的状态类</strong>。</li>
+<li><code>count</code> 是状态数据。</li>
+<li><code>increase()</code> 修改 <code>count</code>，然后调用 <code>update()</code>。<br>  👉 <code>update()</code> 会通知所有依赖这个控制器的 <code>GetBuilder</code> 组件去刷新。</li>
+</ul>
+<h3 id="2-存储控制器"><a href="#2-存储控制器" class="headerlink" title="2. 存储控制器"></a>2. 存储控制器</h3><p><code>final counter = Get.put(Counter());</code> </p>
+<ul>
+<li><code>Get.put()</code> 是 <strong>依赖注入（DI）</strong>。</li>
+<li>这句话等价于：<strong>把一个 <code>Counter</code> 实例存到 GetX 的全局容器里</strong>，方便后续随时取用。</li>
+<li>由于 GetX 默认是 <strong>单例模式</strong>，所以无论在哪个地方用 <code>Get.find&lt;Counter&gt;()</code>，得到的都是同一个 <code>Counter</code> 对象。</li>
+</ul>
+<h3 id="3-使用-GetBuilder-绑定-UI"><a href="#3-使用-GetBuilder-绑定-UI" class="headerlink" title="3. 使用 GetBuilder 绑定 UI"></a>3. 使用 <code>GetBuilder</code> 绑定 UI</h3><p><code>GetBuilder&lt;Counter&gt;(  	builder: (Counter counter) =&gt; Text(&#39;$&#123;counter.count&#125;&#39;)  );</code></p>
+<ul>
+<li><code>GetBuilder&lt;Counter&gt;</code> 的泛型 <code>&lt;Counter&gt;</code> 告诉 GetX：<br>  👉 我要监听 <code>Counter</code> 这个控制器。</li>
+<li><code>builder</code> 会传入存好的 <code>Counter</code> 实例（就是 <code>Get.put()</code> 存的那个）。</li>
+<li>当 <code>counter.update()</code> 被调用时，<strong>只有这个 <code>GetBuilder&lt;Counter&gt;</code> 会刷新</strong>。</li>
+<li>UI 更新：<code>Text(&#39;$&#123;counter.count&#125;&#39;)</code> 会显示最新的值。</li>
+</ul>
+<h4 id="🔹-和-setState-的区别"><a href="#🔹-和-setState-的区别" class="headerlink" title="🔹 和 setState 的区别"></a>🔹 和 <code>setState</code> 的区别</h4><ul>
+<li><code>setState</code> 会重建 <strong>当前 Widget 及子树</strong>。</li>
+<li><code>GetBuilder</code> 只会更新绑定了 <code>Counter</code> 的部分，<strong>精确更新</strong>，不影响其他 UI。</li>
+<li>而且状态 <code>Counter</code> 是全局单例，多个页面&#x2F;组件都能共享。</li>
+</ul>
+<h4 id="🔹-总结一句话"><a href="#🔹-总结一句话" class="headerlink" title="🔹 总结一句话"></a>🔹 总结一句话</h4><blockquote>
+<p><code>Get.put(Counter())</code> 把状态对象存起来，<br><code>GetBuilder&lt;Counter&gt;</code> 绑定到这个状态，<br>当 <code>Counter.update()</code> 被调用时，只有依赖它的 <code>GetBuilder</code> 会刷新。</p>
+</blockquote>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%85%B6%E4%BB%96%E8%AF%AD%E8%A8%80/" class="category-chain-item">其他语言</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>2-Flutter 状态管理框架</div>
+      <div>http://peiniwan.github.io/2025/12/3f084f516e6f.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>六月的雨</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年12月16日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/12/419bc25ead72.html" title="3-Flutter工作tips">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">3-Flutter工作tips</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/12/5a1b7f6ccf87.html" title="1-Flutter分享">
+                        <span class="hidden-mobile">1-Flutter分享</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"OwNIdaopOn1rwNhtotGOGC0B-gzGzoHsz","appKey":"eadytQ2XqWmxuvAKeg08XX83","path":"window.location.pathname","placeholder":null,"avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":true,"recordIP":false,"serverURLs":"https://ownidaop.lc-cn-n1-shared.com","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

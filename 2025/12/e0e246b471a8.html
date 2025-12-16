@@ -1,0 +1,811 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="六月的雨">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="动态规划淘宝的“双十一”购物节有各种促销活动，比如“满 200 元减 50 元”。假设你女朋友的购物车中有 n 个（n&gt;100）想买的商品，她希望从里面选几个，在凑够满减条件的前提下，让选出来的商品价格总和最大程度地接近满减条件（200 元），这样就可以极大限度地“薅羊毛”。作为程序员的你，能不能编个代码来帮她搞定呢？ 动态规划比较适合用来求解最优问题，比如求最大值、最小值等等。最优子结构指">
+<meta property="og:type" content="article">
+<meta property="og:title" content="7-贪心、回溯、动态规划">
+<meta property="og:url" content="http://peiniwan.github.io/2025/12/e0e246b471a8.html">
+<meta property="og:site_name" content="六月的雨的笔记">
+<meta property="og:description" content="动态规划淘宝的“双十一”购物节有各种促销活动，比如“满 200 元减 50 元”。假设你女朋友的购物车中有 n 个（n&gt;100）想买的商品，她希望从里面选几个，在凑够满减条件的前提下，让选出来的商品价格总和最大程度地接近满减条件（200 元），这样就可以极大限度地“薅羊毛”。作为程序员的你，能不能编个代码来帮她搞定呢？ 动态规划比较适合用来求解最优问题，比如求最大值、最小值等等。最优子结构指">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://segmentfault.com/img/bVbe23m?w=1258&h=226">
+<meta property="og:image" content="https://segmentfault.com/img/bVbe23E?w=1262&h=226">
+<meta property="og:image" content="https://segmentfault.com/img/bVbe23Z?w=1270&h=226">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%B4%AA%E5%BF%83%E3%80%81%E5%9B%9E%E6%BA%AF%E3%80%81%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92.resources/2023/09/15/18-49-25-a08ed0f86c19774cf54b9cb123cab1a3-unknown_filename.2-d5ad89.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%B4%AA%E5%BF%83%E3%80%81%E5%9B%9E%E6%BA%AF%E3%80%81%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92.resources/2023/09/15/18-49-25-538572391b17bb53f6f5f4012247cc97-unknown_filename.1-d3c267.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%B4%AA%E5%BF%83%E3%80%81%E5%9B%9E%E6%BA%AF%E3%80%81%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92.resources/2023/09/15/18-49-25-ab642f1824164aab1f95396480b13b2f-unknown_filename-b24ce5.png">
+<meta property="article:published_time" content="2025-12-16T13:59:22.650Z">
+<meta property="article:modified_time" content="2024-03-13T03:59:00.000Z">
+<meta property="article:author" content="六月的雨">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://segmentfault.com/img/bVbe23m?w=1258&h=226">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>7-贪心、回溯、动态规划 - 六月的雨的笔记</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"peiniwan.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>六月的雨的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="7-贪心、回溯、动态规划"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-12-16 21:59" pubdate>
+          2025年12月16日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.7k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          31 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">7-贪心、回溯、动态规划</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="动态规划"><a href="#动态规划" class="headerlink" title="动态规划"></a>动态规划</h2><p>淘宝的“双十一”购物节有各种促销活动，比如“满 200 元减 50 元”。假设你女朋友的购物车中有 n 个（n&gt;100）想买的商品，她希望从里面选几个，在凑够满减条件的前提下，让选出来的商品价格总和最大程度地接近满减条件（200 元），这样就可以极大限度地“薅羊毛”。作为程序员的你，能不能编个代码来帮她搞定呢？</p>
+<p>动态规划比较适合用来求解最优问题，比如求最大值、最小值等等。<br>最优子结构指的是，问题的最优解包含子问题的最优解。反过来说就是，我们可以通过子问题的最优解，推导出问题的最优解。如果我们把最优子结构，对应到我们前面定义的动态规划问题模型上，那我们也可以理解为，<strong>后面阶段的状态可以通过前面阶段的状态推导出来</strong>。<br><strong>有重复子问题</strong></p>
+<p><a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000015944750">javascript - 动态规划入门（以爬楼梯为例） - 个人文章 - SegmentFault 思否</a></p>
+<h2 id="方法二：备忘录算法"><a href="#方法二：备忘录算法" class="headerlink" title="方法二：备忘录算法"></a>方法二：备忘录算法</h2><blockquote>
+<p>const map &#x3D; new Map();<br>function getWays(n) {</p>
+<pre><code class="hljs">if (n &lt; 1) return 0;
+if (n == 1) return 1;
+if (n == 2) return 2;
+
+if (map.has(n)) &#123;
+    return map.get(n);
+&#125;
+const value = getWays(n-1) + getWays(n-2);
+map.set(n, value);
+return value; 
+</code></pre>
+<p>}</p>
+</blockquote>
+<p>因为map里最终会存放n-2个键值对，所以空间复杂度为<strong>O(n)</strong>,时间复杂度也为<strong>O(n)</strong></p>
+<p>继续想一想这就是最优的解决方案了吗？</p>
+<p>我们回到一开始的思路，我们是假定前面的楼梯已经走完，只考虑最后一步，所以才得出来f(n) &#x3D; f(n-1) + f(n-2)的递归式，这是一个置顶向下求解的式子<br>一般来说，按照正常的思路应该是一步一步往上走，应该是自底向上去求解才比较符合正常人的思维，我们来看看行不行的通</p>
+<p><img src="https://segmentfault.com/img/bVbe23m?w=1258&h=226" srcset="/img/loading.gif" lazyload alt="图片描述" title="图片描述"><br>这是一开始走的一个和两个楼梯的走法数,即之前说的<strong>初始状态</strong></p>
+<p><img src="https://segmentfault.com/img/bVbe23E?w=1262&h=226" srcset="/img/loading.gif" lazyload alt="图片描述" title="图片描述"><br>这是进行了一次迭代得出了3个楼梯的走法，f(3)只依赖于f(1) 和 f(2)</p>
+<p>继续看下一步<br><img src="https://segmentfault.com/img/bVbe23Z?w=1270&h=226" srcset="/img/loading.gif" lazyload alt="图片描述" title="图片描述"><br>这里又进行了一次迭代得出了4个楼梯的走法，f(4)只依赖于f(2) 和 f(3)</p>
+<p>我们发现每次迭代只需要前两次迭代的数据，不用像备忘录一样去保存所有子状态的数据</p>
+<h2 id="方法三：动态规划求解"><a href="#方法三：动态规划求解" class="headerlink" title="方法三：动态规划求解"></a>方法三：动态规划求解</h2><blockquote>
+<p>function getWays(n) {</p>
+<pre><code class="hljs">if (n &lt; 1) return 0;
+if (n == 1) return 1;
+if (n == 2) return 2;
+
+// a保存倒数第二个子状态数据，b保存倒数第一个子状态数据， temp 保存当前状态的数据
+let a = 1, b = 2;
+let temp = a + b;
+for (let i = 3; i &lt;= n; i++) &#123;
+    temp = a + b;
+    a = b;
+    b = temp; 
+&#125;
+return temp; 
+</code></pre>
+<p>}</p>
+</blockquote>
+<p>这是我们可以再看看当前的时间复杂度和空间复杂度<br>当前时间复杂度仍为<strong>O(n)<strong>，但空间复杂度降为</strong>O(1)</strong><br>这就是理想的结果</p>
+<h3 id="0-1-背包"><a href="#0-1-背包" class="headerlink" title="0-1 背包"></a>0-1 背包</h3><p>对于一组不同重量、不可分割的物品，我们需要选择一些装入背包，在满足背包最大重量限制的前提下，背包中物品总重量的最大值是多少呢？</p>
+<p>规律是不是不好找？那我们就举个例子、画个图看看。我们假设背包的最大承载重量是 9。我们有 5 个不同的物品，每个物品的重量分别是 2，2，4，6，3。如果我们把这个例子的回溯求解过程，用递归树画出来，就是下面这个样子：<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%B4%AA%E5%BF%83%E3%80%81%E5%9B%9E%E6%BA%AF%E3%80%81%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92.resources/2023/09/15/18-49-25-a08ed0f86c19774cf54b9cb123cab1a3-unknown_filename.2-d5ad89.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.2"><br>递归树中的每个节点表示一种状态，我们用（i, cw）来表示。其中，i 表示将要决策第几个物品是否装入背包，cw 表示当前背包中物品的总重量。比如，（2，2）表示我们将要决策第 2 个物品是否装入背包，在决策前，背包中物品的总重量是 2。<br><strong>第 0 个（下标从 0 开始编号）物品的重量是 2，要么装入背包，要么不装入背包</strong><br>从递归树中，你应该能会发现，有些子问题的求解是重复的，比如图中 f(2, 2) 和 f(3,4) 都被重复计算了两次。</p>
+<figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs arduino"><br><span class="hljs-keyword">private</span> <span class="hljs-type">int</span> maxW = Integer.MIN_VALUE; <span class="hljs-comment">// 结果放到maxW中</span><br><span class="hljs-keyword">private</span> <span class="hljs-type">int</span>[] weight = &#123;<span class="hljs-number">2</span>，<span class="hljs-number">2</span>，<span class="hljs-number">4</span>，<span class="hljs-number">6</span>，<span class="hljs-number">3</span>&#125;;  <span class="hljs-comment">// 物品重量</span><br><span class="hljs-keyword">private</span> <span class="hljs-type">int</span> n = <span class="hljs-number">5</span>; <span class="hljs-comment">// 物品个数</span><br><span class="hljs-keyword">private</span> <span class="hljs-type">int</span> w = <span class="hljs-number">9</span>; <span class="hljs-comment">// 背包承受的最大重量</span><br><span class="hljs-keyword">private</span> <span class="hljs-type">boolean</span>[][] mem = <span class="hljs-keyword">new</span> <span class="hljs-type">boolean</span>[<span class="hljs-number">5</span>][<span class="hljs-number">10</span>]; <span class="hljs-comment">// 备忘录，默认值false</span><br><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-type">void</span> <span class="hljs-title">f</span><span class="hljs-params">(<span class="hljs-type">int</span> i, <span class="hljs-type">int</span> cw)</span> </span>&#123; <span class="hljs-comment">// 调用f(0, 0)</span><br>  <span class="hljs-keyword">if</span> (cw == w || i == n) &#123; <span class="hljs-comment">// cw==w表示装满了，i==n表示物品都考察完了</span><br>    <span class="hljs-keyword">if</span> (cw &gt; maxW) maxW = cw;<br>    <span class="hljs-keyword">return</span>;<br>  &#125;<br>  <span class="hljs-keyword">if</span> (mem[i][cw]) <span class="hljs-keyword">return</span>; <span class="hljs-comment">// 重复状态</span><br>  mem[i][cw] = <span class="hljs-literal">true</span>; <span class="hljs-comment">// 记录(i, cw)这个状态</span><br>  <span class="hljs-built_in">f</span>(i+<span class="hljs-number">1</span>, cw); <span class="hljs-comment">// 选择不装第i个物品</span><br>  <span class="hljs-keyword">if</span> (cw + weight[i] &lt;= w) &#123;<br>    <span class="hljs-built_in">f</span>(i+<span class="hljs-number">1</span>,cw + weight[i]); <span class="hljs-comment">// 选择装第i个物品</span><br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>贪心、分治、回溯和动态规划<br>如果我们将这四种算法思想分一下类，那贪心、回溯、动态规划可以归为一类，而分治单独可以作为一类，因为它跟其他三个都不大一样。为什么这么说呢？前三个算法解决问题的模型，都可以抽象成我们今天讲的那个多阶段决策最优解模型，而分治算法解决的问题尽管大部分也是最优解问题，但是，大部分都不能抽象成多阶段决策模型。</p>
+<p>回溯算法是个“万金油”。基本上能用的动态规划、贪心解决的问题，我们都可以用回溯算法解决。回溯算法相当于穷举搜索。穷举所有的情况，然后对比得到最优解。不过，回溯算法的时间复杂度非常高，是指数级别的，只能用来解决小规模数据的问题。对于大规模数据的问题，用回溯算法解决的执行效率就很低了。</p>
+<p>尽管动态规划比回溯算法高效，但是，并不是所有问题，都可以用动态规划来解决。能用动态规划解决的问题，需要满足三个特征，最优子结构、无后效性和重复子问题。在重复子问题这一点上，动态规划和分治算法的区分非常明显。分治算法要求分割成的子问题，不能有重复子问题，而动态规划正好相反，<strong>动态规划之所以高效，就是因为回溯算法实现中存在大量的重复子问题</strong>。</p>
+<p>然后，我讲了两种动态规划的解题思路。它们分别是状态转移表法和状态转移方程法。其中，状态转移表法解题思路大致可以概括为，<strong>回溯算法实现 - 定义状态 - 画递归树 - 找重复子问题 - 画状态转移表 - 根据递推关系填表 - 将填表过程翻译成代码</strong>。状态转移方程法的大致思路可以概括为，<strong>找最优子结构 - 写状态转移方程 - 将状态转移方程翻译成代码</strong>。</p>
+<hr>
+<h2 id="贪心算法"><a href="#贪心算法" class="headerlink" title="贪心算法"></a>贪心算法</h2><p>贪心算法有很多经典的应用，比如霍夫曼编码（Huffman Coding）、Prim 和 Kruskal 最小生成树算法、还有 Dijkstra 单源最短路径算法。最小生成树算法和最短路径算法我们后面会讲到，所以我们今天讲下霍夫曼编码，看看它是如何利用贪心算法来实现对数据压缩编码，有效节省数据存储空间的。</p>
+<p>假设我们有一个可以容纳 100kg 物品的背包，可以装各种物品。我们有以下 5 种豆子，每种豆子的总量和总价值都各不相同。为了让背包中所装物品的总价值最大，我们如何选择在背包中装哪些豆子？每种豆子又该装多少呢？<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%B4%AA%E5%BF%83%E3%80%81%E5%9B%9E%E6%BA%AF%E3%80%81%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92.resources/2023/09/15/18-49-25-538572391b17bb53f6f5f4012247cc97-unknown_filename.1-d3c267.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.1"><br>实际上，这个问题很简单，我估计你一下子就能想出来，没错，我们只要先算一算每个物品的单价，按照单价由高到低依次来装就好了。单价从高到低排列，依次是：黑豆、绿豆、红豆、青豆、黄豆，所以，我们可以往背包里装 20kg 黑豆、30kg 绿豆、50kg 红豆。</p>
+<p>第一步，当我们看到这类问题的时候，首先要联想到贪心算法：针对一组数据，我们定义了限制值和期望值，希望从中选出几个数据，在满足限制值的情况下，期望值最大。</p>
+<p>类比到刚刚的例子，限制值就是重量不能超过 100kg，期望值就是物品的总价值。这组数据就是 5 种豆子。我们从中选出一部分，满足重量不超过 100kg，并且总价值最大。</p>
+<h2 id="回溯算法"><a href="#回溯算法" class="headerlink" title="回溯算法"></a>回溯算法</h2><p>回溯算法的核心就是试了再比，不行回退的思路。<br>回溯相当于穷举，使用合理的剪枝技巧减少穷举的数量</p>
+<h3 id="八皇后"><a href="#八皇后" class="headerlink" title="八皇后"></a>八皇后</h3><p>我们有一个 8x8 的棋盘，希望往里放 8 个棋子（皇后），每个棋子所在的行、列、对角线都不能有另一个棋子。你可以看我画的图，第一幅图是满足条件的一种方法，第二幅图是不满足条件的。八皇后问题就是期望找到所有满足这种要求的放棋子方式。<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%B4%AA%E5%BF%83%E3%80%81%E5%9B%9E%E6%BA%AF%E3%80%81%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92.resources/2023/09/15/18-49-25-ab642f1824164aab1f95396480b13b2f-unknown_filename-b24ce5.png" srcset="/img/loading.gif" lazyload alt="unknown_filename"><br>我们把这个问题划分成 8 个阶段，依次将 8 个棋子放到第一行、第二行、第三行……第八行。在放置的过程中，我们不停地检查当前的方法，是否满足要求。如果满足，则跳到下一行继续放置棋子；如果不满足，那就再换一种方法，继续尝试。</p>
+<pre><code class="hljs">  int[] result = new int[8];//全局或成员变量,下标表示行,值表示queen存储在哪一列
+
+    public void cal8queens(int row) &#123; // 调用方式：cal8queens(0);
+        if (row == 8) &#123; // 8个棋子都放置好了，打印结果
+            printQueens(result);
+            return; // 8行棋子都放好了，已经没法再往下递归了，所以就return
+        &#125;
+        for (int column = 0; column &lt; 8; ++column) &#123; // 每一行都有8中放法
+            if (isOk(row, column)) &#123; // 有些放法不满足要求
+                result[row] = column; // 第row行的棋子放到了column列
+                cal8queens(row + 1); // 考察下一行
+            &#125;
+        &#125;
+    &#125;
+
+    private boolean isOk(int row, int column) &#123;//判断row行column列放置是否合适
+        int leftup = column - 1, rightup = column + 1;
+        for (int i = row - 1; i &gt;= 0; --i) &#123; // 逐行往上考察每一行
+            if (result[i] == column) return false; // 第i行的column列有棋子吗？
+            if (leftup &gt;= 0) &#123; // 考察左上对角线：第i行leftup列有棋子吗？
+                if (result[i] == leftup) return false;
+            &#125;
+            if (rightup &lt; 8) &#123; // 考察右上对角线：第i行rightup列有棋子吗？
+                if (result[i] == rightup) return false;
+            &#125;
+            --leftup;
+            ++rightup;
+        &#125;
+        return true;
+    &#125;
+
+    private void printQueens(int[] result) &#123; // 打印出一个二维矩阵
+        for (int row = 0; row &lt; 8; ++row) &#123;
+            for (int column = 0; column &lt; 8; ++column) &#123;
+                if (result[row] == column) System.out.print(&quot;Q &quot;);
+                else System.out.print(&quot;* &quot;);
+            &#125;
+            System.out.println();
+        &#125;
+        System.out.println();
+    &#125;
+</code></pre>
+<h4 id="穷举法"><a href="#穷举法" class="headerlink" title="穷举法"></a>穷举法</h4><ol>
+<li>穷举法的基本思想是根据题目的部分条件确定答案的大致范围，并在此范围内对所有可能的情况逐一验证，直到全部情况验证完毕。若某个情况验证符合题目的全部条件，则为本问题的一个解；若全部情况验证后都不符合题目的全部条件，则本题无解。穷举法也称为枚举法。</li>
+</ol>
+<ul>
+<li>穷举法是一种针对于密码的破译方法。这种方法很像数学上的“完全归纳法”并在密码破译方面得到了广泛的应用。简单来说就是将密码进行逐个推算直到找出真正的密码为止。比如一个四位并且全部由数字组成其密码共有10000种组合，也就是说最多我们会尝试9999次才能找到真正的密码。利用这种方法我们可以运用计算机来进行逐个推算，也就是说用我们破解任何一个密码也都只是一个时间问题。</li>
+</ul>
+<h3 id="0-1-背包-1"><a href="#0-1-背包-1" class="headerlink" title="0-1 背包"></a>0-1 背包</h3><p><a target="_blank" rel="noopener" href="https://time.geekbang.org/column/article/74287">链接</a><br>我们有一个背包，背包总的承载重量是 Wkg。现在我们有 n 个物品，每个物品的重量不等，并且不可分割。我们现在期望选择几件物品，装载到背包中。在不超过背包所能装载重量的前提下，如何让背包中物品的总重量最大？<br><strong>我们可以把物品依次排列，整个问题就分解为了 n 个阶段，每个阶段对应一个物品怎么选择。先对第一个物品进行处理，选择装进去或者不装进去，然后再递归地处理剩下的物品。</strong></p>
+<p>这里还稍微用到了一点搜索剪枝的技巧，就是当发现已经选择的物品的重量超过 Wkg 之后，我们就停止继续探测剩下的物品。你可以看我写的具体的代码。</p>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs glsl">   public <span class="hljs-type">int</span> maxW = Integer.MIN_VALUE; <span class="hljs-comment">//存储背包中物品总重量的最大值</span><br><br>    <span class="hljs-comment">// cw表示当前已经装进去的物品的重量和；i表示考察到哪个物品了；</span><br><span class="hljs-comment">// w背包重量；items表示每个物品的重量；n表示物品个数</span><br><span class="hljs-comment">// 假设背包可承受重量100，物品个数10，物品重量存储在数组a中，那可以这样调用函数：</span><br><span class="hljs-comment">// f(0, 0, a, 10, 100)</span><br>    public <span class="hljs-type">void</span> f(<span class="hljs-type">int</span> i, <span class="hljs-type">int</span> <span class="hljs-keyword">cw</span>, <span class="hljs-type">int</span>[] items, <span class="hljs-type">int</span> n, <span class="hljs-type">int</span> w) &#123;<br>        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">cw</span> == w || i == n) &#123; <span class="hljs-comment">// cw==w表示装满了;i==n表示已经考察完所有的物品</span><br>            <span class="hljs-keyword">if</span> (<span class="hljs-keyword">cw</span> &gt; maxW) maxW = <span class="hljs-keyword">cw</span>;<br>            <span class="hljs-keyword">return</span>;<br>        &#125;<br>        f(i + <span class="hljs-number">1</span>, <span class="hljs-keyword">cw</span>, items, n, w);<span class="hljs-comment">//当前物品不装进背包，第 11 行的递归调用表示不选择当前物品，直接考虑下一个（第 i+1 个），故 cw 不更新</span><br>        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">cw</span> + items[i] &lt;= w) &#123;<span class="hljs-comment">// 已经超过可以背包承受的重量的时候，就不要再装了</span><br>            f(i + <span class="hljs-number">1</span>, <span class="hljs-keyword">cw</span> + items[i], items, n, w);<span class="hljs-comment">//当前物品装进背包</span><br>        &#125;<br>    &#125;<br></code></pre></td></tr></table></figure>
+<p>0-1背包问题理解：假设三个物品，每个物品在考虑时有两种选择，1-放进包，0-不放。11行代码表示不放进包里。13行代码表示放进包里。三个物品遍历过程如下：<br>0 0 0 update maxW<br>0 0 1 update maxW<br>0 1 0 update maxW<br>0 1 1 update maxW<br>1 0 0 update maxW<br>1 0 1 update maxW<br>1 1 0 update maxW<br>1 1 1 update maxW</p>
+<p><strong>看看下面的图</strong><br>算法复杂度2^n</p>
+<p>回溯算法本质上就是枚举，优点在于其类似于摸着石头过河的查找策略，且可以通过剪枝少走冤枉路。它可能适合应用于缺乏规律，或我们还不了解其规律的搜索场景中。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E7%AE%97%E6%B3%95/" class="category-chain-item">算法</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>7-贪心、回溯、动态规划</div>
+      <div>http://peiniwan.github.io/2025/12/e0e246b471a8.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>六月的雨</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年12月16日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/12/50fd4ce9422f.html" title="数据结构和算法分享">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">数据结构和算法分享</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/12/f45f5449b6bd.html" title="5-链表题">
+                        <span class="hidden-mobile">5-链表题</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"OwNIdaopOn1rwNhtotGOGC0B-gzGzoHsz","appKey":"eadytQ2XqWmxuvAKeg08XX83","path":"window.location.pathname","placeholder":null,"avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":true,"recordIP":false,"serverURLs":"https://ownidaop.lc-cn-n1-shared.com","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

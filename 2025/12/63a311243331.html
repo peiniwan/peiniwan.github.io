@@ -1,0 +1,767 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="六月的雨">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="设计模式2（结构型模式）结构型模式这类模式介绍如何将对象和类组装成较大的结构，并同时保持结构的灵活和高效。  桥接模式桥接模式的主要作用就是通过将抽象部分与实现部分分离，把多种可匹配的使用进行组合。说白了核心实现也就是在 A 类中含有 B 类接口，通过构造函数传递 B 类的实现，这个 B 类就是设计的桥。  从上面的ifelse方式实现来看，这是两种不同类型的相互组合。那么就可以把支付方式和支付模">
+<meta property="og:type" content="article">
+<meta property="og:title" content="设计模式2（结构型模式）">
+<meta property="og:url" content="http://peiniwan.github.io/2025/12/63a311243331.html">
+<meta property="og:site_name" content="六月的雨的笔记">
+<meta property="og:description" content="设计模式2（结构型模式）结构型模式这类模式介绍如何将对象和类组装成较大的结构，并同时保持结构的灵活和高效。  桥接模式桥接模式的主要作用就是通过将抽象部分与实现部分分离，把多种可匹配的使用进行组合。说白了核心实现也就是在 A 类中含有 B 类接口，通过构造函数传递 B 类的实现，这个 B 类就是设计的桥。  从上面的ifelse方式实现来看，这是两种不同类型的相互组合。那么就可以把支付方式和支付模">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F2%EF%BC%88%E7%BB%93%E6%9E%84%E5%9E%8B%E6%A8%A1%E5%BC%8F%EF%BC%89.resources/2023/09/18/15-44-41-bc927085a6f00fded5d9a6df0634add0-unknown_filename.4-3597cc.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F2%EF%BC%88%E7%BB%93%E6%9E%84%E5%9E%8B%E6%A8%A1%E5%BC%8F%EF%BC%89.resources/2023/09/18/15-44-41-b925500bf6750546cc0e528275ecdd9d-unknown_filename.5-e4206c.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F2%EF%BC%88%E7%BB%93%E6%9E%84%E5%9E%8B%E6%A8%A1%E5%BC%8F%EF%BC%89.resources/2023/09/18/15-44-41-830c5d571bf35ea69e8a79ddaf295f26-unknown_filename.6-1946e6.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F2%EF%BC%88%E7%BB%93%E6%9E%84%E5%9E%8B%E6%A8%A1%E5%BC%8F%EF%BC%89.resources/2023/09/18/15-44-41-a2c083493ee185d0ab0efda1a1894592-unknown_filename.2-65a723.jpeg">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F2%EF%BC%88%E7%BB%93%E6%9E%84%E5%9E%8B%E6%A8%A1%E5%BC%8F%EF%BC%89.resources/2023/09/18/15-44-41-782e0ca884abd8b94d3639ab8f375b0c-unknown_filename-6f695e.jpeg">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F2%EF%BC%88%E7%BB%93%E6%9E%84%E5%9E%8B%E6%A8%A1%E5%BC%8F%EF%BC%89.resources/2023/09/18/15-44-41-e54a10f9974ee4bcf0f199276497caf6-unknown_filename.8-0c3535.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F2%EF%BC%88%E7%BB%93%E6%9E%84%E5%9E%8B%E6%A8%A1%E5%BC%8F%EF%BC%89.resources/2023/09/18/15-44-41-8be3a871128050ebfb9589126324114d-unknown_filename.7-7564b7.png">
+<meta property="article:published_time" content="2025-12-16T13:59:22.626Z">
+<meta property="article:modified_time" content="2024-03-13T06:15:00.000Z">
+<meta property="article:author" content="六月的雨">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F2%EF%BC%88%E7%BB%93%E6%9E%84%E5%9E%8B%E6%A8%A1%E5%BC%8F%EF%BC%89.resources/2023/09/18/15-44-41-bc927085a6f00fded5d9a6df0634add0-unknown_filename.4-3597cc.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>设计模式2（结构型模式） - 六月的雨的笔记</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"peiniwan.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>六月的雨的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="设计模式2（结构型模式）"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-12-16 21:59" pubdate>
+          2025年12月16日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          25 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">设计模式2（结构型模式）</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="设计模式2（结构型模式）"><a href="#设计模式2（结构型模式）" class="headerlink" title="设计模式2（结构型模式）"></a>设计模式2（结构型模式）</h1><p>结构型模式<br>这类模式介绍<em>如何将对象和类组装成较大的结构</em>，并同时保持结构的灵活和高效。</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F2%EF%BC%88%E7%BB%93%E6%9E%84%E5%9E%8B%E6%A8%A1%E5%BC%8F%EF%BC%89.resources/2023/09/18/15-44-41-bc927085a6f00fded5d9a6df0634add0-unknown_filename.4-3597cc.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.4|209x0"></p>
+<h2 id="桥接模式"><a href="#桥接模式" class="headerlink" title="桥接模式"></a>桥接模式</h2><p>桥接模式的主要作用就是通过将抽象部分与实现部分分离，把多种可匹配的使用进行组合。说白了核心实现也就是在 <em>A 类中含有 B 类接口，通过构造函数传递 B 类的实现</em>，这个 B 类就是设计的桥。</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F2%EF%BC%88%E7%BB%93%E6%9E%84%E5%9E%8B%E6%A8%A1%E5%BC%8F%EF%BC%89.resources/2023/09/18/15-44-41-b925500bf6750546cc0e528275ecdd9d-unknown_filename.5-e4206c.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.5|600"></p>
+<p>从上面的ifelse方式实现来看，这是两种不同类型的相互组合。那么就可以把<strong>支付方式和支付模式进行分离通过抽象类依赖实现类的方式进行桥接</strong>，通过这样的拆分后支付与模式其实是可以单独使用的，当需要组合时候只需要把模式传递给支付即可。<br>桥接模式的关键是选择的桥接点拆分，是否可以找到这样类似的相互组合，如果没有就不必要非得使用桥接模式。</p>
+<figure class="highlight haxe"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs haxe"><span class="hljs-meta">@Test</span><br><span class="hljs-keyword">public</span> void test_pay() &#123;<br><br>    System.out.println(<span class="hljs-string">&quot;\r\n模拟测试场景；微信支付、人脸方式。&quot;</span>);<br>    Pay wxPay = <span class="hljs-keyword">new</span> <span class="hljs-type">WxPay</span>(<span class="hljs-keyword">new</span> <span class="hljs-type">PayFaceMode</span>());<br>    wxPay.transfer(<span class="hljs-string">&quot;weixin_1092033111&quot;</span>, <span class="hljs-string">&quot;100000109893&quot;</span>, <span class="hljs-keyword">new</span> <span class="hljs-type">BigDecimal</span>(<span class="hljs-number">100</span>));<br><br>    System.out.println(<span class="hljs-string">&quot;\r\n模拟测试场景；支付宝支付、指纹方式。&quot;</span>);<br>    Pay zfbPay = <span class="hljs-keyword">new</span> <span class="hljs-type">ZfbPay</span>(<span class="hljs-keyword">new</span> <span class="hljs-type">PayFingerprintMode</span>());<br>    zfbPay.transfer(<span class="hljs-string">&quot;jlu19dlxo111&quot;</span>,<span class="hljs-string">&quot;100000109894&quot;</span>,<span class="hljs-keyword">new</span> <span class="hljs-type">BigDecimal</span>(<span class="hljs-number">100</span>));<br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F2%EF%BC%88%E7%BB%93%E6%9E%84%E5%9E%8B%E6%A8%A1%E5%BC%8F%EF%BC%89.resources/2023/09/18/15-44-41-830c5d571bf35ea69e8a79ddaf295f26-unknown_filename.6-1946e6.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.6"></p>
+<h2 id="外观模式（门面模式）"><a href="#外观模式（门面模式）" class="headerlink" title="外观模式（门面模式）"></a>外观模式（门面模式）</h2><p>（context）<br>外观模式的主要目的在于 <strong>让外部减少与 子系统内部的多个模块的交互</strong>，从而让外部能够更简单得使用子系统。它负责把客户端的请求转发给子系统内部的各个模块进行处理。<br>简单点理解就是，通过创建一个统一的类，用来包装子系统中一个或多个复杂的类，客户端可以通过调用外观类的方法来调用内部子系统中所有方法。<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F2%EF%BC%88%E7%BB%93%E6%9E%84%E5%9E%8B%E6%A8%A1%E5%BC%8F%EF%BC%89.resources/2023/09/18/15-44-41-a2c083493ee185d0ab0efda1a1894592-unknown_filename.2-65a723.jpeg" srcset="/img/loading.gif" lazyload alt="unknown_filename.2|639x0"></p>
+<p>facade和module是合成关系</p>
+<ul>
+<li>由于 Facade 类封装了各个模块交互的过程，如果今后内部模块调用关系发生了变化，只需要修改 Facade 实现就可以了。</li>
+<li>Facade实现是可以被多个客户端调用的</li>
+</ul>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><code class="hljs csharp"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">ModuleA</span> &#123;<br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">testFuncA</span>()</span> &#123;<br>        System.<span class="hljs-keyword">out</span>.println(<span class="hljs-string">&quot;This is Function From 改变了&quot;</span>);<br>    &#125;<br>&#125;<br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">ModuleB</span> &#123;<br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">testFuncB</span>()</span> &#123;<br>        System.<span class="hljs-keyword">out</span>.println(<span class="hljs-string">&quot;This is Function From ModuleB&quot;</span>);<br>    &#125;<br>&#125;<br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">Facade</span> &#123;<br>    <span class="hljs-keyword">private</span> ModuleA moduleA = <span class="hljs-literal">null</span>;<br>    <span class="hljs-keyword">private</span> ModuleB moduleB = <span class="hljs-literal">null</span>;<br>    <span class="hljs-keyword">private</span> ModuleC moduleC = <span class="hljs-literal">null</span>;<br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> Facade mFacade = <span class="hljs-literal">null</span>;<br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-title">Facade</span>()</span>&#123;<br>        moduleA = <span class="hljs-keyword">new</span> ModuleA();<br>        moduleB = <span class="hljs-keyword">new</span> ModuleB();<br>        moduleC = <span class="hljs-keyword">new</span> ModuleC();<br>    &#125;   <br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Facade <span class="hljs-title">getInstance</span>()</span> &#123;<br>        <span class="hljs-keyword">if</span>(mFacade == <span class="hljs-literal">null</span>) &#123;<br>            mFacade = <span class="hljs-keyword">new</span> Facade();<br>        &#125;<br>        <span class="hljs-keyword">return</span> mFacade;<br>    &#125;<br><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">testOperation</span>()</span> &#123;<br>        moduleA.testFuncA();<br>        moduleB.testFuncB();<br>        moduleC.testFuncC();<br>    &#125;<br>&#125;<br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">Client</span> &#123;<br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span>(<span class="hljs-params">String arg[]</span>)</span> &#123;<br>        Facade.getInstance().testOperation();<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="享元模式"><a href="#享元模式" class="headerlink" title="享元模式"></a>享元模式</h2><p>（string）</p>
+<p>享元的目的是为了减少不必要的内存消耗，将多个对象的访问集中起来，不必为每个访问者创建一个单独的对象，以此来降低内存的消耗。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">FlyWeight</span> &#123;<br><br>    <span class="hljs-keyword">static</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">MyString</span> &#123;<br>        <span class="hljs-keyword">private</span> String myChar;<br><br>        <span class="hljs-keyword">public</span> <span class="hljs-title function_">MyString</span><span class="hljs-params">(String myChar)</span> &#123;<br>            <span class="hljs-built_in">this</span>.myChar = myChar;<br>        &#125;<br><br>        <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">display</span><span class="hljs-params">()</span> &#123;<br>            System.out.println(myChar);<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-keyword">static</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">MyCharacterFactory</span> &#123;<br><br>        <span class="hljs-keyword">private</span> Map&lt;String, MyString&gt; pool;<br><br>        <span class="hljs-keyword">public</span> <span class="hljs-title function_">MyCharacterFatory</span><span class="hljs-params">()</span> &#123;<br>            pool = <span class="hljs-keyword">new</span> <span class="hljs-title class_">HashMap</span>&lt;&gt;();<br>        &#125;<br><br>        <span class="hljs-keyword">public</span> MyString <span class="hljs-title function_">getMyCharacte</span><span class="hljs-params">(String strig)</span> &#123;<br>            <span class="hljs-type">MyString</span> <span class="hljs-variable">myString</span> <span class="hljs-operator">=</span> pool.get(strig);<br>            <span class="hljs-keyword">if</span> (myString == <span class="hljs-literal">null</span>) &#123;<br>                myString = <span class="hljs-keyword">new</span> <span class="hljs-title class_">MyString</span>(strig);<br>                pool.put(strig, myString);<br>            &#125;<br>            <span class="hljs-keyword">return</span> myString;<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> &#123;<br>        <span class="hljs-type">MyCharacterFactory</span> <span class="hljs-variable">myCharacterFactory</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">MyCharacterFactory</span>();<br>        <span class="hljs-type">MyString</span> <span class="hljs-variable">a</span> <span class="hljs-operator">=</span> myCharacterFactory.getMyCharacte(<span class="hljs-string">&quot;a&quot;</span>);<br>        <span class="hljs-type">MyString</span> <span class="hljs-variable">b</span> <span class="hljs-operator">=</span> myCharacterFactory.getMyCharacte(<span class="hljs-string">&quot;b&quot;</span>);<br>        <span class="hljs-type">MyString</span> <span class="hljs-variable">a1</span> <span class="hljs-operator">=</span> myCharacterFactory.getMyCharacte(<span class="hljs-string">&quot;a&quot;</span>);<br>        <span class="hljs-type">MyString</span> <span class="hljs-variable">d</span> <span class="hljs-operator">=</span> myCharacterFactory.getMyCharacte(<span class="hljs-string">&quot;d&quot;</span>);<br><br>        <span class="hljs-keyword">if</span> (a == a1) &#123;<br>            System.out.println(<span class="hljs-string">&quot;true&quot;</span>);<br>        &#125;<br><br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="代理模式"><a href="#代理模式" class="headerlink" title="代理模式"></a>代理模式</h2><p>通过代理对象访问目标对象.这样做的好处是：<em>可以在目标对象实现的基础上，扩展目标对象的功能。或者交给另一个类去做事情</em>。<br>代理对象拦截真正对象的方法调用，在真正的对象调用前／后实现自己的逻辑调用<br>这里使用到编程中的一个思想:不要随意去修改别人已经写好的代码或者方法,如果需改修改,可以通过代理的方式来扩展该方法。</p>
+<p>动态代理的用途与装饰模式很相似，就是为了对某个对象进行增强，还有交给另一个去做事。所有使用装饰者模式的案例都可以使用动态代理来替换。</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F2%EF%BC%88%E7%BB%93%E6%9E%84%E5%9E%8B%E6%A8%A1%E5%BC%8F%EF%BC%89.resources/2023/09/18/15-44-41-782e0ca884abd8b94d3639ab8f375b0c-unknown_filename-6f695e.jpeg" srcset="/img/loading.gif" lazyload alt="unknown_filename|708x0"></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">/**</span><br><span class="hljs-comment">* subject（抽象主题角色）：</span><br><span class="hljs-comment">* 真实主题与代理主题的共同接口。</span><br><span class="hljs-comment">*/</span><br><span class="hljs-keyword">interface</span> <span class="hljs-title class_">Subject</span> &#123;<br>    <span class="hljs-keyword">void</span> <span class="hljs-title function_">sellBook</span><span class="hljs-params">()</span>;<br>&#125;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment">* ReaISubject（真实主题角色）：</span><br><span class="hljs-comment">* 定义了代理角色所代表的真实对象。</span><br><span class="hljs-comment">*/</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">RealSubject</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">Subject</span> &#123;<br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">sellBook</span><span class="hljs-params">()</span> &#123;<br>        System.out.println(<span class="hljs-string">&quot;出版社卖书&quot;</span>);<br>    &#125;<br>&#125;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment">* Proxy（代理主题角色）：</span><br><span class="hljs-comment">* 含有对真实主题角色的引用，代理角色通常在将客</span><br><span class="hljs-comment">* 户端调用传递给真实主题对象之前或者之后执行某些</span><br><span class="hljs-comment">* 操作，而不是单纯返回真实的对象。</span><br><span class="hljs-comment">*/</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">ProxySubject</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">Subject</span> &#123;<br><br>    <span class="hljs-keyword">private</span> RealSubject realSubject;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">sellBook</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-keyword">if</span> (realSubject == <span class="hljs-literal">null</span>) &#123;<br>            realSubject = <span class="hljs-keyword">new</span> <span class="hljs-title class_">RealSubject</span>();<br>        &#125;<br>        sale();<br>        realSubject.sellBook();<br>        give();<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">sale</span><span class="hljs-params">()</span> &#123;<br>        System.out.println(<span class="hljs-string">&quot;打折&quot;</span>);<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">give</span><span class="hljs-params">()</span> &#123;<br>        System.out.println(<span class="hljs-string">&quot;送优惠券&quot;</span>);<br>    &#125;<br>&#125;<br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Main</span> &#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> &#123;<br>        <span class="hljs-comment">//静态代理（我们自己静态定义的代理类)</span><br>        <span class="hljs-type">ProxySubject</span> <span class="hljs-variable">proxySubject</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ProxySubject</span>();<br>        proxySubject.sellBook();<br><br>        <span class="hljs-comment">//动态代理(通过程序动态生成代理类，该代理类不是我们自己定义的。而是由程序自动生成)</span><br>        <span class="hljs-type">RealSubject</span> <span class="hljs-variable">realSubject</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">RealSubject</span>();<br>        <span class="hljs-type">MyHandler</span> <span class="hljs-variable">myHandler</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">MyHandler</span>();<br>        myHandler.setProxySubject(realSubject);<br>        <span class="hljs-type">Subject</span> <span class="hljs-variable">subject</span> <span class="hljs-operator">=</span> (Subject) Proxy.newProxyInstance(realSubject.getClass().getClassLoader(),<br>                realSubject.getClass().getInterfaces(), myHandler);<br>        subject.sellBook();<br><br>    &#125;<br>&#125;<br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">MyHandler</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">InvocationHandler</span> &#123;<br>    <span class="hljs-keyword">private</span> RealSubject realSubject;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">setProxySubject</span><span class="hljs-params">(RealSubject realSubject)</span> &#123;<br>        <span class="hljs-built_in">this</span>.realSubject = realSubject;<br>    &#125;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> proxy  　指代我们所代理的那个真实对象</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> method   指代的是我们所要调用真实对象的某个方法的Method对象</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> args   　指代的是调用真实对象某个方法时接受的参数</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span></span><br><span class="hljs-comment">     * <span class="hljs-doctag">@throws</span> Throwable</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> Object <span class="hljs-title function_">invoke</span><span class="hljs-params">(Object proxy, Method method, Object[] args)</span> <span class="hljs-keyword">throws</span> Throwable &#123;<br>        sale();<br>        proxy = method.invoke(realSubject, args);<br>        give();<br>        <span class="hljs-keyword">return</span> proxy;<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">sale</span><span class="hljs-params">()</span> &#123;<br>        System.out.println(<span class="hljs-string">&quot;打折&quot;</span>);<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">give</span><span class="hljs-params">()</span> &#123;<br>        System.out.println(<span class="hljs-string">&quot;送优惠券&quot;</span>);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="组合"><a href="#组合" class="headerlink" title="组合"></a>组合</h2><p><strong>将对象组合成树形结构</strong>，使得使用者可以用 <strong>一致的方式</strong> 处理单个对象和对象的组合。<br>客户程序可以向处理简单元素一样来处理复杂元素，从而使得客户程序与复杂元素的内部结构解耦。<br>![[Pasted image 20250902154220.png]]</p>
+<p>文件系统</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><code class="hljs kotlin"><span class="hljs-comment">// 抽象组件</span><br><span class="hljs-keyword">interface</span> <span class="hljs-title class_">FileSystemComponent</span> &#123;<br>    <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">show</span><span class="hljs-params">()</span></span><br>&#125;<br><br><span class="hljs-comment">// 叶子节点：文件</span><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">File</span>(<span class="hljs-keyword">private</span> <span class="hljs-keyword">val</span> name: String) : FileSystemComponent &#123;<br>    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">show</span><span class="hljs-params">()</span></span> &#123;<br>        println(<span class="hljs-string">&quot;File: <span class="hljs-variable">$name</span>&quot;</span>)<br>    &#125;<br>&#125;<br><br><span class="hljs-comment">// 容器节点：文件夹</span><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Folder</span>(<span class="hljs-keyword">private</span> <span class="hljs-keyword">val</span> name: String) : FileSystemComponent &#123;<br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">val</span> children = mutableListOf&lt;FileSystemComponent&gt;()<br><br>    <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">add</span><span class="hljs-params">(component: <span class="hljs-type">FileSystemComponent</span>)</span></span> &#123;<br>        children.add(component)<br>    &#125;<br><br>    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">show</span><span class="hljs-params">()</span></span> &#123;<br>        println(<span class="hljs-string">&quot;Folder: <span class="hljs-variable">$name</span>&quot;</span>)<br>        <span class="hljs-keyword">for</span> (child <span class="hljs-keyword">in</span> children) &#123;<br>            child.show()<br>        &#125;<br>    &#125;<br>&#125;<br><br><span class="hljs-comment">// 使用</span><br><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span> &#123;<br>    <span class="hljs-keyword">val</span> root = Folder(<span class="hljs-string">&quot;root&quot;</span>)<br>    <span class="hljs-keyword">val</span> docs = Folder(<span class="hljs-string">&quot;docs&quot;</span>)<br>    <span class="hljs-keyword">val</span> img = Folder(<span class="hljs-string">&quot;images&quot;</span>)<br><br>    <span class="hljs-keyword">val</span> file1 = File(<span class="hljs-string">&quot;resume.doc&quot;</span>)<br>    <span class="hljs-keyword">val</span> file2 = File(<span class="hljs-string">&quot;cover.jpg&quot;</span>)<br><br>    docs.add(file1)<br>    img.add(file2)<br>    root.add(docs)<br>    root.add(img)<br><br>    root.show()<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+
+
+<h2 id="装饰模式"><a href="#装饰模式" class="headerlink" title="装饰模式"></a>装饰模式</h2><p>(Collections 工具类、I&#x2F;O、context)</p>
+<p>👉 <strong>在不修改原有类的情况下，动态地给对象添加功能</strong>。用“包装”的方式扩展对象的功能，比继承更灵活。<br>![[Pasted image 20250902154525.png]]</p>
+<p>咖啡加料</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><code class="hljs kotlin"><span class="hljs-comment">// 抽象组件</span><br><span class="hljs-keyword">interface</span> <span class="hljs-title class_">Coffee</span> &#123;<br>    <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">cost</span><span class="hljs-params">()</span></span>: <span class="hljs-built_in">Double</span><br>    <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">description</span><span class="hljs-params">()</span></span>: String<br>&#125;<br><br><span class="hljs-comment">// 具体实现</span><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">SimpleCoffee</span> : <span class="hljs-type">Coffee</span> &#123;<br>    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">cost</span><span class="hljs-params">()</span></span> = <span class="hljs-number">5.0</span><br>    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">description</span><span class="hljs-params">()</span></span> = <span class="hljs-string">&quot;Simple Coffee&quot;</span><br>&#125;<br><br><span class="hljs-comment">// 抽象装饰类</span><br><span class="hljs-keyword">open</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">CoffeeDecorator</span>(<span class="hljs-keyword">private</span> <span class="hljs-keyword">val</span> coffee: Coffee) : Coffee &#123;<br>    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">cost</span><span class="hljs-params">()</span></span> = coffee.cost()<br>    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">description</span><span class="hljs-params">()</span></span> = coffee.description()<br>&#125;<br><br><span class="hljs-comment">// 具体装饰类：加牛奶</span><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">MilkDecorator</span>(coffee: Coffee) : CoffeeDecorator(coffee) &#123;<br>    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">cost</span><span class="hljs-params">()</span></span> = <span class="hljs-keyword">super</span>.cost() + <span class="hljs-number">2.0</span><br>    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">description</span><span class="hljs-params">()</span></span> = <span class="hljs-keyword">super</span>.description() + <span class="hljs-string">&quot;, Milk&quot;</span><br>&#125;<br><br><span class="hljs-comment">// 具体装饰类：加糖</span><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">SugarDecorator</span>(coffee: Coffee) : CoffeeDecorator(coffee) &#123;<br>    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">cost</span><span class="hljs-params">()</span></span> = <span class="hljs-keyword">super</span>.cost() + <span class="hljs-number">1.0</span><br>    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">description</span><span class="hljs-params">()</span></span> = <span class="hljs-keyword">super</span>.description() + <span class="hljs-string">&quot;, Sugar&quot;</span><br>&#125;<br><br><span class="hljs-comment">// 使用</span><br><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span> &#123;<br>    <span class="hljs-keyword">var</span> coffee: Coffee = SimpleCoffee()<br>    println(<span class="hljs-string">&quot;<span class="hljs-subst">$&#123;coffee.description()&#125;</span> = <span class="hljs-subst">$&#123;coffee.cost()&#125;</span>&quot;</span>)<br><br>    coffee = MilkDecorator(coffee)<br>    println(<span class="hljs-string">&quot;<span class="hljs-subst">$&#123;coffee.description()&#125;</span> = <span class="hljs-subst">$&#123;coffee.cost()&#125;</span>&quot;</span>)<br><br>    coffee = SugarDecorator(coffee)<br>    println(<span class="hljs-string">&quot;<span class="hljs-subst">$&#123;coffee.description()&#125;</span> = <span class="hljs-subst">$&#123;coffee.cost()&#125;</span>&quot;</span>)<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<p>Simple Coffee &#x3D; 5.0<br>Simple Coffee, Milk &#x3D; 7.0<br>Simple Coffee, Milk, Sugar &#x3D; 8.0</p>
+<ul>
+<li><strong>组合模式</strong>：关注 <strong>整体与部分的层级结构</strong>（树形结构）。</li>
+<li><strong>装饰模式</strong>：关注 <strong>给对象动态地附加新功能</strong>（链式包装）。</li>
+</ul>
+<h2 id="适配器（adapter）模式"><a href="#适配器（adapter）模式" class="headerlink" title="适配器（adapter）模式"></a>适配器（adapter）模式</h2><p>把一个类的接口变换成客户端所期待的另一种接口，从而使原本因接口不匹配而无法在一起使用的类能够一起工作。<br>适配器就是一种适配中间件，它存在于不匹配的二者之间，用于连接二者，将不匹配变得匹配，简单点理解就是平常所见的转接头，转换器之类的存在。</p>
+<h3 id="类适配器"><a href="#类适配器" class="headerlink" title="类适配器"></a>类适配器</h3><p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F2%EF%BC%88%E7%BB%93%E6%9E%84%E5%9E%8B%E6%A8%A1%E5%BC%8F%EF%BC%89.resources/2023/09/18/15-44-41-e54a10f9974ee4bcf0f199276497caf6-unknown_filename.8-0c3535.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.8|196x0"></p>
+<p>原理：通过继承来实现适配器功能。</p>
+<p>类适配器使用对象继承的方式，是静态的定义方式<br>对于类适配器，适配器可以重定义Adaptee的部分行为，使Adaptee有了sampleOperation2（）<br>对于类适配器，仅仅引入了一个对象，并不需要额外的引用来间接得 到 Adaptee<br>对于类适配器，由于适配器直接继承了Adaptee，使得适配器不能和 Adaptee的子类一起工作 </p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><code class="hljs csharp"><span class="hljs-keyword">public</span> <span class="hljs-keyword">interface</span> <span class="hljs-title">Target</span> &#123;<br><br>    <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">sampleOperation1</span>()</span>;<br><br>    <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">sampleOperation2</span>()</span>;<br>&#125;<br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">Adaptee</span> &#123;<br><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">sampleOperation1</span>()</span> &#123;<br>        System.<span class="hljs-keyword">out</span>.println(<span class="hljs-string">&quot;sampleOperation1&quot;</span>);<br>    &#125;<br>&#125;<br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">Adapter</span> <span class="hljs-title">extends</span> <span class="hljs-title">Adaptee</span> <span class="hljs-title">implements</span> <span class="hljs-title">Target</span> &#123;<br>    @Override<br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">sampleOperation2</span>()</span> &#123;<br>        System.<span class="hljs-keyword">out</span>.println(<span class="hljs-string">&quot;sampleOperation2&quot;</span>);<br>    &#125;<br>&#125;<br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">MyClass</span> &#123;<br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span>(<span class="hljs-params">String[] args</span>)</span> &#123;<br>        Adapter adapter = <span class="hljs-keyword">new</span> Adapter();<br>        adapter.sampleOperation1();<br>        adapter.sampleOperation2();<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="对象适配器"><a href="#对象适配器" class="headerlink" title="对象适配器"></a>对象适配器</h3><p>与类的适配器模式一样，对象的适配器模式把被适配的类的API转换成为目标类的API，与类的适配器模式不同的是，对象的适配器模式不是使用继承关系连接到Adaptee类，而是使用委派关系连接到Adaptee类。</p>
+<p>对象适配器使用对象组合的方式，是动态组合的方式</p>
+<p>对于对象适配器，一个适配器（adaptee）可以把多种不同的源适配到同一个目标</p>
+<p>对于对象适配器，要重定义Adaptee的行为比较困难</p>
+<p>对于对象适配器，需要额外的引用来间接得到Adaptee。</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F2%EF%BC%88%E7%BB%93%E6%9E%84%E5%9E%8B%E6%A8%A1%E5%BC%8F%EF%BC%89.resources/2023/09/18/15-44-41-8be3a871128050ebfb9589126324114d-unknown_filename.7-7564b7.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.7|332x0"></p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><code class="hljs csharp"><span class="hljs-keyword">public</span> <span class="hljs-keyword">interface</span> <span class="hljs-title">Target</span> &#123;<br><br>    <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">sampleOperation1</span>()</span>;<br><br>    <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">sampleOperation2</span>()</span>;<br>&#125;<br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">Adaptee</span> &#123;<br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">sampleOperation1</span>()</span> &#123;<br>        System.<span class="hljs-keyword">out</span>.println(<span class="hljs-string">&quot;sampleOperation1&quot;</span>);<br>    &#125;<br>&#125;<br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">Adapter</span> <span class="hljs-title">implements</span> <span class="hljs-title">Target</span> &#123;<br><br>    <span class="hljs-keyword">private</span> Adaptee mAdaptee;<br><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">Adapter</span>(<span class="hljs-params">Adaptee adaptee</span>)</span> &#123;<br>        mAdaptee = adaptee;<br>    &#125;<br><br>    @Override<br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">sampleOperation1</span>()</span> &#123;<br>        mAdaptee.sampleOperation1();<br>    &#125;<br><br>    @Override<br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">sampleOperation2</span>()</span> &#123;<br>        System.<span class="hljs-keyword">out</span>.println(<span class="hljs-string">&quot;sampleOperation2&quot;</span>);<br>    &#125;<br><br>&#125;<br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">MyClass</span> &#123;<br><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span>(<span class="hljs-params">String[] args</span>)</span> &#123;<br>        Adapter adapter =<span class="hljs-keyword">new</span> Adapter(<span class="hljs-keyword">new</span> Adaptee());<br>        adapter.sampleOperation1();<br>        adapter.sampleOperation2();<br>    &#125;<br>&#125;<br><br><br></code></pre></td></tr></table></figure>
+
+<p>适配器模式不并是那种会让架构变得更合理的模式，更多的时候它只是充当救火队员的角色，帮助解决由于前期架构设计不合理导致的接口不匹配的问题。更好的做法是在设计的时候就尽量把以后可能出现的情况多考虑一些，例如这个例子，ServerFirst没有PlayerCount 方法，可以写一个适配器对象，实现PlayerCount 接口，新接口中调用旧接口的方法</p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/guolin_blog/article/details/9400141">Java设计模式透析之 —— 适配器(Adapter)_adpter注解 java-CSDN博客</a></p>
+<h2 id="委托模式（没有这种模式）"><a href="#委托模式（没有这种模式）" class="headerlink" title="委托模式（没有这种模式）"></a>委托模式（没有这种模式）</h2><p>委托（Delegate）是 Kotlin 的一种语言特性，用于更加优雅地实现代理模式。</p>
+<p>委托模式是软件设计模式中的一项基本技巧。在委托模式中，有两个对象参与处理同一个请求，接受请求的对象将请求委托给另一个对象来处理。委托模式是一项基本技巧，许多其他的模式，如状态模式、策略模式、访问者模式本质上是在更特殊的场合采用了委托模式。委托模式使得我们可以用聚合来替代继承，它还使我们可以模拟 mixin。</p>
+<h3 id="简单的-Java例子"><a href="#简单的-Java例子" class="headerlink" title="简单的 Java例子"></a>简单的 Java例子</h3><p>在这个例子里，类模拟打印机Printer拥有针式打印机RealPrinter的实例，Printer拥有的方法print()将处理转交给RealPrinter的方法print()。</p>
+<figure class="highlight axapta"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs axapta"><span class="hljs-keyword">class</span> <span class="hljs-title class_">RealPrinter</span> &#123; <span class="hljs-comment">// the &quot;delegate&quot;</span><br>     <span class="hljs-keyword">void</span> <span class="hljs-keyword">print</span>() &#123;<br>       System.out.<span class="hljs-keyword">print</span>(<span class="hljs-string">&quot;something&quot;</span>);<br>     &#125;<br>&#125;<br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Printer</span> &#123; <span class="hljs-comment">// the &quot;delegator&quot;</span><br>     RealPrinter p = <span class="hljs-keyword">new</span> RealPrinter(); <span class="hljs-comment">// create the delegate</span><br>     <span class="hljs-keyword">void</span> <span class="hljs-keyword">print</span>() &#123;<br>       p.<span class="hljs-keyword">print</span>(); <span class="hljs-comment">// delegation</span><br>     &#125;<br>&#125;<br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Main</span> &#123;<br>     <span class="hljs-comment">// to the outside world it looks like Printer actually prints.</span><br>     <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> main(String[] args) &#123;<br>         Printer printer = <span class="hljs-keyword">new</span> Printer();<br>         printer.<span class="hljs-keyword">print</span>();<br>     &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="复杂的-Java-例子"><a href="#复杂的-Java-例子" class="headerlink" title="复杂的 Java 例子"></a>复杂的 Java 例子</h3><p>通过使用接口，委托可以做到类型安全并且更加灵活。在这个例子里，类别C可以委托类别A或类别B，类别C拥有方法使自己可以在类别A或类别B间选择。因为类别A或类别B必须实现接口I规定的方法，所以在这里委托是类型安全的。这个例子显示出委托的缺点是需要更多的代码。</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><code class="hljs csharp"><span class="hljs-keyword">interface</span> <span class="hljs-title">I</span> &#123;<br>     <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">f</span>()</span>;<br>     <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">g</span>()</span>;<br>&#125;<br><span class="hljs-keyword">class</span> <span class="hljs-title">A</span> <span class="hljs-title">implements</span> <span class="hljs-title">I</span> &#123;<br>     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">f</span>()</span> &#123; System.<span class="hljs-keyword">out</span>.println(<span class="hljs-string">&quot;A: doing f()&quot;</span>); &#125;<br>     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">g</span>()</span> &#123; System.<span class="hljs-keyword">out</span>.println(<span class="hljs-string">&quot;A: doing g()&quot;</span>); &#125;<br>&#125;<br><span class="hljs-keyword">class</span> <span class="hljs-title">B</span> <span class="hljs-title">implements</span> <span class="hljs-title">I</span> &#123;<br>     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">f</span>()</span> &#123; System.<span class="hljs-keyword">out</span>.println(<span class="hljs-string">&quot;B: doing f()&quot;</span>); &#125;<br>     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">g</span>()</span> &#123; System.<span class="hljs-keyword">out</span>.println(<span class="hljs-string">&quot;B: doing g()&quot;</span>); &#125;<br>&#125;<br><span class="hljs-keyword">class</span> <span class="hljs-title">C</span> <span class="hljs-title">implements</span> <span class="hljs-title">I</span> &#123;<br>     <span class="hljs-comment">// delegation</span><br>     I i = <span class="hljs-keyword">new</span> A();<br>     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">f</span>()</span> &#123; i.f(); &#125;<br>     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">g</span>()</span> &#123; i.g(); &#125;<br>     <span class="hljs-comment">// normal attributes</span><br>     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">toA</span>()</span> &#123; i = <span class="hljs-keyword">new</span> A(); &#125;<br>     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">toB</span>()</span> &#123; i = <span class="hljs-keyword">new</span> B(); &#125;<br>&#125;<br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">Main</span> &#123;<br>     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span>(<span class="hljs-params">String[] args</span>)</span> &#123;<br>         C c = <span class="hljs-keyword">new</span> C();<br>         c.f();     <span class="hljs-comment">// output: A: doing f()</span><br>         c.g();     <span class="hljs-comment">// output: A: doing g()</span><br>         c.toB();<br>         c.f();     <span class="hljs-comment">// output: B: doing f()</span><br>         c.g();     <span class="hljs-comment">// output: B: doing g()</span><br>     &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" class="category-chain-item">设计模式</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>设计模式2（结构型模式）</div>
+      <div>http://peiniwan.github.io/2025/12/63a311243331.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>六月的雨</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年12月16日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/12/b54530ecb59a.html" title="设计模式3（行为模式）">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">设计模式3（行为模式）</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/12/5d0dd2c5d5a9.html" title="设计模式1（创建型模式）">
+                        <span class="hidden-mobile">设计模式1（创建型模式）</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"OwNIdaopOn1rwNhtotGOGC0B-gzGzoHsz","appKey":"eadytQ2XqWmxuvAKeg08XX83","path":"window.location.pathname","placeholder":null,"avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":true,"recordIP":false,"serverURLs":"https://ownidaop.lc-cn-n1-shared.com","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

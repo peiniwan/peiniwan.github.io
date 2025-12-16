@@ -1,0 +1,748 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="六月的雨">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="极客时间总结学到的知识：  Bitmap都在Java堆内存，经常会oom，8.0以后有个硬件位图 Hardware Bitmap，它可以减少图片内存并提升绘制效率。像素数据放到 Native 内存中的。最大的 Java 堆限制也才到 512MB，可能我的物理内存还有 5GB   SharedPreferences跨进程会导致数据丢失 网络数据压缩，有个库压缩比默认gzip算法更厉害，节约大量的带宽">
+<meta property="og:type" content="article">
+<meta property="og:title" content="极客时间总结">
+<meta property="og:url" content="http://peiniwan.github.io/2025/12/cc65cff2c76d.html">
+<meta property="og:site_name" content="六月的雨的笔记">
+<meta property="og:description" content="极客时间总结学到的知识：  Bitmap都在Java堆内存，经常会oom，8.0以后有个硬件位图 Hardware Bitmap，它可以减少图片内存并提升绘制效率。像素数据放到 Native 内存中的。最大的 Java 堆限制也才到 512MB，可能我的物理内存还有 5GB   SharedPreferences跨进程会导致数据丢失 网络数据压缩，有个库压缩比默认gzip算法更厉害，节约大量的带宽">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%9E%81%E5%AE%A2%E6%97%B6%E9%97%B4%E6%80%BB%E7%BB%93.resources/2023/09/15/18-23-45-ec4efbcad6a976425731ebcfdf4917ef-ec4efbcad6a976425731ebcfdf4917ef-96ab24.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%9E%81%E5%AE%A2%E6%97%B6%E9%97%B4%E6%80%BB%E7%BB%93.resources/2023/09/15/18-23-45-5c68b454db0f7c4d86c74a29dda2ac6f-QQ%E6%88%AA%E5%9B%BE20190509231931-679456.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%9E%81%E5%AE%A2%E6%97%B6%E9%97%B4%E6%80%BB%E7%BB%93.resources/2023/09/15/18-23-45-ceec93b272ef5c9a3087144536a51659-QQ%E6%88%AA%E5%9B%BE20190509231800-6a063d.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%9E%81%E5%AE%A2%E6%97%B6%E9%97%B4%E6%80%BB%E7%BB%93.resources/2023/09/15/18-23-45-9ecf73e145aa5fc20be0a8b8079a8e01-QQ%E6%88%AA%E5%9B%BE20190511135645-de5438.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%9E%81%E5%AE%A2%E6%97%B6%E9%97%B4%E6%80%BB%E7%BB%93.resources/2023/09/15/18-23-45-eb35420f98c472de0731046974001d02-QQ%E6%88%AA%E5%9B%BE20190512234706-95c58f.png">
+<meta property="article:published_time" content="2025-12-16T13:59:22.362Z">
+<meta property="article:modified_time" content="2024-03-13T03:59:00.000Z">
+<meta property="article:author" content="六月的雨">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%9E%81%E5%AE%A2%E6%97%B6%E9%97%B4%E6%80%BB%E7%BB%93.resources/2023/09/15/18-23-45-ec4efbcad6a976425731ebcfdf4917ef-ec4efbcad6a976425731ebcfdf4917ef-96ab24.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>极客时间总结 - 六月的雨的笔记</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"peiniwan.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>六月的雨的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="极客时间总结"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-12-16 21:59" pubdate>
+          2025年12月16日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          12 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">极客时间总结</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="极客时间总结"><a href="#极客时间总结" class="headerlink" title="极客时间总结"></a>极客时间总结</h1><p>学到的知识：</p>
+<ol>
+<li>Bitmap都在Java堆内存，经常会oom，8.0以后有个硬件位图 Hardware Bitmap，它可以减少图片内存并提升绘制效率。像素数据放到 Native 内存中的。最大的 Java 堆限制也才到 512MB，可能我的物理内存还有 5GB</li>
+</ol>
+<ul>
+<li>SharedPreferences跨进程会导致数据丢失</li>
+<li>网络数据压缩，有个库压缩比默认gzip算法更厉害，节约大量的带宽成本</li>
+<li>xml x2c</li>
+<li>异步的textview。，把 measure 和 layout 都放到了后台线程，只留下了必须要在主线程完成的 draw，这大大降低了 UI 线程的负载。</li>
+<li>谷歌有个 Protocol Buffers，比json数据更小，是二进制格式</li>
+<li>一个 100MB 的文件裁剪后一般只剩下 30MB 左右，使用 7zip 压缩最后小于 10MB，增加了文件上传的成功率。</li>
+</ul>
+<p><a target="_blank" rel="noopener" href="https://time.geekbang.org/column/intro/142">Android开发高手课</a></p>
+<p><strong>内存优化</strong></p>
+<p>Android 3.0～Android 7.0 将 Bitmap 对象和像素数据统一放到 Java 堆中，这样就算我们不调用 recycle，Bitmap 内存也会随着对象一起被回收。不过 Bitmap 是内存消耗的大户，把它的内存放到 Java 堆中似乎不是那么美妙。即使是最新的华为 Mate 20，最大的 Java 堆限制也才到 512MB，可能我的物理内存还有 5GB，但是应用还是会因为 Java 堆内存不足导致 OOM。Bitmap 放到 Java 堆的另外一个问题会引起大量的 GC，对系统内存也没有完全利用起来。</p>
+<p>将 Bitmap 内存放到 Native 中，也可以做到和对象一起快速释放，同时 GC 的时候也能考虑这些内存防止被滥用。NativeAllocationRegistry 可以一次满足你这三个要求，Android 8.0 正是使用这个辅助回收 Native 内存的机制，来实现像素数据放到 Native 内存中。Android 8.0 还新增了硬件位图 Hardware Bitmap，它可以减少图片内存并提升绘制效率。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">// 步骤一：申请一张空的 Native Bitmap</span><br><span class="hljs-type">Bitmap</span> <span class="hljs-variable">nativeBitmap</span> <span class="hljs-operator">=</span> nativeCreateBitmap(dstWidth, dstHeight, nativeConfig, <span class="hljs-number">22</span>);<br><br><span class="hljs-comment">// 步骤二：申请一张普通的 Java Bitmap</span><br><span class="hljs-type">Bitmap</span> <span class="hljs-variable">srcBitmap</span> <span class="hljs-operator">=</span> BitmapFactory.decodeResource(res, id);<br><br><span class="hljs-comment">// 步骤三：使用 Java Bitmap 将内容绘制到 Native Bitmap 中</span><br>mNativeCanvas.setBitmap(nativeBitmap);<br>mNativeCanvas.drawBitmap(srcBitmap, mSrcRect, mDstRect, mPaint);<br><br><span class="hljs-comment">// 步骤四：释放 Java Bitmap 内存</span><br>srcBitmap.recycle();<br>srcBitmap = <span class="hljs-literal">null</span>；<br><br></code></pre></td></tr></table></figure>
+<p>Protocol Buffers</p>
+<p>文件遍历在 API level 26 之后建议使用FileVisitor，替代 ListFiles，整体的性能会好很多。</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%9E%81%E5%AE%A2%E6%97%B6%E9%97%B4%E6%80%BB%E7%BB%93.resources/2023/09/15/18-23-45-ec4efbcad6a976425731ebcfdf4917ef-ec4efbcad6a976425731ebcfdf4917ef-96ab24.png" srcset="/img/loading.gif" lazyload alt="ec4efbcad6a976425731ebcfdf4917ef"><br>Mars的好处就是跨平台、长链接，看情况</p>
+<p>网络数据压缩<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%9E%81%E5%AE%A2%E6%97%B6%E9%97%B4%E6%80%BB%E7%BB%93.resources/2023/09/15/18-23-45-5c68b454db0f7c4d86c74a29dda2ac6f-QQ%E6%88%AA%E5%9B%BE20190509231931-679456.png" srcset="/img/loading.gif" lazyload alt="QQ截图20190509231931"><br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%9E%81%E5%AE%A2%E6%97%B6%E9%97%B4%E6%80%BB%E7%BB%93.resources/2023/09/15/18-23-45-ceec93b272ef5c9a3087144536a51659-QQ%E6%88%AA%E5%9B%BE20190509231800-6a063d.png" srcset="/img/loading.gif" lazyload alt="QQ截图20190509231800"></p>
+<p><strong>电量</strong></p>
+<p>Android 是基于 Linux 内核，而 Linux 大部分使用在服务器中，它对功耗并没有做非常严格苛刻的优化。特别是国内会有各种各样的“保活黑科技”，大量的应用在后台活动简直就是“电量黑洞”。</p>
+<p>耗电量这块， 因为要维持推送的实时到达， 只能追求黑科技， 要不然人家就会问，为啥苹果可以收到推送，android就不行~ 但是保活就会加大耗电</p>
+<p>耗电优化的第一个方向是优化应用的后台耗电。因为用户最容易感知这个，我明明没有怎么打开，为什么耗这么多？在后台不要做这些：长时间获取 WakeLock(及时释放)、WiFi 和蓝牙的扫描、GPS、video、audio</p>
+<blockquote>
+<p>WakeLock 用来阻止 CPU、屏幕甚至是键盘的休眠。类似 Alarm、JobService 也会申请 WakeLock 来完成后台 CPU 操作.<br>Alarm 用来做一些定时的重复任务</p>
+</blockquote>
+<p>通过 Hook，我们可以在申请资源的时候将堆栈信息保存起来。当我们触发某个规则上报问题的时候，可以将收集到的堆栈信息、电池是否充电、CPU 信息、应用前后台时间等辅助信息也一起带上。</p>
+<p><strong>UI优化</strong></p>
+<p>对于硬件绘制，我们通过调用 OpenGL ES 接口利用 GPU 完成绘制。opengl是一个跨平台的图形 API，它为 2D&#x2F;3D 图形处理硬件指定了标准软件接口。而 OpenGL ES 是 OpenGL 的子集，专为嵌入式设备设计。</p>
+<p>使用 XML 进行 UI 编写可以说是十分方便，可以在 Android Studio 中实时预览到界面。如果我们要对一个界面进行极致优化，就可以使用代码进行编写界面。</p>
+<p>xml缺点<br>读取xml很耗时<br>递归解析xml较耗时<br>反射生成对象的耗时是new的3倍以上</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/iReaderAndroid/X2C/blob/master/README_CN.md">x2c：在编译的时候，通过注解的方式，将xml转换成Java代码</a></p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%9E%81%E5%AE%A2%E6%97%B6%E9%97%B4%E6%80%BB%E7%BB%93.resources/2023/09/15/18-23-45-9ecf73e145aa5fc20be0a8b8079a8e01-QQ%E6%88%AA%E5%9B%BE20190511135645-de5438.png" srcset="/img/loading.gif" lazyload alt="QQ截图20190511135645"></p>
+<p>measure&#x2F;layout 优化</p>
+<ul>
+<li>减少布局的嵌套（viewstub、merge、include）</li>
+<li>尽量不使用 RelativeLayout 或者基于 weighted LinearLayout，它们 layout 的开销非常巨大。这里我推荐使用 ConstraintLayout （约束布局，只有一个层级）替代 RelativeLayout 或者 weighted LinearLayout。</li>
+<li>减少多余的background</li>
+<li>PrecomputedText（研究下），异步的textview。<br>  Litho （研究下）如我前面提到的 PrecomputedText 一样，把 measure 和 layout 都放到了后台线程，只留下了必须要在主线程完成的 draw，这大大降低了 UI 线程的负载。<br>  如果你没有计划完全迁移到 Litho，我建议可以优先使用 Litho 中的 RecyclerCollectionComponent 和 Sections 来优化自己的 RecyelerView 的性能。</li>
+</ul>
+<p><strong>h5优化</strong></p>
+<p>分为前端优化和本地优化<br>前端优化：看看ssr<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%9E%81%E5%AE%A2%E6%97%B6%E9%97%B4%E6%80%BB%E7%BB%93.resources/2023/09/15/18-23-45-eb35420f98c472de0731046974001d02-QQ%E6%88%AA%E5%9B%BE20190512234706-95c58f.png" srcset="/img/loading.gif" lazyload alt="QQ截图20190512234706"></p>
+<p>本地：</p>
+<ul>
+<li>webview预创建。提前创建和初始化 WebView，以及实现 WebView 的复用，这块大约可以节省 100～200 毫秒。</li>
+<li>缓存。提前把网页需要的资源请求下来。</li>
+</ul>
+<p>React Native 和 Weex 性能差。 JS 是解释性的动态语言，它的执行效率相比 AOT 编译后的 Java，性能依然会在几倍以上的差距。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Android/" class="category-chain-item">Android</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>极客时间总结</div>
+      <div>http://peiniwan.github.io/2025/12/cc65cff2c76d.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>六月的雨</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年12月16日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/12/88e5d1a55ae0.html" title="Gradle技巧和遇到的问题">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Gradle技巧和遇到的问题</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/12/bbd7df3b8a30.html" title="断点技巧">
+                        <span class="hidden-mobile">断点技巧</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"OwNIdaopOn1rwNhtotGOGC0B-gzGzoHsz","appKey":"eadytQ2XqWmxuvAKeg08XX83","path":"window.location.pathname","placeholder":null,"avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":true,"recordIP":false,"serverURLs":"https://ownidaop.lc-cn-n1-shared.com","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

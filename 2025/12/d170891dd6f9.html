@@ -1,0 +1,766 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="六月的雨">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="问题其一：锁屏后，调用 View.requestLayout ()，会往上层层调用 requestLayout () 吗？其二：锁屏后，调用 View.requestLayout ()，会触发 View 的测量和布局操作吗？ 第一层(往上，层层遍历)假设调用I.requestLayout ()，会触发哪些 View 的 requestLayout 方法？答：会依次触发I.requestLayout">
+<meta property="og:type" content="article">
+<meta property="og:title" content="5.requestLayout">
+<meta property="og:url" content="http://peiniwan.github.io/2025/12/d170891dd6f9.html">
+<meta property="og:site_name" content="六月的雨的笔记">
+<meta property="og:description" content="问题其一：锁屏后，调用 View.requestLayout ()，会往上层层调用 requestLayout () 吗？其二：锁屏后，调用 View.requestLayout ()，会触发 View 的测量和布局操作吗？ 第一层(往上，层层遍历)假设调用I.requestLayout ()，会触发哪些 View 的 requestLayout 方法？答：会依次触发I.requestLayout">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-12-16T13:59:22.390Z">
+<meta property="article:modified_time" content="2025-12-16T03:59:20.746Z">
+<meta property="article:author" content="六月的雨">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>5.requestLayout - 六月的雨的笔记</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"peiniwan.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>六月的雨的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="5.requestLayout"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-12-16 21:59" pubdate>
+          2025年12月16日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.6k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          14 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">5.requestLayout</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h1><p>其一：锁屏后，调用 View.requestLayout ()，会往上层层调用 requestLayout () 吗？<br>其二：锁屏后，调用 View.requestLayout ()，会触发 View 的测量和布局操作吗？</p>
+<h2 id="第一层-往上，层层遍历"><a href="#第一层-往上，层层遍历" class="headerlink" title="第一层(往上，层层遍历)"></a>第一层(往上，层层遍历)</h2><p>假设调用I.requestLayout ()，会触发哪些 View 的 requestLayout 方法？<br>答：会依次触发I.requestLayout () -&gt; C.requestLayout () -&gt; A.requestLayout () -&gt; … 省略一些 View -&gt; ViewRootImpl.requestLayout ()</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs csharp"><span class="hljs-comment">//View.java</span><br><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">requestLayout</span>()</span> &#123;<br>    <span class="hljs-comment">// 1. 清除测量记录</span><br>    <span class="hljs-keyword">if</span> (mMeasureCache != <span class="hljs-literal">null</span>) mMeasureCache.clear();<br><br>    <span class="hljs-comment">// 2. 增加PFLAG_FORCE_LAYOUT给mPrivateFlags</span><br>    mPrivateFlags |= PFLAG_FORCE_LAYOUT;<br>    mPrivateFlags |= PFLAG_INVALIDATED;<br><br>    <span class="hljs-comment">// 3. 如果mParent没有调用过requestLayout，则调用之。换句话说，如果调用过，则不会继续调用</span><br>    <span class="hljs-keyword">if</span> (mParent != <span class="hljs-literal">null</span> &amp;&amp; !mParent.isLayoutRequested()) &#123;<br>        mParent.requestLayout();<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>该方法作用如下：</p>
+<ol>
+<li><strong>清除测量记录</strong></li>
+<li><strong>增加PFLAG_FORCE_LAYOUT给mPrivateFlags</strong></li>
+<li><strong>如果mParent没有调用过requestLayout，则调用之。换句话说，如果调用过，则不会继续调用</strong></li>
+</ol>
+<p>重点看下mParent.isLayoutRequested()方法，它在View.java中有具体实现</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs typescript"><span class="hljs-comment">//View.java</span><br> <span class="hljs-keyword">public</span> <span class="hljs-built_in">boolean</span> <span class="hljs-title function_">isLayoutRequested</span>(<span class="hljs-params"></span>) &#123;<br>    <span class="hljs-keyword">return</span> (mPrivateFlags &amp; <span class="hljs-variable constant_">PFLAG_FORCE_LAYOUT</span>) == <span class="hljs-variable constant_">PFLAG_FORCE_LAYOUT</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>在View调用完layout方法，会将PFLAG_FORCE_LAYOUT标志位清除掉。当View下次再调用requestLayout方法时，依旧能往上层层调用。但是<em>如果当layout()方法没有执行时</em>，下次再调用requestLayout方法时，就不会往上层层调用了。</p>
+<p>其一：锁屏后，调用 View.requestLayout ()，会往上层层调用 requestLayout () 吗？<br>答：锁屏后，除了第一次调用会往上层层调用，其它的都不会<br>为什么，只有第一次调用会呢？那必定是因为 layout 方法没有得到执行，导致 PFLAG_FORCE_LAYOUT 无法被清除</p>
+<h2 id="第二层-ViewRootImpl-requestLayout"><a href="#第二层-ViewRootImpl-requestLayout" class="headerlink" title="第二层(ViewRootImpl.requestLayout)"></a>第二层(ViewRootImpl.requestLayout)</h2><figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs typescript"><span class="hljs-comment">//ViewRootImpl.java</span><br><span class="hljs-meta">@Override</span><br><span class="hljs-keyword">public</span> <span class="hljs-built_in">void</span> <span class="hljs-title function_">requestLayout</span>(<span class="hljs-params"></span>) &#123;<br>    <span class="hljs-keyword">if</span> (!mHandlingLayoutInLayoutRequest) &#123;<br>        <span class="hljs-title function_">checkThread</span>();<br>        mLayoutRequested = <span class="hljs-literal">true</span>;<br>        <span class="hljs-title function_">scheduleTraversals</span>();<br>    &#125;<br>&#125;<br><br><span class="hljs-built_in">void</span> <span class="hljs-title function_">scheduleTraversals</span>(<span class="hljs-params"></span>) &#123;<br>    <span class="hljs-keyword">if</span> (!mTraversalScheduled) &#123;<br>        mTraversalScheduled = <span class="hljs-literal">true</span>;<br>        <span class="hljs-comment">//1. 往主线程的Handler对应的MessageQueue发送一个同步屏障消息</span><br>        mTraversalBarrier = mHandler.<span class="hljs-title function_">getLooper</span>().<span class="hljs-title function_">getQueue</span>().<span class="hljs-title function_">postSyncBarrier</span>();<br>        <span class="hljs-comment">//2. 将mTraversalRunnable保存到Choreographer中</span><br>        mChoreographer.<span class="hljs-title function_">postCallback</span>(<span class="hljs-title class_">Choreographer</span>.<span class="hljs-property">CALLBACK_TRAVERSAL</span>, mTraversalRunnable, <span class="hljs-literal">null</span>);<br>        <span class="hljs-keyword">if</span> (!mUnbufferedInputDispatch) &#123;<br>            <span class="hljs-title function_">scheduleConsumeBatchedInput</span>();<br>        &#125;<br>        <span class="hljs-title function_">notifyRendererOfFramePending</span>();<br>        <span class="hljs-title function_">pokeDrawLockIfNeeded</span>();<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>该方法主要作用如下：</p>
+<ol>
+<li><strong>往主线程的Handler对应的MessageQueue发送一个同步屏障消息</strong></li>
+<li><strong>将mTraversalRunnable保存到Choreographer中</strong></li>
+</ol>
+<p>此处有三个特别重要的知识点：</p>
+<ol>
+<li><strong>mTraversalRunnable</strong></li>
+<li><strong>MessageQueue的同步屏障</strong></li>
+<li><strong>Choreographer机制</strong>  [[2.Handler 里的各种消息#Choreographer]]</li>
+</ol>
+<p>mTraversalRunnable相对比较简单，它的作用就是从ViewRootImpl 从上往下执行performMeasure、performLayout、performDraw。<br>它的执行时机是当Vsync信号来到时，会往主线程的Handler对应的MessageQueue中发送一条异步消息，由于在scheduleTraversals()中给MessageQueue中发送过一条同步屏障消息，那么当执行到同步屏障消息时，会将异步消息取出执行</p>
+<figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs arduino"><span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-type">void</span> <span class="hljs-title">performTraversals</span><span class="hljs-params">()</span> </span>&#123;<br>    <span class="hljs-keyword">if</span> (!mStopped || mReportNextDraw) &#123;<br>      <span class="hljs-built_in">performMeasure</span>()<br>    &#125;<br><br>   <span class="hljs-keyword">final</span> <span class="hljs-type">boolean</span> didLayout = layoutRequested &amp;&amp; (!mStopped || mReportNextDraw);<br>    <span class="hljs-keyword">if</span> (didLayout) &#123;<br>      <span class="hljs-built_in">performLayout</span>(lp, mWidth, mHeight);<br>    &#125;<br><br>    <span class="hljs-type">boolean</span> cancelDraw = mAttachInfo.mTreeObserver.<span class="hljs-built_in">dispatchOnPreDraw</span>() || !isViewVisible;<br><br>    <span class="hljs-keyword">if</span> (!cancelDraw &amp;&amp; !newSurface) &#123;<br>        <span class="hljs-built_in">performDraw</span>();<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>该方法的作用：</p>
+<ol>
+<li><strong>满足条件的情况下调用performMeasure()</strong></li>
+<li><strong>满足条件的情况下调用performLayout()</strong></li>
+<li><strong>满足条件的情况下调用performDraw()</strong></li>
+</ol>
+<p>mStopped表示Activity是否处于stopped状态。如果<em>Activity调用了onStop方法，performLayout方法是不会调用的</em>。</p>
+<p>其二：锁屏后，调用 View.requestLayout ()，会触发 View 的测量和布局操作吗？<br>答：不会，因为当前 Activity 处于 stopped 状态了,<strong>因为不会执行View.layout()方法，所以PFLAG_FORCE_LAYOUT不会被清除，导致接下来的requestLayout方法不会层层往上调用。</strong></p>
+<p>其三：既然 Activity 的 onStop 会导致 requestLayout layout 方法得不到执行，那么 onResume 方法会不会让上一次的 requestLayout 没有执行的 layout 方法执行一次呢？<br>亮屏调用了performTraversals方法时，会执行Measure、Layout、Draw等操作<br>![[Pasted image 20250820154352.png]]</p>
+<h1 id="requestLayout-后没有-onMearsu"><a href="#requestLayout-后没有-onMearsu" class="headerlink" title="requestLayout 后没有 onMearsu"></a>requestLayout 后没有 onMearsu</h1><p> requestLayout 后没有 onMearsure<br>getItem 的实际堆栈<br>![[Pasted image 20250714102910.png]]</p>
+<p><strong>onMeasure ()</strong> → populate () → addNewItem () → adapter.instantiateItem () → getItem ()<br>其实 viewpager setAdapter 里会调用 requestlayout 但是没有执行 onMeasure，原因是<strong>因为 view 测量的时候若 View 的可见性为 View. GONE，系统会跳过其测量流程</strong>。而 viewpager 的父 view 抽屉 view 第一次设置的就是 gone，所以没有调用 onMeasure<br>![[Pasted image 20250714102944.png]]<br>修改：第一次切换抽屉模式后设置抽屉 view 为 INVISIBLE</p>
+<h1 id="requestLayout-后没传到父-view"><a href="#requestLayout-后没传到父-view" class="headerlink" title="requestLayout 后没传到父 view"></a>requestLayout 后没传到父 view</h1><p>将所有应用分为3个文件夹放置 dock 栏，切换布局规则，文件夹大小无变化，长按后更新大小<br>按理来说：<em>requestLayout 是向上传递</em>，调用子 View 的 requestLayout () 会递归向上传递到父 View，这是因为 dock  子 view requestLayout 了，<em>但是没有传到 dock</em>，然后  onMeasure 没有执行。</p>
+<p>通过分析源码 requestLayout 方法：mParent.isLayoutRequested () 是 false 才能执行父 view requestLayout。<br>通过查找是 dock 在桌面加载的时候调用了 forceLayout，这个方法会导致 isLayoutRequested 成 true，但是没有 <code>measure</code>，所以这个标志位一直是 true，然后子 view <code>requestLayout</code> 就不会刷新父 view<br>最后修改，取消了 forcelayout ，直接修改 view 的属性 setBlur</p>
+<ul>
+<li><code>requestLayout()</code> 需要逐层向上触发父布局的 <code>requestLayout()</code>，最终到达 <code>ViewRootImpl</code>。</li>
+</ul>
+<p><strong>FolderIcon1x1</strong> isLayoutRequested 是 true，如下面源码所示，所以父 view requestLayout 没有执行，而 hotset 的 <em>isLayoutRequested 是 false</em><br>![[Pasted image 20250619155726.png]]<br>为什么 FolderIcon1x1 isLayoutRequested 是 true？</p>
+<p>  <em>PFLAG_FORCE_LAYOUT 就是防止重复调用的，如果调用过，则不会继续调用</em>，测量布局后会清掉</p>
+<p><code>isLayoutRequested</code> 源码</p>
+<p><strong>请求布局阶段：</strong></p>
+<ul>
+<li><strong>调用</strong><code>requestLayout()</code> 或 <code>forceLayout()</code></li>
+<li><strong>操作</strong>：设置 <code>PFLAG_FORCE_LAYOUT</code> 标志，<strong>强制下一次 measure 一定要重新执行</strong>。</li>
+<li><strong>结果</strong>：<code>isLayoutRequested()</code> 返回 true，系统知道该 View 需要重新布局</li>
+</ul>
+<p><strong>布局处理阶段：</strong></p>
+<ul>
+<li><strong>进入</strong><code>measure()</code> 或 <code>layout()</code> 方法</li>
+<li><strong>操作</strong>：这个标志位会在 <strong>真正执行 <code>measure()</code> 过程中清掉</strong>。</li>
+<li><strong>结果</strong>：完成测量和布局之后，<code>isLayoutRequested()</code> 返回 false</li>
+</ul>
+<p>![[Pasted image 20250619155934.png]]<br>[BugFix][Launcher]开启深色模式，文件夹拖拽到 dock 栏，文件夹显示黑色，开启浅色模式，dock 栏的文件夹黑色没有变化<br>[RootCause]: 从设置更改深色浅色模式的时候 dock 栏的子 view 不会 onlayout<br>[Modify]: 在 hotseats 执行 onlayout 的时候对子 view 遍历执行 layout</p>
+<p>最后修改，取消了 forcelayout ，直接修改 setBlur<br><a target="_blank" rel="noopener" href="https://gerrit.pt.mioffice.cn/c/platform/packages/apps/MiuiHome/+/5278057">https://gerrit.pt.mioffice.cn/c/platform/packages/apps/MiuiHome/+/5278057</a></p>
+<p>dock 在桌面加载的时候 forceLayout，导致 isLayoutRequested 成 true，但是没有 <code>measure</code>，所以这个标志位一直是 true，然后子 view <code>requestLayout</code> 就不会刷新父 view</p>
+<h1 id="子-view-是否需要调用-requestLayout"><a href="#子-view-是否需要调用-requestLayout" class="headerlink" title="子 view 是否需要调用 requestLayout"></a>子 view 是否需要调用 requestLayout</h1><p>mPreviewContainer.requestLayout ()<br>mImageView.requestLayout ()<br>mFolderCover.requestLayout ()</p>
+<p><strong>如果自己 requestLayout 后，子 view 是否需要调用 requestLayout？</strong><br>需要，因为需要子 view requestLayout，会设置标记位，有这个标记位，父 view 的 onMeasure 才会调用子 view 的 onMeasure</p>
+<p>![[Pasted image 20250619155456.png]]</p>
+<ol>
+<li>3个子 view requestLayout 都完了，父 view requestLayout 才会执行，只调一次，系统合并优化</li>
+<li><em>子 view 大小改变</em>，然后导致父 view requestLayout 才会执行</li>
+<li>父 View 的 MeasureSpec 未变化，导致子 View 的 onMeasure () 未被调用。所以调用子 view requestLayout，子 view onMeasure 没执行</li>
+<li><em>requestLayout 是向上传递。不会向下传递</em>，调用子 View 的 requestLayout () 会递归向上传递到父 View，直到根 View<br><a target="_blank" rel="noopener" href="https://wayawbott0.f.mioffice.cn/docx/doxk4JoJmzat1c2edpyF5CvdFcJ">https://wayawbott0.f.mioffice.cn/docx/doxk4JoJmzat1c2edpyF5CvdFcJ</a></li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Android/" class="category-chain-item">Android</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>5.requestLayout</div>
+      <div>http://peiniwan.github.io/2025/12/d170891dd6f9.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>六月的雨</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年12月16日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/12/b6a0fdf8c755.html" title="6.Android动画">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">6.Android动画</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/12/a0bad8cfa7a3.html" title="4.RecycleView 嵌套卡顿">
+                        <span class="hidden-mobile">4.RecycleView 嵌套卡顿</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"OwNIdaopOn1rwNhtotGOGC0B-gzGzoHsz","appKey":"eadytQ2XqWmxuvAKeg08XX83","path":"window.location.pathname","placeholder":null,"avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":true,"recordIP":false,"serverURLs":"https://ownidaop.lc-cn-n1-shared.com","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

@@ -1,0 +1,737 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="六月的雨">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="ArrayMapAndroid 专门针对内存优化而设计的，用于取代 Java API 中的 HashMap 数据结构。为了更进一步优化key 是 int 类型的 Map，Android 再次提供效率更高的数据结构 SparseArray，可避免自动装箱过程。对于 key 为其他类型则可使用 ArrayMap。HashMap 的查找和插入时间复杂度为 O (1)的代价是牺牲大量的内存来实现的，而 S">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SparseArray 和 ArrayMap">
+<meta property="og:url" content="http://peiniwan.github.io/2025/12/96e9a68a331d.html">
+<meta property="og:site_name" content="六月的雨的笔记">
+<meta property="og:description" content="ArrayMapAndroid 专门针对内存优化而设计的，用于取代 Java API 中的 HashMap 数据结构。为了更进一步优化key 是 int 类型的 Map，Android 再次提供效率更高的数据结构 SparseArray，可避免自动装箱过程。对于 key 为其他类型则可使用 ArrayMap。HashMap 的查找和插入时间复杂度为 O (1)的代价是牺牲大量的内存来实现的，而 S">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/picgo/picgo-clipboard-images/2024-02-07-11-29-90be176d3eea18a933040c47cef23991-20240207112929-94f14b.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/09/18/2024-02-07-11-04-81076368d9cd7eaa5511f4f0ebeda860-09-57-22-81076368d9cd7eaa5511f4f0ebeda860-unknown_filename.11-fd0e11-f26274.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/picgo/picgo-clipboard-images/2024-02-07-11-29-345954adb16ecabb277f3e201564bd6f-20240207112906-fabb28.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/09/18/2024-02-07-11-04-fcb3848731fd127dcb63a020a50097d8-09-57-22-fcb3848731fd127dcb63a020a50097d8-unknown_filename.13-b2b626-69815c.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/09/18/2024-02-07-11-04-cf5d932648505f923cb4c8b88a80b57a-09-57-22-cf5d932648505f923cb4c8b88a80b57a-unknown_filename.14-d9b5ca-0c1723.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/09/18/2024-02-07-11-04-49924872cceeaf6f4394030acb952c9a-09-57-22-49924872cceeaf6f4394030acb952c9a-unknown_filename.15-0163b9-22e169.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/09/18/2024-02-07-11-35-a846a4b7d125fd8c785b9a9843047229-2024-02-07-11-04-a846a4b7d125fd8c785b9a9843047229-09-57-22-a846a4b7d125fd8c785b9a9843047229-unknown_filename.12-6ae3b4-8cbcf1-b53e3d.png">
+<meta property="article:published_time" content="2025-12-16T13:59:22.669Z">
+<meta property="article:modified_time" content="2024-03-13T04:11:00.000Z">
+<meta property="article:author" content="六月的雨">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/picgo/picgo-clipboard-images/2024-02-07-11-29-90be176d3eea18a933040c47cef23991-20240207112929-94f14b.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>SparseArray 和 ArrayMap - 六月的雨的笔记</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"peiniwan.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>六月的雨的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="SparseArray 和 ArrayMap"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-12-16 21:59" pubdate>
+          2025年12月16日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.6k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          14 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">SparseArray 和 ArrayMap</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="ArrayMap"><a href="#ArrayMap" class="headerlink" title="ArrayMap"></a>ArrayMap</h2><p>Android 专门针对内存优化而设计的，用于取代 Java API 中的 HashMap 数据结构。为了更进一步优化<strong>key 是 int 类型的 Map</strong>，Android 再次提供效率更高的数据结构 SparseArray，可避免自动装箱过程。对于 key 为其他类型则可使用 ArrayMap。<br>HashMap 的查找和插入时间复杂度为 O (1)的<strong>代价是牺牲大量的内存</strong>来实现的，而 SparseArray 和 ArrayMap<strong>性能略逊于 HashMap，但更节省内存</strong>。</p>
+<p>ArrayMap 相比 HashMap 在内存占用方面更为节省的主要原因是其内部数据结构设计的差异。</p>
+<p><strong>内部数据结构设计</strong>：<br>    - HashMap：HashMap 内部使用数组 + 链表&#x2F;红黑树的结构来存储 key-value 对。在 HashMap 中，数组的大小（即容量）通常会选择一个比较大的值，以减少哈希冲突的概率，但这也会导致在<em>数据量较小的情况下可能存在大量未被利用的空间</em>。<br>    - ArrayMap：ArrayMap 内部使用两个数组来分别存储 key 和 value，而且默认情况下 ArrayMap 使用稀疏数组进行存储，<em>只有在必要时才会进行数组扩容操作</em>。这种设计使得 ArrayMap 在数据量较小的情况下可以更加紧凑地存储 key-value 对，减少了不必要的内存消耗。<br>    - 当删除 key 键时，不是立马删除这一项，而是留下需要删除的选项给一个删除的标记（放 object），避免数组的移动。该条目可以被重新用于相同的 key, 或者实际数据大于等于数组容量，都有可能会主动调用 gc () 方法来清理 DELETE 数据。<br>    - 避免空间的浪费</p>
+<p>扩容机制<br>    - ArrayMap 是在容量满的时机触发容量扩大至原来的1.5倍，在容量不足1&#x2F;3时触发内存收缩至原来的0.5倍，更节省的内存扩容机制<br>    - HashMap 是在容量的0.75倍时触发容量扩大至原来的2倍，且没有内存收缩机制。HashMap 扩容过程有 hash 重建，相对耗时。所以能大致知道数据量，可指定创建指定容量的对象，能减少性能浪费。</p>
+<p>总的来说，由于 ArrayMap 的内部数据结构更为简单和紧凑，在数据量较小的情况下可以更有效地利用内存空间，相对于 HashMap 来说更为节省内存。但是在数据量较大或需要频繁进行插入、删除操作的情况下，HashMap 可能会更适合，因为其在处理大量数据时性能更为优秀。<br>[[HashMap、lru、散列表]]</p>
+<p>ArraySet：和 ArrayMap 的目的类似，用来提高 HashSet 的效率。使用方法跟 HashSet 类似<br>ArrayMap 假设 key 类型为其他的类型，则使用 ArrayMap，获取数据简单<br>map. keyAt (0)<br>map. valueAt (0)</p>
+<h5 id="源码分析"><a href="#源码分析" class="headerlink" title="源码分析"></a>源码分析</h5><p>ArrayMap 的内部实现是两个数组，一个 int 数组存储 key 的哈希值，一个对象数组保存 key 和 value，内部使用二分法对 key 进行排序，所以在添加、删除、查找数据的时候，都会使用二分法查找，适合小数据量操作，如果在数据量比较大的情况下，那么它的性能将退化。而 HashMap 内部则是数组+链表结构，所以在数据量较小的时候，HashMap 的 Entry Array 比 ArrayMap 占用更多的内存。</p>
+<p>在 Android 中，建议用 ArrayMap 来替换 HashMap。ArrayMap 和 HashMap 都是线程不安全的。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">SimpleArrayMap</span>&lt;K, V&gt; &#123;<br><br>    <span class="hljs-type">int</span>[] mHashes;	<span class="hljs-comment">//由 key 的 hashCode 所组成的数组，从小到大排序</span><br>    Object[] mArray;	<span class="hljs-comment">// 由key-value键值对所组成的数组，是mHashes大小的2倍；</span><br>    <span class="hljs-type">int</span> mSize;	<span class="hljs-comment">//</span><br> &#125;<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/picgo/picgo-clipboard-images/2024-02-07-11-29-90be176d3eea18a933040c47cef23991-20240207112929-94f14b.png" srcset="/img/loading.gif" lazyload alt="image.png|600"></p>
+<ul>
+<li>mArray 是一个记录着 key-value 键值对所组成的数组，是 mHashes 大小的2倍；</li>
+<li>其中 mSize 记录着该 ArrayMap 对象中有多少对数据，执行 put 或者 append 操作，则 mSize 会加一，执行 remove，mSize 则减一。mSize 往往小于 mHashes. length，如果大于或等于，则说明需要扩容。</li>
+</ul>
+<p>更多源码分析可以参考：<a target="_blank" rel="noopener" href="http://gityuan.com/2019/01/13/arraymap/">深度解读ArrayMap优势与缺陷</a><br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/09/18/2024-02-07-11-04-81076368d9cd7eaa5511f4f0ebeda860-09-57-22-81076368d9cd7eaa5511f4f0ebeda860-unknown_filename.11-fd0e11-f26274.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.11|600"></p>
+<h2 id="SparseArray"><a href="#SparseArray" class="headerlink" title="SparseArray"></a>SparseArray</h2><p>SparseArray 和 ArrayMap 类似，但是 SparseArray 只能存储 key 为 int 型的，它比 ArrayMap 少了计算 key 的哈希值，同时对象数组只需要存 value 即可，这也就避免了 key 的装箱操作和分配空间，，建议用 SparseArray&lt;V&gt; 替换 HashMap&lt;Integer,V&gt;。</p>
+<p>类似的还有 SparseIntArray 代替 HashMap&lt;Integer,Integer&gt; 等。<br>SparseBooleanArray: 当 map 的结构为 Map&lt;Integer,Boolean&gt;的时候使用，效率较高。<br>SparseLongArray: 当 map 的结构为 Map&lt;Integer,Long&gt;的时候使用，效率较高。<br>LongSparseArray: 当 map 的结构为 Map&lt;Long,Value&gt;的时候使用，效率较高。</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/picgo/picgo-clipboard-images/2024-02-07-11-29-345954adb16ecabb277f3e201564bd6f-20240207112906-fabb28.png" srcset="/img/loading.gif" lazyload alt="image.png|600"></p>
+<ul>
+<li>SparseArray 的内部实现是两个数组，一个 int 数组是存储对象数据对应下标，一个对象数组保存 value，在 put 的通过二分法放 int 数组去，查找也是二分法查找</li>
+<li>内部使用二分法对 key 进行排序，所以在添加、删除、查找数据的时候，都会使用二分法查找，<strong>只适合于小数据量操作</strong>，通常情况下要比传统的 HashMap 慢，因为查找是用二分查找法搜索，添加和删除需要对数组进行添加和删除。</li>
+</ul>
+<h3 id="源码分析-1"><a href="#源码分析-1" class="headerlink" title="源码分析"></a>源码分析</h3><ul>
+<li>key 是 int[]，比 hashmap 的 key 是对象，例如 Integer 8个字节，int 4个字节更耗内存，还得装箱拆箱<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/09/18/2024-02-07-11-04-fcb3848731fd127dcb63a020a50097d8-09-57-22-fcb3848731fd127dcb63a020a50097d8-unknown_filename.13-b2b626-69815c.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.13|600"></li>
+<li>默认负载因子为0.75，必然会有空间的浪费，需要用来存数据，而 SparseArray 不会浪费空间</li>
+<li>为了提高性能，该容器提供了一个优化：当删除 key 键时，不是立马删除这一项，而是留下需要删除的选项给一个删除的标记（放 object），避免数组的移动。该条目可以被重新用于相同的 key, 或者实际数据大于等于数组容量，都有可能会主动调用gc()方法来清理DELETE数据。<br>  好想法：如果已经删除，直接放进去（15删了，放16），删除的越多越好。<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/09/18/2024-02-07-11-04-cf5d932648505f923cb4c8b88a80b57a-09-57-22-cf5d932648505f923cb4c8b88a80b57a-unknown_filename.14-d9b5ca-0c1723.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.14|600"><br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/09/18/2024-02-07-11-04-49924872cceeaf6f4394030acb952c9a-09-57-22-49924872cceeaf6f4394030acb952c9a-unknown_filename.15-0163b9-22e169.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.15|600"></li>
+</ul>
+<p><a target="_blank" rel="noopener" href="https://juejin.cn/post/7268221660527870004">Android中的SparseArray你了解吗</a></p>
+<figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs arduino"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-type">static</span> <span class="hljs-type">int</span> <span class="hljs-title">growSize</span><span class="hljs-params">(<span class="hljs-type">int</span> currentSize)</span> </span>&#123;<br>    <span class="hljs-keyword">return</span> currentSize &lt;= <span class="hljs-number">4</span> ? <span class="hljs-number">8</span> : currentSize * <span class="hljs-number">2</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>扩容：当前 Size &lt;&#x3D; 4 时恒定大小为8，否则就是 Size 的两倍了。</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/09/18/2024-02-07-11-35-a846a4b7d125fd8c785b9a9843047229-2024-02-07-11-04-a846a4b7d125fd8c785b9a9843047229-09-57-22-a846a4b7d125fd8c785b9a9843047229-unknown_filename.12-6ae3b4-8cbcf1-b53e3d.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.12|600|600"></p>
+<h2 id="Bundle"><a href="#Bundle" class="headerlink" title="Bundle"></a>Bundle</h2><p><strong>Bundle 被用来传递数据，为什么不用 HashMap 代替</strong></p>
+<ol>
+<li>Bundle 内部是由 ArrayMap 实现的，ArrayMap 在设计上比传统的 HashMap 更多考虑的是内存优化。</li>
+<li>Bundle 使用的是 Parcelable 序列化，而 HashMap 使用 Serializable 序列化。</li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%BA%90%E7%A0%81/" class="category-chain-item">源码</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>SparseArray 和 ArrayMap</div>
+      <div>http://peiniwan.github.io/2025/12/96e9a68a331d.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>六月的雨</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年12月16日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/12/d842c8b35664.html" title="多进程Binder">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">多进程Binder</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/12/7f82c2b853c1.html" title="Serializable 与 Parcelable">
+                        <span class="hidden-mobile">Serializable 与 Parcelable</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"OwNIdaopOn1rwNhtotGOGC0B-gzGzoHsz","appKey":"eadytQ2XqWmxuvAKeg08XX83","path":"window.location.pathname","placeholder":null,"avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":true,"recordIP":false,"serverURLs":"https://ownidaop.lc-cn-n1-shared.com","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

@@ -1,0 +1,757 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="六月的雨">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="从应用工程师的角度再谈车载 Android 系统 - 掘金 车载Android应用开发与分析 - 开发Android系统应用_哔哩哔哩_bilibili 【视频文稿】车载Android应用开发与分析 - AOSP的下载与编译 - 掘金 车载操作系统汽车操作系统是从传统汽车电子不断演变而来的，传统汽车电子产品可分为两类： 一类是汽车电子控制装置，通过直接向执行机构（如电子阀门、继电器开关、执行马达）">
+<meta property="og:type" content="article">
+<meta property="og:title" content="车载应用">
+<meta property="og:url" content="http://peiniwan.github.io/2025/12/00dc98906bd4.html">
+<meta property="og:site_name" content="六月的雨的笔记">
+<meta property="og:description" content="从应用工程师的角度再谈车载 Android 系统 - 掘金 车载Android应用开发与分析 - 开发Android系统应用_哔哩哔哩_bilibili 【视频文稿】车载Android应用开发与分析 - AOSP的下载与编译 - 掘金 车载操作系统汽车操作系统是从传统汽车电子不断演变而来的，传统汽车电子产品可分为两类： 一类是汽车电子控制装置，通过直接向执行机构（如电子阀门、继电器开关、执行马达）">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/picgo/picgo-clipboard-images/2024-01-25-10-24-dc4381371f1763d8e458a51913e43f16-20240125102447-265b76.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/picgo/picgo-clipboard-images/2024-01-25-11-12-82a82d5560260d52f52d5f46a6f0a86f-20240125111203-56b5fd.png">
+<meta property="article:published_time" content="2025-12-16T13:59:22.699Z">
+<meta property="article:modified_time" content="2024-03-25T14:34:00.000Z">
+<meta property="article:author" content="六月的雨">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/picgo/picgo-clipboard-images/2024-01-25-10-24-dc4381371f1763d8e458a51913e43f16-20240125102447-265b76.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>车载应用 - 六月的雨的笔记</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"peiniwan.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>六月的雨的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="车载应用"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-12-16 21:59" pubdate>
+          2025年12月16日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.8k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          24 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">车载应用</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p><a target="_blank" rel="noopener" href="https://juejin.cn/post/7155869454792917005?searchId=202401241808311012EC739EC068115F5F">从应用工程师的角度再谈车载 Android 系统 - 掘金</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1NY411z7TK/?spm_id_from=333.788.recommend_more_video.1&vd_source=6755b5c807a3565e73af94c1d30cd071">车载Android应用开发与分析 - 开发Android系统应用_哔哩哔哩_bilibili</a></p>
+<p><a target="_blank" rel="noopener" href="https://juejin.cn/post/7202826051541532727?searchId=202401241808311012EC739EC068115F5F">【视频文稿】车载Android应用开发与分析 - AOSP的下载与编译 - 掘金</a></p>
+<h2 id="车载操作系统"><a href="#车载操作系统" class="headerlink" title="车载操作系统"></a>车载操作系统</h2><p>汽车操作系统是从传统汽车电子不断演变而来的，传统汽车电子产品可分为两类：</p>
+<p>一类是汽车电子控制装置，通过直接向执行机构（如电子阀门、继电器开关、执行马达）发送指令，以控 制车辆关键部件（如发动机、变速箱、动力电池）协同工作，这类系统一般统称为电子控制单元（ECU）；</p>
+<p>另一类是车载电子设备，如仪表、娱乐音响、导航系统、HUD等，这类系统不直接参与汽车行驶的控制 决策，不会对车辆行驶性能和安全产生影响，通常统称为车载信息娱乐系统（IVI）。这也是Android程序员主要负责的领域。</p>
+<h4 id="MCU"><a href="#MCU" class="headerlink" title="MCU"></a>MCU</h4><p>微控制器单元，它负责着汽车很大一部分的功能，例如通过车载控制器对各项数据进行分析处理，以做出最优决策；负责对车辆的信息娱乐交互和运动控制等等。</p>
+<p>总的来说，MCU可以应用于车辆的通讯、能源、存储、感知以及计算，对汽车行业有着重要的作用</p>
+<h4 id="SOC"><a href="#SOC" class="headerlink" title="SOC"></a>SOC</h4><p>SoC的定义多种多样，由于其内涵丰富、应用范围广，很难给出准确定义。一般说来， SoC称为系统级芯片，也有称片上系统（System on Chip），意指它是一个产品，是一个有专用目标的集成电路，其中包含完整系统并有嵌入软件的全部内容。</p>
+<p>车载Soc和常见的手机Soc非常类似，内部集成了CPU和GPU。目前最主流的车载Soc是高通的8155，它就是高通在手机Soc骁龙855的基础上发展而来的。</p>
+<h2 id="车载-Android-系统"><a href="#车载-Android-系统" class="headerlink" title="车载 Android 系统"></a>车载 Android 系统</h2><p>车载Android系统，又称Android Automotive，是对原始Android系统的一个功能扩充版本，在编译AOSP源码时可以看到相应的编译选项。Android Automotive 是一个基于 Android 平台扩展后，适用于现代汽车的智能操作系统，可以直接运行为Android系统开发的应用</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/picgo/picgo-clipboard-images/2024-01-25-10-24-dc4381371f1763d8e458a51913e43f16-20240125102447-265b76.png" srcset="/img/loading.gif" lazyload alt="image.png|600"><br>Android Automotive与Android最大的区别在于，Android Automotive增加了对汽车特定要求、功能和技术的支持。</p>
+<blockquote>
+<p>Google的官方文档：<a href="https://link.juejin.cn/?target=https://source.android.google.cn/docs/devices/automotive" title="https://source.android.google.cn/docs/devices/automotive">source.android.google.cn&#x2F;docs&#x2F;device…</a></p>
+</blockquote>
+<p><strong>Android Auto</strong> 是一个基于用户手机运行的平台，可通过 USB 连接将 Android Auto 用户体验投射到兼容的车载信息娱乐系统。Android Auto本质上就是一个运行在Android系统上的车载应用，与苹果的CarPlay，百度的CarLife类似。</p>
+<p>需要说明的是，使用Android Auto需要用户的手机支持Google服务框架，所以一般只在国内销售的汽车基本都不支持Android Auto，一些沿用了国外车机系统的合资车型可能会支持Android Auto。</p>
+<h3 id="常见的车载应用"><a href="#常见的车载应用" class="headerlink" title="常见的车载应用"></a>常见的车载应用</h3><h4 id="SystemUI"><a href="#SystemUI" class="headerlink" title="SystemUI"></a>SystemUI</h4><p>系统的UI。<code>SystemUI</code>是一个标准的android应用程序，它提供了系统UI的统一管理方案。 常见的状态栏、导航栏、消息中心、音量调节弹窗、蓝牙连接弹窗等一系列后台弹窗都是由SystemUI模块负责管理。</p>
+<p>开发难度：<code>SystemUI</code>作为Android系统启动的第一个带有UI的应用程序，对启动性能和稳定性都有很高的要求。<code>SystemUI</code>需要管理的模块非常多，导致开发任务比较繁重，有的车载项目会要求<code>SystemUI</code>兼容原有的应用层API，那么开发难度还会上升。开发人员需要对Android原生的<code>SystemUI</code>源码有一定的了解。</p>
+<h4 id="Launcher"><a href="#Launcher" class="headerlink" title="Launcher"></a>Launcher</h4><p>Android系统的桌面。</p>
+<p>开发难度：Launcher是与用户交互最多的应用程序之一，同样对启动性能和稳定性都有很高的要求。Launcher开发难度主要集中在与3D车模的互动（如果有3D模型），可能需要支持Widget的显示（WidgetHost），各种应用的拖动和编辑等。开发人员最好对Android原生的Launcher源码有一定的了解。</p>
+<h4 id="CarService"><a href="#CarService" class="headerlink" title="CarService"></a>CarService</h4><p>车载Android系统的核心服务之一，所有应用都需要通过CarService来查询、控制整车的状态。例如：车辆的速度、档位、点火状态等等。</p>
+<h3 id="车载应用与移动应用的区别"><a href="#车载应用与移动应用的区别" class="headerlink" title="车载应用与移动应用的区别"></a>车载应用与移动应用的区别</h3><p>夸张一点说，移动端的应用开发和车载应用开发，完全就不是一个技术思路。总结一下大致有以下几个区别：</p>
+<p><strong>1）应用级别不同</strong></p>
+<p>多数车载应用属于<strong>系统级应用</strong>，可以调用Android SDK内部隐藏的API，也不需要动态地向用户申请权限。移动应用是<strong>普通应用</strong>，系统对其限制很多，需要遵守Android应用的开发规范。</p>
+<p>由于车载应用是系统级应用，所以移动端很多常用的技术比如热修复、插件化基本都不会采用，但是相对的进程保活、开机自启就变得非常简单了。</p>
+<p>总得来说系统应用具有以下特点</p>
+<ul>
+<li>可以访问Android SDK内部的API</li>
+<li>不需要申请动态权限</li>
+<li>可配置开机自启动</li>
+<li>必须对应用进行签名</li>
+</ul>
+<p><strong>2）迭代方式不同</strong></p>
+<p>移动应用只要用户的手机接入了WiFi就可以进行在线升级，所以移动应用多采用小步快跑的形式，进行快速迭代。</p>
+<p>车载系统级应用的更新只能以<em>整车OTA的形式进行</em>，而OTA可能会消耗宝贵的车机流量，所以车载应用在SOP（量产）前，就必须完成全部需求的开发，而且不能出现严重的bug。在正式交付用户前，车厂内部或4S店还会进行几次OTA升级用做最后的bug修复。（如果在交付用户后还有严重的bug或需求未完成，那么大概率项目经理、程序员都要祭天了)</p>
+<p><strong>3）技术路线不同</strong></p>
+<p>正是因为车载应用对稳定性的要求极高，所以车载应用在开发时，对待新型技术会非常的慎重，比如，目前只有少数主机厂商在使用Kotlin开发车载应用，<em>毕竟Android Framework都还没有改成Kotlin</em>，大部分厂商对Kotlin的积极性不高。而且车载应用也<em>不允许随意使用开源框架，如果必须使用，务必注意框架的开源协议</em>，以免给汽车厂商带来不必要的麻烦。</p>
+<p><strong>4）运行环境不同</strong></p>
+<p>车载应用的运行环境是经过高度定制化的Android系统，定制化也就意味着bug。移动端的应用出现bug时，我们的第一反应是应用的代码有缺陷。车载应用发现bug也要考虑到是不是系统本身出现了bug，这是一件非常有挑战性的事，应用开发与系统开发相互扯皮、泼脏水也属于家常便饭。</p>
+<h3 id="车载应用需要掌握的技能"><a href="#车载应用需要掌握的技能" class="headerlink" title="车载应用需要掌握的技能"></a>车载应用需要掌握的技能</h3><p><strong>性能优化</strong></p>
+<p>应用的性能优化是个亘古不变的话题，掌握应用的各种性能优化方式，也是一个Android程序员必备的生存手段，汽车座舱的SOC性能比旗舰手机要差不少，如果优化好车载应用将是一个非常有挑战性的任务。</p>
+<p><strong>IPC通信</strong></p>
+<p>Android中最常用的跨进程通信手段是Binder，因为有大量的Service需要与应用进行交互，所以基于Binder的AIDL在车载应用开发中使用得非常广泛，学会使用AIDL也同样属于必备技能之一。</p>
+<p><strong>系统应用源码</strong></p>
+<p>这一项是我认为最重要的，不少车载应用层项目都是反复定制各种SystemUI、Launcher、Settings等等，读懂Android系统应用源码对我们定制化开发这些应用有非常大的好处。</p>
+<h2 id="编写一个系统级应用"><a href="#编写一个系统级应用" class="headerlink" title="编写一个系统级应用"></a>编写一个系统级应用</h2><p><a target="_blank" rel="noopener" href="https://juejin.cn/post/7094058821600935950">Android车载应用开发与分析（11）- 车载Android应用开发入门指南 - 掘金</a></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-meta">&lt;?xml version=<span class="hljs-string">&quot;1.0&quot;</span> encoding=<span class="hljs-string">&quot;utf-8&quot;</span>?&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">manifest</span> <span class="hljs-attr">xmlns:android</span>=<span class="hljs-string">&quot;http://schemas.android.com/apk/res/android&quot;</span></span><br><span class="hljs-tag">    <span class="hljs-attr">package</span>=<span class="hljs-string">&quot;com.example.car&quot;</span></span><br><span class="hljs-tag">    <span class="hljs-attr">android:sharedUserId</span>=<span class="hljs-string">&quot;android.uid.system&quot;</span>&gt;</span><br><br>    <span class="hljs-tag">&lt;<span class="hljs-name">uses-permission</span> <span class="hljs-attr">android:name</span>=<span class="hljs-string">&quot;android.permission.SYSTEM_ALERT_WINDOW&quot;</span> /&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">uses-permission</span> <span class="hljs-attr">android:name</span>=<span class="hljs-string">&quot;android.permission.RECEIVE_BOOT_COMPLETED&quot;</span> /&gt;</span><br><br>    <span class="hljs-tag">&lt;<span class="hljs-name">application</span></span><br><span class="hljs-tag">        <span class="hljs-attr">android:allowBackup</span>=<span class="hljs-string">&quot;true&quot;</span></span><br><span class="hljs-tag">        <span class="hljs-attr">android:icon</span>=<span class="hljs-string">&quot;@mipmap/ic_launcher&quot;</span></span><br><span class="hljs-tag">        <span class="hljs-attr">android:label</span>=<span class="hljs-string">&quot;@string/app_name&quot;</span></span><br><span class="hljs-tag">        <span class="hljs-attr">android:persistent</span>=<span class="hljs-string">&quot;true&quot;</span></span><br><span class="hljs-tag">        <span class="hljs-attr">android:roundIcon</span>=<span class="hljs-string">&quot;@mipmap/ic_launcher_round&quot;</span></span><br><span class="hljs-tag">        <span class="hljs-attr">android:supportsRtl</span>=<span class="hljs-string">&quot;true&quot;</span></span><br><span class="hljs-tag">        <span class="hljs-attr">android:theme</span>=<span class="hljs-string">&quot;@style/Theme.First&quot;</span>&gt;</span><br><br>        <span class="hljs-tag">&lt;<span class="hljs-name">activity</span></span><br><span class="hljs-tag">            <span class="hljs-attr">android:name</span>=<span class="hljs-string">&quot;.MainActivity&quot;</span></span><br><span class="hljs-tag">            <span class="hljs-attr">android:exported</span>=<span class="hljs-string">&quot;true&quot;</span>&gt;</span><br>            <span class="hljs-tag">&lt;<span class="hljs-name">intent-filter</span>&gt;</span><br>                <span class="hljs-tag">&lt;<span class="hljs-name">action</span> <span class="hljs-attr">android:name</span>=<span class="hljs-string">&quot;android.intent.action.MAIN&quot;</span> /&gt;</span><br>                <span class="hljs-tag">&lt;<span class="hljs-name">category</span> <span class="hljs-attr">android:name</span>=<span class="hljs-string">&quot;android.intent.category.LAUNCHER&quot;</span> /&gt;</span><br>            <span class="hljs-tag">&lt;/<span class="hljs-name">intent-filter</span>&gt;</span><br>        <span class="hljs-tag">&lt;/<span class="hljs-name">activity</span>&gt;</span><br>    <span class="hljs-tag">&lt;/<span class="hljs-name">application</span>&gt;</span><br><br><span class="hljs-tag">&lt;/<span class="hljs-name">manifest</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<p>在上面源码中我们需要关注两个普通应用用不到的属性： <strong><code>android:sharedUserId</code></strong> 将与其他应用程序共享的 Linux 用户 ID 的名称。默认情况下，Android 会为每个应用分配自己唯一的用户 ID。但是，如果为两个或多个应用将此属性设置为相同的值，则它们将共享相同的 ID，前提是它们的证书集相同。具有相同用户 ID 的应用可以访问彼此的数据，如果需要，可以在同一进程中运行。 开发系统应用时，此项不是必须配置的。配置为<code>android.uid.system</code>后，该应用会变成system用户，可以访问一些system用户才能访问的空间。</p>
+<p><strong><code>android:persistent</code></strong> 配置应用程序是否应始终保持运行，默认为false。设为true之后，应用在开机广播发出之前就会自行启动，而且应用被杀死后，也会立即重启。 开发系统应用时，此项不是必须配置的。</p>
+<p>基于Android源码环境的app工程结构与基于Gradle的AndroidStudio工程结构是完全不一样的，目录结构如下：</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/picgo/picgo-clipboard-images/2024-01-25-11-12-82a82d5560260d52f52d5f46a6f0a86f-20240125111203-56b5fd.png" srcset="/img/loading.gif" lazyload alt="image.png|600"></p>
+<p>编写一个Android.bp或Android.mk脚本，然后完整编译一次Android的源码</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 编译Android源码</span><br>/aosp$ <span class="hljs-built_in">source</span> build/envsetup.sh <br>/aosp$ lunch 12<br>/aosp$ make -j 32<br>/aosp$ emulator -writable-system -netdelay none -netspeed full<br></code></pre></td></tr></table></figure>
+
+<p>目录<br><strong><code>/system/priv-app</code></strong> 该路径存放一些系统底层的应用，比如Setting，systemUI等。该目录中的app拥有较高的系统权限，而且如果要使用<code>android:protectionLevel=signatureOrSystem</code>，那么该app必须放到priv-app目录中去。</p>
+<p><strong><code>/system/app</code></strong> 该目录中存放的系统app权限相对较低，而且当拥有root权限时，就有可能卸载掉这些app。</p>
+<p><strong><code>/vendor/app</code></strong> 该目录存放vendor厂商的app</p>
+<p><strong><code>/data/app</code></strong> 用户安装的第三方app</p>
+<p>调试耗时且费力车载应用开发难度其实并不大，但是很烦！特别是调试，不同于开发手机应用，车载应用的运行环境是基于AOSP定制的，而且大多数时候都会存在数不清的BUG，有时系统底层的bug会在上层应用中体现，<em>这就要求应用开发者必须有能力准确识别出这个bug的归属方</em>。</p>
+<p>引用：<br><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/bbc02e0f6575">Android车载应用开发与分析（1） - Android Automotive概述与编译 - 简书</a></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/AOSP/" class="category-chain-item">AOSP</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>车载应用</div>
+      <div>http://peiniwan.github.io/2025/12/00dc98906bd4.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>六月的雨</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年12月16日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/12/eb15bb15668b.html" title="1-Android的启动流程">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">1-Android的启动流程</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/12/7ceb30e1d028.html" title="vim 学习">
+                        <span class="hidden-mobile">vim 学习</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"OwNIdaopOn1rwNhtotGOGC0B-gzGzoHsz","appKey":"eadytQ2XqWmxuvAKeg08XX83","path":"window.location.pathname","placeholder":null,"avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":true,"recordIP":false,"serverURLs":"https://ownidaop.lc-cn-n1-shared.com","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

@@ -1,0 +1,830 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="六月的雨">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="UI开发开发者文章：鸿蒙布局第二篇–详细介绍ArkUI中的相对布局，网格布局和轮播组件 - 掘金1.2：OpenHarmony开发语言简介 | 《ArkUI实战》 demo:看demo学的更快 HarmonyOS&#x2F;Samples - 码云 - 开源中国Codelabs: 分享知识与见解，一起探索HarmonyOS的独特魅力。再次吐槽鸿蒙 - 掘金 activity等同于使用@Entry和">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ArkUI">
+<meta property="og:url" content="http://peiniwan.github.io/2025/12/cfae37396604.html">
+<meta property="og:site_name" content="六月的雨的笔记">
+<meta property="og:description" content="UI开发开发者文章：鸿蒙布局第二篇–详细介绍ArkUI中的相对布局，网格布局和轮播组件 - 掘金1.2：OpenHarmony开发语言简介 | 《ArkUI实战》 demo:看demo学的更快 HarmonyOS&#x2F;Samples - 码云 - 开源中国Codelabs: 分享知识与见解，一起探索HarmonyOS的独特魅力。再次吐槽鸿蒙 - 掘金 activity等同于使用@Entry和">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/picgo/picgo-clipboard-images/2023-11-14-10-03-d214530dbb8ad12da6889af1aba793b0-2023-11-13-16-20-d214530dbb8ad12da6889af1aba793b0-20231113162002-d2adc2-4d14ea.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/picgo/picgo-clipboard-images/2024-01-17-10-58-08ba6f2f527bdf27e2167ba76b019a10-20240117105843-51dead.png?x-oss-process=image/resize,h_800,m_lfit">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/picgo/picgo-clipboard-images/2024-01-17-11-12-4232ba69f8bc127e0287d1252247eb98-20240117111232-a17a04.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/picgo/picgo-clipboard-images/2023-11-15-16-22-ab3f016a9ffd6786a11b2393f080c7f7-20231115162213-2cc45e.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/picgo/picgo-clipboard-images/2023-11-17-10-17-193fb9790d8de794a3ed3bfadc18bc87-20231117101736-70d010.png">
+<meta property="article:published_time" content="2025-12-16T13:59:22.596Z">
+<meta property="article:modified_time" content="2024-03-22T06:35:00.000Z">
+<meta property="article:author" content="六月的雨">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/picgo/picgo-clipboard-images/2023-11-14-10-03-d214530dbb8ad12da6889af1aba793b0-2023-11-13-16-20-d214530dbb8ad12da6889af1aba793b0-20231113162002-d2adc2-4d14ea.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>ArkUI - 六月的雨的笔记</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"peiniwan.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>六月的雨的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="ArkUI"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-12-16 21:59" pubdate>
+          2025年12月16日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          21 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">ArkUI</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="UI开发"><a href="#UI开发" class="headerlink" title="UI开发"></a>UI开发</h1><p>开发者文章：<br><a target="_blank" rel="noopener" href="https://juejin.cn/post/7272309869246890042">鸿蒙布局第二篇–详细介绍ArkUI中的相对布局，网格布局和轮播组件 - 掘金</a><br><a target="_blank" rel="noopener" href="https://www.arkui.club/chapter1/1_2_language.html#_1-2-6-%E6%8E%A5%E5%8F%A3">1.2：OpenHarmony开发语言简介 | 《ArkUI实战》</a></p>
+<p>demo:<br>看demo学的更快</p>
+<p><a target="_blank" rel="noopener" href="https://gitee.com/harmonyos/samples/tree/master">HarmonyOS&#x2F;Samples - 码云 - 开源中国</a><br><a target="_blank" rel="noopener" href="https://gitee.com/harmonyos/codelabs#https://gitee.com/harmonyos/codelabs/tree/master/MultiShopping">Codelabs: 分享知识与见解，一起探索HarmonyOS的独特魅力。</a><br><a target="_blank" rel="noopener" href="https://juejin.cn/post/7325338405408555060?utm_source=gold_browser_extension">再次吐槽鸿蒙 - 掘金</a></p>
+<p>activity等同于使用@Entry和@Component修饰的页面组件。页面同样有生命周期和启动模式等概念<br>只使用@Compoent注解的组件可以理解为view,组件（Component）是界面搭建与显示的最小单位</p>
+<p><strong>方舟开发框架（简称：ArkUI</strong>），是一套构建HarmonyOS应用界面的UI开发框架，它提供了极简的UI语法与包括UI组件、动画机制、事件交互等在内的UI开发基础设施，以满足应用开发者的可视化界面开发需求。</p>
+<hr>
+<h2 id="布局"><a href="#布局" class="headerlink" title="布局"></a>布局</h2><p>在声明式UI中，所有的页面都是由自定义组件构成，在实际的开发过程中，需要遵守以下流程保证整体的布局效果：</p>
+<ul>
+<li>确定页面的布局结构。</li>
+<li>分析页面中的元素构成。</li>
+<li>选用适合的布局容器组件或属性控制页面中各个元素的位置和大小约束。</li>
+</ul>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/picgo/picgo-clipboard-images/2023-11-14-10-03-d214530dbb8ad12da6889af1aba793b0-2023-11-13-16-20-d214530dbb8ad12da6889af1aba793b0-20231113162002-d2adc2-4d14ea.png" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<p>通过<a target="_blank" rel="noopener" href="https://developer.harmonyos.com/cn/docs/documentation/doc-references-V3/ts-universal-attributes-layout-constraints-0000001427744784-V3">displayPriority</a>属性来控制页面的显示和隐藏</p>
+<h4 id="布局选择"><a href="#布局选择" class="headerlink" title="布局选择"></a>布局选择</h4><table>
+<thead>
+<tr>
+<th align="left">布局</th>
+<th align="left">应用场景</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://developer.harmonyos.com/cn/docs/documentation/doc-guides-V3/arkts-layout-development-linear-0000001504125349-V3">线性布局</a>（Row、Column）</td>
+<td align="left">如果布局内子元素超过1个，且能够以某种方式线性排列时优先考虑此布局。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://developer.harmonyos.com/cn/docs/documentation/doc-guides-V3/arkts-layout-development-stack-layout-0000001454605342-V3">层叠布局</a>（Stack）</td>
+<td align="left">组件需要有堆叠效果时优先考虑此布局，层叠布局的堆叠效果不会占用或影响其他同容器内子组件的布局空间。例如<a target="_blank" rel="noopener" href="https://developer.harmonyos.com/cn/docs/documentation/doc-references-V3/ts-container-panel-0000001427744836-V3">Panel</a>作为子组件弹出时将其他组件覆盖更为合理，则优先考虑在外层使用堆叠布局。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://developer.harmonyos.com/cn/docs/documentation/doc-guides-V3/arkts-layout-development-flex-layout-0000001504525013-V3">弹性布局</a>（Flex）</td>
+<td align="left">弹性布局是与线性布局类似的布局方式。<em>区别在于弹性布局默认能够使子组件压缩或拉伸</em>。在子组件需要计算拉伸或压缩比例时优先使用此布局，可使得多个容器内子组件能有更好的视觉上的填充容器效果。&#x3D;&#x3D;在平板或者大屏用&#x3D;&#x3D;</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://developer.harmonyos.com/cn/docs/documentation/doc-guides-V3/arkts-layout-development-relative-layout-0000001455042516-V3">相对布局</a>（RelativeContainer）</td>
+<td align="left">相对布局是在二维空间中的布局方式，不需要遵循线性布局的规则，布局方式更为自由。通过在子组件上设置锚点规则（AlignRules）使子组件能够将自己在横轴、纵轴中的位置与容器或容器内其他子组件的位置对齐。设置的锚点规则可以天然支持子元素压缩、拉伸，堆叠或形成多行效果。在页面元素分布复杂或通过线性布局会使容器嵌套层数过深时推荐使用。</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://juejin.cn/post/7320231441706188800">鸿蒙HarmonyOS实战-ArkUI组件（Flex） - 掘金</a></td>
+<td align="left"></td>
+</tr>
+</tbody></table>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/picgo/picgo-clipboard-images/2024-01-17-10-58-08ba6f2f527bdf27e2167ba76b019a10-20240117105843-51dead.png?x-oss-process=image/resize,h_800,m_lfit" srcset="/img/loading.gif" lazyload alt="image.png"><br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/picgo/picgo-clipboard-images/2024-01-17-11-12-4232ba69f8bc127e0287d1252247eb98-20240117111232-a17a04.png" srcset="/img/loading.gif" lazyload alt="image.png|400"></p>
+<h4 id="布局位置"><a href="#布局位置" class="headerlink" title="布局位置"></a>布局位置</h4><p>position、offset等属性影响了布局容器相对于自身或其他组件的位置。</p>
+<table>
+<thead>
+<tr>
+<th align="left">定位能力</th>
+<th align="left">使用场景</th>
+<th align="left">实现方式</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">绝对定位</td>
+<td align="left">对于不同尺寸的设备，使用绝对定位的适应性会比较差，在屏幕的适配上有缺陷。</td>
+<td align="left">使用<a target="_blank" rel="noopener" href="https://developer.harmonyos.com/cn/docs/documentation/doc-references-V3/ts-universal-attributes-location-0000001427584824-V3">position</a>实现绝对定位，设置元素左上角相对于父容器左上角偏移位置。在布局容器中，设置该属性不影响父容器布局，仅在绘制时进行位置调整。</td>
+</tr>
+<tr>
+<td align="left">相对定位</td>
+<td align="left">相对定位不脱离文档流，即原位置依然保留，不影响元素本身的特性，仅相对于原位置进行偏移。</td>
+<td align="left">使用<a target="_blank" rel="noopener" href="https://developer.harmonyos.com/cn/docs/documentation/doc-references-V3/ts-universal-attributes-location-0000001427584824-V3">offset</a>可以实现相对定位，设置元素相对于自身的偏移量。设置该属性，不影响父容器布局，仅在绘制时进行位置调整。</td>
+</tr>
+</tbody></table>
+<h2 id="组件"><a href="#组件" class="headerlink" title="组件"></a>组件</h2><h3 id="容器组件"><a href="#容器组件" class="headerlink" title="容器组件"></a>容器组件</h3><p>对于支持子组件配置的组件，例如容器组件，<em>在”{ … }”里为组件添加子组件的UI描述</em>。Column、Row、Stack、Grid、List等组件都是容器组件。</p>
+<ul>
+<li>以下是简单的Column示例：<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs dart">Column() &#123;<br>    Text(<span class="hljs-string">&#x27;Hello&#x27;</span>)<br>        .fontSize(<span class="hljs-number">100</span>)<br>    Divider()<br>    Text(<span class="hljs-keyword">this</span>.myText)<br>        .fontSize(<span class="hljs-number">100</span>)<br>        .fontColor(Color.Red)<br>&#125;<br></code></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="row、column"><a href="#row、column" class="headerlink" title="row、column"></a>row、column</h4><p><a target="_blank" rel="noopener" href="https://developer.harmonyos.com/cn/docs/documentation/doc-guides-V3/arkts-layout-development-linear-0000001504125349-V3">线性布局（Row&#x2F;Column）-快速入门-入门-HarmonyOS应用开发</a></p>
+<table>
+<thead>
+<tr>
+<th>属性名称</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>justifyContent</td>
+<td>设置子组件在主轴方向上的对齐格式。</td>
+</tr>
+<tr>
+<td>alignItems</td>
+<td>设置子组件在交叉轴方向上的对齐格式。</td>
+</tr>
+</tbody></table>
+<ul>
+<li>子组件在主轴方向上的对齐使用justifyContent属性来设置，其参数类型是<a target="_blank" rel="noopener" href="https://developer.harmonyos.com/cn/docs/documentation/doc-references/ts-appendix-enums-0000001281201130#ZH-CN_TOPIC_0000001281201130__flexalign">FlexAlign</a>。FlexAlign定义了以下几种类型：Start、SpaceBetween、SpaceAround、SpaceEvenly等等</li>
+<li>Column和Row容器的接口都有一个可选参数space，表示子组件在主轴方向上的间距。</li>
+</ul>
+<h4 id="RelativeContainer"><a href="#RelativeContainer" class="headerlink" title="RelativeContainer"></a>RelativeContainer</h4><p>锚点设置是指设置子元素相对于父元素或兄弟元素的位置依赖关系。在水平方向上，可以设置<strong>left、middle、right</strong>的锚点。在竖直方向上，可以设置<strong>top、center、bottom</strong>的锚点。为了明确定义锚点，必须为RelativeContainer及其子元素设置ID，用于指定锚点信息。ID默认为__container__，其余子元素的ID通过id属性设置。未设置ID的子元素在RelativeContainer中不会显示</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/picgo/picgo-clipboard-images/2023-11-15-16-22-ab3f016a9ffd6786a11b2393f080c7f7-20231115162213-2cc45e.png" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<h4 id="列表"><a href="#列表" class="headerlink" title="列表"></a>列表</h4><p><a target="_blank" rel="noopener" href="https://developer.huawei.com/consumer/cn/training/course/slightMooc/C101667360160710997?ha_linker=eyJ0cyI6MTY5OTkzMjk2MjEyMSwiaWQiOiI1OWE1Yjg4OWU4NWZjOTExOTc5ODNmMzUwYmU0MzU5YyJ9">&lt;HarmonyOS第一课&gt;从简单的页面开始-华为开发者学堂</a><br><a target="_blank" rel="noopener" href="https://developer.harmonyos.com/cn/docs/documentation/doc-guides-V3/ui-ts-performance-improvement-recommendation-0000001477981001-V3#ZH-CN_TOPIC_0000001477981001__%E6%8E%A8%E8%8D%90%E4%BD%BF%E7%94%A8%E6%95%B0%E6%8D%AE%E6%87%92%E5%8A%A0%E8%BD%BD">性能提升的推荐方法-基于ArkTS的声明式开发范式-UI开发-开发-HarmonyOS应用开发</a></p>
+<p>List是很常用的滚动类容器组件，一般和子组件ListItem一起使用，List列表中的每一个列表项对应一个ListItem组件。<br>使用<em>ForEach</em>组件<br>最后一个：<strong>keyGenerator</strong>：匿名参数，用于给定数组项生成唯一且稳定的键值。</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs stylus">@Entry<br>@Component<br>struct ListDemo &#123;<br>  private arr: number<span class="hljs-selector-attr">[]</span> = <span class="hljs-selector-attr">[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]</span><br><br>  <span class="hljs-built_in">build</span>() &#123;<br>    <span class="hljs-built_in">Column</span>() &#123;<br>      <span class="hljs-built_in">List</span>(&#123; space: <span class="hljs-number">10</span> &#125;) &#123;<br>        <span class="hljs-built_in">ForEach</span>(this<span class="hljs-selector-class">.arr</span>, (item: number) =&gt; &#123;<br>          <span class="hljs-built_in">ListItem</span>() &#123;<br>            <span class="hljs-built_in">Text</span>(`$&#123;item&#125;`)<br>              <span class="hljs-selector-class">.width</span>(<span class="hljs-string">&#x27;100%&#x27;</span>)<br>              <span class="hljs-selector-class">.height</span>(<span class="hljs-number">100</span>)<br>              <span class="hljs-selector-class">.fontSize</span>(<span class="hljs-number">20</span>)<br>              <span class="hljs-selector-class">.fontColor</span>(Color.White)<br>              <span class="hljs-selector-class">.textAlign</span>(TextAlign.Center)<br>              <span class="hljs-selector-class">.borderRadius</span>(<span class="hljs-number">10</span>)<br>              <span class="hljs-selector-class">.backgroundColor</span>(<span class="hljs-number">0</span>x007DFF)<br>          &#125;<br>        &#125;, item =&gt; item)<br>      &#125;<br>    &#125;<br>    <span class="hljs-selector-class">.padding</span>(<span class="hljs-number">12</span>)<br>    <span class="hljs-selector-class">.height</span>(<span class="hljs-string">&#x27;100%&#x27;</span>)<br>    <span class="hljs-selector-class">.backgroundColor</span>(<span class="hljs-number">0</span>xF1F3F5)<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h4 id="Grid"><a href="#Grid" class="headerlink" title="Grid"></a>Grid</h4><p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/picgo/picgo-clipboard-images/2023-11-17-10-17-193fb9790d8de794a3ed3bfadc18bc87-20231117101736-70d010.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>在单个网格单元中，rowStart和rowEnd属性表示指定当前元素起始行号和终点行号，columnStart和columnEnd属性表示指定当前元素的起始列号和终点列号。<br>所以“0”按键横跨第一列和第二列，只要将“0”对应GridItem的columnStart和columnEnd设为1和2，将“&#x3D;”对应GridItem的的rowStart和rowEnd设为5和6即可。</p>
+<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs scss"><span class="hljs-built_in">GridItem</span>() &#123;<br>  Text(key)<br>    ...<br>&#125;<br><span class="hljs-selector-class">.columnStart</span>(<span class="hljs-number">1</span>)<br><span class="hljs-selector-class">.columnEnd</span>(<span class="hljs-number">2</span>)<br><br><span class="hljs-built_in">GridItem</span>() &#123;<br>  Text(key)<br>    ...<br>&#125;<br><span class="hljs-selector-class">.rowStart</span>(<span class="hljs-number">5</span>)<br><span class="hljs-selector-class">.rowEnd</span>(<span class="hljs-number">6</span>)<br></code></pre></td></tr></table></figure>
+
+
+<h4 id="Tabs"><a href="#Tabs" class="headerlink" title="Tabs"></a>Tabs</h4><p><a target="_blank" rel="noopener" href="https://developer.huawei.com/consumer/cn/training/course/slightMooc/C101667360160710997?ha_linker=eyJ0cyI6MTY5OTkzMjk2MjEyMSwiaWQiOiI1OWE1Yjg4OWU4NWZjOTExOTc5ODNmMzUwYmU0MzU5YyJ9">&lt;HarmonyOS第一课&gt;从简单的页面开始-华为开发者学堂</a></p>
+<h3 id="子组件"><a href="#子组件" class="headerlink" title="子组件"></a>子组件</h3><p><a target="_blank" rel="noopener" href="https://developer.huawei.com/consumer/cn/training/course/slightMooc/C101667360160710997?ha_linker=eyJ0cyI6MTY5OTkzMjk2MjEyMSwiaWQiOiI1OWE1Yjg4OWU4NWZjOTExOTc5ODNmMzUwYmU0MzU5YyJ9">&lt;HarmonyOS第一课&gt;从简单的页面开始-华为开发者学堂</a></p>
+<p>Text组件用于在界面上展示一段文本信息，可以包含子组件Span。<br>fontSize：设置文本尺寸，Length为number类型时，使用fp单位</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs stylus"><span class="hljs-function"><span class="hljs-title">Image</span><span class="hljs-params">(<span class="hljs-variable">$r</span>(<span class="hljs-string">&quot;app.media.image2&quot;</span>)</span></span>)<br>  <span class="hljs-selector-class">.objectFit</span>(ImageFit.Cover)<br>  <span class="hljs-selector-class">.backgroundColor</span>(<span class="hljs-number">0</span>xCCCCCC)<br>  <span class="hljs-selector-class">.width</span>(<span class="hljs-number">100</span>)<br>  <span class="hljs-selector-class">.height</span>(<span class="hljs-number">100</span>)<br><span class="hljs-function"><span class="hljs-title">Image</span><span class="hljs-params">(<span class="hljs-string">&#x27;https://www.example.com/xxx.png&#x27;</span>)</span></span><br></code></pre></td></tr></table></figure>
+<p>为了成功加载网络图片，您需要在module.json5文件中申明网络访问权限。</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span><br>    <span class="hljs-attr">&quot;module&quot;</span> <span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span><br>        <span class="hljs-attr">&quot;requestPermissions&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-punctuation">[</span><br>           <span class="hljs-punctuation">&#123;</span><br>             <span class="hljs-attr">&quot;name&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;ohos.permission.INTERNET&quot;</span><br>           <span class="hljs-punctuation">&#125;</span><br>        <span class="hljs-punctuation">]</span><br>    <span class="hljs-punctuation">&#125;</span><br><span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure>
+
+<p>在Button组件通过“$r(‘app.type.name’)”的形式引用应用资源。app代表应用内resources目录中定义的资源；type代表资源类型（或资源的存放位置），可以取“color”、“float”、“string”、“plural”、“media”；name代表资源命名，由开发者定义资源时确定。</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs stylus"><span class="hljs-function"><span class="hljs-title">Button</span><span class="hljs-params">(<span class="hljs-variable">$r</span>(<span class="hljs-string">&#x27;app.string.login_text&#x27;</span>)</span></span>, &#123; type: ButtonType<span class="hljs-selector-class">.Capsule</span> &#125;)<br>  <span class="hljs-selector-class">.width</span>(<span class="hljs-variable">$r</span>(<span class="hljs-string">&#x27;app.float.button_width&#x27;</span>))<br>  <span class="hljs-selector-class">.height</span>(<span class="hljs-variable">$r</span>(<span class="hljs-string">&#x27;app.float.button_height&#x27;</span>))<br>  <span class="hljs-selector-class">.fontSize</span>(<span class="hljs-variable">$r</span>(<span class="hljs-string">&#x27;app.float.login_fontSize&#x27;</span>))<br>  <span class="hljs-selector-class">.backgroundColor</span>(<span class="hljs-variable">$r</span>(<span class="hljs-string">&#x27;app.color.button_color&#x27;</span>))<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>自适应拉伸<br>    在线性布局下，常用空白填充组件<a target="_blank" rel="noopener" href="https://developer.harmonyos.com/cn/docs/documentation/doc-references-V3/ts-basic-components-blank-0000001428061724-V3">Blank</a>，在容器主轴方向自动填充空白空间，达到自适应拉伸效果。Row和Column作为容器，只需要添加宽高为百分比，当屏幕宽高发生变化时，会产生自适应效果。</p>
+</blockquote>
+<h2 id="页面路由"><a href="#页面路由" class="headerlink" title="页面路由"></a>页面路由</h2><p><a target="_blank" rel="noopener" href="https://developer.harmonyos.com/cn/docs/documentation/doc-references/js-apis-router-0000001333321105">@ohos.router (页面路由)-UI界面-接口参考（ArkTS及JS API）-手机、平板、智慧屏和智能穿戴开发-ArkTS API参考-HarmonyOS应用开发</a></p>
+<figure class="highlight clean"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs clean"><span class="hljs-keyword">import</span> router <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@ohos.router&#x27;</span><br></code></pre></td></tr></table></figure>
+<p>router.push   跳转到应用内的指定页面。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs php">router.<span class="hljs-title function_ invoke__">push</span>(&#123;<br>  <span class="hljs-attr">url</span>: <span class="hljs-string">&#x27;pages/routerpage2&#x27;</span>,<br>  <span class="hljs-attr">params</span>: &#123;<br>    <span class="hljs-attr">data1</span>: <span class="hljs-string">&#x27;message&#x27;</span>,<br>    <span class="hljs-attr">data2</span>: &#123;<br>      <span class="hljs-attr">data3</span>: [<span class="hljs-number">123</span>, <span class="hljs-number">456</span>, <span class="hljs-number">789</span>]<br>    &#125;,<br>  &#125;,<br>&#125;);<br></code></pre></td></tr></table></figure>
+<p>router.replace  用应用内的某个页面替换当前页面，并销毁被替换的页面。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs php">router.<span class="hljs-title function_ invoke__">replace</span>(&#123;<br>  <span class="hljs-attr">url</span>: <span class="hljs-string">&#x27;pages/detail&#x27;</span>,<br>  <span class="hljs-attr">params</span>: &#123;<br>    <span class="hljs-attr">data1</span>: <span class="hljs-string">&#x27;message&#x27;</span>,<br>  &#125;,<br>&#125;);<br></code></pre></td></tr></table></figure>
+<p>router.back</p>
+<figure class="highlight arcade"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs arcade">router.<span class="hljs-built_in">back</span>(&#123;<span class="hljs-attr">url</span>:<span class="hljs-string">&#x27;pages/detail&#x27;</span>&#125;);<br>router.clear();<br><span class="hljs-keyword">var</span> size = router.getLength();<br></code></pre></td></tr></table></figure>
+
+
+<h2 id="项目"><a href="#项目" class="headerlink" title="项目"></a>项目</h2><p>Swiper</p>
+<h3 id="图片目录"><a href="#图片目录" class="headerlink" title="图片目录"></a>图片目录</h3><p>对于很大一部分程序员用户来说，会比较纠结这些问题：图片的大小尺寸定义为多大尺寸比较合理？应该放在什么标准的dpi中才能得到更好的适配效果？在HarmonyOS中，程序员可不必将时间和精力过多花费在此。在放置图片的media目录下也没有按照dpi来进行区分。</p>
+<h3 id="VP、PX、FP"><a href="#VP、PX、FP" class="headerlink" title="VP、PX、FP"></a>VP、PX、FP</h3><p> 1vp 约等于 160dpi 屏幕密度设备上的 1px。在不同密度的设备之间，HarmonyOS 会针对性的转换设备间对应的实际像素值。<br> <br> px：像素的单位，1px代表手机屏幕上的一个像素点。比如常见的手机分辨率有320×480,480×800，1080×1920等，这些数值的单位都是px；由于px在不同手机上的大小不同，差别较大，<strong>适配性太差，不建议使用</strong></p>
+<p>fp，font-size pixels，字体像素单位，其大小规范默认情况下与vp相同，但如果开发者在设置中修改了字体显示大小，就会在vp的基础上乘以scale系数。即默认情况下 1 fp &#x3D; 1vp，如果设置了字体显示大小，则会根据实际情况自动设置 1fp &#x3D; 1vp * scale。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%85%B6%E4%BB%96%E8%AF%AD%E8%A8%80/" class="category-chain-item">其他语言</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E5%85%B6%E4%BB%96%E8%AF%AD%E8%A8%80/%E9%B8%BF%E8%92%99/" class="category-chain-item">鸿蒙</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>ArkUI</div>
+      <div>http://peiniwan.github.io/2025/12/cfae37396604.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>六月的雨</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年12月16日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/12/aaff073e7d00.html" title="DevEco Studio">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">DevEco Studio</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/12/0ccc710c28c2.html" title="ArkTS">
+                        <span class="hidden-mobile">ArkTS</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"OwNIdaopOn1rwNhtotGOGC0B-gzGzoHsz","appKey":"eadytQ2XqWmxuvAKeg08XX83","path":"window.location.pathname","placeholder":null,"avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":true,"recordIP":false,"serverURLs":"https://ownidaop.lc-cn-n1-shared.com","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

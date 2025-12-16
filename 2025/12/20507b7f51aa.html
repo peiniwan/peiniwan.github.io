@@ -1,0 +1,917 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="六月的雨">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="其他Java 的 Object 类有哪些常用的方法？ 哪些场景下，子类需要重写 equals 方法和 hashCode 方法？比较两个对象是否相等的时候。hashCode 相等，两个对象不一定相等；两个对象 equals 后相等，则两个对象的 hashCode 一定相等。必须都相等才可以 为什么在写自定义的类的时候要重写 equals？默认是比较的两个对象内存的地址 什么要同时重写 hashcod">
+<meta property="og:type" content="article">
+<meta property="og:title" content="1.Java基础">
+<meta property="og:url" content="http://peiniwan.github.io/2025/12/20507b7f51aa.html">
+<meta property="og:site_name" content="六月的雨的笔记">
+<meta property="og:description" content="其他Java 的 Object 类有哪些常用的方法？ 哪些场景下，子类需要重写 equals 方法和 hashCode 方法？比较两个对象是否相等的时候。hashCode 相等，两个对象不一定相等；两个对象 equals 后相等，则两个对象的 hashCode 一定相等。必须都相等才可以 为什么在写自定义的类的时候要重写 equals？默认是比较的两个对象内存的地址 什么要同时重写 hashcod">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Java%E5%9F%BA%E7%A1%80.resources/2023/09/15/17-54-06-3b9dc88315a3954a30083e244228dcec-unknown_filename.9-723e23.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Java%E5%9F%BA%E7%A1%80.resources/2023/09/15/17-54-06-bfadebde34077dcb0cd63f0690681190-unknown_filename.10-0ed521.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Java%E5%9F%BA%E7%A1%80.resources/2023/09/15/17-54-06-098a7a27d0ec66292059fbdf80a307fe-unknown_filename.3-fe5b58.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Java%E5%9F%BA%E7%A1%80.resources/2023/09/15/17-54-06-736330e06f8259dde7e325e12c51a05e-0-531e70.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Java%E5%9F%BA%E7%A1%80.resources/2023/09/15/17-54-06-08d4c2d538e2beda458f1518833d5ed2-10d42a6e-8f6f-45dd-b14b-bc14e35972ef-d39db8.jpg">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Java%E5%9F%BA%E7%A1%80.resources/2023/09/15/17-54-06-46c95b9b0ae06a41e26d70280b700758-wpsbe76-d0ceb2.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/JVM.resources/2023/09/15/17-32-15-55d02093212c91c4139b62c620eef4e7-unknown_filename.9-a12233.png">
+<meta property="article:published_time" content="2025-12-16T13:59:22.452Z">
+<meta property="article:modified_time" content="2024-03-31T08:51:00.000Z">
+<meta property="article:author" content="六月的雨">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Java%E5%9F%BA%E7%A1%80.resources/2023/09/15/17-54-06-3b9dc88315a3954a30083e244228dcec-unknown_filename.9-723e23.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>1.Java基础 - 六月的雨的笔记</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"peiniwan.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>六月的雨的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="1.Java基础"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-12-16 21:59" pubdate>
+          2025年12月16日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          7.8k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          65 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">1.Java基础</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p><strong>Java 的 Object 类有哪些常用的方法？</strong><br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Java%E5%9F%BA%E7%A1%80.resources/2023/09/15/17-54-06-3b9dc88315a3954a30083e244228dcec-unknown_filename.9-723e23.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.9"></p>
+<p><strong>哪些场景下，子类需要重写 equals 方法和 hashCode 方法？</strong><br>比较两个对象是否相等的时候。<br>hashCode 相等，两个对象不一定相等；两个对象 equals 后相等，则两个对象的 hashCode 一定相等。必须都相等才可以</p>
+<p>为什么在写自定义的类的时候要重写 equals？<br>默认是<strong>比较的两个对象内存的地址</strong></p>
+<p>什么要同时重写 hashcode 方法？<br>未重写之前 hashcode 方法返回的是对象的32位 JVM 内存地址，当我们把这<strong>不同地址但是实际相等</strong>的两个对象放进 HashMap 里面的时候它们不被看成是同一个对象，占据了两个位置。这个跟我们的预期不符，所以要重写 hashcode 方法。</p>
+<p><strong>java 中，强制转换符把 float 转换为 int 时，按四舍五入，还是直接丢掉小数部分</strong></p>
+<p>直接舍掉小数，比如 float 是4.7 转换成 int 后是4 而不是5 要四舍五入的话转换前先加上0.5<br>比如 int i ; double j &#x3D; 4.7; i &#x3D; (int)(j+0.5);</p>
+<h3 id="静态"><a href="#静态" class="headerlink" title="静态"></a>静态</h3><p><strong>静态的作用</strong></p>
+<p>static 修饰的代码块，当类被加载时执行，且被执行一次，作为对静态属性的初始化。不要实例化就可以类名. 的方式调用，在内存中只有一份，可以<strong>多个对象共享同一份内存空间</strong>。静态导入，是将类中的所有静态成员导入进来。</p>
+<p>静态变量：当类加载器将类加载到 JVM 中的时候就会创建静态变量，这跟对象是否创建无关。静态变量加载的时候就会分配内存空间。<br>静态代码块：代码只会在类第一次初始化的时候执行一次。一个类可以有多个静态代码块，它并不是类的成员，也没有返回值，并且不能直接调用。不能包含 this 或者 super, 它们通常被用初始化静态变量。</p>
+<p><strong>编译时 vs 运行时</strong></p>
+<p>编译时：将 Java 代码编译成．class 文件的过程<br>运行时：就是 Java 虚拟机执行．class 文件的过程<br>编译时 vs 运行时：编译时类型和运行时类型<br>编译时类型：编译时类型由声明该变量时使用的类型决定（形参）<br>运行时类型：运行时类型由实际赋给该变量的对象决定（实参）</p>
+<p><strong>执行顺序</strong></p>
+<ol>
+<li><strong>静态变量、静态代码块</strong>  </li>
+<li>子类静态变量、静态代码块  </li>
+<li>自己的变量、代码块、构造函数 </li>
+<li><strong>子类变量、代码块、构造函数</strong></li>
+</ol>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs csharp"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">TestNew</span> &#123;<br>	<span class="hljs-keyword">static</span> <span class="hljs-built_in">int</span> a = <span class="hljs-number">3</span>;<br>	<span class="hljs-keyword">static</span> <span class="hljs-built_in">int</span> b;<br>	<span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">meth</span>(<span class="hljs-params"><span class="hljs-built_in">int</span> x</span>)</span>&#123;<br>		System.<span class="hljs-keyword">out</span>.println(<span class="hljs-string">&quot;x = &quot;</span>+x);<br>		System.<span class="hljs-keyword">out</span>.println(<span class="hljs-string">&quot;a = &quot;</span>+a);<br>		System.<span class="hljs-keyword">out</span>.println(<span class="hljs-string">&quot;b = &quot;</span>+b);<br>	&#125;<br>	<span class="hljs-keyword">static</span> &#123;<br>		System.<span class="hljs-keyword">out</span>.println(<span class="hljs-string">&quot;static block initialized&quot;</span>);<br>		b = a*<span class="hljs-number">4</span>;<br>	&#125;<br>	<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span>(<span class="hljs-params">String[] args</span>)</span> &#123;<br>		<span class="hljs-comment">// TODO Auto-generated method stub</span><br>		meth(<span class="hljs-number">42</span>);<br>	&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>执行结果是：static block initialized<br>x &#x3D; 42<br>a &#x3D; 3<br>b &#x3D; 12<br>上述 class TestNew 的执行顺序是：首先 static 块执行 (打印一条消息)，a 被设置为3，最后 b 被初始化为 a* 4 成12。<br>然后调用 main ()，main () 调用 meth () ，把值42传递给 x。3个 println ( ) 语句引用两个 static 变量 a 和 b，以及局部变量 x 。</p>
+<p><strong>Java int 和 Integer</strong></p>
+<p>1、Integer 是 int 的包装类，int 则是 java 的一种基本数据类型 <br>2、Integer 变量必须实例化后才能使用，而 int 变量不需要 <br>3、Integer 实际是对象的引用，当 new 一个 Integer 时，实际上是生成一个指针指向此对象；而 int 则是直接存储数据值 <br>4、Integer 的默认值是 null，int 的默认值是0</p>
+<h3 id="值传递、引用传递"><a href="#值传递、引用传递" class="headerlink" title="值传递、引用传递"></a>值传递、引用传递</h3><p>java 在方法传递参数时，是将变量复制一份，然后传入方法体去执行</p>
+<p><em>基本数据类型不会修改</em>。因为，a、b 中的值，只是从 num1、num2的复制过来的。也就是说，a、b 相当于 num1、num2的副本，副本的内容无论怎么修改，都不会影响到原件本身。</p>
+<p><em>引用类型会修改，是引用</em><br><em>string 类型特殊，不会修改</em><br>String 对象一旦创建，内容不可更改。每一次内容的更改都是重现创建出来的新对象。</p>
+<h3 id="String"><a href="#String" class="headerlink" title="String"></a>String</h3><p>String s &#x3D; new String (“xyz”); 创建了几个字符串对象？<br>两个对象，一个是（常量池方法区）的“xyz”;，一个是用 new 创建在堆上的对象。如果 xyz 创建过了，就是一个对象，会复用常量池。</p>
+<ul>
+<li>string 类型和 StringBuffer 类型的主要性能区别其实在于 <em>String 是不可变的对象, 因此在每次对 String 类型进行改变的时候其实都等同于生成了一个新的 String 对象，然后将指针指向新的 String 对象</em>，所以经常改变内容的字符串最好不要用 String ，因为每次生成对象都会对系统性能产生影响，特别当内存中无引用对象多了以后, JVM 的 GC 就会开始工作，那速度是一定会相当慢的。</li>
+<li>string 值能改是因为创建了新的对象，而 StringBuilder 通过 <code>append()</code>、<code>insert()</code> 等方法直接<em>操作内部缓冲区</em>，避免重复创建对象。<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Java%E5%9F%BA%E7%A1%80.resources/2023/09/15/17-54-06-bfadebde34077dcb0cd63f0690681190-unknown_filename.10-0ed521.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.10"></li>
+</ul>
+<p>新版本<br>string “+” 在<em>高版本中改了</em>。” Hello, “ + “world! “ 这样的表达式，编译器会把它处理成一个连接好的常量字符串”Hello, world!”。这样，也就不存在反复的对象创建和销毁了，性能提高了，但是不可变性没变。<br> 编译器优化（常量折叠）</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">// 编译时直接合并为单字符串</span><br><span class="hljs-type">String</span> <span class="hljs-variable">s</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;a&quot;</span> + <span class="hljs-string">&quot;b&quot;</span> + <span class="hljs-string">&quot;c&quot;</span>; <br><span class="hljs-comment">// 等效于→ String s = &quot;abc&quot;;</span><br></code></pre></td></tr></table></figure>
+<p>但该优化不适用于变量操作：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">String</span> <span class="hljs-variable">a</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;a&quot;</span>;<br><span class="hljs-type">String</span> <span class="hljs-variable">b</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;b&quot;</span>;<br><span class="hljs-type">String</span> <span class="hljs-variable">c</span> <span class="hljs-operator">=</span> a + b; <span class="hljs-comment">// 运行时创建新对象！</span><br></code></pre></td></tr></table></figure>
+
+<p>优先使用：<strong>StringBuilder 之所以快</strong>，是因为内部预先分配了一部分内存（空间换时间），只有在内存不足的时候，才会去扩展内存<br>StringBuilder 是在单线程环境下使用的，因为它的所有方面都没有被 synchronized 修饰，因此它的效率也比 StringBuffer 要高。</p>
+<h3 id="string-为什么是-final"><a href="#string-为什么是-final" class="headerlink" title="string 为什么是 final"></a>string 为什么是 final</h3><p><em>防止继承破坏不可变性</em><br>​​禁止任何子类继承​​。若允许继承，子类可能通过重写方法（如 <code>equals()</code>、<code>hashCode()</code>）或添加可变字段，破坏 <code>String</code> 的不可变特性</p>
+<p><em>实现字符串池</em>       <br><strong>唯一性保证​</strong>​：相同内容的字符串字面量在池中仅存储一份，避免重复创建相同内容的字符串对象，减少内存占用。<br>String s1 &#x3D; “Hello”; String s2 &#x3D; “Hello”; &#x2F;&#x2F; s1 &#x3D;&#x3D; s2 为 true，因为指向池中同一对象<br>[[6.JVM#方法区]]</p>
+<p><em>线程安全</em><br>​​无同步开销​​：多线程共享 String 对象时无需加锁。<br>​​避免竞态条件​​：例如，在并发环境下，多个线程同时读取同一 String 对象不会因数据竞争导致错误。（对象是同一个）</p>
+<p>虽然 final 代表了不可变，但<strong>仅仅是引用地址不可变，并不代表了数组本身不会变</strong>, 请看下面图片。</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Java%E5%9F%BA%E7%A1%80.resources/2023/09/15/17-54-06-098a7a27d0ec66292059fbdf80a307fe-unknown_filename.3-fe5b58.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.3"><br>final 也可以将数组本身改变的，这个时候，起作用的还有 private，正是因为两者保证了 String 的不可变性。</p>
+<h3 id="final"><a href="#final" class="headerlink" title="final"></a>final</h3><p>(1) 修饰类：表示该类不能被继承；<br>(2) 修饰方法：表示方法不能被重写；<br>(3) 修饰变量：表示变量只能一次赋值以后值不能被修改（常量）。</p>
+<p>对于一个 final 变量，如果是基本数据类型的变量，则其数值一旦在初始化之后便不能更改；<br>如果是引用类型的变量，则在对其初始化之后便不能再让其指向另一个对象。<br>举个例子：<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Java%E5%9F%BA%E7%A1%80.resources/2023/09/15/17-54-06-736330e06f8259dde7e325e12c51a05e-0-531e70.png" srcset="/img/loading.gif" lazyload alt="0"></p>
+<p><strong>为什么匿名内部类中引用的局部变量必须要加 final</strong></p>
+<p>内部类里面使用外部类的<strong>局部变量</strong>时，其实就是内部类的对象在使用它，内部类对象生命周期中都可能调用它，而内部类试图访问外部方法中的局部变量时，外部方法的局部变量很可能已经不存在了，那么就得延续其生命，<em>拷贝到内部类中，而拷贝会带来不一致性，从而需要使用 final 声明保证一致性</em>。</p>
+<p>说白了，内部类会自动拷贝外部变量的引用，为了避免：</p>
+<ol>
+<li>外部方法修改引用，而导致内部类得到的引用值不一致</li>
+<li>内部类修改引用，而导致外部方法的参数值在修改前和修改后不一致。于是就用 final 来让该引用不可改变。</li>
+</ol>
+<ul>
+<li>匿名内部类访问的外部类局部变量为什么要用 final 修饰，jdk8为啥不需要了？<ol>
+<li>因为匿名内部类使用的是<strong>外部类局部变量的值</strong>，并非引用</li>
+<li>jdk8 其实用了语法糖，自动加了 final，其实和原来一样</li>
+</ol>
+</li>
+</ul>
+<p><strong>++在前还是后</strong><br>i++是先赋值再++<br>++i 是先++再赋值<br>比如：i &#x3D; 1; j &#x3D; i++; 那么此时的 j &#x3D; 1; i &#x3D; 2;<br>i &#x3D; 1; j &#x3D; ++i, 那么此时的 j &#x3D; 2, i &#x3D; 2;<br>i++这种在前在后都一样，只是先赋值还是先+1的问题。影响的是 j 的值</p>
+<h2 id="基础"><a href="#基础" class="headerlink" title="基础"></a>基础</h2><p>面向对象的特征有哪些方面？<br>答：四大特性封装、继承、多态、抽象。</p>
+<p>继承<br>    一个子类可以有多个直接父类 (java 中不允许, 但进行了改良，在 java 中是通过”多实现”的方式来体现。因为多个父类中有相同成员，会产生调用不确定性。</p>
+<p>多态<br>    用同样的对象引用调用同样的方法但是做了不同的事情。多态性分为编译时的多态性和运行时的多态性。方法重载（overload）实现的是编译时的多态性（也称为前绑定），而<em>方法重写（override）实现的是运行时的多态性</em>（也称为后绑定）。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">method</span><span class="hljs-params">(Animal a)</span><br> &#123;<br>  a.eat();<br>  <span class="hljs-keyword">if</span>(a <span class="hljs-keyword">instanceof</span> Cat)<span class="hljs-comment">//instanceof：用于判断对象的具体类型,只能用于引用数据类型判断 </span><br><span class="hljs-comment">//通常在向下转型前用于健壮性的判断, 如果传入了其他的东西就不能调用</span><br>  &#123; <br>   <span class="hljs-type">Cat</span> <span class="hljs-variable">c</span> <span class="hljs-operator">=</span> (Cat)a;<br>   c.catchMouse();<br>  &#125;<br>  <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(a <span class="hljs-keyword">instanceof</span> Dog)&#123;<br>   <span class="hljs-type">Dog</span> <span class="hljs-variable">d</span> <span class="hljs-operator">=</span> (Dog)a;<br>   d.lookHome();<br>  &#125;<br></code></pre></td></tr></table></figure>
+<p>多态的好处：提高了代码的扩展性，前期定义的代码可以使用后期的内容。<br>多态的弊端： 前期定义的内容不能使用 (调用) 后期子类的特有内容。</p>
+<p>重载（overload）在同一个类中，名字相同，参数个数不同 or 参数类型不同。<br>覆盖（override）子类重写父类的方法中。覆盖也称为重写，覆写。</p>
+<p><strong>构造器（constructor）是否可被重写（override）？</strong><br>答：构造器不能被继承，因此不能被重写，但可以被重载。</p>
+<h3 id="抽象"><a href="#抽象" class="headerlink" title="抽象"></a>抽象</h3><p>抽象是将一类对象的共同特征总结出来的过程，包括数据抽象和行为抽象两方面。抽象只关注对象有哪些属性和行为，并不关注这些行为的细节是什么。</p>
+<p>Abstract: 关键字，用于修饰类和方法。</p>
+<ol>
+<li>abstract 修饰的方法：没有方法体，只有方法的声明</li>
+<li>Abstract 修饰的类：抽象类，不能被实例化</li>
+</ol>
+<p>注意：</p>
+<ol>
+<li>有抽象方法的类一定是抽象类，但抽象类中可以没有抽象方法</li>
+<li>不能用 abstract 修饰私有方法、构造方法、静态方法。用 Abstract 修饰的成员就是要去实现，而构造器不能被继承不能被重写（可以被重载），其他不能修饰的原因是一样的。</li>
+</ol>
+<p>抽象类（abstract class）和接口（interface）有什么异同？</p>
+<pre><code class="hljs">答：抽象类和接口都不能够实例化，但可以定义抽象类和接口类型的引用。一个类如果继承了某个抽象类或者实现了某个接口都需要对其中的抽象方法全部进行实现，否则该类仍然需要被声明为抽象类。
+接口比抽象类更加抽象，因为抽象类中可以定义构造器，可以有抽象方法和具体方法，而接口中不能定义构造器而且其中的方法全部都是抽象方法。抽象类中的成员可以是private、默认、protected、public的，而接口中的成员全都是public的。抽象类中可以定义成员变量，而接口中定义的成员变量实际上都是常量。
+</code></pre>
+<p>接口是否可继承（extends）接口？抽象类是否可实现（implements）接口？抽象类是否可继承具体类（concrete class）？</p>
+<pre><code class="hljs">答：接口可以继承接口，并且支持多重继承。抽象类可以实现(implements)接口，抽象类可继承具体类也可以继承抽象类。
+</code></pre>
+<p>静态嵌套类 (Static Nested Class) 和内部类（Inner Class）的不同？</p>
+<pre><code class="hljs">答：Static Nested Class是被声明为静态（static）的内部类，它可以不依赖于外部类实例被实例化。而通常的内部类需要在外部类实例化后才能实例化。
+内部类访问特点：
+</code></pre>
+<ol>
+<li>内部类可以直接访问外部类中的成员，包括私有成员</li>
+<li><em>外部类要访问内部类，必须建立内部类的对象</em>。Outer. Inner in &#x3D; new Outer (). new Inner (); in.show (); 如果内部类中定义了静态成员，该内部类也必须是静态的。</li>
+</ol>
+<p>抽象的（abstract）方法是否可同时是静态的（static）, 是否可同时是本地方法（native），是否可同时被 synchronized 修饰？</p>
+<pre><code class="hljs">答：都不能。抽象方法需要子类重写，而静态的方法是无法被重写的，因此二者是矛盾的。本地方法是由本地代码（如C代码）实现的方法，而抽象方法是没有实现的，也是矛盾的。synchronized和方法的实现细节有关，抽象方法不涉及实现细节，因此也是相互矛盾的。
+</code></pre>
+<p>是否可以从一个静态（static）方法内部发出对非静态（non-static）方法的调用？</p>
+<pre><code class="hljs">答：不可以，静态方法只能访问静态成员，因为非静态方法的调用要先创建对象，在调用静态方法时可能对象并没有被初始化。
+</code></pre>
+<p>访问修饰符 public, private, protected, 以及不写（默认）时的区别？<br>    <img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Java%E5%9F%BA%E7%A1%80.resources/2023/09/15/17-54-06-08d4c2d538e2beda458f1518833d5ed2-10d42a6e-8f6f-45dd-b14b-bc14e35972ef-d39db8.jpg" srcset="/img/loading.gif" lazyload alt="10d42a6e-8f6f-45dd-b14b-bc14e35972ef"></p>
+<p>类的成员不写访问修饰时默认为 default。默认对于同一个包中的其他类相当于公开（public），对于不是同一个包中的其他类相当于私有（private）。受保护（protected）对子类相当于公开，对不是同一包中的没有父子关系的类相当于私有。Java 中，外部类的修饰符只能是 public 或默认，类的成员（包括内部类）的修饰符可以是以上四种。</p>
+<p>String 是最基本的数据类型吗？</p>
+<pre><code class="hljs">答：不是。Java中的基本数据类型只有8个：byte（1个字节7位，2^7）、short（2,2^15）、int（4）、long（8）、float（4）、double（8）、char、boolean；除了基本类型（primitive type）和枚举类型（enumeration type），剩下的都是引用类型（reference type）。
+</code></pre>
+<p>整形默认 int，浮点默认 double，小的自动转成大的，大的得强转小的。java:byte short int long float double char boolean 先乘除后加减先算术再移位最后逻辑</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Java%E5%9F%BA%E7%A1%80.resources/2023/09/15/17-54-06-46c95b9b0ae06a41e26d70280b700758-wpsbe76-d0ceb2.png" srcset="/img/loading.gif" lazyload alt="wpsbe76"></p>
+<p>float f&#x3D;3.4; 是否正确？</p>
+<pre><code class="hljs">答: 不正确。3.4是双精度数，将双精度型（double）赋值给浮点型（float）属于下转型（down-casting，也称为窄化）会造成精度损失，因此需要强制类型转换 float f =(float) 3.4; 或者写成 float f =3.4F。
+</code></pre>
+<p>float 和 double 之间的区别</p>
+<pre><code class="hljs">单精度浮点数有效数字8位，第7位数字将会四舍五入，双精度浮点数有效数字16位，在程序中处理速度不同，一般来说，CPU 处理单精度浮点数的速度比处理双精度浮点数快，如果不声明，默认小数为 double 类型，所以如果要用 float 的话，必须进行强转
+</code></pre>
+<p>int, long 的取值范围以及 BigDecimal，数值越界了如何处理？</p>
+<pre><code class="hljs">双精度浮点型变量 double 可以处理16位有效数。BigDecimal，用来对超过16位有效位的数进行精确的运算。但在实际应用中，可能需要对更大或者更小的数进行运算和处理。
+一般情况下，对于那些不需要准确计算精度的数字，我们可以直接使用 Float 和 Double 处理，但是 Double.valueOf (String) 和 Float.valueOf (String) 会丢失精度。所以开发中，如果我们需要精确计算的结果。比如计算金额、转换格式单位等
+</code></pre>
+<h3 id="拆箱装箱"><a href="#拆箱装箱" class="headerlink" title="拆箱装箱"></a>拆箱装箱</h3><p>当基本数据类型给引用数据类型装箱，当基本数据类型和引用数据类型做运算拆箱</p>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs pgsql"><span class="hljs-keyword">class</span> AutoUnboxingTest &#123;<br><br>    <span class="hljs-built_in">public</span> static <span class="hljs-type">void</span> main (String[] args) &#123;<br>        <span class="hljs-type">Integer</span> a = <span class="hljs-built_in">new</span> <span class="hljs-type">Integer</span> (<span class="hljs-number">3</span>);<br>        <span class="hljs-type">Integer</span> b = <span class="hljs-number">3</span>;                  // 将<span class="hljs-number">3</span>自动装箱成 <span class="hljs-type">Integer</span> 类型<br>        <span class="hljs-type">int</span> c = <span class="hljs-number">3</span>;<br>        <span class="hljs-keyword">System</span>.<span class="hljs-keyword">out</span>.println (a == b);     // <span class="hljs-keyword">false</span> 两个引用没有引用同一对象<br>        <span class="hljs-keyword">System</span>.<span class="hljs-keyword">out</span>.println (a == c);     // <span class="hljs-keyword">true</span> a 自动拆箱成 <span class="hljs-type">int</span> 类型再和 c 比较<br>    &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<p>最近还遇到一个面试题，也是和自动装箱和拆箱有点关系的，代码如下所示：</p>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs pgsql"><span class="hljs-built_in">public</span> <span class="hljs-keyword">class</span> Test03 &#123;<br><br>    <span class="hljs-built_in">public</span> static <span class="hljs-type">void</span> main (String[] args) &#123;<br>        <span class="hljs-type">Integer</span> f1 = <span class="hljs-number">100</span>, f2 = <span class="hljs-number">100</span>, f3 = <span class="hljs-number">150</span>, f4 = <span class="hljs-number">150</span>;<br><br>        <span class="hljs-keyword">System</span>.<span class="hljs-keyword">out</span>.println (f1 == f2);<br>        <span class="hljs-keyword">System</span>.<span class="hljs-keyword">out</span>.println (f3 == f4);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>如果不明就里很容易认为两个输出要么都是 true 要么都是 false。首先需要注意的是 f1、f2、f3、f4四个变量都是 Integer 对象引用，所以下面的&#x3D;&#x3D;运算比较的不是值而是引用。装箱的本质是什么呢？当我们给一个 Integer 对象赋一个 int 值的时候，会调用 Integer 类的静态方法 valueOf 答案：小于127就是 TRUE，大于127就是 false，因为当数值在 byte 范围内容，如果该数值已经存在，则不会在开辟新的空间，所以 a 和 b 指向了同一个 Integer 对象，同一个引用。</p>
+<p>short s1 &#x3D; 1; s1 &#x3D; s1 + 1; 有错吗?<br>    答：对于 short s1 &#x3D; 1; s1 &#x3D; s1 + 1; 由于1是 int 类型，因此 s1+1运算结果也是 int 型，需要强制转换类型才能赋值给 short 型。而 short s1 &#x3D; 1; s1 +&#x3D; 1; 可以正确编译，因为 s1+&#x3D; 1; 相当于 s1 &#x3D; (short)(s1 + 1); 其中有隐含的强制类型转换。</p>
+<p>Math.round (11.5) 等于多少？Math.round (-11.5) 等于多少？</p>
+<pre><code class="hljs"> 答：Math.round (11.5) 的返回值是12，Math.round (-11.5) 的返回值是-11。四舍五入的原理是在参数上加0.5然后进行下取整。
+</code></pre>
+<p>swtich 是否能作用在 byte 上，是否能作用在 long 上，是否能作用在 String 上？ </p>
+<pre><code class="hljs">答：从 Java 7开始，expr 还可以是字符串（String），但是长整型（long）都不行
+</code></pre>
+<p>数组有没有 length () 方法？String 有没有 length () 方法？ </p>
+<pre><code class="hljs">答：数组没有 length () 方法，有 length 的属性。String 有 length () 方法。
+</code></pre>
+<p>阐述 final、finally、finalize 的区别。</p>
+<ol>
+<li>final：同上</li>
+<li>finally：通常放在 try…catch…的后面构造总是执行代码块，这就意味着程序无论正常执行还是发生异常，这里的代码只要 JVM 不关闭都能执行，可以将释放外部资源的代码写在 finally 块中。</li>
+<li>finalize：Object 类中定义的方法，Java 中允许使用 finalize () 方法在垃圾收集器将对象从内存中清除出去之前做必要的清理工作。这个方法是由垃圾收集器在销毁对象时调用的，通过重写 finalize () 方法可以整理系统资源或者执行其他清理工作。</li>
+</ol>
+<ul>
+<li>equals 和=&#x3D;\的区别？</li>
+</ul>
+<ol>
+<li>基本数据类型，也称原始数据类型。byte, short, char, int, long, float, double, boolean   他们之间的比较，应用双等号（=&#x3D;\）, 比较的是他们的值。</li>
+<li>复合数据类型、引用数据类型 (类) 当他们用（=&#x3D;\）进行比较的时候，比较的是他们在内存中的存放地址，所以，除非是同一个 new 出来的对象，他们的比较后的结果为 true，否则比较后结果为 false。</li>
+<li>JAVA 当中所有的类都是继承于 Object 这个基类的，在 Object 中的基类中定义了一个 equals 的方法，这个方法的初始行为是比较对象的内存地址，但在一些类库当中这个方法被覆盖掉了，如 String, Integer, Date 在这些类当中 equals 有其自身的实现，而不再是比较类在堆内存中的存放地址了。</li>
+<li>对于复合数据类型之间进行 equals 比较，在没有覆写 equals 方法的情况下，他们之间的比较还是基于他们在内存中的存放位置的地址值的，因为 Object 的 equals 方法也是用双等号（=&#x3D;\）进行比较的，所以比较后的结果跟双等号（=&#x3D;\）的结果相同。</li>
+</ol>
+<p>this 和 super</p>
+<pre><code class="hljs">当成员变量和局部变量重名，可以用关键字 this 来区分。this 就是所在函数所属对象的引用。简单说：哪个对象调用了 this 所在的函数，this 就代表哪个对象。this 也可以用于在构造函数中调用其他构造函数。子父类中的成员变量同名用 super 区分父类。
+</code></pre>
+<p>Error 和 Exception 有什么区别？</p>
+<pre><code class="hljs">答：Error 表示系统级的错误和程序不必处理的异常，是恢复不是不可能但很困难的情况下的一种严重问题；比如内存溢出，不可能指望程序能处理这样的情况；Exception 表示需要捕捉或者需要程序进行处理的异常，是一种设计或实现问题；也就是说，它表示如果程序运行正常，从不会发生的情况。
+</code></pre>
+<p>try{}里有一个 return 语句，那么紧跟在这个 try 后的 finally{}里的代码会不会被执行，什么时候被执行，在 return 前还是后?</p>
+<pre><code class="hljs">答：会执行，在方法返回调用者前执行。
+注意：在 finally 中改变返回值的做法是不好的，因为如果存在 finally 代码块，try 中的 return 语句不会立马返回调用者，而是记录下返回值待 finally 代码块执行完毕之后再向调用者返回其值，然后如果在 finally 中修改了返回值，就会返回修改后的值。显然，在 finally 中返回或者修改返回值会对程序造成很大的困扰。
+</code></pre>
+<p>Java 语言如何进行异常处理，关键字：throws、throw、try、catch、finally 分别如何使用？</p>
+<ol>
+<li>一般情况下是用 try 来执行一段程序，如果系统会抛出（throw）一个异常对象，可以通过它的类型来捕获（catch）它，或通过总是执行代码块（finally）来处理；try 用来指定一块预防所有异常的程序；</li>
+<li>catch 子句紧跟在 try 块后面，用来指定你想要捕获的异常的类型；</li>
+<li>throw 语句用来明确地抛出一个异常；</li>
+<li>throws 用来声明一个方法可能抛出的各种异常（当然声明异常时允许无病呻吟）；</li>
+<li>finally 为确保一段代码不管发生什么异常状况都要被执行；</li>
+<li>try 语句可以嵌套，每当遇到一个 try 语句，异常的结构就会被放入异常栈中，直到所有的 try 语句都完成。如果下一级的 try 语句没有对某种异常进行处理，异常栈就会执行出栈操作，直到遇到有处理这种异常的 try 语句或者最终将异常抛给 JVM。</li>
+</ol>
+<ul>
+<li>列出一些你常见的运行时异常？<br>  ArithmeticException（算术异常）<br>  ClassCastException （类转换异常）<br>  IllegalArgumentException （非法参数异常）<br>  IndexOutOfBoundsException （下标越界异常）<br>  NullPointerException （空指针异常）<br>  SecurityException （安全异常）</li>
+</ul>
+<h2 id="类加载过程"><a href="#类加载过程" class="headerlink" title="类加载过程"></a>类加载过程</h2><p>Java 在 new 一个对象的时候，会先查看对象所属的类有没有被加载到内存，如果没有的话，就会先通过类的全限定名来加载。加载并初始化类完成后，再进行对象的创建工作。我们先假设是第一次使用该类，这样的话 new 一个对象就可以分为两个过程：加载并初始化类和创建对象。</p>
+<p>一、类加载过程（第一次使用该类）<br>Java 是使用双亲委派模型来进行类的加载的，所以在描述类加载过程前，我们先看一下它的工作过程：<br>1、加载<br>2、验证<br>3、准备<br>4、解析<br>5、初始化（先父后子）</p>
+<p>为静态变量赋值<br>执行 static 代码块</p>
+<p>加载: JVM 通过类加载器将描述类的数据从 Class 文件加载到内存中。类加载器根据类的全限定名 (包名+类名) 从文件系统或者 JAR 文件中找到对应的. Class 文件，然后读取其字节码数据并存储在内存中。</p>
+<p>验证: 加载后的字码数据需要进行验证，以确保其内容是符合 Java 虚拟机规范的、安全的，并且与 JVM 的运行环境相兼容。验证的目的是防止恶意代码的执行，并确保字节码数据的完整性和正确性</p>
+<p>准备: 准备阶段是为类的静态变量分配内存并设置默认的初始值。这个阶段不会执行任何初始化操作。</p>
+<p>解析: 解析阶段是将类中的符号引用转换为直接引用。符号引用是指在类中使用的字符串形式的类名、方法名和字段名等，而直接引用则是指向运行时具体对象的指针。解析阶段是在类被加载后进行的，因此不会影响类的加载过程</p>
+<p>初始化: 初始化阶段是执行类的构造器方法&lt;\clinit&gt;0 的过程，它会对类的静态变量进行初始化操作。初始化阶段会执行类中的所有 static 代码块和 static 变量的初始化代码，并执行构造器方法中的代码</p>
+<p>二、创建对象</p>
+<p>一个对象实例化过程<br>Zi p &#x3D; new zi ();</p>
+<ol>
+<li>JVM 会读取指定的路径下的 zi. Class 文件，并加载进内存，并会先加载 zi 的父类 (如果有直接的父类的情况下).</li>
+<li>在堆内存中的开辟空间，分配地址。</li>
+<li>并在对象空间中，对对象中的属性进行默认初始化。</li>
+<li>调用对应的构造函数进行初始化。</li>
+<li>在构造函数中，第一行会先到调用父类中构造函数进行初始化。</li>
+<li>父类初始化完毕后，在对子类的属性进行显示初始化。</li>
+<li>在进行子类构造函数的特定初始化。</li>
+<li>初始化完毕后，将地址值赋值给引用变量.</li>
+</ol>
+<h2 id="虚拟机类加载机制"><a href="#虚拟机类加载机制" class="headerlink" title="虚拟机类加载机制"></a>虚拟机类加载机制</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">/**</span><br><span class="hljs-comment">*被动使用类字段演示一：</span><br><span class="hljs-comment">*通过子类引用父类的静态字段，不会导致子类初始化</span><br><span class="hljs-comment">**/</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">SuperClass</span>&#123;<br><span class="hljs-keyword">static</span>&#123;<br>System. out. println（<span class="hljs-string">&quot;SuperClass init！&quot;</span>）；<br>&#125;<br><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-type">int</span> value=<span class="hljs-number">123</span>；<br>&#125;<br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">SubClass</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">SuperClass</span>&#123;<br><span class="hljs-keyword">static</span>&#123;<br>System. out. println（<span class="hljs-string">&quot;SubClass init！&quot;</span>）；<br>&#125;<br>&#125;<br><span class="hljs-comment">/**</span><br><span class="hljs-comment">*非主动使用类字段演示</span><br><span class="hljs-comment">**/</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">NotInitialization</span>&#123;<br><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> main（String[]args）&#123;<br>System. out. println（SubClass. value）；<br>&#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<p>上述代码运行之后，只会输出“SuperClass init！”，而不会输出“SubClass init！”。对于静态字段，只有直接定义这个字段的类才会被初始化，因此通过其子类来引用父类中定义的静态字段，只会触发父类<br>的初始化而不会触发子类的初始化。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs java"><br><span class="hljs-comment">/**</span><br><span class="hljs-comment">*被动使用类字段演示三：</span><br><span class="hljs-comment">*常量在编译阶段会存入调用类的常量池中，本质上并没有直接引用到定义常量的类，因此不会触发定义常量的类的初始化。</span><br><span class="hljs-comment">**/</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">ConstClass</span>&#123;<br><span class="hljs-keyword">static</span>&#123;<br>System. out. println（<span class="hljs-string">&quot;ConstClass init！&quot;</span>）；<br>&#125;<br><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> String HELLOWORLD=<span class="hljs-string">&quot;hello world&quot;</span>；<br>&#125;<br><span class="hljs-comment">/**</span><br><span class="hljs-comment">*非主动使用类字段演示</span><br><span class="hljs-comment">**/</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">NotInitialization</span>&#123;<br><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> main（String[]args）&#123;<br>System. out. println（ConstClass. HELLOWORLD）；<br>&#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<p>上述代码运行之后，也没有输出“ConstClass init！”</p>
+<p>虚拟机把描述类的数据从 Class 文件加载到内存，并对数据进行校验、转换解析和初始化，最终形成可以被虚拟机直接使用的 Java 类型，这就是虚拟机的类加载机制（运行时）。</p>
+<p>类从被加载到虚拟机内存中开始，到卸载出内存为止，它的整个生命周期包括：<strong>加载（Loading）、验证（Verification）、准备（Preparation）、解析（Resolution）、初始化（Initialization）、使用（Using）和卸载（Unloading）</strong> 7 个阶段。其中验证、准备、解析 3 个部分统称为连接（Linking）<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/JVM.resources/2023/09/15/17-32-15-55d02093212c91c4139b62c620eef4e7-unknown_filename.9-a12233.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.9|700"></p>
+<h2 id="Java-8的语法特性"><a href="#Java-8的语法特性" class="headerlink" title="Java 8的语法特性"></a>Java 8的语法特性</h2><p>Java 8引入了许多新的语法特性，以下是其中一些主要的特性：</p>
+<ol>
+<li><p>Lambda 表达式：Lambda 表达式是一种简洁的语法，<em>用于表示匿名函数</em>。它允许将函数作为参数传递给方法，或者在集合操作中进行函数式编程。Lambda 表达式使用箭头符号（-&gt;）将参数列表与函数体分隔开，并可以省略参数类型和大括号。</p>
+</li>
+<li><p>方法引用：方法引用提供了一种简洁的方式来<em>直接引用现有的方法或构造函数</em>。它可以替代Lambda 表达式，使代码更加简洁易读。方法引用的语法是<code>类名::方法名</code>，可以引用静态方法、实例方法和构造函数。</p>
+</li>
+<li><p>函数式接口：<em>函数式接口是只包含一个抽象方法的接口</em>。Java 8引入了<code>java.util.function</code>包，提供了一些常用的函数式接口，如<code>Predicate</code>、<code>Consumer</code>、<code>Function</code>等，用于支持函数式编程。</p>
+</li>
+<li><p>默认方法：默认方法是接口中的一个新特性，允许在接口中提供具有默认实现的方法。这样，在接口的实现类中可以直接使用默认方法，而无需强制实现。默认方法的目的是在不破坏现有接口的情况下，向接口添加新的方法。</p>
+</li>
+<li><p>Stream API：Stream API 提供了一种处理集合数据的函数式编程方式。它允许对集合进行过滤、映射、排序、归约等操作，提供了一种简洁、高效的方式来处理集合数据。</p>
+</li>
+<li><p>Optional 类：Optional 类是用来解决空指针异常的问题。它封装了一个可能为空的值，并提供了一些方法来处理空值情况，避免了显式的空指针检查。</p>
+</li>
+<li><p>新的日期和时间 API：Java 8引入了全新的日期和时间 API，取代了旧的<code>java.util.Date</code>和<code>java.util.Calendar</code>类。新的 API 提供了更加易用和功能强大的日期和时间操作方式。</p>
+</li>
+</ol>
+<h4 id="Map-的新方法"><a href="#Map-的新方法" class="headerlink" title="Map 的新方法"></a>Map 的新方法</h4><p>在 JDK8中 Map 接口提供了一些新的便利的方法，getOrDefault (Object, V) 允许调用者在代码语句中规定获得在 map 中符合提供的键的值，否则在没有找到提供的键的匹配项的时候返回一个“默认值”。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">// JDK8之前的实现方法</span><br><span class="hljs-type">String</span> <span class="hljs-variable">capitalGeorgia</span> <span class="hljs-operator">=</span> statesAndCapitals.get(<span class="hljs-string">&quot;Georgia&quot;</span>);<br><span class="hljs-keyword">if</span> (capitalGeorgia == <span class="hljs-literal">null</span>)<br>&#123;<br>   capitalGeorgia = <span class="hljs-string">&quot;Unknown&quot;</span>;<br>&#125;<br> <br><span class="hljs-comment">// JDK8的实现方法</span><br><span class="hljs-keyword">final</span> <span class="hljs-type">String</span> <span class="hljs-variable">capitalWisconsin</span> <span class="hljs-operator">=</span> statesAndCapitals.getOrDefault(<span class="hljs-string">&quot;Wisconsin&quot;</span>, <span class="hljs-string">&quot;Unknown&quot;</span>);<br><br><br></code></pre></td></tr></table></figure>
+<p>Map.putIfAbsent (K, V)</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">// JDK8之前的实现方式</span><br><span class="hljs-type">String</span> <span class="hljs-variable">capitalMississippi</span> <span class="hljs-operator">=</span> statesAndCapitals.get(<span class="hljs-string">&quot;Mississippi&quot;</span>);<br><span class="hljs-keyword">if</span> (capitalMississippi == <span class="hljs-literal">null</span>)&#123;<br>   capitalMississippi = statesAndCapitals.put(<span class="hljs-string">&quot;Mississippi&quot;</span>, <span class="hljs-string">&quot;Jackson&quot;</span>);<br>&#125;<br> <br><span class="hljs-comment">// JDK8的实现方式</span><br><span class="hljs-keyword">final</span> <span class="hljs-type">String</span> <span class="hljs-variable">capitalNewYork</span> <span class="hljs-operator">=</span> statesAndCapitals.putIfAbsent(<span class="hljs-string">&quot;New York&quot;</span>, <span class="hljs-string">&quot;Albany&quot;</span>);<br></code></pre></td></tr></table></figure>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Java/" class="category-chain-item">Java</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>1.Java基础</div>
+      <div>http://peiniwan.github.io/2025/12/20507b7f51aa.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>六月的雨</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年12月16日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/12/e9ff2a5dcb34.html" title="3.java多线程">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">3.java多线程</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/12/82dcb152a5ce.html" title="热修复、插件化、组件化">
+                        <span class="hidden-mobile">热修复、插件化、组件化</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"OwNIdaopOn1rwNhtotGOGC0B-gzGzoHsz","appKey":"eadytQ2XqWmxuvAKeg08XX83","path":"window.location.pathname","placeholder":null,"avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":true,"recordIP":false,"serverURLs":"https://ownidaop.lc-cn-n1-shared.com","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

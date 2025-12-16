@@ -1,0 +1,826 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="六月的雨">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="内存泄漏12adb shell dumpsys meminfo  com.esread.sunflowerstudent -dadb shell dumpsys meminfo \[PackageName\]，可以打印出指定包名的应用内存信息 目前栈中所有的Activity的实例，如果数量大于1，说明有内存泄漏的界面。 LeakCanaryApp植入LeakCanary之后, 在检测可能的内存泄露">
+<meta property="og:type" content="article">
+<meta property="og:title" content="7.优化工具使用">
+<meta property="og:url" content="http://peiniwan.github.io/2025/12/19d23d9f2543.html">
+<meta property="og:site_name" content="六月的雨的笔记">
+<meta property="og:description" content="内存泄漏12adb shell dumpsys meminfo  com.esread.sunflowerstudent -dadb shell dumpsys meminfo \[PackageName\]，可以打印出指定包名的应用内存信息 目前栈中所有的Activity的实例，如果数量大于1，说明有内存泄漏的界面。 LeakCanaryApp植入LeakCanary之后, 在检测可能的内存泄露">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E4%BC%98%E5%8C%96%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8.resources/2023/09/15/17-55-11-c49117006048d9af67e0aae75f91a833-unknown_filename.3-874b30.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E4%BC%98%E5%8C%96%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8.resources/2023/09/15/17-55-11-5bcb5723df9c47660f74eae8b807b68a-unknown_filename.1-7b0a4c.webp">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E4%BC%98%E5%8C%96%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8.resources/2023/09/15/17-55-11-9b49caa44ad87eeb147d65a467d3f405-unknown_filename.2-3d2d9a.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E4%BC%98%E5%8C%96%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8.resources/2023/09/15/17-55-11-2fef8fd707f7783272e924da0c2b8cfd-unknown_filename-731cad.jpeg">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E4%BC%98%E5%8C%96%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8.resources/2023/09/15/17-55-11-038b44ad52d56d983de7698038f9e944-unknown_filename.4-93d226.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E4%BC%98%E5%8C%96%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8.resources/2023/09/15/17-55-11-afe2227fde7b5961d52c7000b8d20f09-unknown_filename.17-a73bd1.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E4%BC%98%E5%8C%96%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8.resources/2023/09/15/17-55-11-6cf35971b24aafa0ad1256aa1ee3b6c3-unknown_filename.14-f04401.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E4%BC%98%E5%8C%96%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8.resources/2023/09/15/17-55-11-6d8e94410035f7316d67f3051506f39f-unknown_filename.15-77c3a5.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E4%BC%98%E5%8C%96%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8.resources/2023/09/15/17-55-11-8acf8ee2bab97e7f07e0c2270c215bb6-unknown_filename.16-754fae.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E4%BC%98%E5%8C%96%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8.resources/2023/09/15/17-55-11-13cf044e7980302f9007a740b50b0d96-unknown_filename.13-9fd9a6.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E4%BC%98%E5%8C%96%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8.resources/2023/09/15/17-55-11-d851935c8c00007bae5709e6639d96b9-unknown_filename.19-e4c79a.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E4%BC%98%E5%8C%96%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8.resources/2023/09/15/17-55-11-3d8b41363cc4b63a4eed274442fde467-unknown_filename.18-dae593.png">
+<meta property="article:published_time" content="2025-12-16T13:59:22.422Z">
+<meta property="article:modified_time" content="2024-03-26T01:58:00.000Z">
+<meta property="article:author" content="六月的雨">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E4%BC%98%E5%8C%96%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8.resources/2023/09/15/17-55-11-c49117006048d9af67e0aae75f91a833-unknown_filename.3-874b30.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>7.优化工具使用 - 六月的雨的笔记</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"peiniwan.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>六月的雨的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="7.优化工具使用"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-12-16 21:59" pubdate>
+          2025年12月16日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.9k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          25 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">7.优化工具使用</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="内存泄漏"><a href="#内存泄漏" class="headerlink" title="内存泄漏"></a>内存泄漏</h1><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs stylus">adb shell dumpsys meminfo  com<span class="hljs-selector-class">.esread</span><span class="hljs-selector-class">.sunflowerstudent</span> -d<br>adb shell dumpsys meminfo \<span class="hljs-selector-attr">[PackageName\]</span>，可以打印出指定包名的应用内存信息<br></code></pre></td></tr></table></figure>
+<p>目前栈中所有的Activity的实例，如果数量大于1，说明有内存泄漏的界面。</p>
+<h2 id="LeakCanary"><a href="#LeakCanary" class="headerlink" title="LeakCanary"></a>LeakCanary</h2><p>App植入LeakCanary之后, 在检测可能的内存泄露后, 会弹出Toast提示，并在桌面生成一个Leaks的icon，点击该icon进入Leaks界面, 可以比较清晰的看到内存泄露疑点。可以看到leak对象的引用关系。</p>
+<p><a target="_blank" rel="noopener" href="https://juejin.im/entry/5817e6e0a0bb9f005880fc5d">Android 性能优化之利用 LeakCanary 检测内存泄漏及解决办法</a></p>
+<h2 id="Android-Profile"><a href="#Android-Profile" class="headerlink" title="Android Profile"></a>Android Profile</h2><p>打开Android Studio，然后就从android profile（性能分析器）里面观察App的内存使用曲线，突然发现内存使用越来越大了，并且没有回落，就很有可能是发生内存泄漏了。<br>使用App后在Android Profiler中先触发GC然后dump内存快照（hprof），之后点击按package分类，就可以查看到你的App目前在内存中残留的class,点击class即可在右边查看到对应的实例以及引用对象。按理来说已经被销毁的activity不应该出现在这里</p>
+<ul>
+<li>强制GC：点击垃圾桶按钮，建议点击后等待几秒后再次点击，尝试多次，让GC更加充分。</li>
+<li>可以选择某一段区域，在下面就有堆栈信息。<br>  Android 7.1 或更低版本需要记录<br>  <img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E4%BC%98%E5%8C%96%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8.resources/2023/09/15/17-55-11-c49117006048d9af67e0aae75f91a833-unknown_filename.3-874b30.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.3"></li>
+<li>堆栈是默认是按Retained Size排序的，Shallow Size指的是该对象本身占用内存的大小，Retained Heap表示这个对象以及它所持有的其它引用（包括直接和间接）所占的总内存，分析内存泄漏时，内存最大的对象也是最应该去怀疑的</li>
+<li>根据引用关系就可以知道是谁让这个leak的activity活着的, 然后可以 jump to source</li>
+<li>此例中, 比较简单, 可以很清晰看到是ListenerManager的静态单例sInstance最终支配了MemoryLeakActivity. sIntance连接到GC Roots, 故而导致MemoryLeakActivity GC Roots可达, 无法被回收.</li>
+<li>上述步骤, 可以让我们快速定位可能的内存泄露. 当然, 内存问题除了内存泄露, 还可以看哪个<code>内存消耗大</code>。</li>
+<li><em>bitmap特别大时点开看看图片的宽高是不是有特比大的</em></li>
+</ul>
+<p><strong>在某个页面gc后不在这个页面的view或者activity、fragment不应该出现在堆栈里面</strong>，看看是不是有某个东西引用的他们</p>
+<p><strong>捕获堆转储</strong><br>使用：点击 Dump Java heap <br> <img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E4%BC%98%E5%8C%96%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8.resources/2023/09/15/17-55-11-5bcb5723df9c47660f74eae8b807b68a-unknown_filename.1-7b0a4c.webp" srcset="/img/loading.gif" lazyload alt="unknown_filename.1"></p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>意义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Total Count</td>
+<td>内存中该类的对象个数</td>
+</tr>
+<tr>
+<td>Heap Count Count</td>
+<td>堆内存中该类的对象个数</td>
+</tr>
+<tr>
+<td>Sizeof</td>
+<td>物理大小</td>
+</tr>
+<tr>
+<td>Shallow size</td>
+<td>对象本身占有内存大小</td>
+</tr>
+<tr>
+<td>Retained Size</td>
+<td>释放该对象后，节省的内存大小</td>
+</tr>
+<tr>
+<td>depth</td>
+<td>深度</td>
+</tr>
+<tr>
+<td>Dominating Size</td>
+<td>管辖的内存大小</td>
+</tr>
+</tbody></table>
+<h3 id="分析内存的技巧"><a href="#分析内存的技巧" class="headerlink" title="分析内存的技巧"></a>分析内存的技巧</h3><p>使用 Memory Profiler 时，您应对应用代码施加压力并尝试强制内存泄漏。 在应用中引发内存泄漏的一种方式是，先<em>让其运行一段时间，然后再检查堆。 泄漏在堆中可能逐渐汇聚到分配顶部</em>。 不过，泄漏越小，您越需要运行更长时间的应用才能看到泄漏。<br>您还可以通过以下方式之一触发内存泄漏：</p>
+<ul>
+<li>将设备从纵向旋转为横向，然后在不同的 Activity 状态下反复操作多次。 旋转设备经常会导致应用泄漏 Activity、Context 或 View 对象，因为系统会重新创建 Activity，而如果您的应用在其他地方保持对这些对象之一的引用，系统将无法对其进行垃圾回收。</li>
+<li>处于不同的 Activity 状态时，在您的应用与另一个应用之间切换（导航到主屏幕，然后返回到您的应用）。</li>
+</ul>
+<p><strong>分析步骤：</strong></p>
+<ol>
+<li>不断在手机上操作一个功能，如果该数据在不断地增加，每次GC后没有明显的回落，则判定该功能模块存在内存泄露问题。</li>
+<li>如果反复操作该功能之后，有一定范围的起伏，但是又被稳定在某一个有限的范围内，则说明代码良好，没有造成对象不被垃圾回收的情况，所以说虽然我们不断的操作会不断的生成很多对象，而在虚拟机不断的进行GC的过程中，这些对象都被回收了，内存占用量会会落到一个稳定的水平；</li>
+<li>如果有效内存，手机可能会出现程序被kill，但是程序被kill并不能代表程序一定有内存泄露。</li>
+<li>横竖屏切换，看内存是回落，没有的话这里存在内存泄漏</li>
+</ol>
+<h3 id="常见内存泄漏"><a href="#常见内存泄漏" class="headerlink" title="常见内存泄漏"></a>常见内存泄漏</h3><p>在您的堆转储中，请注意由下列任意情况引起的内存泄漏：</p>
+<ul>
+<li>长时间引用<strong>Activity、Context、View、Drawable</strong> 和其他对象，可能会保持对 Activity 或 Context 容器的引用。</li>
+<li>可以保持 Activity 实例的非静态内部类，如 Runnable。</li>
+<li>对象保持时间超出所需时间的缓存。</li>
+</ul>
+<p>手动设置 null，解除引用关系</p>
+<p>Lint 外，还有像 FindBugs 、 Checkstyle 等<code>静态代码分析工具</code>，主要就静态对象或变量引用着的实例<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E4%BC%98%E5%8C%96%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8.resources/2023/09/15/17-55-11-9b49caa44ad87eeb147d65a467d3f405-unknown_filename.2-3d2d9a.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.2"></p>
+<p><strong>sampling模式和instrumentation模式的区别</strong><br>两者的区别：</p>
+<ul>
+<li>在sampling模式中，profiler以固定的间隔对运行中的程序进行采样，根据采样结果统计出程序中各个部分的开销。</li>
+<li>在instrumentation模式中，profiler对运行中的程序所执行的每一个指令都进行记录，最后根据这份记录生成程序中各个部分的开销。</li>
+</ul>
+<p>在实际使用中：</p>
+<ul>
+<li>sampling模式速度快，记录产生的数据量小，但是统计结果并不十分精确，适合于对程序全局性能进行初步的分析，找出程序瓶颈大致的“区间”。</li>
+<li>instrumentation模式能精确记录程序各个部分的开销，但是速度慢，记录产生的数据量大，适合于对程序局部进行精细分析，精确定位瓶颈位置。</li>
+</ul>
+<h3 id="实例"><a href="#实例" class="headerlink" title="实例"></a>实例</h3><ol>
+<li>在内存里发现两个极少概率出现的empty view，占用了很大的内存：用ViewStub对empty view做了懒加载，对于这些没有马上用到的资源要做延迟加载，还有很多大概率不会出现的View更加要做懒加载。 -2M</li>
+<li>发现详情页的轮播大图的Viewpager用的Adapter是FragmentPagerAdapter，导致了所有的page都会被保存，当图片页数多的时候，往后翻内存会不断上升。优化：这种页数多的ViewPager使用FragmentStatePagerAdapter来替代，它只会保留前后pager,在页数多的时候可以 节省大量内存。</li>
+<li>遇到个问题，设置显示图片的时候传了dp,可是传了一个像素。会进行俩次算像素，看内存会出现有个特别的大的。</li>
+</ol>
+<h2 id="Memory-Analyzer（MAT）"><a href="#Memory-Analyzer（MAT）" class="headerlink" title="Memory Analyzer（MAT）"></a>Memory Analyzer（MAT）</h2><p>内存泄漏不像闪退的BUG，排查起来相对要比较困难些</p>
+<ol>
+<li>当内存泄漏发生时，LeakCanary 会弹窗提示并生成对应的堆存储信息记录，这让我们对隐蔽的内存泄漏问题有了更加直观的感觉，但从实际使用来看，LeakCanary 的每个提示也并非是真正存在内存泄漏问题，要想确定是否存在问题我们还需要借助 MAT 来进行最后的确定。</li>
+<li>Android 系统本身就存在一些问题导致应用内存泄漏，LeakCanary 的 <strong>AndroidExcludedRefs</strong> 类帮助我们处理了不少这类问题。</li>
+</ol>
+<p>生成的 Heap 文件不是标准的 Java Heap，所以 MAT 无法打开，我们需要转换成标准的 Java Heap 文件，这个工具 Android Studio 就有提供，叫做 Captures,右击选中的 hprof，Export to standard .hprof 选择保存的位置，即可生成一个标准的 hprof 文件。</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E4%BC%98%E5%8C%96%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8.resources/2023/09/15/17-55-11-2fef8fd707f7783272e924da0c2b8cfd-unknown_filename-731cad.jpeg" srcset="/img/loading.gif" lazyload alt="unknown_filename"></p>
+<h1 id="卡顿监测"><a href="#卡顿监测" class="headerlink" title="卡顿监测"></a>卡顿监测</h1><h2 id="perfetto"><a href="#perfetto" class="headerlink" title="perfetto"></a>perfetto</h2><p>[[perfetto]]</p>
+<h2 id="Traceview"><a href="#Traceview" class="headerlink" title="Traceview"></a><strong>Traceview</strong></h2><p>它利用 Android Runtime 函数调用的 event 事件，将函数运行的耗时和调用关系写入 trace 文件中。它可以用来查看整个过程有哪些函数调用，但是工具本身带来的性能开销过大，有时无法反映真实的情况。比如一个函数本身的耗时是 1 秒，开启 Traceview 后可能会变成 5 秒，而且这些函数的耗时变化并不是成比例放大。<br>在 Android 5.0 之后，新增了 <strong>startMethodTracingSampling</strong> 方法，可以使用基于样本的方式进行分析，以减少分析对运行时的性能影响</p>
+<p><strong>Traceview 此工具已弃用</strong><br>要检查通过使用 Debug 类检测您的应用而捕获的 . trace 文件、记录新方法跟踪、导出 . trace 文件以及检查应用进程的实时 CPU 使用情况，请使用 Android Studio CPU Profiler。</p>
+<p><strong>Hierarchy Viewer</strong><br>如果要在运行时检查应用的视图层次结构，请使用 Layout Inspector。如果您要分析应用布局的渲染速度，请使用 Window. OnFrameMetricsAvailableListener，如本博文中所述。</p>
+<p><strong>获取方法运行时间</strong><br>matrix trace canary</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs awk"><span class="hljs-regexp">//</span>        Debug.startMethodTracing(<span class="hljs-string">&quot;&quot;</span>);      <span class="hljs-regexp">//</span>traceview，不准确，耗时，配对，侵入型强，可以自定义插件<br><span class="hljs-regexp">//</span>        Trace.beginSection(<span class="hljs-string">&quot;xx&quot;</span>);  <span class="hljs-regexp">//</span>Systrace<br><br><span class="hljs-regexp">//</span>        Debug.stopMethodTracing();<br><span class="hljs-regexp">//</span>        Trace.endSection();<br><span class="hljs-regexp">//</span>        python systrace.py -a 包名 view am<br></code></pre></td></tr></table></figure>
+
+<h2 id="CPU-Profiler"><a href="#CPU-Profiler" class="headerlink" title="CPU Profiler"></a>CPU Profiler</h2><p>操作前点记录，完了点stop，会生成下面的<br>一般看红色，<strong>蓝色是自己的代码的方法的耗时</strong>，红色时间长<br><strong>特点</strong><br>找到最耗费时间的路径：Flame Chart、Top Down。<br>找到最耗费时间的节点：Bottom Up。</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E4%BC%98%E5%8C%96%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8.resources/2023/09/15/17-55-11-038b44ad52d56d983de7698038f9e944-unknown_filename.4-93d226.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.4"></p>
+<p>CPU 时间轴<br>显示应用的实时 CPU 使用率（以占总可用 CPU 时间的百分比表示）以及应用当前使用的线程总数。此时间轴还显示其他进程（如系统进程或其他应用）的 CPU 使用率，以便您可以将其与您应用的使用率进行对比。您可以通过沿时间轴的水平轴移动鼠标来检查历史 CPU 使用率数据。</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E4%BC%98%E5%8C%96%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8.resources/2023/09/15/17-55-11-afe2227fde7b5961d52c7000b8d20f09-unknown_filename.17-a73bd1.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.17"></p>
+<h4 id="Call-Chart"><a href="#Call-Chart" class="headerlink" title="Call Chart"></a>Call Chart</h4><p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E4%BC%98%E5%8C%96%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8.resources/2023/09/15/17-55-11-6cf35971b24aafa0ad1256aa1ee3b6c3-unknown_filename.14-f04401.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.14"></p>
+<h4 id="Flame-Chart"><a href="#Flame-Chart" class="headerlink" title="Flame Chart"></a>Flame Chart</h4><p>Flame Chart 标签提供一个倒置的调用图表，用来汇总完全相同的调用堆栈。也就是说，将具有相同调用方顺序的完全相同的方法或函数收集起来，并在火焰图中将它们表示为一个较长的横条（而不是将它们显示为多个较短的横条，如调用图表中所示）。<strong>这样更方便您查看哪些方法或函数消耗的时间最多</strong>。不过，这也意味着，水平轴不代表时间轴，而是表示执行每个方法或函数所需的相对时间量。</p>
+<p>注意，方法 D 多次调用 B（B1、B2 和 B3），其中一些对 B 的调用也调用了 C（C1 和 C3）。<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E4%BC%98%E5%8C%96%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8.resources/2023/09/15/17-55-11-6d8e94410035f7316d67f3051506f39f-unknown_filename.15-77c3a5.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.15"></p>
+<p>使用“Top Down”和“Bottom Up”检查跟踪数据<br>Top Down 标签显示一个调用列表，在该列表中展开方法或函数节点会显示它的被调用方。图 8 显示了图 4 中调用图表的自上而下图。图中的每个箭头都从调用方指向被调用方。<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E4%BC%98%E5%8C%96%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8.resources/2023/09/15/17-55-11-8acf8ee2bab97e7f07e0c2270c215bb6-unknown_filename.16-754fae.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.16"></p>
+<p>Bottom Up<strong>标签用于按照消耗的 CPU 时间由多到少</strong>（或由少到多）的排序对方法或函数排序。您可以检查每个节点以确定哪些调用方在调用这些方法或函数上所花的 CPU 时间最多</p>
+<p><strong>检查帧渲染数据</strong><br>您可以检查应用在主线程和 RenderThread 上渲染每个帧所用的时间，以调查导致界面卡顿和帧速率较低的瓶颈。要查看帧渲染数据，请使用可让您跟踪系统调用的配置记录跟踪数据。记录跟踪数据后，在名为 FRAMES 的部分下查找有关每个帧的信息</p>
+<p>每个所用时间超过 16 毫秒的帧都以红色显示。<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E4%BC%98%E5%8C%96%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8.resources/2023/09/15/17-55-11-13cf044e7980302f9007a740b50b0d96-unknown_filename.13-9fd9a6.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.13"></p>
+<h2 id="Systrace"><a href="#Systrace" class="headerlink" title="Systrace"></a>Systrace</h2><p>使⽤ python 终端命令⽣成 Trace ⽂件 <a target="_blank" rel="noopener" href="https://developer.android.com/topic/performance/tracing/command-line">官⽅⽂档</a><br>在⾼版本中，可以通过 System tracing ⽣成 trace ⽂件，⽣成的⽂件可以在 这⾥ <a target="_blank" rel="noopener" href="https://www.perfetto.dev/">在线分析</a><br>在代码中主动做标记</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E4%BC%98%E5%8C%96%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8.resources/2023/09/15/17-55-11-d851935c8c00007bae5709e6639d96b9-unknown_filename.19-e4c79a.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.19"><br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E4%BC%98%E5%8C%96%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8.resources/2023/09/15/17-55-11-3d8b41363cc4b63a4eed274442fde467-unknown_filename.18-dae593.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.18"></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Android/" class="category-chain-item">Android</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/Android/%E4%BC%98%E5%8C%96/" class="category-chain-item">优化</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>7.优化工具使用</div>
+      <div>http://peiniwan.github.io/2025/12/19d23d9f2543.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>六月的雨</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年12月16日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/12/d0387facc838.html" title="android编译优化">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">android编译优化</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/12/c8be8dba48e3.html" title="6.WebView 缓存池">
+                        <span class="hidden-mobile">6.WebView 缓存池</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"OwNIdaopOn1rwNhtotGOGC0B-gzGzoHsz","appKey":"eadytQ2XqWmxuvAKeg08XX83","path":"window.location.pathname","placeholder":null,"avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":true,"recordIP":false,"serverURLs":"https://ownidaop.lc-cn-n1-shared.com","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

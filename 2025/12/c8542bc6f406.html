@@ -1,0 +1,754 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="六月的雨">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="长链接NIO推送所有需要客户端被动接收信息的功能模块,都可以用推送实现，比如A想给B发消息，A调服务器接口，服务器只是存数据，它调推送的接口，推送去去找B。推送用的是xmpp协议， 是一种基于TCP&#x2F;IP的协议, 这种协议更适合消息发送  socket 套接字, 发送和接收网络请求 长连接 keep-alive, 服务器基于长连接找到设备,发送消息 心跳包 , 客户端会定时(30秒一次)">
+<meta property="og:type" content="article">
+<meta property="og:title" content="长链接NIO">
+<meta property="og:url" content="http://peiniwan.github.io/2025/12/c8542bc6f406.html">
+<meta property="og:site_name" content="六月的雨的笔记">
+<meta property="og:description" content="长链接NIO推送所有需要客户端被动接收信息的功能模块,都可以用推送实现，比如A想给B发消息，A调服务器接口，服务器只是存数据，它调推送的接口，推送去去找B。推送用的是xmpp协议， 是一种基于TCP&#x2F;IP的协议, 这种协议更适合消息发送  socket 套接字, 发送和接收网络请求 长连接 keep-alive, 服务器基于长连接找到设备,发送消息 心跳包 , 客户端会定时(30秒一次)">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E9%95%BF%E9%93%BE%E6%8E%A5NIO.resources/2023/09/15/18-24-49-da347c30cc788aa7a969ae07c7f7de92-unknown_filename-dcf950.png">
+<meta property="article:published_time" content="2025-12-16T13:59:22.588Z">
+<meta property="article:modified_time" content="2024-03-21T00:54:00.000Z">
+<meta property="article:author" content="六月的雨">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E9%95%BF%E9%93%BE%E6%8E%A5NIO.resources/2023/09/15/18-24-49-da347c30cc788aa7a969ae07c7f7de92-unknown_filename-dcf950.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>长链接NIO - 六月的雨的笔记</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"peiniwan.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>六月的雨的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="长链接NIO"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-12-16 21:59" pubdate>
+          2025年12月16日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.2k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          27 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">长链接NIO</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="长链接NIO"><a href="#长链接NIO" class="headerlink" title="长链接NIO"></a>长链接NIO</h1><h2 id="推送"><a href="#推送" class="headerlink" title="推送"></a>推送</h2><p>所有需要客户端被动接收信息的功能模块,都可以用推送实现，比如A想给B发消息，A调服务器接口，服务器只是存数据，它调推送的接口，推送去去找B。推送用的是xmpp协议， 是一种基于TCP&#x2F;IP的协议, 这种协议更适合消息发送</p>
+<ol>
+<li>socket 套接字, 发送和接收网络请求</li>
+<li>长连接 keep-alive, 服务器基于长连接找到设备,发送消息</li>
+<li>心跳包 , 客户端会定时(30秒一次)向服务器发送一段极短的数据,作为心跳包, 服务器定时收到心跳,证明客户端或者,才会发消息.否则将消息保存起来,等客户端活了之后(重新连接),重新发送.</li>
+<li>网络状态变化<br> 手机网络和WIFI网络切换、网络断开和连上等情况有网络状态的变化，也会使长连接变为无效连接，需要监听响应的网络状态变化事件，重新建立Push长连接。</li>
+</ol>
+<h3 id="关于心跳"><a href="#关于心跳" class="headerlink" title="关于心跳"></a>关于心跳</h3><ol>
+<li>客户端网络空闲5秒没有进行写操作是，进行发送一次ping心跳给服务端；</li>
+<li>客户端如果在下一个发送ping心跳周期来临时，还没有收到服务端ping的心跳应答，则失败心跳计数器加1；</li>
+<li>每当客户端收到服务端的ping心跳应答后，失败心跳计数器清零；</li>
+<li>如果连续超过3次没有收到服务端的心跳回复，则断开当前连接，在5秒后进行重连操作，直到重连成功，否则每隔5秒又会进行重连；(不对吧)。死链check 时间应该是心跳间隔 + 心跳消息超时</li>
+</ol>
+<p><strong>长连接会不会耗流量？</strong><br>维持长连接并不是连接在那儿就一直消耗流量，只是隔段时间进行“心跳”来保持连接，而一次心跳流量是可以做得很小的。总之，长连接的方式一方面实时性好，另一方面，比轮询更少的消耗流量。项目是5秒发一次</p>
+<p><strong>心跳包和轮询的区别</strong><br>轮询是为了获取数据，而心跳是为了保活TCP连接。<br>轮询得越频繁，获取数据就越及时，心跳的频繁与否和数据是否及时没有直接关系。<br>轮询比心跳能耗更高，因为一次轮询需要经过TCP三次握手，四次挥手，<strong>单次心跳不需要建立和断开TCP连接。</strong></p>
+<h3 id="I-O-是什么？"><a href="#I-O-是什么？" class="headerlink" title="I&#x2F;O 是什么？"></a>I&#x2F;O 是什么？</h3><p>程序内部和外部进⾏行数据交互的过程，就叫输入输出。<br>程序内部是谁？内存<br>程序外部是谁？<br>⼀般来说是两类：本地文件和网络。<br>也有别的情况，比如你和别的程序做交互，和你交互的程序也属于外部，但一般来说，就是文件和网络这么两种。</p>
+<p>从文件里或者从网络上读数据到内存里，就叫输入；<br>从内存里写到文件里或者发送到网络上，就叫输出<br>Java I&#x2F;O 作⽤用只有一个：和外界做数据交互</p>
+<h3 id="常见的IO"><a href="#常见的IO" class="headerlink" title="常见的IO"></a>常见的IO</h3><p>答：字节流和字符流。字节流继承于InputStream、OutputStream，字符流继承于Reader、Writer，如果字符流就得有刷新动作。</p>
+<ol>
+<li>打印流：将各种数据类型的数据原样打印，PrintStream  、PrintWriter</li>
+<li>对象流：它的写方法是ObjectOutputStream，读方法是ObjectInputStream。它主要操作的是对象，而对象中也能封装数据，所以它也具备操作基本数据类型的方法。被它操作的对象必须是实现了序列化的对象也就是Serializable接口，但是输入流还多支持一种Externalizable 接口的对象。持久化</li>
+<li>DataStream：可以用于操作基本数据类型的数据的流对象：DataInputStream与DataOutputStream，它主要的特点就是操作基本数据类型，特色方法writeUTF、readUTF</li>
+<li>字节数组流：ByteArrayInputStream 、ByteArrayOutputStream，因为这两个流对象都操作的数组，并没有使用系统资源。所以，不用进行close关闭，而且关闭也是无效的。</li>
+<li>文件流：FileReader<br> 字符流</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><code class="hljs java">      <span class="hljs-type">FileReader</span> <span class="hljs-variable">fr</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">FileReader</span>(<span class="hljs-string">&quot;buf.txt&quot;</span>);<br>      <span class="hljs-type">BufferedReader</span> <span class="hljs-variable">bufr</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">BufferedReader</span>(fr);<br>     <br>      <span class="hljs-type">FileWriter</span> <span class="hljs-variable">fw</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">FileWriter</span>(<span class="hljs-string">&quot;buf_copy.txt&quot;</span>);<br>      <span class="hljs-type">BufferedWriter</span> <span class="hljs-variable">bufw</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">BufferedWriter</span>(fw);<br>     <br>      <span class="hljs-type">String</span> <span class="hljs-variable">line</span> <span class="hljs-operator">=</span> <span class="hljs-literal">null</span>;<span class="hljs-comment">//第一种</span><br>      <span class="hljs-keyword">while</span> ((line = bufr.readLine()) != <span class="hljs-literal">null</span>) &#123;<br>          bufw.write(line);<br>          bufw.newLine();<br>          bufw.flush();<br>      &#125;<br>      <br>      字节流<br>        <span class="hljs-type">FileInputSteam</span> <span class="hljs-variable">fis</span> <span class="hljs-operator">=</span>  <span class="hljs-keyword">new</span> <span class="hljs-title class_">FileInputSteam</span>(<span class="hljs-number">1.</span>jpg);<br><span class="hljs-type">FileOnputSteam</span> <span class="hljs-variable">fos</span> <span class="hljs-operator">=</span>  <span class="hljs-keyword">new</span> <span class="hljs-title class_">FileOnputSteam</span>(<span class="hljs-number">2.</span>jpg);<br>btey[] b = <span class="hljs-keyword">new</span> <span class="hljs-title class_">byte</span>[<span class="hljs-number">1024</span>];<span class="hljs-comment">//第二种</span><br><span class="hljs-type">int</span> len=<span class="hljs-number">0</span>;<br><span class="hljs-keyword">while</span>((len=fis.read(b))!=-<span class="hljs-number">1</span>)&#123;<br>  fos.writer(b,<span class="hljs-number">0</span>,len);<br>&#125;<br><br>第三种<br>  <span class="hljs-type">FileInputStream</span> <span class="hljs-variable">fis</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">FileInputStream</span>(<span class="hljs-string">&quot;c:\\0.mp3&quot;</span>);<br><span class="hljs-type">BufferedInputStream</span> <span class="hljs-variable">bufis</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">BufferedInputStream</span>(fis);<br><span class="hljs-type">FileOutputStream</span> <span class="hljs-variable">fos</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">FileOutputStream</span>(<span class="hljs-string">&quot;c:\\2.mp3&quot;</span>);<br><span class="hljs-type">BufferedOutputStream</span> <span class="hljs-variable">bufos</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">BufferedOutputStream</span>(fos);<br>     <br><span class="hljs-type">int</span> <span class="hljs-variable">ch</span> <span class="hljs-operator">=</span> <span class="hljs-number">0</span>; <br><span class="hljs-keyword">while</span>((ch=bufis.read())!=-<span class="hljs-number">1</span>)&#123;<br>   bufos.write(ch);<br>&#125;<br></code></pre></td></tr></table></figure>
+<h2 id="NIO"><a href="#NIO" class="headerlink" title="NIO"></a>NIO</h2><h3 id="NIO-vs-IO区别"><a href="#NIO-vs-IO区别" class="headerlink" title="NIO vs IO区别"></a>NIO vs IO区别</h3><p>NIO vs IO之间的理念上面的区别（NIO将阻塞交给了后台线程执行）</p>
+<ol>
+<li>IO是面向流的，NIO是面向缓冲区的<br> Java IO面向流意味着每次从流中读一个或多个字节，直至读取所有字节，它们没有被缓存在任何地方；NIO则能前后移动流中的数据，因为是面向缓冲区的</li>
+<li>IO流是阻塞的 NIO流是不阻塞的<br> Java IO的各种流是阻塞的。这意味着，<strong>当一个线程调用read() 或 write()时，该线程被阻塞</strong>，直到有一些数据被读取，或数据完全写入。该线程在此期间不能再干任何事情了<br> Java NIO的非阻塞模式，使一个线程从某通道发送请求读取数据，但是它仅能得到目前可用的数据，如果目前没有数据可用时，就什么都不会获取。NIO可让您只使用一个（或几个）单线程管理多个通道（网络连接或文件），但付出的代价是解析数据可能会比从一个阻塞流中读取数据更复杂。</li>
+</ol>
+<p>IO是阻塞式的，NIO是非阻塞式的，<em>所有数据都是用缓冲区进行处理的。在读取数据时，它是直接读到缓冲区中；在写入数据时，它也是写入到缓冲区中</em>。任何时候访问 NIO 中的数据，我们都是通过缓冲区进行读写操作。</p>
+<ul>
+<li>看到Content-Encoding: gzip时，需要将Body数据先解压缩，才能得到真正的数据。压缩的目的在于减少Body的大小，加快网络传输。</li>
+<li>同步和异步的区别就在于是否等待IO执行的结果。好比你去麦当劳点餐，你说“来个汉堡”，服务员告诉你，对不起，汉堡要现做，需要等5分钟，于是你站在收银台前面等了5分钟，拿到汉堡再去逛商场，这是同步IO。<br>  你说“来个汉堡”，服务员告诉你，汉堡需要等5分钟，你可以先去逛商场，等做好了，我们再通知你，这样你可以立刻去干别的事情（逛商场），这是异步IO。<br>  很明显，使用异步IO来编写程序性能会远远高于同步IO，但是异步IO的缺点是编程模型复杂。想想看，你得知道什么时候通知你“汉堡做好了”，而通知你的方法也各不相同。如果是服务员跑过来找到你，这是回调模式，如果服务员发短信通知你，你就得不停地检查手机，这是轮询模式。总之，异步IO的复杂度远远高于同步IO。</li>
+</ul>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E9%95%BF%E9%93%BE%E6%8E%A5NIO.resources/2023/09/15/18-24-49-da347c30cc788aa7a969ae07c7f7de92-unknown_filename-dcf950.png" srcset="/img/loading.gif" lazyload alt="unknown_filename"></p>
+<hr>
+<h3 id="Netty"><a href="#Netty" class="headerlink" title="Netty"></a>Netty</h3><p><strong>有一个接口监听。监听里有建立连接，收到消息，完成等各种回调，收到后解析</strong></p>
+<ul>
+<li>Netty是一个异步非阻塞的事件驱动型的网络应用程序框架。是一个高性能、方便开发的NIO框架，使用它可以简单快速地开发网络应用程序，比如客户端和服务端的协议。Netty大大简化了网络编程比如TCP和UDP的 Socket的开发。</li>
+<li><strong>IO是阻塞式的，NIO是非阻塞式的，所有数据都是用缓冲区进行处理的。在读取数据时，它是直接读到缓冲区中；在写入数据时，它也是写入到缓冲区中。任何时候访问 NIO 中的数据，我们都是通过缓冲区进行读写操作。</strong></li>
+<li>当客户端与服务器建立起连接后，ChannelHandler的方法是被网络event（这里的event是广义的）触发的，由ChannelHandler直接处理输入输出数据，并传递到管道中的下一个ChannelHandler中。</li>
+<li>通过Channel或者ChannelHandlerContext发生的请求&#x2F;响应event 就是在管道中ChannelHandler传递。</li>
+</ul>
+<h4 id="ChannelInboundHandler"><a href="#ChannelInboundHandler" class="headerlink" title="ChannelInboundHandler"></a>ChannelInboundHandler</h4><ul>
+<li>ChannelInboundHandler对从客户端发往服务器的报文进行处理，一般用来执行解码、读取客户端数据、进行业务处理等；ChannelOutboundHandler对从服务器发往客户端的报文进行处理，一般用来进行编码、发送报文到客户端。</li>
+<li>一般就是继承ChannelInboundHandlerAdapter和ChannelOutboundHandlerAdapter，因为Adapter把定制(custom) ChannelHandler的麻烦减小到了最低，Adapter本身已经实现了基础的数据处理逻辑（例如将event转发到下一个handler），你可以只重写那些你想要特别实现的方法。</li>
+<li>和NIO一样，读取数据时，它是直接读到缓冲区中；在写入数据时，它也是写入到缓冲区中。在TCP&#x2F;IP中，NETTY会把读到的数据放到ByteBuf的数据结构中。所以这里读取在ByteBuf的信息，得到服务器返回的内容。</li>
+<li>ChannelPipeline作为放置ChannelHandler的容器，采用了J2EE的 拦截过滤模式，用户可以定义管道中的ChannelHandler以哪种规则去拦截并处理事件以及在管道中的ChannelHandler之间如何通信。每个Channel都有它自己的Pipeline，当一个新的Channel被创建时会自动被分配到一个Pipeline中。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">NettyClientHandler</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">ChannelInboundHandlerAdapter</span> &#123;<br><span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-type">String</span> <span class="hljs-variable">TAG</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;Netty&quot;</span>;<br><span class="hljs-keyword">private</span> INettyClient.OnConnectStatusListener statusListener;<br><span class="hljs-keyword">private</span> List&lt;INettyClient.OnDataReceiveListener&gt; listeners = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ArrayList</span>&lt;&gt;();<br><br> <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">channelActive</span><span class="hljs-params">(ChannelHandlerContext ctx)</span> <span class="hljs-keyword">throws</span> Exception &#123;<br><span class="hljs-comment">//channelActive()方法将会在连接被建立并且准备进行通信时被调用。</span><br>        Log.d(TAG, <span class="hljs-string">&quot;channel active&quot;</span>);<br>        <span class="hljs-built_in">super</span>.channelActive(ctx);<br>    &#125;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">channelRead</span><span class="hljs-params">(ChannelHandlerContext ctx, Object msg)</span><br>            <span class="hljs-keyword">throws</span> Exception &#123;<br><span class="hljs-comment">//channelRead()方法是在数据被接收的时候调用。</span><br>        <span class="hljs-type">ByteBuf</span> <span class="hljs-variable">buf</span> <span class="hljs-operator">=</span> (ByteBuf) msg;<br>        <span class="hljs-type">byte</span>[] req = <span class="hljs-keyword">new</span> <span class="hljs-title class_">byte</span>[buf.readableBytes()];<br>        buf.readBytes(req);<br>        <span class="hljs-type">String</span> <span class="hljs-variable">body</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">String</span>(req, <span class="hljs-string">&quot;UTF-8&quot;</span>);<br><span class="hljs-comment">//verify(String body)方法对服务器返回的数据进行校验，并取出数据部分。</span><br><span class="hljs-comment">//具体校验的方法需要与后台同事进行协议。</span><br>        body = verify(body);<br><br>        Log.d(TAG, <span class="hljs-string">&quot;verify : &quot;</span> + body);<br>        <span class="hljs-keyword">if</span> (<span class="hljs-literal">null</span> != body)<br>            parseJson(body);<br>    &#125;<br><br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">exceptionCaught</span><span class="hljs-params">(ChannelHandlerContext ctx, Throwable cause)</span><br>            <span class="hljs-keyword">throws</span> Exception &#123;<br><span class="hljs-comment">//exceptionCaught()事件处理方法是当出现Throwable对象才会被调用，</span><br><span class="hljs-comment">//即当Netty由于IO错误或者处理器在处理事件时抛出的异常时。</span><br><span class="hljs-comment">//在大部分情况下，捕获的异常应该被记录下来并且把关联的channel给关闭掉。</span><br>        ctx.close();<br>        Log.e(TAG, <span class="hljs-string">&quot;Unexpected exception from downstream : &quot;</span><br>                + cause.getMessage());<br>        <span class="hljs-keyword">if</span> (statusListener != <span class="hljs-literal">null</span>)<span class="hljs-comment">//连接异常时触发onDisconnected()</span><br>            statusListener.onDisconnected();<br>    &#125;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">channelReadComplete</span><span class="hljs-params">(ChannelHandlerContext ctx)</span> <span class="hljs-keyword">throws</span> Exception &#123;<br>        ctx.fireChannelReadComplete();<br>        LogUtils.d(TAG, <span class="hljs-string">&quot;channelReadComplete&quot;</span>);<br>    &#125;<br><br><span class="hljs-comment">//对数据进行解析，拿出区分不同请求的 flag字段，再根据不同的flag字段去触发相对应的监听器</span><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">parseJson</span><span class="hljs-params">(String json)</span> &#123;<br>        <span class="hljs-keyword">try</span> &#123;<br>            <span class="hljs-type">JSONObject</span> <span class="hljs-variable">jObject</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">JSONObject</span>(json);<br>            <span class="hljs-type">int</span> <span class="hljs-variable">msgType</span> <span class="hljs-operator">=</span> jObject.getInt(Constant.FLAG_MT);<br>            Log.d(TAG, <span class="hljs-string">&quot;parseJson message type: &quot;</span> + msgType + <span class="hljs-string">&quot;  json: &quot;</span> + json);<br>            callListeners(msgType, json);<br>        &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;<br>            LogUtils.e(TAG, <span class="hljs-string">&quot;parseJson exception: &quot;</span> + e.getMessage());<br>            e.printStackTrace();<br>        &#125;<br>    &#125;<br><br><span class="hljs-comment">//遍历监听器List，触发拥有正确msgType 的OnDataReceiveListener，</span><br><span class="hljs-comment">//回调 void onDataReceive(int mt, String json);方法</span><br>     <span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">callListeners</span><span class="hljs-params">(<span class="hljs-keyword">final</span> <span class="hljs-type">int</span> msgType , <span class="hljs-keyword">final</span> String json)</span> &#123;<br>        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">final</span> INettyClient.OnDataReceiveListener listener : listeners)<br>            <span class="hljs-keyword">if</span> (listener != <span class="hljs-literal">null</span>)<br>                <span class="hljs-keyword">new</span> <span class="hljs-title class_">Handler</span>(Looper.getMainLooper()).post(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Runnable</span>() &#123;<br>                    <span class="hljs-meta">@Override</span><br>                    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">run</span><span class="hljs-params">()</span> &#123;<span class="hljs-comment">//主线程中进行</span><br>                        listener.onDataReceive(mt, json);<br>                    &#125;<br>                &#125;);<br>    &#125;<br><br><span class="hljs-comment">//绑定OnDataReceiveListener </span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">addDataReceiveListener</span><span class="hljs-params">(INettyClient.OnDataReceiveListener listener)</span> &#123;<br>        <span class="hljs-keyword">if</span> (!listeners.contains(listener))<br>            listeners.add(listener);<br>    &#125;<br><span class="hljs-comment">//绑定OnConnectStatusListener</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">setConnectStatusListener</span><span class="hljs-params">(INettyClient.OnConnectStatusListener listener)</span> &#123;   <br>         statusListener = listener;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>以上，就是一个供Android客户端使用的</p>
+<p><code>ChannelHandler</code>，可以通过实现具体的<code>OnDataReceiveListener</code>来异步地获得服务器返回的 数据。NettyClient的实现 以上仅仅是展示了如何处理服务器返回的数据。建立连接、发送消息以及心跳包的功能还没进行封装。<br>在2.接口的定义 里面已经定义好了NettyClient应该具备哪些行为，现在进行具体的实现。 主要的实现思路是：</p>
+<ol>
+<li>构建Bootstrap，其中包括设置好ChannelHandler来处理将来接收到的数据（详见<a target="_blank" rel="noopener" href="http://www.jianshu.com/p/db74e673e43c">Android开发之使用Netty进行Socket编程（二）</a> ）。由Boostrap建立连接。通过<code>channel.writeAndFlush(constructMessage(sendMsg)).sync()</code>发送消息。这些工作都在子线程完成。</li>
+<li>在子线程 建立连接并向服务器发送请求，这里采用了<code>HanlderThread</code>+<code>Handler</code>的方案。通过<code>Looper</code>依次从<code>Handler</code>的队列中获取信息，逐个进行处理，保证安全，不会出现混乱。</li>
+<li>心跳包的发送通过<code>handleMessage(Message msg)</code>中的死循环进行不间断地发送。</li>
+<li><code>NettyClientHandler</code>的实现中我们已经知道，当Netty异常时会触发<code>statusListener.onDisconnected();</code>，NettyClient中，onDisconnected()方法会进行重连操作。 接收到服务器返回的消息时，会在主线程中触发<code>onDataReceiveListener .onDataReceive(mt, json);</code>。<br>  5. 外部通过单例模式进行调用。</li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Java/" class="category-chain-item">Java</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>长链接NIO</div>
+      <div>http://peiniwan.github.io/2025/12/c8542bc6f406.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>六月的雨</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年12月16日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/12/0ccc710c28c2.html" title="ArkTS">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">ArkTS</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/12/bb401256a963.html" title="腾讯云直播">
+                        <span class="hidden-mobile">腾讯云直播</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"OwNIdaopOn1rwNhtotGOGC0B-gzGzoHsz","appKey":"eadytQ2XqWmxuvAKeg08XX83","path":"window.location.pathname","placeholder":null,"avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":true,"recordIP":false,"serverURLs":"https://ownidaop.lc-cn-n1-shared.com","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

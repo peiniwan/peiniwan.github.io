@@ -1,0 +1,794 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="六月的雨">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Gradle 是什么是构建工具，不是语言它用了 Groovy 这个语言，创造了一种 DSL，但它本身不是语⾔ packagingOptions packagingOptions常见的设置项有exclude、pickFirst、doNotStrip、merge。 1. exclude，过滤掉某些文件或者目录不添加到APK中，作用于APK，不能过滤aar和jar中的内容。 1234packagingO">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Gradle技巧和遇到的问题">
+<meta property="og:url" content="http://peiniwan.github.io/2025/12/88e5d1a55ae0.html">
+<meta property="og:site_name" content="六月的雨的笔记">
+<meta property="og:description" content="Gradle 是什么是构建工具，不是语言它用了 Groovy 这个语言，创造了一种 DSL，但它本身不是语⾔ packagingOptions packagingOptions常见的设置项有exclude、pickFirst、doNotStrip、merge。 1. exclude，过滤掉某些文件或者目录不添加到APK中，作用于APK，不能过滤aar和jar中的内容。 1234packagingO">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Gradle%E6%8A%80%E5%B7%A7%E5%92%8C%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98.resources/2023/09/18/09-56-56-9d9503b5893f61a640fbbb2a5fb3e47c-70d88bd0-fd3f-491a-b998-922b636717b1-f213b6.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Gradle%E6%8A%80%E5%B7%A7%E5%92%8C%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98.resources/2023/09/18/09-56-56-73e3d4185fccb7569b32ea9eb4fd0a34-8b9f9a3f-7382-4781-a829-cf0294777d38-c80968.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Gradle%E6%8A%80%E5%B7%A7%E5%92%8C%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98.resources/2023/09/18/09-56-56-d72e8a58eda66c518538854c09bbe580-294fb60f-e597-4a1e-b8e6-cf4dc8572c56-484cd4.jpg">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Gradle%E6%8A%80%E5%B7%A7%E5%92%8C%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98.resources/2023/09/18/09-56-56-a7b45ea4fd4d347ee2da6a037096820c-logcat-644803.png">
+<meta property="article:published_time" content="2025-12-16T13:59:22.368Z">
+<meta property="article:modified_time" content="2024-03-21T09:54:00.000Z">
+<meta property="article:author" content="六月的雨">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Gradle%E6%8A%80%E5%B7%A7%E5%92%8C%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98.resources/2023/09/18/09-56-56-9d9503b5893f61a640fbbb2a5fb3e47c-70d88bd0-fd3f-491a-b998-922b636717b1-f213b6.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>Gradle技巧和遇到的问题 - 六月的雨的笔记</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"peiniwan.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>六月的雨的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Gradle技巧和遇到的问题"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-12-16 21:59" pubdate>
+          2025年12月16日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.9k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          25 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Gradle技巧和遇到的问题</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="Gradle-是什么"><a href="#Gradle-是什么" class="headerlink" title="Gradle 是什么"></a>Gradle 是什么</h2><p>是构建工具，不是语言<br>它用了 Groovy 这个语言，创造了一种 DSL，但它本身不是语⾔</p>
+<p>packagingOptions</p>
+<p>packagingOptions常见的设置项有exclude、pickFirst、doNotStrip、merge。</p>
+<p>1. exclude，过滤掉某些文件或者目录不添加到APK中，作用于APK，不能过滤aar和jar中的内容。</p>
+<figure class="highlight puppet"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs puppet"><span class="hljs-keyword">packagingOptions</span> &#123;<br>    <span class="hljs-literal">exclude</span> <span class="hljs-string">&#x27;META-INF/**&#x27;</span><br>    <span class="hljs-literal">exclude</span> <span class="hljs-string">&#x27;lib/arm64-v8a/libmediaplayer.so&#x27;</span><br>&#125;<br></code></pre></td></tr></table></figure>
+<p>2. pickFirst，匹配到多个相同文件，只提取第一个。只作用于APK，不能过滤aar和jar中的文件。</p>
+<figure class="highlight fsharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs fsharp"><span class="hljs-keyword">packagingOptions</span> &#123;<br>   pickFirst <span class="hljs-string">&quot;lib/armeabi-v7a/libaaa.so&quot;</span><br>   pickFirst <span class="hljs-string">&quot;lib/armeabi-v7a/libbbb.so&quot;</span> <br>&#125;<br></code></pre></td></tr></table></figure>
+<p>3. doNotStrip，可以设置某些动态库不被优化压缩。</p>
+<figure class="highlight fsharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs fsharp"><span class="hljs-keyword">packagingOptions</span>&#123;<br>   doNotStrip <span class="hljs-string">&quot;*/armeabi/*.so&quot;</span><br>   doNotStrip <span class="hljs-string">&quot;*/armeabi-v7a/*.so&quot;</span><br>&#125;<br></code></pre></td></tr></table></figure>
+<p>4. merge，将匹配的文件都添加到APK中，和pickFirst有些相反，会合并所有文件。</p>
+<figure class="highlight n1ql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs n1ql">packagingOptions &#123;<br>    <span class="hljs-keyword">merge</span> <span class="hljs-string">&#x27;**/LICENSE.txt&#x27;</span><br>    <span class="hljs-keyword">merge</span> <span class="hljs-string">&#x27;**/NOTICE.txt&#x27;</span><br>&#125;<br></code></pre></td></tr></table></figure>
+<h4 id="compile-implementation-和-api"><a href="#compile-implementation-和-api" class="headerlink" title="compile, implementation 和 api"></a>compile, implementation 和 api</h4><p>implementation：不会传递依赖<br>compile &#x2F; api：会传递依赖；<br>从 Gradle 3.0 版本开始，compile 废弃</p>
+<p>二级依赖 0 级项目<br>当依赖被传递时，<em>二级依赖的改动会导致 0 级项目重新编译；</em><br>当依赖不传递时，二级依赖的改动不会导致 0 级项目重新编译</p>
+<p>gralde.wrapper 所有项目的gradle的下载地址，就不用把gradle上传上去了<br>我们可以把 compile 替换为 provided 关键字 provided 的意思是<em>只在编译时会用到相应的 jar 包，打包成 apk 后 jar 包并不会在 apk 中存在</em>（旧版 Android 插件用 <code>provided</code>，新版统一用 <code>compileOnly</code>）</p>
+<h4 id="compileOnly"><a href="#compileOnly" class="headerlink" title="compileOnly"></a>compileOnly</h4><p>父组件实现 implementation，子组件 compileOnly，这样组件可以编译期有，运行时没有（可以用到父组件的）<br>声明仅需在编译期间使用的依赖库，但<strong>不会打包到最终 APK</strong> 中</p>
+<p>只要确保有一个 module 中该依赖能参与到打包即可。</p>
+<p>编译时仅需要其 API，但具体实现由别的 module 1实现<br>所以 <em>compileOnly 经常用于解决依赖冲突等问题</em>，一般第三方库中，比较常用的依赖，如 support、gson、Eventbus 等等。</p>
+<p> <code>compileOnly</code> 可显著<em>优化 APK 体积和构建速度</em></p>
+<h4 id="Gradle-常用命令"><a href="#Gradle-常用命令" class="headerlink" title="Gradle 常用命令"></a>Gradle 常用命令</h4><p><a target="_blank" rel="noopener" href="http://wuxiaolong.me/2017/07/19/mac-adb-gradlew/">Mac 配置 adb 环境、gradlew：command not found</a><br>.&#x2F;gradlew build –stacktrace &gt; logs.txt 2&gt;logErrors.txt<br>输出错误日志</p>
+<p>gradlew assembleDebug<br>gradlew tinkerPatchDebug</p>
+<p>.&#x2F;gradlew build –refresh-dependencies</p>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><code class="hljs jboss-cli"><span class="hljs-comment"># 查看构建版本</span><br><span class="hljs-string">./gradlew</span> -v<br><span class="hljs-comment"># 清除build文件夹</span><br><span class="hljs-string">./gradlew</span> clean<br><span class="hljs-comment"># 检查依赖并编译打包</span><br><span class="hljs-string">./gradlew</span> build<br><span class="hljs-comment"># 编译并安装debug包</span><br><span class="hljs-string">./gradlew</span> installDebug<br><span class="hljs-comment"># 编译并打印日志</span><br><span class="hljs-string">./gradlew</span> build <span class="hljs-params">--info</span><br><span class="hljs-comment"># 译并输出性能报告，性能报告一般在 构建工程根目录 build/reports/profile</span><br><span class="hljs-string">./gradlew</span> build <span class="hljs-params">--profile</span><br><span class="hljs-comment"># 调试模式构建并打印堆栈日志</span><br><span class="hljs-string">./gradlew</span> build <span class="hljs-params">--info</span> <span class="hljs-params">--debug</span> <span class="hljs-params">--stacktrace</span><br><span class="hljs-comment"># 强制更新最新依赖，清除构建并构建</span><br><span class="hljs-string">./gradlew</span> clean build <span class="hljs-params">--refresh-dependencies</span><br><br><br><span class="hljs-comment"># 编译并打Debug包</span><br><span class="hljs-string">./gradlew</span> assembleDebug<br><span class="hljs-comment"># 这个是简写 assembleDebug</span><br><span class="hljs-string">./gradlew</span> aD<br><span class="hljs-comment"># 编译并打Release的包</span><br><span class="hljs-string">./gradlew</span> assembleRelease<br><span class="hljs-comment"># 这个是简写 assembleRelease</span><br><span class="hljs-string">./gradlew</span> aR<br><br><span class="hljs-string">./gradlew</span> app<span class="hljs-function">:dependencies</span>       去除重复依赖库优化<br></code></pre></td></tr></table></figure>
+<p><strong>混淆恢复</strong><br>android-sdk&#x2F;tools&#x2F;proguard&#x2F;bin&#x2F;proguardgui.bat</p>
+<p><strong>减少apk体积</strong></p>
+<ul>
+<li><p>Android Studio 3.0 推出了新 Dex 编译器 D8 与新混淆工具 R8，目前 D8 已经正式 Release，大约可以减少 3% 的 Dex 体积。<br>  Android Studio 使用 R8（它使用 ProGuard 规则文件）来压缩代码，<br>  排查 R8 问题：<br>  <a target="_blank" rel="noopener" href="https://developer.android.google.cn/studio/build/shrink-code?hl=zh-cn#shrink-code">https://developer.android.google.cn/studio/build/shrink-code?hl=zh-cn#shrink-code</a></p>
+</li>
+<li><p>MultiDex.install(this);分多个dex包</p>
+</li>
+<li><p>使用andresguard，路径变成了r&#x2F;d&#x2F;a，还有Android 编译过程中，下面这些格式的文件会指定不压缩；在 AndResGuard 中，我们支持针对 resources.arsc、PNG、JPG 以及 GIF 等文件的强制压缩。</p>
+</li>
+<li><p>移出无用的资源</p>
+</li>
+</ul>
+<figure class="highlight fsharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs fsharp"><span class="hljs-keyword">android</span> &#123;<br>    <span class="hljs-operator">...</span><br>    <span class="hljs-keyword">buildTypes</span> &#123;<br>        <span class="hljs-keyword">release</span> &#123;<br>            shrinkResources <span class="hljs-literal">true</span><br>            minifyEnabled <span class="hljs-literal">true</span><br>        &#125;<br>    &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<ol>
+<li>minifyEnabled 会对代码进行混淆和压缩，shrinkResources 会对比R文件对无用资源进行删除</li>
+<li>minifyEnabled 设置为true时shrinkResources 的设置才会生效</li>
+</ol>
+<h4 id="常用注解"><a href="#常用注解" class="headerlink" title="常用注解"></a>常用注解</h4><p>添加 @Nullable 和 @NonNull 注释，以检查给定变量、参数或返回值的 null 性<br>public abstract void setTitle(@StringRes int resId)<br>其他资源类型的注释（例如 @DrawableRes、@DimenRes、@ColorRes 和 @InterpolatorRes<br>@MainThread@UiThread@WorkerThread<br> @IntRange、@FloatRange 和 @Size <br> @RequiresPermission</p>
+<p><strong>id可以不同，装两个类似应用</strong></p>
+<figure class="highlight fsharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs fsharp"><span class="hljs-keyword">android</span> &#123;       <br><span class="hljs-keyword">defaultConfig</span> &#123;            <br>applicationId <span class="hljs-string">&quot;com.example.myapp&quot;</span>       <br>&#125;       <br><span class="hljs-keyword">productFlavors</span> &#123;          <br><span class="hljs-keyword">free</span> &#123;                applicationIdSuffix <span class="hljs-string">&quot;.free&quot;</span>            &#125;           <br><span class="hljs-keyword">pro</span> &#123;                applicationIdSuffix <span class="hljs-string">&quot;.pro&quot;</span>            &#125;      <br>&#125;    <br>&#125;      <br><br></code></pre></td></tr></table></figure>
+
+<p>配置动态版本代码 ：不用自己手改了</p>
+<p><strong>优化构建速度</strong><br><a target="_blank" rel="noopener" href="https://developer.android.google.cn/studio/build/optimize-your-build?hl=zh-cn">https://developer.android.google.cn/studio/build/optimize-your-build?hl=zh-cn</a></p>
+<h4 id="Gradle-自动化构建"><a href="#Gradle-自动化构建" class="headerlink" title="Gradle 自动化构建"></a>Gradle 自动化构建</h4><p><strong>BuildTypes、Flavors、BuildVariants</strong><br>BuildTypes：<strong>构建类型</strong>，AndroidStudio的Gradle组件默认提供给了“debug”“release”两个默认配置，此处用于配置是否需要混淆、是否可调试等<br>productFlavors：<strong>产品渠道</strong>，默认不提供任何默认配置，在实际发布中，根据不同渠道，我们可能需要用不同的包名，服务器地址、收费或付费等<br>BuildVariants：每个buildtype和flavor组成一个buildvariant</p>
+<p>Build-&gt;Generate Signed APK，补充好签名信息，可以看到Flavors多了两个我们添加的渠道，这时候选择一个然后开始构建，看效果吧！</p>
+<figure class="highlight fsharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs fsharp"><span class="hljs-keyword">buildTypes</span> &#123;<br>  <span class="hljs-keyword">release</span> &#123;<br>    debuggable <span class="hljs-literal">true</span><br>    minifyEnabled <span class="hljs-literal">true</span> <span class="hljs-comment">//启用Proguard</span><br>    shrinkResources <span class="hljs-literal">true</span> <span class="hljs-comment">//是否清理无用资源,依赖于minifyEnabled</span><br>    zipAlignEnabled <span class="hljs-literal">true</span> <span class="hljs-comment">//是否启用zipAlign压缩</span><br>    signingConfig signingConfigs.release<br>    proguardFiles getDefaultProguardFile(<span class="hljs-symbol">&#x27;proguard</span><span class="hljs-operator">-</span>android.txt&#x27;), <span class="hljs-symbol">&#x27;proguard</span><span class="hljs-operator">-</span>rules.txt&#x27;<br>  &#125;<br>  <span class="hljs-keyword">debug</span> &#123;<br>    debuggable <span class="hljs-literal">true</span><br>    minifyEnabled <span class="hljs-literal">false</span>  <span class="hljs-comment">//不启用Proguard</span><br>    shrinkResources <span class="hljs-literal">false</span> <span class="hljs-comment">//是否清理无用资源,依赖于minifyEnabled</span><br>    zipAlignEnabled <span class="hljs-literal">false</span> <span class="hljs-comment">//是否启用zipAlign压缩</span><br>    signingConfig signingConfigs.debug<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<blockquote>
+<p>技巧：可以创建个debug、debug文件夹，写个工具类，不同包BuildTypes就会执行不同的逻辑，会和默认的合并。比如，debug的设置图标蓝色，其他红色</p>
+</blockquote>
+<h4 id="升级3-0引起的问题（butterknife）"><a href="#升级3-0引起的问题（butterknife）" class="headerlink" title="升级3.0引起的问题（butterknife）"></a>升级3.0引起的问题（butterknife）</h4><figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs markdown">Error:Cannot choose between the following configurations of project :XXX:<br><span class="hljs-bullet">  -</span> debugApiElements<br><span class="hljs-bullet">  -</span> debugRuntimeElements<br><span class="hljs-bullet">  -</span> releaseApiElements<br><span class="hljs-bullet">  -</span> releaseRuntimeElements<br></code></pre></td></tr></table></figure>
+<p>解决办法：<br>1、project的build.gradle文件，删除“apt”配置：<br><code>classpath &#39;com.neenbedankt.gradle.plugins:android-apt:1.8&#39; //删除</code><br>2、module的build.gradle文件，删除“android-apt”引用：<br><code>apply plugin: &#39;android-apt&#39; //删除</code><br>3、module的build.gradle文件，修改“dependencies”中的“apt”方式 为“annotationProcessor”方式：<br><code>apt &quot;引用项&quot; //老方式，删除 annotationProcessor &quot;引用项&quot; //新方式</code></p>
+<h4 id="Android项目目录"><a href="#Android项目目录" class="headerlink" title="Android项目目录"></a>Android项目目录</h4><p>（我觉的挺好，就拿别人的放到这里来了<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Gradle%E6%8A%80%E5%B7%A7%E5%92%8C%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98.resources/2023/09/18/09-56-56-9d9503b5893f61a640fbbb2a5fb3e47c-70d88bd0-fd3f-491a-b998-922b636717b1-f213b6.png" srcset="/img/loading.gif" lazyload alt="70d88bd0-fd3f-491a-b998-922b636717b1"></p>
+<h4 id="gralde缓存目录"><a href="#gralde缓存目录" class="headerlink" title="gralde缓存目录"></a>gralde缓存目录</h4><p>Windows用户 C:\Users(用户)\username.gradle\caches\modules-2\files-2.1<br>linux／mac用户 ~&#x2F;.gradle&#x2F;caches&#x2F;modules-2&#x2F;files-2.1</p>
+<h4 id="全局变量的使用"><a href="#全局变量的使用" class="headerlink" title="全局变量的使用"></a>全局变量的使用</h4><p>在多个module的情况下，不同module的build.gradle文件中有部分配置项类似，或者依赖的类库，有部分是相同的，在维护上不是很方便，这个时候就可以考虑统一配置。在项目根目录的build.gradle文件中添加以下代码和android{}同级</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs ruby">ext &#123;<br>    <span class="hljs-regexp">//</span>全局变量控制，可在<span class="hljs-keyword">module</span>中的build.gradle文件通过rootProject.ext.xxx开头来使用<br>    compileSdkVersion = <span class="hljs-number">24</span><br>    buildToolsVersion = <span class="hljs-string">&#x27;24.0.3&#x27;</span><br>    supportVersion = <span class="hljs-string">&#x27;24.2.1&#x27;</span><br>&#125;<br></code></pre></td></tr></table></figure>
+<h4 id="配置打包用的签名"><a href="#配置打包用的签名" class="headerlink" title="配置打包用的签名"></a>配置打包用的签名</h4><p>主要有接过分享或者授权登录功能的都应该知道，像微信或者微博的分享和授权登录提供sdk，只有在指定的签名下才能生效，而我们平时开发都习惯使用默认的androidkeystore打包签名，这个时候想要测试分享或者登录功能就需要手动去打包指定keystore的签名。非常影响开发效率，这个时候可以通过配置gradle，根据release或者是debug打包指定的签名。<br>项目根目录新建一个签名用到的密码管理文件signing.properties</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-attr">signing.alias</span>=dou361            <span class="hljs-comment">#release</span><br><span class="hljs-attr">signing.password</span>=dou361            <span class="hljs-comment">#release</span><br><span class="hljs-attr">signing.jjdxm_alias</span>=dou361        <span class="hljs-comment">#debug</span><br><span class="hljs-attr">signing.jjdxm_password</span>=dou361    <span class="hljs-comment">#debug</span><br></code></pre></td></tr></table></figure>
+<p>在主程序build.gradle的apply plugin: ‘com.android.application’下面添加</p>
+<figure class="highlight isbl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs isbl"><span class="hljs-variable">Properties</span> <span class="hljs-variable">props</span> = <span class="hljs-variable">new</span> <span class="hljs-function"><span class="hljs-title">Properties</span>()</span><br><span class="hljs-variable">props.load</span>(<span class="hljs-variable">new</span> <span class="hljs-function"><span class="hljs-title">FileInputStream</span>(<span class="hljs-title">file</span>(<span class="hljs-variable">rootProject.file</span>(<span class="hljs-string">&quot;signing.properties&quot;</span>))))</span><br></code></pre></td></tr></table></figure>
+<p>在android{}节点里面添加</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><code class="hljs stylus">signingConfigs &#123;<br>    release &#123;<br>        keyAlias props<span class="hljs-selector-attr">[<span class="hljs-string">&#x27;signing.alias&#x27;</span>]</span><br>        keyPassword props<span class="hljs-selector-attr">[<span class="hljs-string">&#x27;signing.password&#x27;</span>]</span><br>        storeFile <span class="hljs-built_in">file</span>(rootProject<span class="hljs-selector-class">.file</span>(<span class="hljs-string">&quot;debug.keystore&quot;</span>))<br>        storePassword props<span class="hljs-selector-attr">[<span class="hljs-string">&#x27;signing.password&#x27;</span>]</span><br>    &#125;<br><br>    debug &#123;<br>        keyAlias props<span class="hljs-selector-attr">[<span class="hljs-string">&#x27;signing.jjdxm_alias&#x27;</span>]</span><br>        keyPassword props<span class="hljs-selector-attr">[<span class="hljs-string">&#x27;signing.jjdxm_password&#x27;</span>]</span><br>        storeFile <span class="hljs-built_in">file</span>(rootProject<span class="hljs-selector-class">.file</span>(<span class="hljs-string">&quot;debug.keystore&quot;</span>))<br>        storePassword props<span class="hljs-selector-attr">[<span class="hljs-string">&#x27;signing.jjdxm_password&#x27;</span>]</span><br>    &#125;<br>&#125;<br>buildTypes &#123;<br>    debug &#123;<br>        signingConfig signingConfigs<span class="hljs-selector-class">.debug</span><br>        minifyEnabled false<br>        proguardFiles <span class="hljs-built_in">getDefaultProguardFile</span>(<span class="hljs-string">&#x27;proguard-android.txt&#x27;</span>), <span class="hljs-string">&#x27;proguard-rules.pro&#x27;</span><br>    &#125;<br><br>    release &#123;<br>        signingConfig signingConfigs<span class="hljs-selector-class">.release</span><br>        minifyEnabled false<br>        proguardFiles <span class="hljs-built_in">getDefaultProguardFile</span>(<span class="hljs-string">&#x27;proguard-android.txt&#x27;</span>), <span class="hljs-string">&#x27;proguard-rules.pro&#x27;</span><br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<h4 id="运行不同的接口环境的apk"><a href="#运行不同的接口环境的apk" class="headerlink" title="运行不同的接口环境的apk"></a>运行不同的接口环境的apk</h4><p>项目可以通过定义多个不同的productFlavors来实现应用的不同定制版本，每一个Flavor与buildTypes配合产出对应的一种输出类型的apk文件，新建的项目初始化只有一个默认的Flavor：defaultConfig</p>
+<figure class="highlight fsharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs fsharp"><span class="hljs-keyword">productFlavors</span> &#123;<br>     <span class="hljs-comment">//接口正式环境还是测试环境</span><br>     <span class="hljs-keyword">env_public</span> &#123;<br>         buildConfigField <span class="hljs-string">&quot;boolean&quot;</span>, <span class="hljs-string">&quot;isTestEnv&quot;</span>, <span class="hljs-string">&quot;false&quot;</span><br>     &#125;<br>    <br>     <span class="hljs-keyword">env_test</span> &#123;<br>         buildConfigField <span class="hljs-string">&quot;boolean&quot;</span>, <span class="hljs-string">&quot;isTestEnv&quot;</span>, <span class="hljs-string">&quot;true&quot;</span><br>     &#125;<br> &#125;<br></code></pre></td></tr></table></figure>
+<p>跟buildTypes结合就有四种Build Variants（构建变种）。可以不修改代码直接运行相应的apk<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Gradle%E6%8A%80%E5%B7%A7%E5%92%8C%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98.resources/2023/09/18/09-56-56-73e3d4185fccb7569b32ea9eb4fd0a34-8b9f9a3f-7382-4781-a829-cf0294777d38-c80968.png" srcset="/img/loading.gif" lazyload alt="8b9f9a3f-7382-4781-a829-cf0294777d38"></p>
+<p>会自动运行到BuildConfig里，可以判断不同的值去加载不同的接口环境</p>
+<figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs arduino">    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 是否测试环境</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-type">static</span> <span class="hljs-type">boolean</span> <span class="hljs-title">isTest</span><span class="hljs-params">()</span> </span>&#123;<br>        <span class="hljs-keyword">return</span> BuildConfig.isTestEnv;<br>    &#125;<br><br>ServiceInfoManager.<span class="hljs-built_in">getInstance</span>().<span class="hljs-built_in">setEnv</span>(IqbConfig.<span class="hljs-built_in">isTest</span>() ? ServiceInfoManager.Environment.TestEnv : ServiceInfoManager.Environment.PublicEnv);<br></code></pre></td></tr></table></figure>
+<h4 id="为什么-BuildConfig-DEBUG-始终为-false"><a href="#为什么-BuildConfig-DEBUG-始终为-false" class="headerlink" title="为什么 BuildConfig.DEBUG 始终为 false"></a>为什么 BuildConfig.DEBUG 始终为 false</h4><ul>
+<li>BuildConfig.java 是编译时自动生成的，并且每个 Module 都会生成一份，以该 Module 的 packageName 为 BuildConfig.java 的 packageName。所以如果你的应用有多个 Module 就会有多个 BuildConfig.java 生成，编译时被依赖的 Module 默认会提供 Release 版给其他 Module 或工程使用，这就导致该 BuildConfig.DEBUG 会始终为 false。</li>
+<li>AndroidManifest.xml 中 application 节点的 android:debuggable 值是不同的。Debug 包值为 true，Release 包值为 false，这是编译自动修改的。可以通过 ApplicationInfo 的这个属性去判断是否是 Debug 版本。</li>
+</ul>
+<p><a target="_blank" rel="noopener" href="http://www.trinea.cn/android/android-whether-debug-mode-why-buildconfig-debug-always-false/">http://www.trinea.cn/android/android-whether-debug-mode-why-buildconfig-debug-always-false/</a></p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs typescript"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">AppUtils</span> &#123;<br> <br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-title class_">Boolean</span> isDebug = <span class="hljs-literal">null</span>;<br> <br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-built_in">boolean</span> <span class="hljs-title function_">isDebug</span>(<span class="hljs-params"></span>) &#123;<br>        <span class="hljs-keyword">return</span> isDebug == <span class="hljs-literal">null</span> ? <span class="hljs-literal">false</span> : isDebug.<span class="hljs-title function_">booleanValue</span>();<br>    &#125;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-built_in">void</span> <span class="hljs-title function_">syncIsDebug</span>(<span class="hljs-params">Context context</span>) &#123;<br>        <span class="hljs-keyword">if</span> (isDebug == <span class="hljs-literal">null</span>) &#123;<br>            isDebug = context.<span class="hljs-title function_">getApplicationInfo</span>() != <span class="hljs-literal">null</span> &amp;&amp;<br>                    (context.<span class="hljs-title function_">getApplicationInfo</span>().<span class="hljs-property">flags</span> &amp; <span class="hljs-title class_">ApplicationInfo</span>.<span class="hljs-property">FLAG_DEBUGGABLE</span>) != <span class="hljs-number">0</span>;<br>        &#125;<br>    &#125;<br>&#125;<br><span class="hljs-comment">//在自己的 Application 内调用进行初始化</span><br><span class="hljs-title class_">AppUtils</span>.<span class="hljs-title function_">syncIsDebug</span>(<span class="hljs-title function_">getApplicationContext</span>());<br></code></pre></td></tr></table></figure>
+
+
+<h4 id="找不到so新建jniLibs，将so放进来"><a href="#找不到so新建jniLibs，将so放进来" class="headerlink" title="找不到so新建jniLibs，将so放进来"></a>找不到so新建jniLibs，将so放进来</h4><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs stylus"><br>sourceSets &#123;<br>    <span class="hljs-selector-tag">main</span> &#123;<br>        jniLibs<span class="hljs-selector-class">.srcDir</span> <span class="hljs-string">&#x27;jniLibs&#x27;</span><br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<h4 id="配置gradle离线工作"><a href="#配置gradle离线工作" class="headerlink" title="配置gradle离线工作"></a>配置gradle离线工作</h4><p>在gradle中引用第三方模块时采用maven方式依赖，每次打开Android Studio或者点击sync按钮时，都会去maven中央仓库去取第三方的库文件,一般是jar或者aar文件。如果下载完可以配置gradle离线工作 ，勾选gradle会使得速度更快，但同时存在一个问题，如果需要从网上加载第三方库，会无法下载，所以酌情使用。所以需要没有的第三方模块记得把这个关了。<br>external libraries下的库在C:\Users\用户名.gradle\caches\modules-2\files-2.1下，或者右击某个库下面的某个类，点击file path就可以查</p>
+<h4 id="在-debug-模式下产生-release-版本"><a href="#在-debug-模式下产生-release-版本" class="headerlink" title="在 debug 模式下产生 release 版本"></a>在 debug 模式下产生 release 版本</h4><p>有时候调试SDK必须要用release版本，例如地图、登录，但是每次打包混淆太麻烦，在debug模式下产生release版本</p>
+<figure class="highlight fsharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs fsharp"><span class="hljs-comment">//配置keystore签名</span><br><span class="hljs-keyword">signingConfigs</span> &#123;<br>        <span class="hljs-keyword">release</span> &#123;<br>            storeFile file(<span class="hljs-string">&quot;KeyStore&quot;</span>)<br>            storePassword <span class="hljs-string">&quot;98765432&quot;</span><br>            keyAlias <span class="hljs-string">&quot;lyly&quot;</span><br>            keyPassword <span class="hljs-string">&quot;98765432&quot;</span><br>        &#125;<br>&#125;<br><br><span class="hljs-keyword">appbuildTypes</span> &#123;<br>        <span class="hljs-keyword">debug</span> &#123;<br>            signingConfig signingConfigs.release<br>        &#125;<br>        <span class="hljs-keyword">release</span> &#123;<br>            signingConfig signingConfigs.release<br>        &#125;<br>    &#125;<br><br></code></pre></td></tr></table></figure>
+
+<p>这样编译出来的debug版本直接用的是正式签名。</p>
+<h4 id="依赖包重复的问题"><a href="#依赖包重复的问题" class="headerlink" title="依赖包重复的问题"></a>依赖包重复的问题</h4><p>遇到这样的一个错误：com.android.dex.DexException: Multiple dex files define XXXX，一般情况下，是我们项目中引用了重复的库或者jar包引起的，我们找到去掉即可解决<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Gradle%E6%8A%80%E5%B7%A7%E5%92%8C%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98.resources/2023/09/18/09-56-56-d72e8a58eda66c518538854c09bbe580-294fb60f-e597-4a1e-b8e6-cf4dc8572c56-484cd4.jpg" srcset="/img/loading.gif" lazyload alt="294fb60f-e597-4a1e-b8e6-cf4dc8572c56"></p>
+<p>com.loonggg.saoyisao.lib:1.1.0 这个依赖里引用了第三方zxing。com.timmy.qrcode.lib:1.4.1这个依赖里也引用了zxing这个库，在com.timmy.qrcode.lib:1.4.1的依赖里添加语句 exclude group: ‘com.google.zxing’，意思是编译的时候将group为com.google.zxing的所有library都去除在外，这样com.timmy.qrcode.lib:1.4.1就会自动去引用com.loonggg.saoyisao.lib:1.1.0项目里的zxing依赖了。这样问题就解决了。</p>
+<h4 id="过滤日志"><a href="#过滤日志" class="headerlink" title="过滤日志"></a>过滤日志</h4><p>^(?!.* (你要过滤掉的tag)).* $<br>^(?!.* (UserConnection|BroadcastConnection)).*<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Gradle%E6%8A%80%E5%B7%A7%E5%92%8C%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98.resources/2023/09/18/09-56-56-a7b45ea4fd4d347ee2da6a037096820c-logcat-644803.png" srcset="/img/loading.gif" lazyload alt="logcat"></p>
+<h4 id="判断不同机型-Rom"><a href="#判断不同机型-Rom" class="headerlink" title="判断不同机型 Rom"></a>判断不同机型 Rom</h4><p>根据Build.BRAND 字段判断不同机型Rom</p>
+<figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><code class="hljs arduino"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Rom</span> &#123;<br><br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-title">Rom</span><span class="hljs-params">()</span> </span>&#123;<br>        <span class="hljs-comment">//no instance</span><br>    &#125;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 是否是Oppo</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-type">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">boolean</span> IS_OPPO;<br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 是否是Vivo</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-type">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">boolean</span> IS_VIVO;<br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 是否是华为，注意不包括华为荣耀</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-type">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">boolean</span> IS_HUAWEI;<br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 是否是华为荣耀</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-type">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">boolean</span> IS_HUAWEI_HONOR;<br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 是否是三星</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-type">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">boolean</span> IS_SAMSUNG;<br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 是否是努比亚</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-type">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">boolean</span> IS_NUBIA;<br><br>    <span class="hljs-type">static</span> &#123;<br><br>        <span class="hljs-keyword">final</span> <span class="hljs-type">String</span> brand = Build.BRAND.<span class="hljs-built_in">toUpperCase</span>();<br><br>        IS_OPPO = brand.<span class="hljs-built_in">equalsIgnoreCase</span>(<span class="hljs-string">&quot;OPPO&quot;</span>);<br>        IS_VIVO = brand.<span class="hljs-built_in">equalsIgnoreCase</span>(<span class="hljs-string">&quot;VIVO&quot;</span>);<br>        IS_HUAWEI = brand.<span class="hljs-built_in">equalsIgnoreCase</span>(<span class="hljs-string">&quot;HUAWEI&quot;</span>);<br><br>        IS_HUAWEI_HONOR = brand.<span class="hljs-built_in">contains</span>(<span class="hljs-string">&quot;HONOR&quot;</span>);<br>        IS_SAMSUNG = brand.<span class="hljs-built_in">contains</span>(<span class="hljs-string">&quot;SAMSUNG&quot;</span>);<br><br>        IS_NUBIA = brand.<span class="hljs-built_in">contains</span>(<span class="hljs-string">&quot;NUBIA&quot;</span>);<br>    &#125;<br><br>&#125;<br></code></pre></td></tr></table></figure>
+<h4 id="isRunAlone"><a href="#isRunAlone" class="headerlink" title="isRunAlone"></a>isRunAlone</h4><p>通过在组件工程下的gradle.properties文件中设置一个isRunAlone的变量来区分不同的场景，在组件的build.gradle开头这样写：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs stylus"><span class="hljs-function"><span class="hljs-title">if</span><span class="hljs-params">(isRunAlone.toBoolean()</span></span>)&#123;    <br>  apply plugin: <span class="hljs-string">&#x27;com.android.application&#x27;</span><br>&#125;<span class="hljs-keyword">else</span>&#123;  <br>  apply plugin: <span class="hljs-string">&#x27;com.android.library&#x27;</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Android/" class="category-chain-item">Android</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/Android/gradle/" class="category-chain-item">gradle</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Gradle技巧和遇到的问题</div>
+      <div>http://peiniwan.github.io/2025/12/88e5d1a55ae0.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>六月的雨</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年12月16日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/12/bbf498878f13.html" title="Gradle插件">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Gradle插件</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/12/cc65cff2c76d.html" title="极客时间总结">
+                        <span class="hidden-mobile">极客时间总结</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"OwNIdaopOn1rwNhtotGOGC0B-gzGzoHsz","appKey":"eadytQ2XqWmxuvAKeg08XX83","path":"window.location.pathname","placeholder":null,"avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":true,"recordIP":false,"serverURLs":"https://ownidaop.lc-cn-n1-shared.com","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

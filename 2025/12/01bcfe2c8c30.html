@@ -1,0 +1,755 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="[[晴天小庭]]">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="谈谈Jetpack Compose中经常出现的取旧值问题的原因，以及如何使用rememberUpdateState如何解决这个问题">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Compose：长期副作用 + 智能重组 &#x3D; 若智？聊聊rememberUpdateState">
+<meta property="og:url" content="http://peiniwan.github.io/2025/12/01bcfe2c8c30.html">
+<meta property="og:site_name" content="六月的雨的笔记">
+<meta property="og:description" content="谈谈Jetpack Compose中经常出现的取旧值问题的原因，以及如何使用rememberUpdateState如何解决这个问题">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/mis/202512162151647.webp">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/mis/202512162151649.webp">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/mis/202512162151650.webp">
+<meta property="article:published_time" content="2025-12-16T13:59:22.509Z">
+<meta property="article:modified_time" content="2025-12-16T13:51:26.222Z">
+<meta property="article:author" content="六月的雨">
+<meta property="article:tag" content="clippings">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/mis/202512162151647.webp">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>Compose：长期副作用 + 智能重组 = 若智？聊聊rememberUpdateState - 六月的雨的笔记</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"peiniwan.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>六月的雨的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Compose：长期副作用 + 智能重组 = 若智？聊聊rememberUpdateState"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-12-16 21:59" pubdate>
+          2025年12月16日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.2k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          19 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Compose：长期副作用 + 智能重组 = 若智？聊聊rememberUpdateState</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>笔者曾经写过一篇关于新手入坑Jetpack Compose的文章，其中谈到了 <code>rememberUpdateState</code> 的使用场景，但是最近的一次项目中还是踩坑了，而且收到了很多人反馈表示依然不理解如何正常使用这个Api，于是单独写一篇文章展开说说。</p>
+<p>关于提到的文章传送门： <a target="_blank" rel="noopener" href="https://juejin.cn/post/7244420350753144891?searchId=20230802104819EF1E16EE06510E7EF10D" title="https://juejin.cn/post/7244420350753144891?searchId=20230802104819EF1E16EE06510E7EF10D">妈！Jetpack Compose太难学了，别怕，这里帮你理清几个概念 - 掘金 (juejin.cn)</a></p>
+<p>如果你完全不明白什么是 <strong>智能重组</strong> 、 <strong>副作用</strong> ，可以先看看笔者写的这篇文章。<br>p</p>
+<h2 id="1-长期副作用"><a href="#1-长期副作用" class="headerlink" title="1.长期副作用"></a>1.长期副作用</h2><p>在Jetpack Compose的世界中，所谓的 <code>长期副作用</code> 基本就是等价于 <strong>协程中的挂起函数</strong> ，这个定义不一定对，但是足够覆盖绝大多数场景。</p>
+<p>让我们看看一个长期副作用的样子：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs kotlin"><span class="hljs-meta">@Composable</span><br><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">LongRunningSideEffectExample</span><span class="hljs-params">()</span></span>&#123;<br>    LaunchedEffect(<span class="hljs-built_in">Unit</span>)&#123;<br>        delay(<span class="hljs-number">1000</span>)<br>        <span class="hljs-comment">// <span class="hljs-doctag">TODO:</span> 我是长期副作用 </span><br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>可见，一个简单的长期副作用其实就是一个一段时间后才执行的逻辑，在大多数场景下，在delay结束后执行的逻辑都没有什么问题。</p>
+<h2 id="2-智能重组"><a href="#2-智能重组" class="headerlink" title="2.智能重组"></a>2.智能重组</h2><p>众所周知，Jetpack Compose的编译器 <del>存在魔法</del> ，会在重组的时候，根据参数的是否发生了变化来决定是否充足当前的组件，这就是所谓的智能重组。</p>
+<p>让我们看看一个智能重组的案例：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs kotlin"><span class="hljs-meta">@Composable</span><br><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">RecompositionExample</span><span class="hljs-params">(</span></span><br><span class="hljs-params"><span class="hljs-function">    text:<span class="hljs-type">String</span></span></span><br><span class="hljs-params"><span class="hljs-function">)</span></span>&#123;<br>    SideEffect &#123;<br>        Log.d(<span class="hljs-string">&quot;重组记录&quot;</span>,<span class="hljs-string">&quot;当前的值：<span class="hljs-variable">$text</span>&quot;</span>)<br>    &#125;<br>    Text(<br>        text=text<br>    )<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><code>SideEffect</code> Api会在重组成功后调用lambda，因此我们可以通过观察日志来查看当前组件的重组时刻，通过实验得知，只有 <code>text</code> 参数发生变化的时候， <code>SideEffect</code> 的lambda才会被执行，这就是所谓的 <code>智能重组</code> ，<strong>Compose会尽可能跳过没意义的重组</strong>。</p>
+<h2 id="3-长期副作用-智能重组-？"><a href="#3-长期副作用-智能重组-？" class="headerlink" title="3.长期副作用+智能重组&#x3D;？"></a>3.长期副作用+智能重组&#x3D;？</h2><p>两者都是Jetpack Compose非常优秀的机制，但是两者在一起很容易出问题，例如下面这个组件：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs kotlin"><span class="hljs-meta">@Composable</span><br><span class="hljs-meta">@Preview</span><br><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">LongRunningSideEffectWrongExample</span><span class="hljs-params">()</span></span> &#123;<br>    <span class="hljs-keyword">var</span> count <span class="hljs-keyword">by</span> remember &#123;<br>        mutableStateOf(<span class="hljs-number">0</span>)<br>    &#125;<br>    Column &#123;<br>        Button(onClick = &#123; count++ &#125;) &#123;<br>            Text(<span class="hljs-string">&quot;当前的值:<span class="hljs-variable">$count</span>&quot;</span>)<br>        &#125;<br>        DelayOutputText(text = <span class="hljs-string">&quot;<span class="hljs-variable">$count</span>&quot;</span>)<br>    &#125;<br>&#125;<br><br><span class="hljs-meta">@Composable</span><br><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">DelayOutputText</span><span class="hljs-params">(</span></span><br><span class="hljs-params"><span class="hljs-function">    text: <span class="hljs-type">String</span>,</span></span><br><span class="hljs-params"><span class="hljs-function">)</span></span> &#123;<br>    <span class="hljs-keyword">var</span> delayOutputText <span class="hljs-keyword">by</span> remember &#123; mutableStateOf(<span class="hljs-string">&quot;&quot;</span>) &#125;<br>    LaunchedEffect(<span class="hljs-built_in">Unit</span>) &#123;<br>        delay(<span class="hljs-number">3000L</span>)<br>        delayOutputText = text<br>    &#125;<br>    Text(<span class="hljs-string">&quot;延迟输出的值：<span class="hljs-variable">$delayOutputText</span>&quot;</span>)<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>组件非常简单，在出现 <code>DelayOutputText</code> 3秒后，尝试显示最新的text值，但是实际运行结果如下：</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/mis/202512162151647.webp" srcset="/img/loading.gif" lazyload alt="0c1abd9af8bac4d943a169574cb2b920_MD5"></p>
+<p>可见，3秒后并没有显示最新的值，而是显示初始化的值，不是说智能重组吗，怎么没重组，问题出在哪里了？</p>
+<p>让我们回到LaunchedEffect本身的源码：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs kotlin"><span class="hljs-meta">@Composable</span><br><span class="hljs-meta">@NonRestartableComposable</span><br><span class="hljs-meta">@OptIn(InternalComposeApi::class)</span><br><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">LaunchedEffect</span><span class="hljs-params">(</span></span><br><span class="hljs-params"><span class="hljs-function">    key1: <span class="hljs-type">Any</span>?,</span></span><br><span class="hljs-params"><span class="hljs-function">    block: <span class="hljs-type">suspend</span> <span class="hljs-type">CoroutineScope</span>.() -&gt; <span class="hljs-type">Unit</span></span></span><br><span class="hljs-params"><span class="hljs-function">)</span></span> &#123;<br>    <span class="hljs-keyword">val</span> applyContext = currentComposer.applyCoroutineContext<br>    remember(key1) &#123; LaunchedEffectImpl(applyContext, block) &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><code>LaunchEffect</code> 内部使用了一个 <code>remember</code> 来包裹 <code>LaunchedEffectImpl</code> ，总所周知，如果 <code>key</code> 没有发生变化， <code>remember</code> 的lambda是 <strong>不会重新被执行的</strong> ，而我们通过 <code>LaunchedEffect</code> 传入的 <code>block</code> 参数，就在 <code>remember</code> 的lambda中，这导致了一个问题：</p>
+<p><strong>如果LaunchedEffect的key没有发生变化，LaunchedEffect内部的lambda拿到的block参数是旧的</strong></p>
+<p>回到上文提到的出问题的代码，</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/mis/202512162151649.webp" srcset="/img/loading.gif" lazyload alt="7c7952c2aa16a0bad119eaea5b29ad62_MD5"></p>
+<p>笔者框住的这个代码块，看似是3秒后用最新的 <code>text</code> 值赋值给 <code>delayOutputText</code> ，实际上这是一种思维误区，真实的情况则是：如果 <code>key</code> 没有发生变化的情况，即没有重启 <code>LaunchedEffect</code> 的情况下，lambda一直都是最初的那个实例，那个lambda实例取的 <code>text</code> 则是最初启动的时刻的值，因此3秒后， <code>delayOutputText = text</code> 这段代码，实际上是将 <code>text</code> 第一次的值传给了 <code>delayoOutputText</code> ，后续的 <code>text</code> 值都被忽略了。</p>
+<p><strong>一切问题的根源是remember</strong></p>
+<p>是 <code>remember</code> 忽视掉了新的lambda，最终执行的lambda都是最初那个，那么lambda内部的变量自然也是旧的了。</p>
+<p>问题找到了，笔者想用一句经典的话来概括上述这段问题：</p>
+<blockquote>
+<p>这不是一个bug，而是一个feature</p>
+</blockquote>
+<h2 id="4-让Compose再次智能"><a href="#4-让Compose再次智能" class="headerlink" title="4.让Compose再次智能"></a>4.让Compose再次智能</h2><p>上述问题我们已经定位了，那么如何解决呢？这里提出两种解决方案：</p>
+<h3 id="4-1-让LaunchEffect重启"><a href="#4-1-让LaunchEffect重启" class="headerlink" title="4.1.让LaunchEffect重启"></a>4.1.让LaunchEffect重启</h3><p><code>LaunchedEffect</code> 的本质是 <code>remember</code> ，因此在key发生变化的时候， <code>LaunchedEffect</code> 会重启，我们把出问题的代码改成以下即可：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs kotlin"><span class="hljs-meta">@Composable</span><br><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">DelayOutputText</span><span class="hljs-params">(</span></span><br><span class="hljs-params"><span class="hljs-function">    text: <span class="hljs-type">String</span>,</span></span><br><span class="hljs-params"><span class="hljs-function">)</span></span> &#123;<br>    <span class="hljs-keyword">var</span> delayOutputText <span class="hljs-keyword">by</span> remember &#123; mutableStateOf(<span class="hljs-string">&quot;&quot;</span>) &#125;<br>    <span class="hljs-comment">//              👇🏻这里使用text作为key，发生变化的时候重启</span><br>    LaunchedEffect(text) &#123;<br>        delay(<span class="hljs-number">3000L</span>)<br>        delayOutputText = text<br>    &#125;<br>    Text(<span class="hljs-string">&quot;延迟输出的值：<span class="hljs-variable">$delayOutputText</span>&quot;</span>)<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>重新执行代码，发现没问题了，但是产生了另外一个问题：delay也重启了。这显然和我们的初衷是不一样的，因为我们希望的是3秒后显示最新的值，而不是值变化后又重启倒计时。</p>
+<p>除非你的业务上就是要重启倒计时，否则通过修改key来获取最新值的方案是不符合需求的。</p>
+<p>我知道你很急，你先别急，下面还有一种方案：</p>
+<h3 id="4-2-使用rememberUpdateState"><a href="#4-2-使用rememberUpdateState" class="headerlink" title="4.2.使用rememberUpdateState"></a>4.2.使用rememberUpdateState</h3><p>先看看这个Api的源码：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs kotlin"><span class="hljs-meta">@Composable</span><br><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-type">&lt;T&gt;</span> <span class="hljs-title">rememberUpdatedState</span><span class="hljs-params">(newValue: <span class="hljs-type">T</span>)</span></span>: State&lt;T&gt; = remember &#123;<br>    mutableStateOf(newValue)<br>&#125;.apply &#123; value = newValue &#125;<br></code></pre></td></tr></table></figure>
+
+<p>非常的简单，就是一个remember+mutableStateOf的常见组合再加上一个apply来完成赋新值。</p>
+<p>既然如此简单，为什么官方还专门封装了一个这样的Api呢，因为上述提到的问题实在太普遍了，普遍到官方需要专门为这种场景封装一个语法糖。</p>
+<p>看看如何使用这个Api来解决问题吧，把有问题的代码改造成如下：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs kotlin"><span class="hljs-meta">@Composable</span><br><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">DelayOutputText</span><span class="hljs-params">(</span></span><br><span class="hljs-params"><span class="hljs-function">    text: <span class="hljs-type">String</span>,</span></span><br><span class="hljs-params"><span class="hljs-function">)</span></span> &#123;<br>    <br>    <span class="hljs-comment">//                                                   👇🏻包裹text</span><br>    <span class="hljs-keyword">val</span> rememberText <span class="hljs-keyword">by</span> rememberUpdatedState(newValue = text)<br>    <span class="hljs-keyword">var</span> delayOutputText <span class="hljs-keyword">by</span> remember &#123; mutableStateOf(<span class="hljs-string">&quot;&quot;</span>) &#125;<br>    LaunchedEffect(<span class="hljs-built_in">Unit</span>) &#123;<br>        delay(<span class="hljs-number">3000L</span>)<br>        <span class="hljs-comment">//                      👇🏻取值的时候使用包裹后的变量</span><br>        delayOutputText = rememberText<br>    &#125;<br>    Text(<span class="hljs-string">&quot;延迟输出的值：<span class="hljs-variable">$delayOutputText</span>&quot;</span>)<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>我们使用 <code>rememberUpdatedState</code> 来包裹住 <code>text</code> ，由于返回的是一个 <code>State</code> ，我们使用by委托来取值，重新运行后查看结果：</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/mis/202512162151650.webp" srcset="/img/loading.gif" lazyload alt="a11fff64feabf09d29f0acef1ce84080_MD5"></p>
+<p>结果正确了，这是为什么呢，简单的Api居然解决了大问题，让我们简单分析下做了什么：</p>
+<ol>
+<li>声明一个mutableState，使用text初始化它的值，text变化后，修改它的值</li>
+<li>延时3秒后，从mutableState中取值</li>
+</ol>
+<p>实际上我们就是用一个容器，即mutableState存住了text的值，延时结束后通过容器取值。remember没有重启，取的容器依然是最初那个，但是这并不影响，因为我们 <strong>取的不是容器本身，而是容器内部的变量</strong> 。</p>
+<p>去掉by委托会让答案更加清楚：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs kotlin"><span class="hljs-meta">@Composable</span><br><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">DelayOutputText</span><span class="hljs-params">(</span></span><br><span class="hljs-params"><span class="hljs-function">    text: <span class="hljs-type">String</span>,</span></span><br><span class="hljs-params"><span class="hljs-function">)</span></span> &#123;<br>    <br>    <span class="hljs-keyword">val</span> rememberText: State&lt;String&gt; = rememberUpdatedState(newValue = text)<br>    <span class="hljs-keyword">var</span> delayOutputText <span class="hljs-keyword">by</span> remember &#123; mutableStateOf(<span class="hljs-string">&quot;&quot;</span>) &#125;<br>    LaunchedEffect(<span class="hljs-built_in">Unit</span>) &#123;<br>        delay(<span class="hljs-number">3000L</span>)<br>        <span class="hljs-comment">//                      👇🏻容器还是旧的，但是容器的value变了，取的是最新值</span><br>        delayOutputText = rememberText.value<br>    &#125;<br>    Text(<span class="hljs-string">&quot;延迟输出的值：<span class="hljs-variable">$delayOutputText</span>&quot;</span>)<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>所以我们并没有去除remember没有重启的影响，而是通过一个容器来规避掉没有重启导致的取旧值的问题，我们不在乎取的是容器的旧值，因为这个容器内部的value是最新的即可。</p>
+<p>这就是 <code>rememberUpdateState</code> 出现的原因，kotlin的lambda虽然方便阅读，但是太容易在Compose的重组场景下出现旧值问题，合理使用 <code>rememberUpdateState</code> 可以解决掉这个问题。</p>
+<h2 id="5-项目中还是踩了坑"><a href="#5-项目中还是踩了坑" class="headerlink" title="5.项目中还是踩了坑"></a>5.项目中还是踩了坑</h2><p>笔者的项目代码大致如下：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><code class="hljs kotlin"><span class="hljs-meta">@Composable</span><br><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">BoxContent</span><span class="hljs-params">(</span></span><br><span class="hljs-params"><span class="hljs-function">    text: <span class="hljs-type">String</span>,</span></span><br><span class="hljs-params"><span class="hljs-function">)</span></span> &#123;<br><br>    TextContentWithLambda(<br>        onClick = &#123;<br>            Log.d(<span class="hljs-string">&quot;临时测试&quot;</span>, <span class="hljs-string">&quot;当前的值:<span class="hljs-variable">$text</span>&quot;</span>)<br>        &#125;<br>    )<br><br>&#125;<br><br><span class="hljs-meta">@Composable</span><br><span class="hljs-keyword">private</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">TextContentWithLambda</span><span class="hljs-params">(</span></span><br><span class="hljs-params"><span class="hljs-function">    onClick: () -&gt; <span class="hljs-type">Unit</span>,</span></span><br><span class="hljs-params"><span class="hljs-function">)</span></span> &#123;<br><br>    Row(<br>        Modifier,<br>        verticalAlignment = Alignment.CenterVertically<br>    ) &#123;<br>        Box(<br>            Modifier<br>                .heightIn(<span class="hljs-number">30.</span>dp)<br>                .background(Color.Black)<br>                .pointerInput(<span class="hljs-built_in">Unit</span>) &#123;<br>                    detectTapGestures(<br>                        onTap = &#123;<br>                            onClick()<br>                        &#125;<br>                    )<br>                &#125;,<br>            contentAlignment = Alignment.Center<br>        ) &#123;<br>            Text(<br>                text = <span class="hljs-string">&quot;点击&quot;</span>,<br>                color = Color.White<br>            )<br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>在 <code>TextContentWithLambda</code> 做了一个类似手势监听的逻辑，然后点击后执行 <code>onClick()</code> ，但是 <code>BoxContent</code> 组件那个onClick取到的text依然是旧值。</p>
+<p>思考了一大段时间后，笔者突然意识到，<strong>手势监听也有一个key作为重启标识</strong>，难道手势监听内部也是remember？打开源码一看：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs kotlin"><span class="hljs-function"><span class="hljs-keyword">fun</span> Modifier.<span class="hljs-title">pointerInput</span><span class="hljs-params">(</span></span><br><span class="hljs-params"><span class="hljs-function">    key1: <span class="hljs-type">Any</span>?,</span></span><br><span class="hljs-params"><span class="hljs-function">    block: <span class="hljs-type">suspend</span> <span class="hljs-type">PointerInputScope</span>.() -&gt; <span class="hljs-type">Unit</span></span></span><br><span class="hljs-params"><span class="hljs-function">)</span></span>: Modifier = composed(<br>    <span class="hljs-comment">//省略</span><br>) &#123;<br>    <span class="hljs-comment">//省略</span><br>    remember(density) &#123; SuspendingPointerInputFilter(viewConfiguration, density) &#125;.also &#123; filter -&gt;<br>        LaunchedEffect(filter, key1) &#123;<br>            filter.coroutineScope = <span class="hljs-keyword">this</span><br>            filter.block()<br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>家人们谁懂啊，被remember坑到怀疑人生，问题找到了，还是同样的问题，由于 <code>remember</code> 导致了新的onClick并没有传递到内部，那么监听手势后执行的onClick自然也是旧的。</p>
+<p>怎么解决这个问题呐，在kotlin中万物皆对象，高阶函数也是一个对象，那么我们可以使用rememberUpdateState把高阶函数包裹起来即可：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs kotlin"><span class="hljs-meta">@Composable</span><br><span class="hljs-keyword">private</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">TextContentWithLambda</span><span class="hljs-params">(</span></span><br><span class="hljs-params"><span class="hljs-function">    onClick: () -&gt; <span class="hljs-type">Unit</span>,</span></span><br><span class="hljs-params"><span class="hljs-function">)</span></span> &#123;<br>    <br>    <span class="hljs-keyword">val</span> rememberOnClick <span class="hljs-keyword">by</span> rememberUpdatedState(newValue = onClick)<br>    <span class="hljs-comment">//忽略</span><br>  &#125;<br></code></pre></td></tr></table></figure>
+
+<p>最后把手势监听的 <code>onClick</code> 改成 <code>rememberOnClick</code> 即可。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>一切问题的根源就是remember机制导致新值被丢失，使用State作为容器让新值可以正常被访问，理解了这个原理就可以理解何时使用 <code>rememberUpdateState</code> 以及解决那些莫名其妙的bug了，希望这篇文章能帮到你，如果你喜欢这篇文章可以点个赞支持一下。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%85%B6%E4%BB%96%E8%AF%AD%E8%A8%80/" class="category-chain-item">其他语言</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/clippings/" class="print-no-link">#clippings</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Compose：长期副作用 + 智能重组 = 若智？聊聊rememberUpdateState</div>
+      <div>http://peiniwan.github.io/2025/12/01bcfe2c8c30.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>[[晴天小庭]]</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年12月16日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"OwNIdaopOn1rwNhtotGOGC0B-gzGzoHsz","appKey":"eadytQ2XqWmxuvAKeg08XX83","path":"window.location.pathname","placeholder":null,"avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":true,"recordIP":false,"serverURLs":"https://ownidaop.lc-cn-n1-shared.com","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

@@ -1,0 +1,896 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="六月的雨">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="fmtjava&#x2F;Compose_Eyepetizer: 一款基于 Jetpack Compose 实现的精美仿开眼视频App(提供Kotlin、Flutter、React Native、小程序版本 😁 )]( https:&#x2F;&#x2F;github.com&#x2F;fmtjava&#x2F;Compose_Eyepetizer) navController1234567navController.navigate">
+<meta property="og:type" content="article">
+<meta property="og:title" content="1-开发实战">
+<meta property="og:url" content="http://peiniwan.github.io/2025/12/7092fe14667b.html">
+<meta property="og:site_name" content="六月的雨的笔记">
+<meta property="og:description" content="fmtjava&#x2F;Compose_Eyepetizer: 一款基于 Jetpack Compose 实现的精美仿开眼视频App(提供Kotlin、Flutter、React Native、小程序版本 😁 )]( https:&#x2F;&#x2F;github.com&#x2F;fmtjava&#x2F;Compose_Eyepetizer) navController1234567navController.navigate">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/mis/202512162149471.png">
+<meta property="article:published_time" content="2025-12-16T13:59:22.490Z">
+<meta property="article:modified_time" content="2025-12-16T13:49:33.787Z">
+<meta property="article:author" content="六月的雨">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/mis/202512162149471.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>1-开发实战 - 六月的雨的笔记</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"peiniwan.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>六月的雨的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="1-开发实战"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-12-16 21:59" pubdate>
+          2025年12月16日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.6k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          22 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">1-开发实战</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>fmtjava&#x2F;Compose_Eyepetizer: 一款基于 Jetpack Compose 实现的精美仿开眼视频App(提供Kotlin、Flutter、React Native、小程序版本 😁 )]( <a target="_blank" rel="noopener" href="https://github.com/fmtjava/Compose_Eyepetizer">https://github.com/fmtjava/Compose_Eyepetizer</a>)</p>
+<h1 id="navController"><a href="#navController" class="headerlink" title="navController"></a>navController</h1><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs javascript">navController.<span class="hljs-title function_">navigate</span>(<span class="hljs-params">screen.route</span>) &#123;  <br>    <span class="hljs-title function_">popUpTo</span>(<span class="hljs-params">navController.graph.startDestinationId</span>) &#123;  <br>        saveState = <span class="hljs-literal">true</span>  <br>    &#125;  <br>    launchSingleTop = <span class="hljs-literal">true</span>  <br>    restoreState = <span class="hljs-literal">true</span>  <br>&#125;<br></code></pre></td></tr></table></figure>
+<p>popUpTo (navController. graph. startDestinationId)<br>作用：导航时清除回退栈到指定目的地<br>效果：清除到起始目的地之间的所有页面，避免回退栈无限增长<br>saveState &#x3D; true<br>作用：保存被清除页面的状态<br>效果：当用户返回时，页面状态得以保留<br>launchSingleTop &#x3D; true<br>作用：如果目标页面已在栈顶，则不创建新实例<br>效果：避免重复创建相同页面<br>restoreState &#x3D; true<br>作用：恢复目标页面之前保存的状态<br>效果：提升用户体验，保留页面之前的交互状态</p>
+<p>val navController &#x3D; rememberNavController()<br>作用：创建并记住一个 NavHostController 实例，用于管理应用内的导航<br>原理：rememberNavController () 是一个可组合函数，它确保在重组时返回相同的 NavHostController 实例<br>用途：通过这个控制器可以执行导航操作，如 navigate ()、popBackStack () 等</p>
+<h1 id="变量写法"><a href="#变量写法" class="headerlink" title="变量写法"></a>变量写法</h1><h2 id="StateFlow"><a href="#StateFlow" class="headerlink" title="StateFlow"></a>StateFlow</h2><ol>
+<li>状态封装原则<br>使用 private val _smsState 作为内部可变状态</li>
+</ol>
+<p>使用 val smsState 作为对外暴露的不可变状态流</p>
+<p>遵循了状态封装的最佳实践，防止外部直接修改状态</p>
+<ol start="2">
+<li><p>StateFlow 特性<br>MutableStateFlow&lt;SmsState&gt; 创建了一个可变的状态流<br>asStateFlow() 将可变流转换为只读流暴露给外部</p>
+</li>
+<li><p>状态管理优势<br>单向数据流：外部只能观察状态，不能直接修改<br>线程安全：协程 Flow 保证了状态更新的线程安全性<br>生命周期感知：配合 Compose 或 Lifecycle 可以自动处理订阅生命周期</p>
+</li>
+<li><p>使用场景<br>在 SmsCodePage 中可以通过.collect或.collectAsState来观察 smsState 的变化，根据不同的状态（Loading、Success、Error、Idle）来更新 UI 显示。</p>
+</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">private</span> <span class="hljs-type">val</span> <span class="hljs-variable">_smsState</span> <span class="hljs-operator">=</span> MutableStateFlow&lt;SmsState&gt;(SmsState. Idle)<br>val smsState: StateFlow&lt;SmsState&gt; = _smsState.asStateFlow ()<br>val state by viewModel.smsState.collectAsState ()<br></code></pre></td></tr></table></figure>
+
+
+<p><strong>自动重组</strong>：当 Flow 发射新值时，Compose 会触发 UI 重组。</p>
+<p><strong>生命周期感知</strong>：在 <code>@Composable</code> 环境中使用时，会自动跟随 <code>Lifecycle</code> 取消订阅，避免内存泄漏。</p>
+<table>
+<thead>
+<tr>
+<th align="left">对比项</th>
+<th align="left">collect ()</th>
+<th align="left">collectAsState ()</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">使用环境</td>
+<td align="left">任意协程环境</td>
+<td align="left">仅 Compose</td>
+</tr>
+<tr>
+<td align="left">返回类型</td>
+<td align="left">无返回值 (suspend 函数)</td>
+<td align="left">State<T> (Compose 可观察)</td>
+</tr>
+<tr>
+<td align="left">是否触发重组</td>
+<td align="left">否❌</td>
+<td align="left">是</td>
+</tr>
+<tr>
+<td align="left">是否自动处理生命周期</td>
+<td align="left">否，需要手动管理✅</td>
+<td align="left">Compose 自动管理</td>
+</tr>
+<tr>
+<td align="left">常见场景</td>
+<td align="left">ViewModel、Repository、后台逻辑</td>
+<td align="left">Compose UI 层</td>
+</tr>
+</tbody></table>
+<h2 id="collectAsState"><a href="#collectAsState" class="headerlink" title="collectAsState"></a>collectAsState</h2><p>是 <strong>Jetpack</strong> <strong>Compose</strong> 中常用的一个扩展函数，用来把 <strong>Flow&#x2F;StateFlow</strong> 转换成 Compose 可感知的 <code>State&lt;T&gt;</code>，从而让 UI 自动响应数据变化。<br><strong>自动重组</strong>：当 Flow 发射新值时，Compose 会触发 UI 重组。<br><strong>生命周期感知</strong>：在 <code>@Composable</code> 环境中使用时，会自动跟随 <code>Lifecycle</code> 取消订阅，避免内存泄漏</p>
+<h2 id="mutableStateOf-（不推荐）"><a href="#mutableStateOf-（不推荐）" class="headerlink" title="mutableStateOf （不推荐）"></a>mutableStateOf （不推荐）</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs Plain">// 👇 新增：用 mutableStateOf 来保存 currentStep，这样 Compose 能自动重组<br>var currentStep by mutableIntStateOf(1)<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs Plain">LaunchedEffect(nextStep) &#123;<br>    viewModel.currentStep = nextStep<br>&#125;<br>val currentStep = viewModel.currentStep<br></code></pre></td></tr></table></figure>
+
+<p><strong>问题</strong></p>
+<ul>
+<li>viewModel 的currentStep 变化 page 的currentStep 也会变化吗，没看到LaunchedEffect(currentStep) {  也会重组吗</li>
+</ul>
+<p>会的——只要 currentStep 在 ViewModel 里是 mutableStateOf（或 StateFlow 转成 State），页面里读取到了这个 state，它变更时就会触发重组。不需要 LaunchedEffect(currentStep) 来驱动 UI 更新。</p>
+<ul>
+<li>为什么不需要 LaunchedEffect</li>
+</ul>
+<p>Compose 会自动跟踪在组合阶段被读取的 State（如 mutableStateOf）。<br>当这个 State 的值变化时，读取它的 Composable 会自动 recompose。<br>LaunchedEffect 用于副作用（如发起请求、导航、动画），不是用来让 UI 监听 state 的。<br>若你用的是 StateFlow，同理，在 VM 暴露 StateFlow&lt;Int&gt;，在 UI 用 collectAsState() 即可</p>
+<ul>
+<li>val accountInfoBean by viewModel. accountInfoBean<br>会的。只要 viewModel. accountInfoBean 是一个 mutableStateOf（或 State&lt;T&gt;），那这行代码就已经在 Compose 中建立了订阅关系。当 ViewModel 中的值变化时，UI 会自动重组。</li>
+</ul>
+<p><strong>小结</strong></p>
+<p>✅ 读 mutableStateOf&#x2F;collectAsState() → 值变化自动重组<br>❌ 不需要 LaunchedEffect(currentStep)<br>✅ 仅在需要“做一次事”（如用 nextStep 初始化、发请求）时用 LaunchedEffect(…)</p>
+<h2 id="liveData"><a href="#liveData" class="headerlink" title="liveData"></a>liveData</h2><p>（1）<code>State&lt;T&gt;</code> 是 Compose 的“原生”状态类型</p>
+<ul>
+<li>Compose 的 <code>@Composable</code> 函数天然监听 <code>State&lt;T&gt;</code> 的变化并触发重组。</li>
+<li><code>LiveData</code> 需要通过 <code>observeAsState()</code> 转换为 <code>State</code> 才能在 Compose 中使用，多了一层转换。</li>
+<li>直接使用 <code>mutableStateOf</code> 更简洁、高效，无需依赖 Android 生命周期组件。</li>
+</ul>
+<p>（2）<code>LiveData</code> 是为传统 View 系统设计的</p>
+<ul>
+<li><code>LiveData</code> 的核心优势是 生命周期感知（自动在 <code>onStop</code> 时停止通知），防止内存泄漏。</li>
+<li>但在 Compose 中，UI 的生命周期由 Compose 自己管理（通过 <code>DisposableEffect</code>、<code>LaunchedEffect</code> 等），不再依赖 <code>LifecycleOwner</code>。</li>
+<li>因此 <code>LiveData</code> 的生命周期感知优势在 Compose 中 变得冗余甚至多余。</li>
+</ul>
+<p>（3）<code>StateFlow</code> &#x2F; <code>SharedFlow</code> 更适合现代 Compose 架构</p>
+<h2 id="修改传入的值、rememberSaveable"><a href="#修改传入的值、rememberSaveable" class="headerlink" title="修改传入的值、rememberSaveable"></a>修改传入的值、rememberSaveable</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs Plain">@Composable<br>fun UpdateInfoPage(nextStep: Int) &#123;<br>    val viewModel: UpdateInfoViewModel = hiltViewModel()<br>    val context = LocalContext.current<br>    val navController = LocalNavController.current<br><br>    // 这里使用 rememberSaveable 保持步骤状态可修改、可记忆<br>    var currentStep by rememberSaveable &#123; mutableIntStateOf(nextStep) &#125;<br></code></pre></td></tr></table></figure>
+
+<p><em>❗不要用 remember 包住；保证每次点击都拿到“最新的权限&#x2F;隐私状态”</em></p>
+<h1 id="智能重组的坑"><a href="#智能重组的坑" class="headerlink" title="智能重组的坑"></a>智能重组的坑</h1><p>Compose 的重组是 “按读取字段” 触发的，不是“按对象引用”。</p>
+<h3 id="举个例子"><a href="#举个例子" class="headerlink" title="举个例子"></a>举个例子</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs Plain">@Composable<br>fun HomePageContent(orderState: OrderStateBean) &#123;<br>    Text(text = orderState.title)        // 只读了 title<br>    if (orderState.hasUnread) &#123;          // 只读了 hasUnread<br>        Badge()<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>🔥 即使 <code>orderStateBean.value = newBean</code>（整个对象变了），只要 <code>title</code> 和 <code>hasUnread</code> 的值没变，<code>HomePageContent</code> 就不会重组！</p>
+</blockquote>
+<h1 id="生命周期"><a href="#生命周期" class="headerlink" title="生命周期"></a>生命周期</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs Plain">LifecycleResumeEffect(Unit) &#123;<br>    launchInProgress = false<br>    onPauseOrDispose &#123; &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h1 id="好图片"><a href="#好图片" class="headerlink" title="好图片"></a>好图片</h1><p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/mis/202512162149471.png" srcset="/img/loading.gif" lazyload alt="00bb3c10cefd1a117f526af3ecb4f0c0_MD5"></p>
+<h1 id="标准代码结构"><a href="#标准代码结构" class="headerlink" title="标准代码结构"></a>标准代码结构</h1><p>UI 与逻辑分离 + 只对纯状态组件预览</p>
+<ul>
+<li><p>将 UI 拆分为两个函数：</p>
+<ol>
+<li><code>SmsCodePage</code>：负责和 ViewModel、NavController、状态管理交互（不预览）</li>
+<li><code>SmsCodeContent</code>：只接收 UI 状态（如 phone、otpValue、loading、error 等），负责渲染（可预览）</li>
+</ol>
+</li>
+<li><p>给 <code>SmsCodeContent</code> 添加 <code>@Preview</code>，让它能独立展示各种 UI 状态。</p>
+</li>
+</ul>
+<h1 id="api用法"><a href="#api用法" class="headerlink" title="api用法"></a>api用法</h1><h2 id="any"><a href="#any" class="headerlink" title="any"></a>any</h2><p><strong>true</strong>：如果集合中 <strong>至少有一个</strong> 元素满足条件</p>
+<p><strong>false</strong>：如果 <strong>没有任何</strong> 元素满足条件</p>
+<p>val showDisburseFailedDialog &#x3D; remember(ordersList) {</p>
+<p>mutableStateOf(ordersList.any { it.checkStatus &#x3D;&#x3D; 6 })</p>
+<p>}</p>
+<p>&#x2F;&#x2F;tood 如果ordersList里 有OrderListItem 的 checkStatus 为 6是 显示showDisburseFailedDialog</p>
+<h2 id="takeIf"><a href="#takeIf" class="headerlink" title="takeIf"></a><em>takeIf</em></h2><p>  ocr. idPhotoId.<em>takeIf</em> <strong>{ it</strong> !&#x3D; null <strong>}</strong> ?: oldIdentity?. idPhotoId</p>
+<p>满足是前面，不满足是后面</p>
+<h1 id="只加载一次"><a href="#只加载一次" class="headerlink" title="只加载一次"></a>只加载一次</h1><p>rememberSaveable</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs Plain">var hasInitLoaded by rememberSaveable &#123; mutableStateOf(false) &#125;<br>LaunchedEffect(hasInitLoaded) &#123;<br>    if (!hasInitLoaded) &#123;<br>        changeCardViewModel.getAccountInfoAndDictConfig()<br>        refreshOrders()<br>        hasInitLoaded = true<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h1 id="图标"><a href="#图标" class="headerlink" title="图标"></a>图标</h1><h2 id="尺寸"><a href="#尺寸" class="headerlink" title="尺寸"></a>尺寸</h2><p>mdpi 48x48</p>
+<p>hdpi 72x72</p>
+<p>xhdpi 96x96</p>
+<p>xxhdpi 144x144</p>
+<p>xxxhdpi 192x192</p>
+<p>COMPOSE不支持.9图</p>
+<h2 id="去掉点击效果"><a href="#去掉点击效果" class="headerlink" title="去掉点击效果"></a>去掉点击效果</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs Plain">Row(<br>    modifier = modifier<br>        .fillMaxWidth()<br>        .clickable(<br>            interactionSource = remember &#123; MutableInteractionSource() &#125;,<br>            indication = null<br>        ) &#123; onClick() &#125;,<br>    verticalAlignment = Alignment.CenterVertically<br>) &#123;<br></code></pre></td></tr></table></figure>
+
+<h2 id="本地图片做背景"><a href="#本地图片做背景" class="headerlink" title="本地图片做背景"></a>本地图片做背景</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs Plain">@Composable<br>fun UpdateInfoCardContainer(<br>    modifier: Modifier = Modifier,<br>    content: @Composable ColumnScope.() -&gt; Unit<br>) &#123;<br>    Column(<br>        modifier = modifier<br>            .fillMaxWidth()<br>            .clip(RoundedCornerShape(10.dp)) // 圆角<br>            .paint(<br>                painter = painterResource(id = R.drawable.profile_tab_card_bg), // 本地切图<br>                contentScale = ContentScale.Crop         // 拉伸方式<br>            )<br>            .padding(16.dp),<br>        content = content<br>    )<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h1 id="坑"><a href="#坑" class="headerlink" title="坑"></a>坑</h1><ul>
+<li>Data class改成class 可以混淆，要不然 toString 就又能看到混淆前的数据</li>
+</ul>
+<p>函数要加（）</p>
+<p>IconButton( onClick &#x3D; <strong>{</strong> onBackClick()</p>
+<p>&#x2F;&#x2F;onBackClick 调不了 <strong>}</strong>,</p>
+<h2 id="先后顺序"><a href="#先后顺序" class="headerlink" title="先后顺序"></a>先后顺序</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs Plain">Box(Modifier.navigationBarsPadding()) &#123;<br>    Box(<br>        modifier = Modifier<br>            .fillMaxWidth()<br>            .padding(horizontal = 16.dp, vertical = 16.dp) // 外边距<br>            .height(44.dp)<br>            .clip( RoundedCornerShape(10.dp))      // 先裁圆角<br>            .background(Color(0xFFCCCCCC))            // 再画背景，这样会被圆角裁剪<br>            .clickable &#123; onConfirm() &#125;,<br>        contentAlignment = Alignment.Center<br>    ) &#123;<br>        Text(<br>            text = confirmText,<br>            color =  Color.White,<br>            fontWeight = FontWeight.Bold,<br>            fontSize = 16.sp<br>        )<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h1 id="常用组件"><a href="#常用组件" class="headerlink" title="常用组件"></a>常用组件</h1><h2 id="知识点"><a href="#知识点" class="headerlink" title="知识点"></a>知识点</h2><p>weight 用于设置子元素的权重，权重越大，占据的空间就越大</p>
+<figure class="highlight abnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs abnf">Column (modifier <span class="hljs-operator">=</span> Modifier.weight (<span class="hljs-number">1</span>f) <br></code></pre></td></tr></table></figure>
+
+<p>thickness 分割线的厚度  </p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">Divider</span> (thickness = <span class="hljs-number">0</span>.<span class="hljs-number">5</span>. dp, modifier = Modifier.padding (top = <span class="hljs-number">5</span>. dp))<br></code></pre></td></tr></table></figure>
+
+<p>这是一个小圆点  </p>
+<figure class="highlight lisp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs lisp">Box (<span class="hljs-name">modifier</span> = Modifier  <br>    .padding (<span class="hljs-number">2</span>. dp)  <br>    .clip (<span class="hljs-name">CircleShape</span>)  <br>    .background (<span class="hljs-name">color</span>)  <br>    .size (<span class="hljs-number">8</span>. dp))<br></code></pre></td></tr></table></figure>
+
+
+
+<h2 id="背景本地切图"><a href="#背景本地切图" class="headerlink" title="背景本地切图"></a>背景本地切图</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs Plain">@Composable<br>private fun TimeBlock(text: String) &#123;<br>    Box(<br>        modifier = Modifier<br>            .width(120.dp)<br>            .height(124.dp)<br>            .clip(RoundedCornerShape(8.dp)),<br>        contentAlignment = Alignment.Center<br>    ) &#123;<br>        Image(<br>            painter = painterResource(id = R.drawable.home_countdown_time_bg),<br>            contentDescription = null,<br>            contentScale = ContentScale.FillBounds,<br>            modifier = Modifier.matchParentSize()<br>        )<br><br>        Text(<br>            text = text,<br>            color = FFFDD17B,<br>            fontSize = 48.sp,<br>            fontWeight = FontWeight.Bold<br>        )<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="渐变"><a href="#渐变" class="headerlink" title="渐变"></a>渐变</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs Plain">Brush.horizontalGradient(<br>    colors = listOf(<br>        FFE46C15,<br>        FFF8B42B,<br>    )<br>)<br></code></pre></td></tr></table></figure>
+
+<h2 id="Button"><a href="#Button" class="headerlink" title="Button"></a>Button</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs Plain">Button(<br>    onClick = &#123;<br>        onLeftClick()<br>    &#125;,<br>    shape = shape,<br>    colors = ButtonDefaults.buttonColors(<br>        containerColor = FF1A1A1A  // 设置背景色<br>    ),<br>    modifier = Modifier<br>        .weight(1f)<br>        .border(1.dp, FF4D4C4A, shape).height(40.dp), //坑：height再最后，要不然会覆盖<br>) &#123;<br>    Text(<br>        leftString,<br>        fontSize = 14.sp,<br>        color = Color.White<br>    )<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="Text"><a href="#Text" class="headerlink" title="Text"></a>Text</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs Plain">Column(<br>    modifier = Modifier.padding(24.dp),<br>    horizontalAlignment = Alignment.CenterHorizontally<br>) &#123;<br>    Text(<br>        content,<br>        color = Color.White.copy(alpha = 0.8f),<br>        fontSize = 14.sp,<br>        textAlign = TextAlign.Center<br>    )<br> )<br></code></pre></td></tr></table></figure>
+
+<p>lineHeight &#x3D; 12.<em>sp</em>, 行高</p>
+<h2 id="Image"><a href="#Image" class="headerlink" title="Image"></a>Image</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs Plain">Image(<br>    painter = painterResource(R.drawable.home_update_fail),<br>    contentDescription = null,<br>    modifier = Modifier<br>        .align(Alignment.TopCenter)<br>        .offset(y = -40.dp)<br>        .requiredSize(350.dp) //突破父view的限制<br>)<br></code></pre></td></tr></table></figure>
+
+
+<h2 id="ViewPager、HorizontalPager"><a href="#ViewPager、HorizontalPager" class="headerlink" title="ViewPager、HorizontalPager"></a>ViewPager、HorizontalPager</h2><p>&#x2F;&#x2F;ViewPager2, 通过将此状态对象保存在组件中，可以确保当组件重新合成时，分页状态不会丢失。  </p>
+<figure class="highlight abnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs abnf">val pagerState <span class="hljs-operator">=</span> rememberPagerState ()<br></code></pre></td></tr></table></figure>
+
+<p>HorizontalPager 是一种用于构建横向滚动页面的组件。它允许您在应用程序中创建水平滑动的页面布局，类似于 ViewPager 或 RecyclerView。</p>
+<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs scss">HorizontalPager (pageCount = <span class="hljs-number">4</span>,  <br>    userScrollEnabled = false,  <br>    state = pagerState,  <br>    modifier = Modifier  <br>        .fillMaxSize ()  <br>        <span class="hljs-selector-class">.background</span> (Color. White)  <br>        <span class="hljs-selector-class">.padding</span> (padding)) &#123; pageIndex -&gt;  <br>    when (pageIndex) &#123;  <br>        <span class="hljs-number">0</span> -&gt; DailyPage ()  <br>        <span class="hljs-number">1</span> -&gt; DiscoverPage ()  <br>        <span class="hljs-number">2</span> -&gt; HotPage ()  <br>        <span class="hljs-number">3</span> -&gt; PersonPage ()  <br>    &#125;  <br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+<h2 id="padding"><a href="#padding" class="headerlink" title="padding"></a>padding</h2><p>在 Compose 中，确实没有 <code>margin</code> 修饰符，只有 <code>padding</code> 修饰符。如果您想在 <code>Text</code> 组件周围创建间距，可以使用 <code>padding</code> 修饰符来实现类似的效果。在您提供的示例代码中，<code>Modifier.padding (top = 3. dp)</code> 将在 <code>Text</code> 组件的顶部添加3dp 的内边距，从而创建了与 <code>margin</code> 类似的效果。</p>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs jboss-cli">Text <span class="hljs-params">(<span class="hljs-attr">text</span> = itemData. author?. description ?: &quot;&quot;,  </span><br><span class="hljs-params">    <span class="hljs-attr">color</span> = Color. White,  </span><br><span class="hljs-params">    <span class="hljs-attr">fontSize</span> = 13. sp, <span class="hljs-attr">modifier</span> = Modifier.padding (<span class="hljs-attr">top</span> = 3. dp)</span>)<br></code></pre></td></tr></table></figure>
+<p>或者：</p>
+<figure class="highlight lisp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs lisp">Spacer (<span class="hljs-name">modifier</span> = Modifier.height (<span class="hljs-number">10</span>. dp))<br></code></pre></td></tr></table></figure>
+
+<h2 id="zIndex"><a href="#zIndex" class="headerlink" title="zIndex"></a>zIndex</h2><p><code>zIndex</code> 是指定视图的层级顺序的属性。它控制了视图在屏幕上的显示顺序。具有较高 <code>zIndex</code> 值的视图将显示在具有较低 <code>zIndex</code> 值的视图之上。</p>
+<p>默认情况下，视图的 <code>zIndex</code> 值为0。如果设置一个较大的正值，则视图将显示在其他视图的上方。如果设置一个较小的负值，则视图将显示在其他视图的下方。当两个视图的 <code>zIndex</code> 相同时，它们将按照它们在布局文件中的顺序进行绘制。</p>
+<p>通过调整视图的 <code>zIndex</code> 属性，您可以控制视图的叠加顺序，从而达到覆盖或隐藏其他视图的效果。</p>
+<figure class="highlight lisp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs lisp">DiscoverTabPageWidget (<span class="hljs-name">pagerState</span>, modifier = Modifier  <br>    .weight (<span class="hljs-number">1</span>f)  <br>    .zIndex (<span class="hljs-name">-1f</span>))<br></code></pre></td></tr></table></figure>
+
+
+<h1 id="evnetBus"><a href="#evnetBus" class="headerlink" title="evnetBus"></a>evnetBus</h1><ul>
+<li>定义一个 <strong>在 Activity 范围内共享的 ViewModel</strong>，存放你要广播的事件。</li>
+<li>各个页面通过 <code>viewModel()</code> &#x2F; <code>hiltViewModel()</code> 获取同一个实例，直接订阅状态。</li>
+</ul>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs kotlin"><span class="hljs-comment">// 共享的事件中心</span><br><span class="hljs-meta">@HiltViewModel</span><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">EventBusViewModel</span> <span class="hljs-meta">@Inject</span> <span class="hljs-keyword">constructor</span>() : ViewModel() &#123;<br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">val</span> _event = MutableSharedFlow&lt;String&gt;() <span class="hljs-comment">// 可以换成 StateFlow</span><br>    <span class="hljs-keyword">val</span> event = _event.asSharedFlow()<br><br>    <span class="hljs-keyword">suspend</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">sendEvent</span><span class="hljs-params">(msg: <span class="hljs-type">String</span>)</span></span> &#123;<br>        _event.emit(msg)<br>    &#125;<br>&#125;<br><br><span class="hljs-comment">//发送</span><br><span class="hljs-keyword">val</span> eventBus: EventBusViewModel = hiltViewModel()<br>LaunchedEffect(<span class="hljs-built_in">Unit</span>) &#123;<br>    eventBus.sendEvent(<span class="hljs-string">&quot;来自页面A的消息&quot;</span>)<br>&#125;<br><br><span class="hljs-comment">//监听</span><br><span class="hljs-keyword">val</span> eventBus: EventBusViewModel = hiltViewModel()<br>LaunchedEffect(<span class="hljs-built_in">Unit</span>) &#123;<br>    eventBus.event.collect &#123; msg -&gt;<br>        Log.d(<span class="hljs-string">&quot;EventBus&quot;</span>, <span class="hljs-string">&quot;收到消息: <span class="hljs-variable">$msg</span>&quot;</span>)<br>    &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<p><strong>通常不需要你手动取消监听</strong>。</p>
+<p>原因有两个：</p>
+<ol>
+<li><p><strong><code>collect</code> 的生命周期是绑定在 Composable 的 <code>LaunchedEffect</code> 或 <code>DisposableEffect</code> 上的</strong></p>
+<ul>
+<li>当 Composable 离开界面时，它的协程会自动取消，Flow 的收集也会结束。</li>
+<li>所以不会像传统 EventBus 一样出现「忘记 unregister 导致泄漏」的问题。</li>
+</ul>
+</li>
+<li><p><strong>ViewModel 的作用域受 Activity&#x2F;Navigation 控制</strong></p>
+<ul>
+<li>Activity 销毁时，ViewModel 也会销毁，内部的 Flow 也不再推送事件。</li>
+</ul>
+</li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%85%B6%E4%BB%96%E8%AF%AD%E8%A8%80/" class="category-chain-item">其他语言</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>1-开发实战</div>
+      <div>http://peiniwan.github.io/2025/12/7092fe14667b.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>六月的雨</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年12月16日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/12/a197a06b33a6.html" title="2-Compose 基础">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">2-Compose 基础</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/12/e15cb1ec3664.html" title="注解、AOP、APT">
+                        <span class="hidden-mobile">注解、AOP、APT</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"OwNIdaopOn1rwNhtotGOGC0B-gzGzoHsz","appKey":"eadytQ2XqWmxuvAKeg08XX83","path":"window.location.pathname","placeholder":null,"avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":true,"recordIP":false,"serverURLs":"https://ownidaop.lc-cn-n1-shared.com","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

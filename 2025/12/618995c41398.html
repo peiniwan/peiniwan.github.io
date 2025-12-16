@@ -1,0 +1,908 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="六月的雨">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="[[自写动画自定义View]] 基本流程 明确需求，确定你想实现的效果。 确定是使用组合控件的形式还是全新自定义的形式，组合控件即使用多个系统控件来合成一个新控件，你比如 titilebar，这种形式相对简单。 如果是完全自定义一个 view 的话，你首先需要考虑继承哪个类，是 View 呢，还是 ImageView 等子类。 根据需要去复写 View 的 onDraw 、onMeasure 、o">
+<meta property="og:type" content="article">
+<meta property="og:title" content="1.自定义View总结">
+<meta property="og:url" content="http://peiniwan.github.io/2025/12/618995c41398.html">
+<meta property="og:site_name" content="六月的雨的笔记">
+<meta property="og:description" content="[[自写动画自定义View]] 基本流程 明确需求，确定你想实现的效果。 确定是使用组合控件的形式还是全新自定义的形式，组合控件即使用多个系统控件来合成一个新控件，你比如 titilebar，这种形式相对简单。 如果是完全自定义一个 view 的话，你首先需要考虑继承哪个类，是 View 呢，还是 ImageView 等子类。 根据需要去复写 View 的 onDraw 、onMeasure 、o">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%87%AA%E5%AE%9A%E4%B9%89View%E6%80%BB%E7%BB%93.resources/2023/09/15/18-48-24-1d4b35cdd071a53970be316c73f1a667-5edce9c0581e4ecf7e5a0565e2d788c8-7404c3.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%87%AA%E5%AE%9A%E4%B9%89View%E6%80%BB%E7%BB%93.resources/2023/09/15/18-48-24-8babb7778fa73ecc910b893b7ea362b2-unknown_filename.1-5b2033.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%87%AA%E5%AE%9A%E4%B9%89View%E6%80%BB%E7%BB%93.resources/2023/09/15/18-48-24-b73202fc1ce8e4c16fe67942b082bb7a-722549-43d324.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%87%AA%E5%AE%9A%E4%B9%89View%E6%80%BB%E7%BB%93.resources/2023/09/15/18-48-24-0c49e249319654f268cc47bcd208e651-6ffa7e36-0587-450e-946f-3f0cd60c6b82-ce8293.jpg">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/09/15/2024-02-21-17-47-816b6ba1ef98f6a08e1fe1911ccc9175-18-48-24-816b6ba1ef98f6a08e1fe1911ccc9175-c82ecb89-00f7-476b-bbe9-fba0ac818be1-cc14ef-3b2099.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%87%AA%E5%AE%9A%E4%B9%89View%E6%80%BB%E7%BB%93.resources/2023/09/15/18-48-24-e2f21bc194187a5f7fce4ec4b7bea389-unknown_filename.2-63c4be.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%87%AA%E5%AE%9A%E4%B9%89View%E6%80%BB%E7%BB%93.resources/2023/09/15/18-48-24-f7592775deae25107cfe75ab882b5768-unknown_filename.5-0fe60d.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%87%AA%E5%AE%9A%E4%B9%89View%E6%80%BB%E7%BB%93.resources/2023/09/15/18-48-24-81deb6acb507bf858387fbfeb6b370ee-unknown_filename.4-d22638.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%87%AA%E5%AE%9A%E4%B9%89View%E6%80%BB%E7%BB%93.resources/2023/09/15/18-48-24-0cb6ab3258a144f14a5ec83708167dd2-unknown_filename.6-1c8b01.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%87%AA%E5%AE%9A%E4%B9%89View%E6%80%BB%E7%BB%93.resources/2023/09/15/18-48-24-b6c011951dffbd24d8a1520b4cd4c420-unknown_filename.7-df640a.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%87%AA%E5%AE%9A%E4%B9%89View%E6%80%BB%E7%BB%93.resources/2023/09/15/18-48-24-fe76544d8d5d7e04760bfe8205f085dc-unknown_filename.8-18c4ec.png">
+<meta property="article:published_time" content="2025-12-16T13:59:22.378Z">
+<meta property="article:modified_time" content="2024-03-13T07:52:00.000Z">
+<meta property="article:author" content="六月的雨">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%87%AA%E5%AE%9A%E4%B9%89View%E6%80%BB%E7%BB%93.resources/2023/09/15/18-48-24-1d4b35cdd071a53970be316c73f1a667-5edce9c0581e4ecf7e5a0565e2d788c8-7404c3.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>1.自定义View总结 - 六月的雨的笔记</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"peiniwan.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>六月的雨的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="1.自定义View总结"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-12-16 21:59" pubdate>
+          2025年12月16日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          4.6k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          39 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">1.自定义View总结</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>[[自写动画自定义View]]</p>
+<h3 id="基本流程"><a href="#基本流程" class="headerlink" title="基本流程"></a>基本流程</h3><ol>
+<li>明确需求，确定你想实现的效果。</li>
+<li>确定是使用组合控件的形式还是全新自定义的形式，组合控件即使用多个系统控件来合成一个新控件，你比如 titilebar，这种形式相对简单。</li>
+<li>如果是完全自定义一个 view 的话，你首先需要考虑继承哪个类，是 View 呢，还是 ImageView 等子类。</li>
+<li>根据需要去复写 View 的 onDraw 、onMeasure 、onLayout 方法。</li>
+<li>根据需要去复写 dispatchTouchEvent、onTouchEvent 方法。</li>
+<li>根据需要为你的自定义 view 提供自定义属性，即编写 attr. xml, 然后在代码中通过 TypedArray 等类获取到自定义属性值。</li>
+<li>需要处理滑动冲突、像素转换等问题。</li>
+<li>在要在 onDraw 或是 onLayout  中去创建对象，因为 onDraw 方法可能会被频繁调用，可以在 view 的构造函数中进行创建对象</li>
+</ol>
+<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>父 View 调用了子 View 的 measure () &#x2F; layout ()，而子 View 自己重写了 onMeasure () &#x2F; onLayout ()，到底哪个为准？</p>
+<p>onMeasure：谁决定大小？<br>流程：<br>父 View 调用 child.measure (widthSpec, heightSpec)。<br>子 View 内部调用 onMeasure () → 计算出自己的 measuredWidth &#x2F; measuredHeight。<br>系统最终会保存结果到 child.getMeasuredWidth ()&#x2F;getMeasuredHeight ()。</p>
+<p>结论：<br>父 View 只能提供约束（MeasureSpec），比如 AT_MOST、EXACTLY、UNSPECIFIED。<br>子 View 的 onMeasure () 负责决定实际的测量值。<br>所以<em>最终大小取决于子 View 的 onMeasure 实现，但必须在父 View 提供的约束范围内</em>。</p>
+<p>onLayout：谁决定位置？<br>流程：<br>父 View 调用 child.layout (l, t, r, b)。<br>系统会触发 child.onLayout (changed, l, t, r, b)。<br><em>子 View 的 onLayout 里一般不会改变自己的位置</em>（因为位置由父 View 决定），它更多是用来安放子 View（孙子级）。</p>
+<p>结论：<br>父 View 决定子 View 的位置（left&#x2F;top&#x2F;right&#x2F;bottom）。<br>子 View 的 onLayout 只能决定自己的子 View 的位置，不能改变自己在父 View 里的位置。</p>
+<p>谁说了算总结：<br>大小（width&#x2F;height） → 子 View 的 onMeasure 为准（父只能限制，子决定最终值）。<br>位置（left&#x2F;top&#x2F;right&#x2F;bottom） → 父 View 的 layout 为准（子不能改）。</p>
+<h2 id="绘制流程"><a href="#绘制流程" class="headerlink" title="绘制流程"></a>绘制流程</h2><ul>
+<li>onMeasure 测量 view 的大小，设置自己显示在屏幕上的宽高。</li>
+<li>onLayout 确定 view 的位置，父 view 会根据子 view 的需求，和自身的情况，来综合确定子 view 的位置 (确定他的大小)。</li>
+<li>onDraw (Canvas)绘制 view 的内容。</li>
+<li>在主线程中拿到 view 调用 Invalide ()方法，刷新当前视图，导致执行 onDraw 执行，如果是在子线程用 postinvalidate，或者不需要一直刷新用 postinvalidateDelayed (300)，每隔300毫秒刷新一次。</li>
+<li>如果希望视图的绘制流程 (三步)可以完完整整地重新走一遍，就不能使用 invalidate ()方法，而应该调用 requestLayout ()了。</li>
+</ul>
+<p><strong>Invalidate 和 postInvalidate  的区别及使用</strong><br>View invalidate : 层层上传到父级，直到传递到 ViewRootImpl 后触发了 scheduleTraversals 0)然后整个 View 树开始重新按照 View 绘制流程进行重绘任务。<br>Invalidate: 在 ui 线程刷新 view<br>PostInvalidate: 在工作线程刷新 view (底层还是 handler) 其实它的原理就是 invalidate+handler</p>
+<h2 id="onMeasure"><a href="#onMeasure" class="headerlink" title="onMeasure"></a>onMeasure</h2><p><strong>onMeasure 测量 view 的大小。设置自己显示在屏幕上的宽高。</strong><br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%87%AA%E5%AE%9A%E4%B9%89View%E6%80%BB%E7%BB%93.resources/2023/09/15/18-48-24-1d4b35cdd071a53970be316c73f1a667-5edce9c0581e4ecf7e5a0565e2d788c8-7404c3.png" srcset="/img/loading.gif" lazyload alt="5edce9c0581e4ecf7e5a0565e2d788c8"></p>
+<p>MeasureSpec 有 SpecMode 和 SpecSize 俩个属性。</p>
+<h3 id="SpecMode"><a href="#SpecMode" class="headerlink" title="SpecMode"></a>SpecMode</h3><ol>
+<li>unspecified: 父 View 不对子 View 做任何限制，需要多大给多大，一般不关心这个模式</li>
+<li>exactly: view 的大小就是 SpecSize（父 view 的大小）指定的大小。相当于<strong>mach_parents</strong>，就是根据这个获取的测量模式</li>
+<li>at_most: 父容器指定了一个 specsize，view 不能大于这个值。具体的值看 view, 相当于<strong>wrap_content</strong></li>
+</ol>
+<ul>
+<li>常开发中我们接触最多的不是 MeasureSpec 而是 LayoutParams，在 View 测量的时候，LayoutParams 会和父 View 的 MeasureSpec 相结合被换算成 View 的 MeasureSpec，进而决定 View 的大小。</li>
+</ul>
+<ul>
+<li>LayoutParams 类是用于子 view 向父 view 传达自己的意愿的一个东西（孩子想变成什么样向其父亲说明）</li>
+</ul>
+<p>测量流程：从根 View 递归调用每一级子 View 的 measure () 方法，对它们进行测量<br>布局流程：从根 View 递归调用每一级子 View 的 layout () 方法，把测量过程得出的子 View 的位置和尺寸传给子 View，子 View 保存</p>
+<ul>
+<li><code>onMeasure</code> &#x3D; 算法（你来计算宽高逻辑）</li>
+<li><code>setMeasuredDimension</code> &#x3D; 存储（告诉系统最终大小）</li>
+<li>setMeasuredDimension(int measuredWidth, int measuredHeight) 是真正保存测量结果的唯一方法。所有 onMeasure 的计算结果，最终必须调用它才能生效。</li>
+</ul>
+<h3 id="示例一"><a href="#示例一" class="headerlink" title="示例一"></a>示例一</h3><p>对自定义 View 完全进行自定义尺寸计算：重写 onMeasure ()：CircleView</p>
+<ol>
+<li>重写 onMeasure ()</li>
+<li>计算出自⼰的尺⼨</li>
+<li>用 <strong>resolveSize</strong>() 或者 resolveSizeAndState () 修正结果<br> (根据自己的尺寸和父 view 的模式和尺寸，综合计算自己的大小)<br> <strong>size 是自己的</strong><br> <img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%87%AA%E5%AE%9A%E4%B9%89View%E6%80%BB%E7%BB%93.resources/2023/09/15/18-48-24-8babb7778fa73ecc910b893b7ea362b2-unknown_filename.1-5b2033.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.1"></li>
+</ol>
+<ul>
+<li>⾸先用 MeasureSpec.getMode (measureSpec) 和 MeasureSpec.getSize (measureSpec)<strong>取出父对自己的尺寸</strong> 限制类型和具体限制尺⼨；</li>
+<li>如果 MeasureSpec 的 mode 是 EXACTLY，表示⽗ View 对子 View 的尺⼨寸做出了精确限制，所以就放弃计算出的 size，直接选用 MeasureSpec 的 size；</li>
+<li>如果 MeasureSpec 的 mode 是 UNSPECIFIED，表示父 View 对子 View 没有任何尺寸限制，所以直接选用计算出的 size，忽略 spec 中的 size。</li>
+<li>at_most，最大不能超过父</li>
+</ul>
+<h3 id="示例二"><a href="#示例二" class="headerlink" title="示例二"></a>示例二</h3><ul>
+<li>如果写的自定义 View 是继承现有控件的，而且写了 super.measure ()，则会默认使用那个现有控件的测量宽高，你可以在这个已经测量好的宽高上做修改，当然也可以全部重新测过再改掉。</li>
+<li>如果我们的 View 直接继承 ImageView，ImageView 已经运行了一大堆已经写好的代码测出了相应的宽高。我们可以在它基础上更改即可。比如我们的 Image2View 是一个自定义的正方形的 ImageView：</li>
+</ul>
+<figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs arduino">@<span class="hljs-function">Override</span><br><span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-type">void</span> <span class="hljs-title">onMeasure</span> <span class="hljs-params">(<span class="hljs-type">int</span> widthMeasureSpec, <span class="hljs-type">int</span> heightMeasureSpec)</span> </span>&#123;<br><br>    <span class="hljs-comment">//这里已经帮我们测好了 ImageView 的规则下的宽高，并且通过了 setMeasuredDimension 方法赋值进去了。</span><br>    super.<span class="hljs-built_in">onMeasure</span> (widthMeasureSpec, heightMeasureSpec);<br><br>     <span class="hljs-type">int</span> measuredWidth = <span class="hljs-built_in">getMeasuredWidth</span> ();<br>        <span class="hljs-type">int</span> measuredHeight = <span class="hljs-built_in">getMeasuredHeight</span> ();<br>        <span class="hljs-type">int</span> size = Math.<span class="hljs-built_in">min</span> (measuredWidth, measuredHeight);<br>        <span class="hljs-built_in">setMeasuredDimension</span> (size, size);<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>setMeasuredDimension 后才能 getmeasure 宽高，super 里做了这步，因为这方法是用来设置 view 测量的宽和高。</li>
+<li>完全自定义 view：<em>重写 onMeasure 方法的目的是为了能够给 view 一个 warp_content 属性下的默认大小</em>，因为不重写 onMeasure，那么系统就不知道该使用默认多大的尺寸。如果不处理，那 wrap_content 就相当于 match_parent。所以自定义控件需要支持 warp_content 属性就重写 onMeasure。</li>
+<li>可以自己尝试一下自定义一个 View，然后不重写 onMeasure ()方法，你会发现只有设置 match_parent 和 wrap_content 效果是一样的，事实上 TextView、ImageView 等系统组件都在 wrap_content 上有自己的处理。</li>
+</ul>
+<h3 id="getMeasuredHeight"><a href="#getMeasuredHeight" class="headerlink" title="getMeasuredHeight"></a>getMeasuredHeight</h3><p><strong>getHeight ()和 getMeasuredHeight ()的区别</strong><br>有俩种方法可以获得控件的宽高</p>
+<ol>
+<li>getMeasuredHeight (): 控件实际的大小。获取测量完的高度，只要在 onMeasure 方法执行完，就可以用它获取到宽高，在自定义 view 内使用 view. measure (0,0)方法可以主动通知系统去测量，然后就可以直接使用它获取宽高。measure 里调用的 onmeasure。</li>
+<li>getHeight ()：控件显示的大小, 必须<em>在 onLayout 方法执行完后</em>，才能获得宽高。</li>
+</ol>
+<figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs aspectj">view.getViewTreeObserver (). addOnGlobalLayoutListener (<span class="hljs-keyword">new</span> OnGlobalLayoutListener () &#123;<br>				<span class="hljs-meta">@Override</span><br>				<span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">onGlobalLayout</span> <span class="hljs-params">()</span> </span>&#123;<br>				headerView.getViewTreeObserver (). removeGlobalOnLayoutListener (<span class="hljs-keyword">this</span>);<br>				<span class="hljs-keyword">int</span> headerViewHeight = headerView.getHeight ();<br>				<span class="hljs-comment">//直接可以获取宽高</span><br>		&#125;<br>	&#125;);<br></code></pre></td></tr></table></figure>
+<p><code>getMeasuredHeight()</code> view 的实际高度，<code>getHeight()</code> 反映父容器允许的高度，它是 View 在父布局中<strong>实际分配到的显示区域高度</strong><br>getMeasuredHeight() &gt;&#x3D; getHeight()  &#x2F;&#x2F; 当父容器限制高度时成立<br>![[Pasted image 20250702195530.png]]</p>
+<h2 id="onLayout"><a href="#onLayout" class="headerlink" title="onLayout"></a>onLayout</h2><ul>
+<li>onLayout 设置自己显示在屏幕上的位置 (只有在自定义 ViewGroup 中才用到)，这个坐标是相对于当前视图的父视图而言的。view 自身有一些建议权，决定权在父 view 手中。</li>
+<li>调用场景：在 view <em>需要给其孩子设置尺寸和位置时被调用</em>。子 view，包括孩子在内，必须重写 onLayout (boolean, int, int, int, int)方法，并且调用各自的 layout (int, int, int, int)方法。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">onLayout</span> <span class="hljs-params">(<span class="hljs-type">boolean</span> changed, <span class="hljs-type">int</span> l, <span class="hljs-type">int</span> t, <span class="hljs-type">int</span> r, <span class="hljs-type">int</span> b)</span> &#123;<br>	<span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> <span class="hljs-variable">i</span> <span class="hljs-operator">=</span> <span class="hljs-number">0</span>; i &lt; getChildCount (); i++) &#123;<br>		<span class="hljs-type">View</span> <span class="hljs-variable">view</span> <span class="hljs-operator">=</span> getChildAt (i);<br>		<span class="hljs-comment">/**</span><br><span class="hljs-comment">		 * 父 view 会根据子 view 的需求，和自身的情况，来综合确定子 view 的位置, (确定他的大小)</span><br><span class="hljs-comment">		 */</span><br>		<span class="hljs-comment">//指定子 view 的位置  ,  左，上，右，下，是指在 viewGround 坐标系中的位置</span><br>		view.layout (<span class="hljs-number">0</span>+i*getWidth (), <span class="hljs-number">0</span>, getWidth ()+i*getWidth (), getHeight ());	<br>	&#125;	<br>&#125;<br>    <br></code></pre></td></tr></table></figure>
+
+<h2 id="onDraw"><a href="#onDraw" class="headerlink" title="onDraw"></a><strong>onDraw</strong></h2><p>onDraw (Canvas)绘制 view 的内容。控制显示在屏幕上的样子 (自定义 viewgroup 时不需要这个)</p>
+<figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs asciidoc">/*<br><span class="hljs-bullet">* </span>backgroundBitmap 要绘制的图片<br><span class="hljs-bullet">* </span>left 图片的左边界<br><span class="hljs-bullet">* </span>top 图片的上边界<br><span class="hljs-bullet">* </span>paint 绘制图片要使用的画笔<br>*/<br>canvas.drawBitmap (backgroundBitmap, 0, 0, paint);<br></code></pre></td></tr></table></figure>
+
+
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p>在 Android 中，给 <code>View</code> 设置圆角通常涉及以下几个步骤：</p>
+<ol>
+<li>**设置 <code>outlineProvider</code>**：为 <code>View</code> 设置一个 <code>Outline</code>，它定义了 <code>View</code> 的形状和圆角。</li>
+<li>**调用 <code>invalidateOutline()</code>**：通知系统 <code>View</code> 的轮廓已经改变，需要重新绘制。</li>
+<li>**设置 <code>clipToOutline</code>**：决定是否根据 <code>View</code> 的 <code>Outline</code> 裁剪其内容。</li>
+</ol>
+<p><strong>View 和 ViewGroup 的区别</strong></p>
+<ul>
+<li>ViewGroup 需要控制子 view 如何摆放的时候需要实现 onLayout。</li>
+<li>View 没有子 view，所以不需要 onLayout 方法，需要的话实现 onDraw</li>
+<li>继承系统已有控件或容器, 比如 FrameLayou，它会帮我们去实现 onMeasure 方法中，不需要去实现 onMeasure, 如果继承 View 或者 ViewGroup 的话需要 warp_content 属性的话，需要实现 onMeasure 方法</li>
+<li>自定义 ViewGroup 大多时候是控制子 view 如何摆放，并且做相应的变化（滑动页面、切换页面等）。</li>
+<li>自定义 view 主要是通过 onDraw 画出一些形状，然后通过触摸事件去决定如何变化</li>
+</ul>
+<p><strong>scrollTo ()和 scrollBy ()</strong></p>
+<ul>
+<li>scrollTo 将当前视图的基准点移动到某个点（坐标点）；</li>
+<li>ScrollBy 移动当前 view 内容移动一段距离。</li>
+<li>为正时，图片向左移动，为负时，图片向右移动 （跟下面的坐标轴是反的）</li>
+</ul>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%87%AA%E5%AE%9A%E4%B9%89View%E6%80%BB%E7%BB%93.resources/2023/09/15/18-48-24-b73202fc1ce8e4c16fe67942b082bb7a-722549-43d324.png" srcset="/img/loading.gif" lazyload alt="722549|700"></p>
+<p>三⻆函数的计算横向的位移是 cos，纵向的位移是 sin</p>
+<h4 id="drawChild"><a href="#drawChild" class="headerlink" title="drawChild"></a>drawChild</h4><p>![[Pasted image 20250702163133.png]]</p>
+<ul>
+<li><strong>触发条件</strong>：<ul>
+<li>View 首次附加到窗口时</li>
+<li>View 的可见性发生变化时</li>
+<li>调用 <code>invalidate()</code> 或 <code>postInvalidate()</code> 时</li>
+<li>视图布局发生变化时（调用 <code>requestLayout()</code></li>
+<li>动画执行期间（每帧重绘）</li>
+</ul>
+</li>
+</ul>
+<h4 id="dispatchDraw"><a href="#dispatchDraw" class="headerlink" title="dispatchDraw"></a>dispatchDraw</h4><p>dispatchDraw (Canvas canvas) 方法是 ViewGroup 类的一个受保护的方法，用于处理视图组的绘制流程。它会在以下几种情况下被调用：</p>
+<ol>
+<li>当视图树中的某个视图或视图组需要重新绘制时。</li>
+<li>当视图树的布局发生变化时。<br>当调用了 invalidate () 或 requestLayout () 方法后，导致视图需要重新布局和绘制时。</li>
+</ol>
+<p>dispatchDraw (Canvas canvas) 的主要作用是将绘制任务分发给它的子视图。当 dispatchDraw 被调用时，它会间接导致子视图的 onDraw (Canvas canvas) 方法被调用。这是通过以下步骤完成的：</p>
+<ol>
+<li>dispatchDraw 通常会调用 drawChild (Canvas canvas, View child, long drawingTime) 方法来绘制每个子视图。</li>
+<li>drawChild 方法内部会调用子视图的 draw (Canvas canvas) 方法。<br>子视图的 draw (Canvas canvas) 方法会进一步调用 onDraw (Canvas canvas) 方法来进行实际的绘制工作。因此，dispatchDraw 通过一系列调用链最终导致子视图的 onDraw 方法被执行，从而完成子视图的绘制</li>
+</ol>
+<h3 id="onFinishInflate-获取子View"><a href="#onFinishInflate-获取子View" class="headerlink" title="onFinishInflate 获取子View"></a>onFinishInflate 获取子View</h3><p>当 xml 被填充完毕时调用，在自定义 viewgroup 中，可以通过这个方法获得子 view 对象</p>
+<figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs aspectj"><span class="hljs-keyword">protected</span> <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">onFinishInflate</span> <span class="hljs-params">()</span> </span>&#123;<br>		<span class="hljs-keyword">super</span>.onFinishInflate ();<br>		<span class="hljs-comment">// 容错性检查 (至少有俩子 View, 子 View 必须是 ViewGroup 的子类)</span><br>		<span class="hljs-keyword">if</span> (getChildCount () &lt; <span class="hljs-number">2</span>)&#123;<br>			<span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> IllegalStateException (<span class="hljs-string">&quot;布局至少有俩孩子. Your ViewGroup must have 2 children at least.&quot;</span>);<br>		&#125;<br>		<br>		mLeftContent = (ViewGroup) getChildAt (<span class="hljs-number">0</span>);<br>		mMainContent = (ViewGroup) getChildAt (<span class="hljs-number">1</span>);<br>	&#125;<br></code></pre></td></tr></table></figure>
+<h3 id="获得-View-宽高的几种方式"><a href="#获得-View-宽高的几种方式" class="headerlink" title="获得 View 宽高的几种方式"></a>获得 View 宽高的几种方式</h3><p><strong>获取 View 宽高的几种方法</strong></p>
+<ol>
+<li>OnGlobalLayoutListener 获取 </li>
+<li>OnPreDrawListener 获取</li>
+<li>OnLayoutChangeListener 获取 </li>
+<li>重写 View 的 onSizeChanged </li>
+<li>使用 View.post 方法</li>
+</ol>
+<ul>
+<li>onWindowFocusChanged：View 已经初始化完毕，宽高已经有了，需要注意 onWindowFocusChanged 会被调用多次，Activity 得到焦点和失去焦点都会执行这个回调</li>
+</ul>
+<figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs aspectj"><span class="hljs-meta">@Override</span><br><span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">onWindowFocusChanged</span><span class="hljs-params">(<span class="hljs-keyword">boolean</span> hasFocus)</span> </span>&#123;<br>    <span class="hljs-keyword">super</span>.onWindowFocusChanged(hasFocus);<br>    <span class="hljs-keyword">if</span> (hasFocus) &#123;<br>        <span class="hljs-comment">//获得宽度</span><br>        <span class="hljs-keyword">int</span> width = view.getMeasuredWidth();<br>    &#125;<br>&#125;<br>    <br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>view.post (runnable)<br>  通过 post 可以将一个 runnable 投递到消息队列的尾部，等待 Looper 调用此 runnable 的时候，View 也已经初始化好了</li>
+<li>ViewTreeObserver</li>
+</ul>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs typescript"><span class="hljs-meta">@Overrideprotected</span> <span class="hljs-built_in">void</span> <span class="hljs-title function_">onStart</span>(<span class="hljs-params"></span>) &#123;<br>    <span class="hljs-variable language_">super</span>.<span class="hljs-title function_">onStart</span>();<br>    <span class="hljs-title class_">ViewTreeObserver</span> observer=view.<span class="hljs-title function_">getViewTreeObserver</span>();<br>    observer.<span class="hljs-title function_">addOnGlobalLayoutListener</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">ViewTreeObserver</span>.<span class="hljs-title class_">OnGlobalLayoutListener</span>() &#123;<br>        <span class="hljs-meta">@Override</span><br>        <span class="hljs-keyword">public</span> <span class="hljs-built_in">void</span> <span class="hljs-title function_">onGlobalLayout</span>(<span class="hljs-params"></span>) &#123;<br>            view.<span class="hljs-title function_">getViewTreeObserver</span>().<span class="hljs-title function_">removeOnGlobalLayoutListener</span>(<span class="hljs-variable language_">this</span>);<br>            int width=view.<span class="hljs-title function_">getMeasuredWidth</span>();<br>        &#125;<br>    &#125;);&#125;<br></code></pre></td></tr></table></figure>
+<h3 id="padding"><a href="#padding" class="headerlink" title="padding"></a>padding</h3><p>padding 是属于本 View 的属性，不同于 margin (不需要自定义时做处理系统就能很好的使用 margin)，所以要在测量绘图时考虑它<br>测量时, desireSize&#x3D;实际所需 size+相应方向的 padding。</p>
+<h3 id="View-的绘制过程"><a href="#View-的绘制过程" class="headerlink" title="View 的绘制过程"></a>View 的绘制过程</h3><p>a.绘制背景 background.draw (canvas)<br>b.绘制自己 (onDraw)<br>c.绘制 children (dispatchDraw)<br>d.绘制装饰 (onDrawScrollBars)</p>
+<h3 id="坐标系"><a href="#坐标系" class="headerlink" title="坐标系"></a>坐标系</h3><p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%87%AA%E5%AE%9A%E4%B9%89View%E6%80%BB%E7%BB%93.resources/2023/09/15/18-48-24-0c49e249319654f268cc47bcd208e651-6ffa7e36-0587-450e-946f-3f0cd60c6b82-ce8293.jpg" srcset="/img/loading.gif" lazyload alt="6ffa7e36-0587-450e-946f-3f0cd60c6b82"></p>
+<ul>
+<li>view 的位置参数有 left、right、top、bottom（可以 getXX 获得），3.0后又增加了几个参数：x、y、translationX 和 translationY，其中 x 和 y 是 view 左上角的坐标，而<strong>translationX 和 translationY 是 view 左上角相对于父容器的偏移量</strong>。这些参数都是相对于父容器的坐标，并且 translationX 和 translationY 的默认值是0，他们的换算关系是：x&#x3D;left+translationX   y&#x3D;top+ translationY。需要注意的是，view 在平移的过程中，top 和 left 表示的是原始左上角的位置信息，其值并不会发生改变，此时发生改变的是 x、y、translationX 和 translationY 这四个参数</li>
+<li>touchslop 是系统所能识别出的被认为是滑动的最小距离，比如当俩次滑动事件的滑动距离小于这个值，我们就可以认为未达到滑动距离的临界值</li>
+<li><strong>Rect 成员变量为 int 类型，RectF 为 float 类型</strong></li>
+</ul>
+<p><strong>MotionEvent 中 getRawX、getRawY 与 getX、getY 以及 View 中的 getScrollX、getScrollY</strong></p>
+<ul>
+<li>getRawX ()、getRawY ()返回的是触摸点相对于屏幕的位置，而 getX ()、getY ()返回的则是触摸点相对于 View 的位置。</li>
+<li>getScrollX ()与 getScrollY ()的值由调用 View 的 scrollTo (int x, int y)或者 scrollBy (int x, int y)产生，其中 scrollTo 是将 View 中的内容移动到指定的坐标 x、y 处，此 x、y 是相对于 View 的左上角，而不是屏幕的左上角。scrollBy (int x, int y)则是改变 View 中的相对位置，参数 x、y 为距离上一次的相对位置。</li>
+<li>当 View 中的内容向右移动时，getScrollX ()的值为负数，同理，向 scrollTo 与 scrollBy 的 x 中传入负数，view 中的内容向右移动，反之向左。</li>
+<li>当 View 中的内容向下移动时，getScrollY ()的值为负数，同理，向 scrollTo 与 scrollBy 的 y 中传入负数，view 中的内容向下移动，反之向上。</li>
+<li>把 getScrollx 的值看成坐标。比如 view 向右边移动20px。那么得到的值就是 view. getScrollx ()的值就是-20</li>
+</ul>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/09/15/2024-02-21-17-47-816b6ba1ef98f6a08e1fe1911ccc9175-18-48-24-816b6ba1ef98f6a08e1fe1911ccc9175-c82ecb89-00f7-476b-bbe9-fba0ac818be1-cc14ef-3b2099.png" srcset="/img/loading.gif" lazyload alt="c82ecb89-00f7-476b-bbe9-fba0ac818be1|600"></p>
+<h3 id="四种滑动的方法"><a href="#四种滑动的方法" class="headerlink" title="四种滑动的方法"></a>四种滑动的方法</h3><ol>
+<li>使用 scrollTo ()或 scrollBy ()，坐标是反的</li>
+<li>动画</li>
+<li>实时改变 layoutparams，重新布局</li>
+<li>layout（）方法</li>
+</ol>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><code class="hljs csharp">    <span class="hljs-function"><span class="hljs-keyword">public</span> boolean <span class="hljs-title">onTouchEvent</span> (<span class="hljs-params">MotionEvent <span class="hljs-keyword">event</span></span>)</span> &#123;<br>        <span class="hljs-comment">//获取到手指处的横坐标和纵坐标</span><br>        <span class="hljs-built_in">int</span> x = (<span class="hljs-built_in">int</span>) <span class="hljs-keyword">event</span>.getX ();<br>        <span class="hljs-built_in">int</span> y = (<span class="hljs-built_in">int</span>) <span class="hljs-keyword">event</span>.getY ();<br><br>        <span class="hljs-keyword">switch</span> (<span class="hljs-keyword">event</span>.getAction ()) &#123;<br>            <span class="hljs-keyword">case</span> MotionEvent. ACTION_DOWN:<br>                lastX = x;<br>                lastY = y;<br>                <span class="hljs-keyword">break</span>;<br>            <span class="hljs-keyword">case</span> MotionEvent. ACTION_MOVE:<br>                <span class="hljs-comment">//计算移动的距离</span><br>                <span class="hljs-built_in">int</span> offX = x - lastX;<br>                <span class="hljs-built_in">int</span> offY = y - lastY;<br>                <span class="hljs-comment">/**</span><br><span class="hljs-comment">                 * 第一种</span><br><span class="hljs-comment">                 * 调用 layout 方法来重新放置它的位置</span><br><span class="hljs-comment">                 */</span><br>                layout (getLeft () + offX, getTop () + offY,<br>                        getRight () + offX, getBottom () + offY);<br><span class="hljs-comment">//                /**</span><br><span class="hljs-comment">//                 * 第二种</span><br><span class="hljs-comment">//                 * 这两个方法分别是对左右移动和上下移动的封装，传入的就是偏移量</span><br><span class="hljs-comment">//                 */</span><br><span class="hljs-comment">//                offsetLeftAndRight (offX);</span><br><span class="hljs-comment">//                offsetTopAndBottom (offY);</span><br><span class="hljs-comment">//                /**</span><br><span class="hljs-comment">//                 * 第三种</span><br><span class="hljs-comment">//                 */</span><br><span class="hljs-comment">//                ViewGroup. MarginLayoutParams mlp =</span><br><span class="hljs-comment">//                        (ViewGroup. MarginLayoutParams) getLayoutParams ();</span><br><span class="hljs-comment">//                mlp. leftMargin = getLeft () + offX;</span><br><span class="hljs-comment">//                mlp. topMargin = getTop () + offY;</span><br><span class="hljs-comment">//                setLayoutParams (mlp);</span><br><span class="hljs-comment">//                /**</span><br><span class="hljs-comment">//                 * 第四种</span><br><span class="hljs-comment">//                 * sceollTo (x, y)传入的应该是移动的终点坐标</span><br><span class="hljs-comment">//                 * scrollBy (dx, dy)传入的是移动的增量。</span><br><span class="hljs-comment">//                 * 通过 scrollBy 传入的值应该是你需要的那个增量的相反数</span><br><span class="hljs-comment">//                 */</span><br><span class="hljs-comment">//                ((View) getParent ()). scrollBy (-offX, -offY);</span><br>                <span class="hljs-keyword">break</span>;<br>        &#125;<br>        <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;<br>    &#125;<br></code></pre></td></tr></table></figure>
+<p>如果让 view 在一段时间内移动到某个位置 (不是快速滑动，弹性，有动画)方法：</p>
+<ol>
+<li>使用自定义动画 (让 view 在一段时间内做某件事），extends Animation，<br> 总要修改的是 translationx. y 这俩个值 (相对于父容器移动的距离)</li>
+<li>使用 Scoller，OverScroller。用于自动计算滑动的偏移<br> 模板 (固定代码):</li>
+</ol>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs less">	 * <span class="hljs-variable">@param</span> startX	开始时的 X 坐标<br>	 * <span class="hljs-variable">@param</span> startY	开始时的 Y 坐标<br>	 * <span class="hljs-variable">@param</span> disX		X 方向要移动的距离<br>	 * <span class="hljs-variable">@param</span> disY		Y 方向要移动的距离<br>myScroller.startScroll (getScrollX (), <span class="hljs-number">0</span>,distance,<span class="hljs-number">0</span>,Math.abs (distance));<span class="hljs-comment">//持续的时间</span><br><span class="hljs-comment">/**</span><br><span class="hljs-comment">	 * Scroller 不主动去调用这个方法</span><br><span class="hljs-comment">	 * 而 invalidate ()可以掉这个方法</span><br><span class="hljs-comment">	 * invalidate-&gt;draw-&gt;computeScroll</span><br><span class="hljs-comment">	 */</span><br>	<span class="hljs-variable">@Override</span><br>	public void computeScroll () &#123;<br>		<span class="hljs-selector-tag">super</span><span class="hljs-selector-class">.computeScroll</span> ();<br>		<span class="hljs-selector-tag">if</span> (scroller.computeScrollOffset ())&#123;<span class="hljs-comment">//返回 true, 表示动画没结束</span><br>			<span class="hljs-selector-tag">scrollTo</span> (scroller.getCurrX (), <span class="hljs-number">0</span>);<br>			<span class="hljs-selector-tag">invalidate</span> ();<br>		&#125;<br>	&#125;<br><br></code></pre></td></tr></table></figure>
+
+
+<h3 id="scroller、OverScroller"><a href="#scroller、OverScroller" class="headerlink" title="scroller、OverScroller"></a>scroller、OverScroller</h3><p>scroller 本身并不能实现 view 的滑动，它需要配合<code>view 的的 computeScroll 方法才能完成弹性滑动的效果</code>，它不断的让 view 重绘，而每一次重绘距滑动起始时间会有一个时间间隔，通过这个时间间隔 srcoller 就可以得出 view 当前的滑动位置，知道了滑动位置就可以通过 scrollTo 方法来完成 view 的滑动，就这样，view 的每一次重绘就会导致 view 进行小幅度的滑动，而多次的小幅度滑动就组成了弹性动画。</p>
+<p>scrollTo () 是瞬时方法，不会自动使用动画。如果要用动画，需要配合 View.computeScroll () 方法<br>computeScroll () 在 View 重绘时被自动调用，使用方式：</p>
+<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs scss"><span class="hljs-comment">// onTouchEvent () 中：例如滑动等等</span><br>overScroller<span class="hljs-selector-class">.startScroll</span> (startX, startY, dx, dy);<br>postInvalidateOnAnimation ();<br>......<br><span class="hljs-comment">// onTouchEvent () 外：</span><br><span class="hljs-keyword">@Override</span><br>public void computeScroll () &#123;<br>  if (overScroller.computeScrollOffset ()) &#123; <span class="hljs-comment">//</span><br>   计算实时位置<br>   scrollTo (overScroller.getCurrX (),<br>    overScroller<span class="hljs-selector-class">.getCurrY</span> ()); <span class="hljs-comment">// 更新⾯面</span><br>   postInvalidateOnAnimation (); <span class="hljs-comment">// 下一帧继续</span><br>&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<h3 id="VelocityTracker"><a href="#VelocityTracker" class="headerlink" title="VelocityTracker"></a><strong>VelocityTracker</strong></h3><p>如果 GestureDetector 不能满⾜足需求，或者觉得 GestureDetector 过于复杂，可以自己处理 onTouchEvent () 的事件。但需要使用 VelocityTracker 来计算手指移动速度。<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%87%AA%E5%AE%9A%E4%B9%89View%E6%80%BB%E7%BB%93.resources/2023/09/15/18-48-24-e2f21bc194187a5f7fce4ec4b7bea389-unknown_filename.2-63c4be.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.2"></p>
+<h2 id="Canvas-使用"><a href="#Canvas-使用" class="headerlink" title="Canvas 使用"></a>Canvas 使用</h2><ul>
+<li>save：用来保存 Canvas 的状态。save 之后，可以调用 Canvas 的平移、放缩、旋转、错切、裁剪等操作。</li>
+<li>restore：用来恢复 Canvas 之前保存的状态。防止 save 后对 Canvas 执行的操作对后续的绘制有影响。</li>
+<li>save 和 restore 要配对使用 ( restore 可以比 save 少，但不能多)，如果 restore 调用次数比 save 多，会引发 Error 。save 和 restore 之间，往往夹杂的是对 Canvas 的特殊操作。</li>
+</ul>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%87%AA%E5%AE%9A%E4%B9%89View%E6%80%BB%E7%BB%93.resources/2023/09/15/18-48-24-f7592775deae25107cfe75ab882b5768-unknown_filename.5-0fe60d.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.5"></p>
+<p>Canvas 还提供了一系列位置转换的方法：rorate、scale、translate、skew (扭曲)等</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%87%AA%E5%AE%9A%E4%B9%89View%E6%80%BB%E7%BB%93.resources/2023/09/15/18-48-24-81deb6acb507bf858387fbfeb6b370ee-unknown_filename.4-d22638.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.4"><br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%87%AA%E5%AE%9A%E4%B9%89View%E6%80%BB%E7%BB%93.resources/2023/09/15/18-48-24-0cb6ab3258a144f14a5ec83708167dd2-unknown_filename.6-1c8b01.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.6"><br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%87%AA%E5%AE%9A%E4%B9%89View%E6%80%BB%E7%BB%93.resources/2023/09/15/18-48-24-b6c011951dffbd24d8a1520b4cd4c420-unknown_filename.7-df640a.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.7"><br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%87%AA%E5%AE%9A%E4%B9%89View%E6%80%BB%E7%BB%93.resources/2023/09/15/18-48-24-fe76544d8d5d7e04760bfe8205f085dc-unknown_filename.8-18c4ec.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.8"></p>
+<h2 id="inflate-方法"><a href="#inflate-方法" class="headerlink" title="inflate 方法"></a>inflate 方法</h2><p><strong>View.inflate () 和 LayoutInflator.from (). inflate () 有啥区别？</strong><br>调用 inflate () 方法的时候有时候传 null，有时候传 parent 是为啥？</p>
+<p>View inflate 只是个简易的包装方法，实际上还是调用的 LayoutInflater  inflate ;<br>当 root 传空时，会直接返回要加载的 layoutId，<strong>返回的 View 没有父布局且没有 LayoutParams</strong>；<br>当 root 不传空时，又分为 attachToRoot 为真或者为假：</p>
+<p>attachToRoot &#x3D; true 会为传入的 layoutId 直接设置参数，并将其添加到 root 中，<strong>然后将传入的 root 返回</strong>；<br>attachToRoot &#x3D; false 会为传入的 layoutId 设置参数，但是不会添加到 root ，然后返回 layoutId 对应的 View；</p>
+<p>当我们不为子 View 的展示负责时，attachToRoot 必须为 false；否则就会出现对应的负责人，比如上面说的 Rv 或者 FragmentManager，已经把布局 id 添加到 ViewGroup 了，我们还继续设置 attachToRoot 为 true，想要手动 addView，那必然会发生 <strong>child already has parent</strong>的错误。</p>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs pgsql"><span class="hljs-built_in">public</span> ViewHolder onCreateViewHolder(ViewGroup parent, <span class="hljs-type">int</span> viewType) &#123;  <br>      LayoutInflater inflater = LayoutInflater.<span class="hljs-keyword">from</span>(getActivity());  <br>      <span class="hljs-keyword">View</span> <span class="hljs-keyword">view</span> = inflater.inflate(R.layout.item, parent, <span class="hljs-keyword">false</span>);  <br>      <span class="hljs-keyword">return</span> <span class="hljs-built_in">new</span> ViewHolder(<span class="hljs-keyword">view</span>);  <br>&#125;<br><br><br><span class="hljs-built_in">public</span> <span class="hljs-keyword">View</span> onCreateView(LayoutInflater inflater, ViewGroup container, <br>                         Bundle savedInstanceState) &#123;<br>    <span class="hljs-keyword">return</span> inflater.inflate(R.layout.fragment_layout, parentViewGroup, <span class="hljs-keyword">false</span>); <br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Android/" class="category-chain-item">Android</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/Android/view/" class="category-chain-item">view</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>1.自定义View总结</div>
+      <div>http://peiniwan.github.io/2025/12/618995c41398.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>六月的雨</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年12月16日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/12/be54c5ef8b71.html" title="2.约束布局ConstraintLayout">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">2.约束布局ConstraintLayout</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/12/bbf498878f13.html" title="Gradle插件">
+                        <span class="hidden-mobile">Gradle插件</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"OwNIdaopOn1rwNhtotGOGC0B-gzGzoHsz","appKey":"eadytQ2XqWmxuvAKeg08XX83","path":"window.location.pathname","placeholder":null,"avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":true,"recordIP":false,"serverURLs":"https://ownidaop.lc-cn-n1-shared.com","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

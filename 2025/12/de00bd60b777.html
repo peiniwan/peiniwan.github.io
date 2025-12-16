@@ -1,0 +1,761 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="六月的雨">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="JAVA Lambda闭包就是Lambda 表达式lambda 表达式，通常是在需要一个函数，但是又不想去命名一个函数的场合下使用，也就是匿名函数。而Lambda可以简化匿名函数，使代码简洁。也可以将一个代码块赋值给一个变量，在调用方法的时候，可以直接将这个lambda表达式当作参数传递进去链接  什么是Lambda?我们知道，对于一个Java变量，我们可以赋给其一个“值”。 如果你想把“一块代码">
+<meta property="og:type" content="article">
+<meta property="og:title" content="java Lambda">
+<meta property="og:url" content="http://peiniwan.github.io/2025/12/de00bd60b777.html">
+<meta property="og:site_name" content="六月的雨的笔记">
+<meta property="og:description" content="JAVA Lambda闭包就是Lambda 表达式lambda 表达式，通常是在需要一个函数，但是又不想去命名一个函数的场合下使用，也就是匿名函数。而Lambda可以简化匿名函数，使代码简洁。也可以将一个代码块赋值给一个变量，在调用方法的时候，可以直接将这个lambda表达式当作参数传递进去链接  什么是Lambda?我们知道，对于一个Java变量，我们可以赋给其一个“值”。 如果你想把“一块代码">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-c8a411081ee3b5bc0e4cbcf524008ee3-unknown_filename-1c39f7.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-bcb8e51fd7ccf4cdd5815eb654adb5c5-unknown_filename.1-e7e944.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-b5483cd4e1b24538648d914404bbc0bb-unknown_filename.2-74cb8c.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-b550e963a52af94425923b3a5a3c94fe-unknown_filename.3-37cde3.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-f2106c26a579a34ada3bc2eddd174a17-unknown_filename.4-cbb256.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-b963d4d265d0f5076d97dfe6bd9598ff-unknown_filename.5-6b2d8e.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-eeea87955d4f070b2310b8944e232d46-unknown_filename.6-58325d.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-a0eca88c88a767040bc3fc03c85be9dc-unknown_filename.7-91289b.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-e8801d9a1ea836c720eeac8c45045c2a-unknown_filename.9-c60d71.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-f83e1c53aa08985ddedfae71c47d89dd-unknown_filename.10-13e9e2.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-ec38378f0f999646da004c4c5ae3b37e-unknown_filename.12-33d45b.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-5bc2ca944d3f7b68946259a36a9b38c4-unknown_filename.13-6db5d6.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-7f52144c8831edaa4d6bc2d6d2f8ee83-unknown_filename.14-b5fa2a.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-9fe1b8b0b26596922b02a40ccb725744-unknown_filename.15-9e087e.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-71d51708fef84df2ef432897375b8800-unknown_filename.16-2a5f2c.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-aace1c7f50774f12c96486d90f7ae8c4-unknown_filename.17-f55e6d.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-12c8a27171db3c87230826528d8af218-unknown_filename.18-10c8a6.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-87567c236f506bf934eb6aab3e143918-unknown_filename.19-5ce731.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-060fd1c2142a2e9fd497be4a5a6004ec-unknown_filename.20-c06aa5.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-18c0379d041e8fbd2736e614088f2302-unknown_filename.21-2c5c1e.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-b2b683618ce6c75a03651848be8bfacb-unknown_filename.22-f5235c.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-58ec0225469183c57e71cb453687ac25-unknown_filename.23-c5626c.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-3c406fa8a204d56f25099ed7d21ad484-unknown_filename.24-ff37b0.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-72ea94d133222f1de35cd68f8e9ed4d7-unknown_filename.25-25766a.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-154a752183be052647f976f88363f659-unknown_filename.26-6d82e3.png">
+<meta property="article:published_time" content="2025-12-16T13:59:22.475Z">
+<meta property="article:modified_time" content="2024-03-22T02:53:00.000Z">
+<meta property="article:author" content="六月的雨">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-c8a411081ee3b5bc0e4cbcf524008ee3-unknown_filename-1c39f7.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>java Lambda - 六月的雨的笔记</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"peiniwan.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>六月的雨的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="java Lambda"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-12-16 21:59" pubdate>
+          2025年12月16日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.8k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          16 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">java Lambda</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="JAVA-Lambda"><a href="#JAVA-Lambda" class="headerlink" title="JAVA Lambda"></a>JAVA Lambda</h2><p>闭包就是Lambda 表达式<br>lambda 表达式，通常是在需要一个函数，但是又不想去命名一个函数的场合下使用，也就是匿名函数。而Lambda可以简化匿名函数，使代码简洁。<br>也可以将一个代码块赋值给一个变量，在调用方法的时候，可以直接将这个lambda表达式当作参数传递进去<a target="_blank" rel="noopener" href="https://www.zhihu.com/question/20125256/answer/324121308">链接</a></p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-c8a411081ee3b5bc0e4cbcf524008ee3-unknown_filename-1c39f7.png" srcset="/img/loading.gif" lazyload alt="unknown_filename"></p>
+<p>什么是Lambda?我们知道，对于一个Java变量，我们可以赋给其一个“值”。<img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-bcb8e51fd7ccf4cdd5815eb654adb5c5-unknown_filename.1-e7e944.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.1"></p>
+<p>如果你想把“一块代码”赋给一个Java变量，应该怎么做呢？<br>比如，我想把右边那块代码，赋给一个叫做aBlockOfCode的Java变量：<img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-b5483cd4e1b24538648d914404bbc0bb-unknown_filename.2-74cb8c.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.2"></p>
+<p>在Java 8之前，这个是做不到的。但是Java 8问世之后，利用Lambda特性，就可以做到了。<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-b550e963a52af94425923b3a5a3c94fe-unknown_filename.3-37cde3.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.3"></p>
+<p>当然，这个并不是一个很简洁的写法。所以，为了使这个赋值操作更加elegant, 我们可以移除一些没用的声明。<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-f2106c26a579a34ada3bc2eddd174a17-unknown_filename.4-cbb256.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.4"></p>
+<p>这样，我们就成功的非常优雅的把“一块代码”赋给了一个变量。而“这块代码”，或者说“这个被赋给一个变量的函数”，就是一个Lambda表达式。<br>但是这里仍然有一个问题，就是变量aBlockOfCode的类型应该是什么？<br>在Java 8里面，所有的Lambda的类型都是一个接口，而Lambda表达式本身，也就是”那段代码“，需要是这个接口的实现。这是我认为理解Lambda的一个关键所在，简而言之就是，Lambda表达式本身就是一个接口的实现。直接这样说可能还是有点让人困扰，我们继续看看例子。我们给上面的aBlockOfCode加上一个类型：<img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-b963d4d265d0f5076d97dfe6bd9598ff-unknown_filename.5-6b2d8e.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.5"></p>
+<p>这种只有一个接口函数需要被实现的接口类型，我们叫它”函数式接口“。<br>为了避免后来的人在这个接口中增加接口函数导致其有多个接口函数需要被实现，变成”非函数接口”，我们可以在这个上面加上一个声明@FunctionalInterface, 这样别人就无法在里面添加新的接口函数了：<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-eeea87955d4f070b2310b8944e232d46-unknown_filename.6-58325d.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.6"></p>
+<p>这样，我们就得到了一个完整的Lambda表达式声明：<img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-a0eca88c88a767040bc3fc03c85be9dc-unknown_filename.7-91289b.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.7"></p>
+<p>Lambda 表达式有什么作用?最直观的作用就是使得代码变得异常简洁。我们可以对比一下 Lambda 表达式和传统的 Java 对同一个接口的实现：</p>
+<p>这两种写法本质上是等价的。但是显然，Java 8中的写法更加优雅简洁。并且，由于 Lambda 可以直接赋值给一个变量，我们就可以直接把 Lambda 作为参数传给函数, 而传统的 Java 必须有明确的接口实现的定义，初始化才行：<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-e8801d9a1ea836c720eeac8c45045c2a-unknown_filename.9-c60d71.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.9"></p>
+<p>有些情况下，这个接口实现只需要用到一次。传统的Java 7必须要求你定义一个“污染环境”的接口实现MyInterfaceImpl，而相较之下Java 8的Lambda, 就显得干净很多。<img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-f83e1c53aa08985ddedfae71c47d89dd-unknown_filename.10-13e9e2.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.10"></p>
+<p>Lambda结合FunctionalInterface Lib, forEach, stream()，method reference等新特性可以使代码变的更加简洁！<br>直接上例子。假设 Person 的定义和 List&lt;Person&gt;的值都给定。</p>
+<p>现在需要你打印出guiltyPersons List里面所有LastName以”Z”开头的人的FirstName。<br>原生态Lambda写法：定义两个函数式接口，定义一个静态函数，调用静态函数并给参数赋值Lambda表达式。<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-ec38378f0f999646da004c4c5ae3b37e-unknown_filename.12-33d45b.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.12"></p>
+<p>这个代码实际上已经比较简洁了，但是我们还可以更简洁么？当然可以。在Java 8中有一个函数式接口的包，里面定义了大量可能用到的函数式接口（java.util.function (Java Platform SE 8 )）。<br>所以，我们在这里压根都不需要定义 NameChecker 和 Executor 这两个函数式接口，直接用 Java 8函数式接口包里的 Predicate&lt;\T&gt;和 Consumer&lt;\T&gt;就可以了——因为他们这一对的接口定义和 NameChecker&#x2F;Executor 其实是一样的。</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-5bc2ca944d3f7b68946259a36a9b38c4-unknown_filename.13-6db5d6.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.13"></p>
+<p>第一步简化 - 利用函数式接口包：<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-7f52144c8831edaa4d6bc2d6d2f8ee83-unknown_filename.14-b5fa2a.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.14"></p>
+<p>静态函数里面的 for each 循环其实是非常碍眼的。这里可以利用 Iterable 自带的 forEach()来替代。forEach()本身可以接受一个 Consumer&lt;\T&gt; 参数。</p>
+<p>第二步简化 - 用Iterable.forEach()取代foreach loop：<img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-9fe1b8b0b26596922b02a40ccb725744-unknown_filename.15-9e087e.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.15"></p>
+<p>由于静态函数其实只是对List进行了一通操作，这里我们可以甩掉静态函数，直接使用stream()特性来完成。<br>stream()的几个方法都是接受 Predicate&lt;\T&gt;，Consumer&lt;\T&gt;等参数的（java.util.stream (Java Platform SE 8 )）。你理解了上面的内容，stream()这里就非常好理解了，并不需要多做解释。</p>
+<p>第三步简化 - 利用stream()替代静态函数：<img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-71d51708fef84df2ef432897375b8800-unknown_filename.16-2a5f2c.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.16"></p>
+<p>对比最开始的Lambda写法，这里已经非常非常简洁了。但是如果，我们的要求变一下，变成print这个人的全部信息，及p -&gt; System.out.println(p);</p>
+<p>那么还可以利用Method reference来继续简化。所谓Method reference, 就是用已经写好的别的Object&#x2F;Class的method来代替Lambda expression。格式如下：<img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-aace1c7f50774f12c96486d90f7ae8c4-unknown_filename.17-f55e6d.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.17"></p>
+<p>第四步简化 - 如果是println(p)，则可以利用Method reference代替forEach中的Lambda表达式：<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-12c8a27171db3c87230826528d8af218-unknown_filename.18-10c8a6.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.18"></p>
+<p>这基本上就是能写的最简洁的版本了。</p>
+<p>在Java 8中，我们会使用Lambda表达式创建匿名方法，<strong>但是有时候，我们的Lambda表达式可能仅仅调用一个已存在的方法</strong>，而不做任何其它事，对于这种情况，通过一个方法名字来引用这个已存在的方法会更加清晰，Java 8的方法引用允许我们这样做。</p>
+<p><strong>方法引用</strong>是一个更加紧凑，易读的Lambda表达式，注意方法引用是一个Lambda表达式，其中方法引用的操作符是双冒号”::”。<br>方法引用 Person:: compareByAge 在语义上与 Lambda 表达式 (a, b) -&gt; Person.compareByAge(a, b) 是等同的，都有如下特性：真实的参数是拷贝自 Comparator&lt;\Person&gt;.compare 方法，即(Person, Person)；表达式体调用 Person.compareByAge 方法；可以省略掉参数 <img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-87567c236f506bf934eb6aab3e143918-unknown_filename.19-5ce731.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.19"></p>
+<p>Lambda 配合 Optional&lt;\T&gt;可以使 Java 对于 null 的处理变的异常优雅这里假设我们有一个 person object，以及一个 person object 的 Optional wrapper: <img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-060fd1c2142a2e9fd497be4a5a6004ec-unknown_filename.20-c06aa5.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.20"></p>
+<p>Optional&lt;\T&gt;如果不结合 Lambda 使用的话，并不能使原来繁琐的 null check 变的简单。<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-18c0379d041e8fbd2736e614088f2302-unknown_filename.21-2c5c1e.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.21"></p>
+<p>只有当 Optional&lt;\T&gt;结合 Lambda 一起使用的时候，才能发挥出其真正的威力！我们现在就来对比一下下面四种常见的 null 处理中，Java 8的 Lambda+Optional&lt;<br>T&gt;和传统 Java 两者之间对于 null 的处理差异。情况一 - 存在则开干 </p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-b2b683618ce6c75a03651848be8bfacb-unknown_filename.22-f5235c.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.22"></p>
+<p>情况二 - 存在则返回，无则返回屁<img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-58ec0225469183c57e71cb453687ac25-unknown_filename.23-c5626c.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.23"><br>情况三 - 存在则返回，无则由函数产生<img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-3c406fa8a204d56f25099ed7d21ad484-unknown_filename.24-ff37b0.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.24"><br>情况四 - 夺命连环null检查<img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-72ea94d133222f1de35cd68f8e9ed4d7-unknown_filename.25-25766a.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.25"></p>
+<p>由上述四种情况可以清楚地看到，Optional&lt;\T&gt;+Lambda 可以让我们少写很多 ifElse 块。尤其是对于情况四那种夺命连环 null 检查，传统 java 的写法显得冗长难懂，而新的 Optional&lt;<br>T&gt;+Lambda 则清新脱俗，清楚简洁。</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/kotlin%E3%80%81Lambda.resources/2023/09/15/18-51-19-154a752183be052647f976f88363f659-unknown_filename.26-6d82e3.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.26"></p>
+<p>关于Java的Lambda, 还有东西需要讨论和学习。比如如何handle lambda exception，如何利用Lambda的特性来进行parallel processing等。</p>
+<p>总之，我只是一如既往地介绍个大概，让你大概知道，哦！原来是这样子就OK了。网上关于Lambda有很多相关的教程，多看多练。假以时日，必定有所精益。 </p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%85%B6%E4%BB%96%E8%AF%AD%E8%A8%80/" class="category-chain-item">其他语言</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E5%85%B6%E4%BB%96%E8%AF%AD%E8%A8%80/kotlin/" class="category-chain-item">kotlin</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>java Lambda</div>
+      <div>http://peiniwan.github.io/2025/12/de00bd60b777.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>六月的雨</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年12月16日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/12/7cded30043dc.html" title="加密">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">加密</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/12/3bd34b53fec4.html" title="9.代理、反射、Hook">
+                        <span class="hidden-mobile">9.代理、反射、Hook</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"OwNIdaopOn1rwNhtotGOGC0B-gzGzoHsz","appKey":"eadytQ2XqWmxuvAKeg08XX83","path":"window.location.pathname","placeholder":null,"avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":true,"recordIP":false,"serverURLs":"https://ownidaop.lc-cn-n1-shared.com","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

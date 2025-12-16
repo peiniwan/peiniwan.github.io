@@ -1,0 +1,845 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="六月的雨">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="树 Flutter 的绘制流程  我们的写的代码是 Widget 。Widget 是配置（描述了 UI 应该是什么样子的），不做布局和绘制，他会被 inflate（填充）到 Element Element 是桥梁，持有 Widget 和 RenderObject，负责管理 Widget 的生命周期、Diff、更新。 RenderObject 负责布局和绘制 Widget 与 Element 是多对">
+<meta property="og:type" content="article">
+<meta property="og:title" content="4-Flutter基础知识">
+<meta property="og:url" content="http://peiniwan.github.io/2025/12/32b8b7f5fae8.html">
+<meta property="og:site_name" content="六月的雨的笔记">
+<meta property="og:description" content="树 Flutter 的绘制流程  我们的写的代码是 Widget 。Widget 是配置（描述了 UI 应该是什么样子的），不做布局和绘制，他会被 inflate（填充）到 Element Element 是桥梁，持有 Widget 和 RenderObject，负责管理 Widget 的生命周期、Diff、更新。 RenderObject 负责布局和绘制 Widget 与 Element 是多对">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://obsidian-yupic.oss-cn-beijing.aliyuncs.com/mis/20240315222429.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Flutter_Tips.resources/2023/09/15/18-50-55-a78bd6be7c25bb027b2d3e58f4394e03-unknown_filename.7-1faf21.png">
+<meta property="article:published_time" content="2025-12-16T13:59:22.522Z">
+<meta property="article:modified_time" content="2024-03-29T03:16:00.000Z">
+<meta property="article:author" content="六月的雨">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://obsidian-yupic.oss-cn-beijing.aliyuncs.com/mis/20240315222429.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>4-Flutter基础知识 - 六月的雨的笔记</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"peiniwan.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>六月的雨的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="4-Flutter基础知识"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-12-16 21:59" pubdate>
+          2025年12月16日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.7k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          31 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">4-Flutter基础知识</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="树"><a href="#树" class="headerlink" title="树"></a>树</h2><p> Flutter 的绘制流程</p>
+<ol>
+<li>我们的写的代码是 Widget 。Widget 是配置（描述了 UI 应该是什么样子的），不做布局和绘制，他会被 inflate（填充）到 Element</li>
+<li>Element 是桥梁，持有 Widget 和 RenderObject，负责管理 Widget 的生命周期、Diff、更新。</li>
+<li>RenderObject 负责布局和绘制</li>
+<li><strong>Widget</strong> <strong>与</strong> <strong>Element</strong> <strong>是多对一的关系</strong>，但 Element 对 RenderObject 是一一对应</li>
+<li>BuildContext 就是 Widget 对应的 Element，可以访问树结构和 RenderObject</li>
+<li>在第一次创建 Widget 的时候，会对应创建一个 Element，然后将该元素插入树中。如果之后 Widget 发生了变化，则将其与旧的 Widget 进行比较，并且相应地更新 Element。重要的是，<em>Element 不会被重建，只是更新而已</em>。</li>
+</ol>
+<p>Widget 与 Element 的关系</p>
+<ul>
+<li><strong>多对一</strong>（很多 Widget 可以对应同一个 Element）：<ul>
+<li>其实更准确的说法是：<strong>一个 Element 会持有它当前对应的 Widget</strong>。</li>
+<li>当你调用 <code>setState</code> 或刷新 UI 时，Flutter 并不会每次都创建新的 Element。它会<strong>复用现有 Element</strong>，只更新 Element 持有的 Widget 配置。</li>
+<li><strong>所以一个 Element 在生命周期中可以绑定不同的 Widget（不同的配置），但同一时间只对应一个 Widget。</strong></li>
+<li>Widget 是不可变对象，每次 <code>build</code> 都会生成新 Widget。如果没有 Element，每次更新 UI 都要销毁旧的 RenderObject，再创建新的 RenderObject → 开销大（性能差）。</li>
+</ul>
+</li>
+</ul>
+<p><strong>为什么不直接用 Widget？</strong><br>Widget 本身不可变，而且 Widget 很轻量，每次刷新可能会生成很多新的 Widget。<br>Element 才是“长久驻扎”的实体，它会保存状态、管理生命周期和 RenderObject。</p>
+<h2 id="key"><a href="#key" class="headerlink" title="key"></a>key</h2><p>在使用 Flutter 时，我们经常会遇到一个叫做 Key 的东西。Key 是 Flutter 中几乎所有 widget 都具有的属性。</p>
+<p>Flutter 将 Key 描述为 Widget、Element 和 SemanticNodes 的标识符。这是什么意思呢？这意味着 Key 是<em>分配给 Widget 的唯一标识，通过 key 可以与其他 Widget 区分开来</em>。对于 Widget 在 Widget 树中改变位置的情况，Key 帮助保留它们的状态。说明 Key 大多数情况下对于有状态的 Widget 而言更有用，而对于无状态的 Widget 则不太需要。</p>
+<p><strong>GlobalKey</strong></p>
+<ul>
+<li>跨 Widget 树查找 Element&#x2F;State。</li>
+<li>可以用 <code>globalKey.currentState</code>、<code>globalKey.currentContext</code> 获取实例。</li>
+<li>一般用于 <code>Form</code>、<code>Scaffold</code>、<code>Navigator</code> 等场景。</li>
+</ul>
+<p><strong>Key 是 Widget 的身份标识</strong>，决定了 Widget&#x2F;Element&#x2F;RenderObject 是否复用。</p>
+<ul>
+<li><strong>没有 Key</strong>：按位置复用。</li>
+<li><strong>有 Key</strong>：按 Key 匹配，避免错位复用。</li>
+</ul>
+<p><strong>常用场景</strong>：<br>    - <code>ListView</code> &#x2F; <code>GridView</code> 子节点（复用&#x2F;顺序变化）。<br>    - 动画组件（防止错乱）。<br>    - <code>GlobalKey</code> 获取状态或上下文。</p>
+<h2 id="屏幕适配"><a href="#屏幕适配" class="headerlink" title="屏幕适配"></a>屏幕适配</h2><ol>
+<li>使用屏幕尺寸的相对值：避免直接使用固定的像素值来定义尺寸，而是使用相对于屏幕尺寸的比例值。可以使用 MediaQuery. of (context). size 获取屏幕的宽度和高度，然后根据需求进行比例计算。</li>
+<li>使用布局容器：使用诸如 Container、Expanded、Flexible 等布局容器来自动适应父容器的大小。这样可以确保界面在不同屏幕尺寸下的自适应性。</li>
+<li>使用响应式布局：使用 Flutter 提供的响应式布局框架，如 LayoutBuilder 和 FractionallySizedBox，来根据屏幕尺寸动态调整布局。</li>
+<li>使用自适应字体大小：根据屏幕尺寸和设备像素比例，使用 MediaQuery. of (context). textScaleFactor 来调整字体的大小，以确保在不同设备上字体的可读性和一致性。</li>
+<li>使用屏幕方向适配：根据屏幕的方向（横向或纵向），调整布局和元素的摆放方式，以提供更好的用户体验。</li>
+<li>使用 Flutter 插件：有一些 Flutter 插件和库可用于简化屏幕适配的工作，如 flutter_screenutil、sizer 等，它们提供了更方便的方法和工具来进行屏幕适配。</li>
+</ol>
+<h2 id="分层"><a href="#分层" class="headerlink" title="分层"></a>分层</h2><p>Flutter 框架自下而上分为 Embedder、Engine 和 Framework 三层。</p>
+<ul>
+<li>Embedder 是操作系统适配层，实现了渲染 Surface 设置，线程设置，以及平台插件等平台相关特性的适配；</li>
+<li>Engine 层负责图形绘制、文字排版和提供 Dart 运行时，Engine 层具有独立虚拟机，正是由于它的存在，Flutter 程序才能运行在不同的平台上，实现跨平台运行；</li>
+<li>Framework 层则是使用 Dart 编写的一套基础视图库，包含了动画、图形绘制和手势识别等功能，是使用频率最高的一层。<br><img src="http://obsidian-yupic.oss-cn-beijing.aliyuncs.com/mis/20240315222429.png" srcset="/img/loading.gif" lazyload alt="image.png|600"></li>
+</ul>
+<p><strong>FrameWork 层和 Engine 层，以及它们的作用</strong></p>
+<ul>
+<li>Flutter的FrameWork层是用Drat编写的框架（SDK），它实现了一套基础库，包含Material（Android风格UI）和Cupertino（iOS风格）的UI界面，下面是通用的Widgets（组件），之后是一些动画、绘制、渲染、手势库等。这个纯 Dart实现的 SDK被封装为了一个叫作 dart:ui的 Dart库。我们在使用 Flutter写 App的时候，直接导入这个库即可使用组件等功能。</li>
+<li>Flutter 的 Engine 层是 Skia 2D 的绘图引擎库，其前身是一个向量绘图软件，Chrome 和 Android 均采用 Skia 作为绘图引擎。Skia 提供了非常友好的 API，并且在图形转换、文字渲染、位图渲染方面都提供了友好、高效的表现。Skia 是跨平台的，所以可以被嵌入到 Flutter 的 iOS SDK 中，而不用去研究 iOS 闭源的 Core Graphics &#x2F; Core Animation。Android 自带了 Skia，所以 Flutter Android SDK 要比 iOS SDK 小很多。</li>
+</ul>
+<h2 id="Context"><a href="#Context" class="headerlink" title="Context"></a>Context</h2><p><code>BuildContext</code> 是一个将上下文信息与特定的 Widget 相关联的对象，与该 Widget 一起构成了 Flutter Widget 树的一部分。</p>
+<ul>
+<li>每个 <code>BuildContext</code> 对象只从属于一个 Widget。这意味着每个 Widget 都有一个与之关联的 <code>BuildContext</code> 对象，用于表示该 Widget 在 Widget 树中的位置和上下文信息</li>
+<li>查找父级 Widget：通过 <code>BuildContext</code>，可以访问当前 Widget 在 Widget 树中的父级 Widget，并进一步访问父级 Widget 的属性和方法。查找子级 Widget    </li>
+<li>访问主题（Theme）：<code>BuildContext</code> 可以用于获取当前 Widget 所在的主题数据，例如颜色、字体样式等。</li>
+</ul>
+<h2 id="StatefulWidget"><a href="#StatefulWidget" class="headerlink" title="StatefulWidget"></a>StatefulWidget</h2><p>![[1-Flutter分享#Stateful widgets]]</p>
+<p>![[1-Flutter分享#生命周期]]</p>
+<h2 id="热重载"><a href="#热重载" class="headerlink" title="热重载"></a>热重载</h2><p>Flutter 的热重载是基于 JIT 编译模式的<em>代码增量同步</em>。由于 JIT 属于动态编译，能够将 Dart 代码编译成生成中间代码，让 Dart VM 在运行时解释执行，因此可以通过动态更新中间代码实现增量同步。</p>
+<p>热重载的流程可以分为 5 步，包括：扫描工程改动、<em>增量编译、推送更新、代码合并</em>、Widget 重建。Flutter 在接收到代码变更后，并不会让 App 重新启动执行，而<em>只会触发 Widget 树的重新绘制</em>，因此可以保持改动前的状态，大大缩短了从代码修改到看到修改产生的变化之间所需要的时间。</p>
+<p>另一方面，由于涉及到状态的保存与恢复，<em>涉及状态兼容与状态初始化的场景，热重载是无法支持的</em>，如改动前后 Widget 状态无法兼容、全局变量与静态属性的更改、main 方法里的更改、initState 方法里的更改、枚举和泛型的更改等。</p>
+<p>可以发现，热重载提高了调试 UI 的效率，非常适合写界面样式这样需要反复查看修改效果的场景。但由于其状态保存的机制所限，热重载本身也有一些无法支持的边界。</p>
+<h2 id="FlutterEngineGroup"><a href="#FlutterEngineGroup" class="headerlink" title="FlutterEngineGroup"></a>FlutterEngineGroup</h2><p>FlutterEngineGroup 加快首次渲染的速度、还能降低内存占用<br>FlutterEngineGroup 是 Flutter 框架提供的一个类，用于管理多个 Flutter 引擎的组合。它提供了引擎的创建和销毁、引擎之间的通信、引擎的生命周期管理、资源共享和多引擎的并发执行等功能。通过 FlutterEngineGroup，可以灵活地管理和控制多个 Flutter 页面的运行和交互。</p>
+<p>共享资源：FlutterEngineGroup 允许多个 Flutter 引擎共享一些资源，如字体、图像等。通过资源的共享，可以避免多次加载相同的资源，从而减少内存占用。<br>引擎的生命周期管理：通过 FlutterEngineGroup，可以灵活地管理引擎的生命周期，包括启动引擎、暂停和恢复引擎等。合理管理引擎的生命周期可以在不需要时释放资源，从而减少内存占用。</p>
+<h3 id="🔹-1-背景：FlutterEngine-的问题"><a href="#🔹-1-背景：FlutterEngine-的问题" class="headerlink" title="🔹 1. 背景：FlutterEngine 的问题"></a>🔹 1. 背景：FlutterEngine 的问题</h3><p>在混合开发里（原生 + Flutter），如果你需要在 App 里启动多个 Flutter 页面，有两种常见做法：</p>
+<ol>
+<li><p><strong>单引擎模式</strong></p>
+<ul>
+<li>全 App 共用一个 <code>FlutterEngine</code>。</li>
+<li>优点：内存占用低，通信方便（共享 Dart Isolate）。</li>
+<li>缺点：多个 Flutter 页面共享同一个 <code>Navigator</code> 和状态，路由管理复杂，不够隔离。</li>
+</ul>
+</li>
+<li><p><strong>多引擎模式</strong></p>
+<ul>
+<li>每个 Flutter 页面创建一个新的 <code>FlutterEngine</code>。</li>
+<li>优点：页面完全隔离，互不影响。</li>
+<li>缺点：每个 Engine 都要单独初始化 Dart VM、Isolate，开销大（内存和启动时间）。</li>
+</ul>
+</li>
+</ol>
+<p>👉 问题就是：<strong>单引擎灵活性差，多引擎性能开销大。</strong></p>
+<hr>
+<h3 id="🔹-2-FlutterEngineGroup-的作用"><a href="#🔹-2-FlutterEngineGroup-的作用" class="headerlink" title="🔹 2. FlutterEngineGroup 的作用"></a>🔹 2. FlutterEngineGroup 的作用</h3><p><code>FlutterEngineGroup</code> 是 Flutter 提供的一种折中方案（自 Flutter 1.22 起支持）。</p>
+<p>它的核心点是：</p>
+<ul>
+<li><strong>多个 FlutterEngine 可以共享资源（Dart VM、AOT&#x2F;JIT 代码、Skia、字体、图片缓存等）</strong></li>
+<li>但 <strong>每个 Engine 有独立的 Dart Isolate 和状态</strong>。</li>
+</ul>
+<p>👉 简单来说：</p>
+<ul>
+<li>内存占用 ≈ 介于单引擎和多引擎之间（比多引擎省很多）。</li>
+<li>灵活性 ≈ 多引擎（页面互不干扰）。</li>
+</ul>
+<hr>
+<h3 id="🔹-3-好处总结"><a href="#🔹-3-好处总结" class="headerlink" title="🔹 3. 好处总结"></a>🔹 3. 好处总结</h3><h3 id="✅-1-多-FlutterEngine-的高性能支持"><a href="#✅-1-多-FlutterEngine-的高性能支持" class="headerlink" title="✅ 1. 多 FlutterEngine 的高性能支持"></a>✅ 1. 多 FlutterEngine 的高性能支持</h3><ul>
+<li>相比传统的“多引擎模式”，<strong>减少了重复资源加载</strong>（VM、AOT&#x2F;JIT snapshot、缓存）。</li>
+<li>多个 Flutter 页面可以快速启动，而不会因为每次都要初始化完整引擎而卡顿。</li>
+</ul>
+<h3 id="✅-2-每个页面独立隔离"><a href="#✅-2-每个页面独立隔离" class="headerlink" title="✅ 2. 每个页面独立隔离"></a>✅ 2. 每个页面独立隔离</h3><ul>
+<li>每个 <code>FlutterEngine</code> 都有独立的 Dart Isolate。</li>
+<li>页面之间不会共享全局变量，互不影响。</li>
+<li>比单引擎更容易做多业务模块（比如多个 Flutter 子应用）。</li>
+</ul>
+<h3 id="✅-3-保持-Flutter-页面体验一致"><a href="#✅-3-保持-Flutter-页面体验一致" class="headerlink" title="✅ 3. 保持 Flutter 页面体验一致"></a>✅ 3. 保持 Flutter 页面体验一致</h3><ul>
+<li>支持多个 Flutter 页面并存，页面切换流畅。</li>
+<li>尤其在 <strong>混合开发场景</strong> 下，适合“原生多 Activity&#x2F;多 VC + 多 Flutter 页面”结构。</li>
+</ul>
+<h3 id="✅-4-内存更可控"><a href="#✅-4-内存更可控" class="headerlink" title="✅ 4. 内存更可控"></a>✅ 4. 内存更可控</h3><ul>
+<li>相比完全多引擎模式，<strong>内存消耗降低</strong>（因为 Engine 之间共享了 VM 资源）。</li>
+<li>不会因为频繁开新 Engine 而导致 OOM。</li>
+</ul>
+<hr>
+<h3 id="🔹-4-适用场景"><a href="#🔹-4-适用场景" class="headerlink" title="🔹 4. 适用场景"></a>🔹 4. 适用场景</h3><ul>
+<li><strong>超级 App（SuperApp）</strong>：比如淘宝、美团这类多业务大应用，每个业务模块可以有独立 FlutterEngine。</li>
+<li><strong>多 Flutter 页面并存</strong>：比如你需要同时开多个 Flutter 界面（聊天窗口、活动页、个人页等）。</li>
+<li><strong>多团队协作开发</strong>：每个业务团队可以独立维护自己的 Flutter 模块，互不干扰。</li>
+</ul>
+<hr>
+<h3 id="🔹-5-总结一句话"><a href="#🔹-5-总结一句话" class="headerlink" title="🔹 5. 总结一句话"></a>🔹 5. 总结一句话</h3><blockquote>
+<p><strong><code>FlutterEngineGroup</code> 的好处是</strong>：<br>在保留多引擎独立性的同时，最大限度地共享底层资源，兼顾性能和隔离性，非常适合多 Flutter 页面、混合开发、大型 App 场景。</p>
+</blockquote>
+<h2 id="约束"><a href="#约束" class="headerlink" title="约束"></a>约束</h2><p> <strong>flutter 布局规则</strong><br>首先，上层 widget 向下层 widget <em>传递约束条件</em>；<br>然后，下层 widget 向上层 widget <em>传递大小信息</em>。<br>最后，上层 widget 决定下层 widget 的位置。</p>
+<h3 id="Row-嵌套-Row"><a href="#Row-嵌套-Row" class="headerlink" title="Row 嵌套 Row"></a>Row 嵌套 Row</h3><p>Row 和 Column <em>都只会在主轴方向占用尽可能大的空间</em>，而纵轴的长度则取决于他们最大子元素的长度<br>如果 Row 里面嵌套 Row，或者 Column 里面再嵌套 Column，那么<em>只有最外面的 Row 或 Column 会占用尽可能大的空间，里面 Row 或 Column 所占用的空间为实际大小</em></p>
+<p>🔹 1. Row &#x2F; Column 的特点</p>
+<p>Row &#x3D; 水平方向布局<br>Column &#x3D; 垂直方向布局</p>
+<p>它们的特点是：<br>在主轴方向（Row 横向 &#x2F; Column 纵向）会尽量占满父容器的剩余空间。<br>在交叉轴方向（Row 纵向 &#x2F; Column 横向）会根据子元素大小来决定。</p>
+<p>也就是说：<br>外层 Row&#x2F;Column 默认是“扩展型” → 会尽可能拉伸填满父容器（取决于约束）。<br>内层 Row&#x2F;Column 是“包裹内容” → 只会占自己孩子的大小（shrink-wrap）。</p>
+<p>🔹 2. 举个例子</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs less"><span class="hljs-selector-tag">Scaffold</span> (<br>  <span class="hljs-attribute">body</span>: Row (<br>    <span class="hljs-attribute">children</span>: [<br>      Container (<span class="hljs-attribute">width</span>: <span class="hljs-number">100</span>, <span class="hljs-attribute">height</span>: <span class="hljs-number">100</span>, <span class="hljs-attribute">color</span>: Colors. red),<br>      Row (<br>        <span class="hljs-attribute">children</span>: [<br>          Container (<span class="hljs-attribute">width</span>: <span class="hljs-number">50</span>, <span class="hljs-attribute">height</span>: <span class="hljs-number">50</span>, <span class="hljs-attribute">color</span>: Colors. blue),<br>          Container (<span class="hljs-attribute">width</span>: <span class="hljs-number">50</span>, <span class="hljs-attribute">height</span>: <span class="hljs-number">50</span>, <span class="hljs-attribute">color</span>: Colors. green),<br>        ],<br>      ),<br>    ],<br>  ),<br>);<br><br></code></pre></td></tr></table></figure>
+
+<p>运行效果：<br>外层 Row：会尝试在水平方向填满屏幕。<br>内层 Row：只会占用两个小方块的宽度（100px），不会自己把空间撑满。<br>👉 所以你看到的现象就是：最外层 Row 占满空间，里面的 Row 只占实际内容大小。</p>
+<p>🔹 3. 为什么会这样？<br>这是 Flutter 的约束规则（Box Constraints）：<br>父组件给子组件约束：最小宽度 &#x2F; 最大宽度 &#x2F; 最小高度 &#x2F; 最大高度。<br>Row &#x2F; Column 在主轴方向上会尽量满足父容器的最大空间。<br>但是在嵌套时，内层 Row&#x2F;Column 处于外层 Row&#x2F;Column 的交叉轴方向，所以它拿到的约束是 “可以小于最大值”，于是只会根据实际子内容大小来决定。</p>
+<p>🔹 4. 怎么让内层也“拉伸”？<br>如果你希望里面的 Row&#x2F;Column 也能拉满，需要用 Expanded 或 SizedBox. expand：<br>这样内层 Row 就会在外层 Row 的剩余空间里拉满。</p>
+<p>🔹 5. 总结<br>“只有最外面的 Row&#x2F;Column 会尽可能大，里面的 Row&#x2F;Column 只占实际大小” 的意思是：<br>外层 Row&#x2F;Column 在主轴方向会拉伸填满父容器。<br>内层 Row&#x2F;Column 默认不会主动拉伸，而是根据子内容大小决定。<br>如果你想让内层也拉伸，需要用 Expanded &#x2F; Flexible 来告诉 Flutter：我想要占满剩余空间。</p>
+<h3 id="ConstrainedBox"><a href="#ConstrainedBox" class="headerlink" title="ConstrainedBox"></a>ConstrainedBox</h3><p>ConstrainedBox: 对子组件添加额外的约束。例如，如果你想让子组件的最小高度是80像素<br>UnconstrainedBox: 不会对子组件产生任何限制，它允许其子组件按照其本身大小绘制, 一般用来去掉父约束</p>
+<p>在 Flutter 中，Container 的大小通常由其父组件和子组件共同决定。如果 Container <em>没有父组件</em>，或者它的父组件没有提供足够的约束，那么 Container 会尽可能地大。这就是为什么你看到的 Container 占据了整个屏幕。</p>
+<p>如果你想让 <code>Container</code> 的大小为特定的值，你需要确保它的父组件提供了足够的约束。例如，你可以将 <code>Container</code> 放在一个 <code>Center</code> 组件中，这样 <code>Container</code> 就会被约束在屏幕中心，而不是占据整个屏幕。</p>
+<h3 id="Align"><a href="#Align" class="headerlink" title="Align"></a>Align</h3><p>在<strong>Column</strong>控件外层包裹一层<strong>Align</strong>控件，是为了<strong>让 Column 控件的高度仅包裹其子控件的高度，而不是填充整个屏幕</strong>。Align 控件可以将其子控件对齐到指定位置，并根据子控件的大小来调整自身的大小。当您将 Align 控件的 alignment 属性设置为<strong>Alignment. topCenter</strong>时，它会将其子控件垂直居中对齐到顶部，并根据子控件的高度来调整自身的高度。度。度。度。。<br>如果您希望让 Column 控件填充整个屏幕，那么您可以不使用 Align 控件，直接将 Column 控件作为 Container 控件的子控件即可。</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Flutter_Tips.resources/2023/09/15/18-50-55-a78bd6be7c25bb027b2d3e58f4394e03-unknown_filename.7-1faf21.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.7"></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%85%B6%E4%BB%96%E8%AF%AD%E8%A8%80/" class="category-chain-item">其他语言</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E5%85%B6%E4%BB%96%E8%AF%AD%E8%A8%80/flutter/" class="category-chain-item">flutter</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>4-Flutter基础知识</div>
+      <div>http://peiniwan.github.io/2025/12/32b8b7f5fae8.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>六月的雨</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年12月16日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/12/888ee5ddd5f7.html" title="6-Dart语言">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">6-Dart语言</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/12/419bc25ead72.html" title="3-Flutter工作tips">
+                        <span class="hidden-mobile">3-Flutter工作tips</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"OwNIdaopOn1rwNhtotGOGC0B-gzGzoHsz","appKey":"eadytQ2XqWmxuvAKeg08XX83","path":"window.location.pathname","placeholder":null,"avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":true,"recordIP":false,"serverURLs":"https://ownidaop.lc-cn-n1-shared.com","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

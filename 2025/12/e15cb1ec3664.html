@@ -1,0 +1,782 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="六月的雨">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="注解注解和反射的区别 反射：JAVA 反射机制是在运行状态中，对于任意一个类 (class 文件)，都能够知道这个类的所有属性和方法。注解：降低项目的耦合度；自动完成一些规律性的代码；自动生成 java 代码，减轻开发者的工作量。而注解需要用到反射：定义注解，使用注解，读取注解（用到反射） 注解和反射效率问题 反射先 new 类 class，然后在从类里面 new 对象。Class.getMeth">
+<meta property="og:type" content="article">
+<meta property="og:title" content="注解、AOP、APT">
+<meta property="og:url" content="http://peiniwan.github.io/2025/12/e15cb1ec3664.html">
+<meta property="og:site_name" content="六月的雨的笔记">
+<meta property="og:description" content="注解注解和反射的区别 反射：JAVA 反射机制是在运行状态中，对于任意一个类 (class 文件)，都能够知道这个类的所有属性和方法。注解：降低项目的耦合度；自动完成一些规律性的代码；自动生成 java 代码，减轻开发者的工作量。而注解需要用到反射：定义注解，使用注解，读取注解（用到反射） 注解和反射效率问题 反射先 new 类 class，然后在从类里面 new 对象。Class.getMeth">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/09/15/2024-02-06-14-36-bc07632b5ecb5c7f392d21791fe030c6-18-51-39-bc07632b5ecb5c7f392d21791fe030c6-unknown_filename-eb0bec-a791eb.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/09/15/2024-02-06-14-36-1243f403caedbbb3673f06080749f3db-18-51-39-1243f403caedbbb3673f06080749f3db-unknown_filename.5-75728c-47e122.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/09/15/2024-02-06-14-36-342a714123aa06d8aade1fe8380aff94-18-51-39-342a714123aa06d8aade1fe8380aff94-unknown_filename.4-fc5fb1-e7410c.png">
+<meta property="article:published_time" content="2025-12-16T13:59:22.481Z">
+<meta property="article:modified_time" content="2024-03-25T01:32:00.000Z">
+<meta property="article:author" content="六月的雨">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/09/15/2024-02-06-14-36-bc07632b5ecb5c7f392d21791fe030c6-18-51-39-bc07632b5ecb5c7f392d21791fe030c6-unknown_filename-eb0bec-a791eb.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>注解、AOP、APT - 六月的雨的笔记</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"peiniwan.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>六月的雨的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="注解、AOP、APT"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-12-16 21:59" pubdate>
+          2025年12月16日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.9k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          24 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">注解、AOP、APT</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="注解"><a href="#注解" class="headerlink" title="注解"></a>注解</h2><p><strong>注解和反射的区别</strong></p>
+<p>反射：JAVA 反射机制是在运行状态中，对于任意一个类 (class 文件)，都能够知道这个类的所有属性和方法。<br>注解：降低项目的耦合度；自动完成一些规律性的代码；自动生成 java 代码，减轻开发者的工作量。<br>而注解需要用到反射：<br>定义注解，使用注解，读取注解（用到反射）</p>
+<p><strong>注解和反射效率问题</strong></p>
+<p>反射先 new 类 class，然后在从类里面 new 对象。Class.getMethod (…)还要查找所有的方法。<br>而注解编译期间就完成了注解的反射工作， jvm 只是读取。</p>
+<p><strong>反射的缺点</strong></p>
+<p>不安全<br>编译器没法对反射相关的代码做优化<br>慢的原因还有安全检查，访问控制等。比如说这个方法你能不能获得，能不能执行等，你传进的参数的类型检查等。比如说在使用反射调用方法的时候，传进的参数需要检查是否符合方法参数类型要求吧？<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/09/15/2024-02-06-14-36-bc07632b5ecb5c7f392d21791fe030c6-18-51-39-bc07632b5ecb5c7f392d21791fe030c6-unknown_filename-eb0bec-a791eb.png" srcset="/img/loading.gif" lazyload alt="unknown_filename|260"></p>
+<p><strong>注解的用法</strong></p>
+<p>获取类的注解<br>URLBuilder. Path path &#x3D;paramEntity.getClass (). getAnnotation (URLBuilder. Path. class);</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs kotlin">Builder(Retrofit retrofit, Method method) &#123;<br>  <span class="hljs-keyword">this</span>.retrofit = retrofit;<br>  <span class="hljs-keyword">this</span>.method = method;<br>  <span class="hljs-keyword">this</span>.methodAnnotations = method.getAnnotations();<br>  <span class="hljs-keyword">this</span>.parameterTypes = method.getGenericParameterTypes();<br>  <span class="hljs-keyword">this</span>.parameterAnnotationsArray = method.getParameterAnnotations();<br>&#125;<br></code></pre></td></tr></table></figure>
+<p><strong>获取方法的注解</strong></p>
+<p>Method.getAnnotations (); 是获取方法上面对应的注解。<br>method.getParameterAnnotations ()；获取的是方法参数上面的注解，是一个二维数组，第一个维度代表的是方法参数对应的下标，比如，一个方法有3个参数，那0代表第一个参数，1代表第二个参数，2代表第三个参数。</p>
+<p><strong>获取泛型参数</strong></p>
+<p>method.getGenericParameterTypes (); 获取的是方法参数的类型，里面带有实际的参数类型。</p>
+<h3 id="生命周期"><a href="#生命周期" class="headerlink" title="生命周期"></a>生命周期</h3><p>@Retention注解保留的生命周期</p>
+<ol>
+<li>SOURCE: <em>在源文件中有效（即源文件保留</em>）而被编译器丢弃，<em>运行的时候不会在 class 文件里</em>。(编译器在，运行时没有)　　　</li>
+<li>CLASS: 在 <em>class 文件中有效（即 class 保留）</em> 编译期注解　　</li>
+<li>RUNTIME: <em>在运行时有效（即运行时保留） 这个范围更大</em>，写这个一般不会有什么问题<br>生命周期：<em>SOURCE &lt; CLASS &lt; RUNTIME</em></li>
+</ol>
+<p><em>使用场景</em></p>
+<ol>
+<li>一般如果需要在<strong>运行时去动态获取注解信息</strong>，用 RUNTIME 注解，Retrofit</li>
+<li>要在编译时进行一些<em>预处理操作</em>，如 <strong>ButterKnife，用 CLASS 注解。注解会在 class 文件中存在，但是在运行时会被丢弃</strong></li>
+<li>做一些检查性的操作，<strong>如@Override，用 SOURCE 源码注解</strong>。注解仅存在源码级别，在编译的时候丢弃该注解</li>
+</ol>
+<p>@Target：注解对象的作用范围。</p>
+<p>创建一个注解遵循： public @interface 注解名 {方法参数} (运行时注入)</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Target(&#123;ElementType.FIELD&#125;)</span><br><span class="hljs-meta">@Retention(RetentionPolicy.RUNTIME)</span><br><span class="hljs-keyword">public</span> <span class="hljs-meta">@interface</span> getViewTo &#123;<br>	<span class="hljs-type">int</span> <span class="hljs-title function_">value</span><span class="hljs-params">()</span> <span class="hljs-keyword">default</span>  -<span class="hljs-number">1</span>;<br>&#125;<br><br><span class="hljs-comment">//绑定一个View （View不能为private 或者static）否则就会通过反射去获取</span><br><span class="hljs-meta">@BindView(R.id.textview)</span><br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Binding</span> &#123;<br>  <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">bind</span><span class="hljs-params">(Activity activity)</span> &#123;<br>	<span class="hljs-keyword">for</span> (Field field : activity.getClass().getDeclaredFields()) &#123;<br>	  <span class="hljs-type">BindView</span> <span class="hljs-variable">bindView</span> <span class="hljs-operator">=</span> field.getAnnotation(BindView.class);<br>	  <span class="hljs-keyword">if</span> (bindView != <span class="hljs-literal">null</span>) &#123;<br>		<span class="hljs-keyword">try</span> &#123;<br>		  field.setAccessible(<span class="hljs-literal">true</span>);<br>		  field.set(activity, activity.findViewById(bindView.value()));<br>		&#125; <span class="hljs-keyword">catch</span> (IllegalAccessException e) &#123;<br>		  e.printStackTrace();<br>		&#125;<br>	  &#125;<br>	&#125;<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h4 id="编译时注解-（class）与运行时注解（RUNTIME）"><a href="#编译时注解-（class）与运行时注解（RUNTIME）" class="headerlink" title="编译时注解 （class）与运行时注解（RUNTIME）"></a>编译时注解 （class）与运行时注解（RUNTIME）</h4><p>保留阶段: 编译时注解在编译期间被存储在. Class 字节码文件中，运行时无法访问。而运行时注解保留到运行时，可在运行时访问。<br>原理: <strong>编译时注解通过 APT、AbstractProcessor 等机制工作，而运行时注解是 Java 反射机制</strong>。<br>性能: 运行时注解由于使用 Java 反射，对性能有影响。编译时注解对性能没影响。<br>立物: <strong>运行时注解只需自定义注解处理器即可，不会产生其他文件。而编译时注解通常会立生新的 Java 源文件</strong>。<br>用途: 运行时注解通常在运行时被访问，例如 Retrofit 的运行时注解，需要用的时候才用到。编译时注解如@Override、 @SuppressWarnings 等，在编译期间被处理</p>
+<h2 id="AOP（思想）"><a href="#AOP（思想）" class="headerlink" title="AOP（思想）"></a>AOP（思想）</h2><p>正如面向对象编程是对常见问题的模块化一样，面向切面编程是对横向的同一问题进行模块化，比如在某个包下的所有类中的某一类方法中都需要解决一个相似的问题，可以通过 AOP 的编程方式对此进行模块化封装，统一解决</p>
+<p><strong>AOP 编程的具体使用场景</strong><br>日志记录<br>持久化<br>行为监测<br>数据验证<br>缓存<br>…</p>
+<p>比如埋点，记录方法执行的时长。可以定义注解。aop 可以过滤所有被”这个注解”标记的方法和构造器。然后可以根据他提供的方法（注解），将我们想要埋点的日志插入到前面或后面。</p>
+<p><strong>aop 三大工具</strong></p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/09/15/2024-02-06-14-36-1243f403caedbbb3673f06080749f3db-18-51-39-1243f403caedbbb3673f06080749f3db-unknown_filename.5-75728c-47e122.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.5|600"></p>
+<p>APT：<br>解析注解生成新的文件，这其中我们最常见到的了，难度也最低。定义编译期的注解，再通过继承 Proccesor 实现代码生成逻辑，实现了编译期生成代码的逻辑。（DataBinding, Dagger2, ButterKnife, EventBus3）</p>
+<p>AspectJ：<br>编译期和加载时代码方法等前后注入（代表框架： Hugo (Jake Wharton)）</p>
+<p>javassist：<br>这层还有 asm，在 class 文件被转化为 dex 文件之前去修改。（ [[Gradle插件]] ）</p>
+<h2 id="APT"><a href="#APT" class="headerlink" title="APT"></a>APT</h2><p>Annotation Processing Tool (APT),<strong>注解处理工具</strong>，javac 中用于编译时扫描和解析 Java 注解的工具。可以自己定义。<br>在编译阶段执行的，它的原理就是读入 Java 源代码，解析注解，然后生成新的 Java 代码，新生成的 Java 代码最后被编译成 Java 字节码，注解解析器<strong>不能改变读入的 Java 类，比如不能加入或删除 Java 方法</strong>。</p>
+<p>Java API 已经提供了扫描源码并解析注解的框架，开发者可以通过继承 <em>AbstractProcessor</em> 类来实现自己的注解处理逻辑。</p>
+<p>APT 的原理：在注解了某些代码元素（如字段、函数、类等）后，<em>在编译时编译器会检查 AbstractProcessor 的子类，并且自动调用其 process() 方法</em>，然后将添加了指定注解的所有代码元素作为参数传递给该方法，开发者在根据注解元素在编译期输出对应的 Java 代码。</p>
+<p>APT 负责处理编译时注解，JavaPoet 用于生成 Java 代码，AutoService 负责注册注解处理器。</p>
+<h3 id="AutoServcie"><a href="#AutoServcie" class="headerlink" title="AutoServcie"></a>AutoServcie</h3><p>以前要注册注解处理器要在 module 的 META_INFO 目录新建 services 目录，并创建一个名为 Java.annotation.processing.Processor 的文件，然后在文件中写入要注册的注解处理器的全名。</p>
+<p>后来 Google 推出了 AutoService 注解库来实现注册注解处理器的注册，通过在注解处理器上<em>加上 @AutoService(Processor.class) 注解，即可在编译时生成 META_INFO 信息</em>。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@AutoService(Processor.class)</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">BindViewProcessor</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">AbstractProcessor</span> &#123;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+<h3 id="JavaPoet"><a href="#JavaPoet" class="headerlink" title="JavaPoet"></a>JavaPoet</h3><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/l540675759/article/details/82931785">javaPoet使用指南</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/greenrobot/EventBus/blob/master/EventBusAnnotationProcessor/src/org/greenrobot/eventbus/annotationprocessor/EventBusAnnotationProcessor.java">eventbus如何用的 </a></p>
+<p>JavaPoet比普通方法 (手动字符串拼接)创建更加方便<br>APT 传统方式（手动字符串拼接）—》生成 java 文件<br>APT JavaPoet 方式–》生成 Java 文件</p>
+<p>Butterknife_Framework_20200225 项目原生<br>New_Modular_CustomARouter 项目 javaPoet</p>
+<h3 id="ButterKnife-的实现"><a href="#ButterKnife-的实现" class="headerlink" title="ButterKnife 的实现"></a>ButterKnife 的实现</h3><p>分为四步：</p>
+<ol>
+<li>定义注解</li>
+<li>注解处理器处理注解</li>
+<li>生成 Java 文件</li>
+<li>引入</li>
+</ol>
+<h5 id="定义注解"><a href="#定义注解" class="headerlink" title="定义注解"></a>定义注解</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Retention(RetentionPolicy.CLASS)</span><br><span class="hljs-meta">@Target(ElementType.FIELD)</span><br><span class="hljs-keyword">public</span> <span class="hljs-meta">@interface</span> BindView &#123;<br>    <span class="hljs-type">int</span> <span class="hljs-title function_">value</span><span class="hljs-params">()</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h5 id="注解处理器处理注解、生成-Java-文件"><a href="#注解处理器处理注解、生成-Java-文件" class="headerlink" title="注解处理器处理注解、生成 Java 文件"></a>注解处理器处理注解、生成 Java 文件</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@AutoService(Processor.class)</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">BindViewProcessor</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">AbstractProcessor</span> &#123;<br><br>    <span class="hljs-keyword">private</span> Elements mElementsUtils;<br>    <span class="hljs-keyword">private</span> Types mTypesUtils;<br>    <span class="hljs-keyword">private</span> Filter mFilter;<br>    <span class="hljs-keyword">private</span> Messager mMessager;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 初始化方法</span><br><span class="hljs-comment">     * 可以初始化一些给注解处理器使用的工具类</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">synchronized</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">init</span><span class="hljs-params">(ProcessingEnvironment processingEnvironment)</span> &#123;<br>        <span class="hljs-built_in">super</span>.init(processingEnvironment);<br>        mElementsUtils = processingEnvironment.getElementUtils();<br>    &#125;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 指定目标注解对象</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> Set&lt;String&gt; <span class="hljs-title function_">getSupportedAnnotationTypes</span><span class="hljs-params">()</span> &#123;<br>        Set&lt;String&gt; hashSet = <span class="hljs-keyword">new</span> <span class="hljs-title class_">HashSet</span>&lt;&gt;();<br>        hashSet.add(BindView.class.getCanonicalName());<br>        <span class="hljs-keyword">return</span> hashSet;<br>    &#125;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 指定使用的 Java 版本</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> SourceVersion <span class="hljs-title function_">getSupportedSourceVersion</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-keyword">return</span> SourceVersion.latestSupported();<br>    &#125;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 处理注解</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-type">boolean</span> <span class="hljs-title function_">process</span><span class="hljs-params">(Set&lt;? extends TypeElement&gt; set, RoundEnvironment roundEnvironment)</span> &#123;<br>        <span class="hljs-comment">//获取所有包含 BindView 注解的元素</span><br>        Set&lt;? <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Element</span>&gt; elementSet = roundEnvironment.getElementsAnnotatedWith(BindView.class);<br>        Map&lt;TypeElement, Map&lt;Integer, VariableElement&gt;&gt; typeElementMapHashMap = <span class="hljs-keyword">new</span> <span class="hljs-title class_">HashMap</span>&lt;&gt;();<br>        <span class="hljs-keyword">for</span> (Element element : elementSet) &#123;<br>            <span class="hljs-comment">//因为 BindView 的作用对象是 FIELD，因此 element 可以直接转化为 VariableElement</span><br>            <span class="hljs-type">VariableElement</span> <span class="hljs-variable">variableElement</span> <span class="hljs-operator">=</span> (VariableElement) element;<br>            <span class="hljs-comment">//getEnclosingElement 方法返回封装此 Element 的最里层元素</span><br>            <span class="hljs-comment">//如果 Element 直接封装在另一个元素的声明中，则返回该封装元素</span><br>            <span class="hljs-comment">//此处表示的即是 Activity 类对象</span><br>            <span class="hljs-type">TypeElement</span> <span class="hljs-variable">typeElement</span> <span class="hljs-operator">=</span> (TypeElement) variableElement.getEnclosingElement();<br>            Map&lt;Integer, VariableElement&gt; variableElementMap = typeElementMapHashMap.get(typeElement);<br>            <span class="hljs-keyword">if</span> (variableElementMap == <span class="hljs-literal">null</span>) &#123;<br>                variableElementMap = <span class="hljs-keyword">new</span> <span class="hljs-title class_">HashMap</span>&lt;&gt;();<br>                typeElementMapHashMap.put(typeElement, variableElementMap);<br>            &#125;<br>            <span class="hljs-comment">//获取注解的值，即 ViewId</span><br>            <span class="hljs-type">BindView</span> <span class="hljs-variable">bindAnnotation</span> <span class="hljs-operator">=</span> variableElement.getAnnotation(BindView.class);<br>            <span class="hljs-type">int</span> <span class="hljs-variable">viewId</span> <span class="hljs-operator">=</span> bindAnnotation.value();<br>            variableElementMap.put(viewId, variableElement);<br>        &#125;<br>        <span class="hljs-keyword">for</span> (TypeElement key : typeElementMapHashMap.keySet()) &#123;<br>            Map&lt;Integer, VariableElement&gt; elementMap = typeElementMapHashMap.get(key);<br>            <span class="hljs-type">String</span> <span class="hljs-variable">packageName</span> <span class="hljs-operator">=</span> ElementUtil.getPackageName(mElementsUtils, key);<br>            <br>            <span class="hljs-type">JavaFile</span> <span class="hljs-variable">javaFile</span> <span class="hljs-operator">=</span> JavaFile.builder(packageName, generateCodeByPoet(key, elementMap)).build();<br>            <span class="hljs-keyword">try</span> &#123;<br>                javaFile.writeTo(processingEnv.getFiler());<br>            &#125; <span class="hljs-keyword">catch</span> (IOException e) &#123;<br>                e.printStackTrace();<br>            &#125;<br>        &#125;<br>        <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;<br>    &#125;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 生成 Java 类</span><br><span class="hljs-comment">     *</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> typeElement        注解对象的上层元素对象，即 Activity 对象</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> variableElementMap Activity 包含的注解对象以及注解的目标对象</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span></span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">private</span> TypeSpec <span class="hljs-title function_">generateCodeByPoet</span><span class="hljs-params">(TypeElement typeElement, Map&lt;Integer, VariableElement&gt; variableElementMap)</span> &#123;<br>        <span class="hljs-comment">//自动生成的文件以 Activity 名 + ViewBinding 进行命名</span><br>        <span class="hljs-keyword">return</span> TypeSpec.classBuilder(ElementUtil.getEnclosingClassName(typeElement) + <span class="hljs-string">&quot;ViewBinding&quot;</span>)<br>                .addModifiers(Modifier.PUBLIC)<br>                .addMethod(generateMethodByPoet(typeElement, variableElementMap))<br>                .build();<br>    &#125;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 生成方法</span><br><span class="hljs-comment">     *</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> typeElement        注解对象上层元素对象，即 Activity 对象</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> variableElementMap Activity 包含的注解对象以及注解的目标对象</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span></span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">private</span> MethodSpec <span class="hljs-title function_">generateMethodByPoet</span><span class="hljs-params">(TypeElement typeElement, Map&lt;Integer, VariableElement&gt; variableElementMap)</span> &#123;<br>        <span class="hljs-type">ClassName</span> <span class="hljs-variable">className</span> <span class="hljs-operator">=</span> ClassName.bestGuess(typeElement.getQualifiedName().toString());<br>        <span class="hljs-comment">//方法参数名</span><br>        <span class="hljs-type">String</span> <span class="hljs-variable">parameter</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;_&quot;</span> + StringUtil.toLowerCaseFirstChar(className.simpleName());<br>        MethodSpec.<span class="hljs-type">Builder</span> <span class="hljs-variable">methodBuilder</span> <span class="hljs-operator">=</span> MethodSpec.methodBuilder(<span class="hljs-string">&quot;bind&quot;</span>)<br>                .addModifiers(Modifier.PUBLIC, Modifier.STATIC)<br>                .returns(<span class="hljs-keyword">void</span>.class)<br>                .addParameter(className, parameter);<br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> viewId : variableElementMap.keySet()) &#123;<br>            <span class="hljs-type">VariableElement</span> <span class="hljs-variable">element</span> <span class="hljs-operator">=</span> variableElementMap.get(viewId);<br>            <span class="hljs-comment">//被注解的字段名</span><br>            <span class="hljs-type">String</span> <span class="hljs-variable">name</span> <span class="hljs-operator">=</span> element.getSimpleName().toString();<br>            <span class="hljs-comment">//被注解的字段的对象类型的全名称</span><br>            <span class="hljs-type">String</span> <span class="hljs-variable">type</span> <span class="hljs-operator">=</span> element.asType().toString();<br>            <span class="hljs-type">String</span> <span class="hljs-variable">text</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;&#123;0&#125;.&#123;1&#125;=(&#123;2&#125;)(&#123;3&#125;.findViewById(&#123;4&#125;));\n&quot;</span>;<br>            methodBuilder.addCode(MessageFormat.format(text, parameter, name, type, parameter, String.valueOf(viewId)));<br>        &#125;<br>        <span class="hljs-keyword">return</span> methodBuilder.build();<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h5 id="引入"><a href="#引入" class="headerlink" title="引入"></a>引入</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">ButterKnife</span> &#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">bind</span><span class="hljs-params">(Activity activity)</span> &#123;<br>        <span class="hljs-type">Class</span> <span class="hljs-variable">clazz</span> <span class="hljs-operator">=</span> activity.getClass();<br>        <span class="hljs-keyword">try</span> &#123;<br>            <span class="hljs-type">Class</span> <span class="hljs-variable">bindViewClass</span> <span class="hljs-operator">=</span> Class.forName(clazz.getName() + <span class="hljs-string">&quot;ViewBinding&quot;</span>);<br>            <span class="hljs-type">Method</span> <span class="hljs-variable">method</span> <span class="hljs-operator">=</span> bindViewClass.getMethod(<span class="hljs-string">&quot;bind&quot;</span>, clazz);<br>            method.invoke(<span class="hljs-literal">null</span>, activity);<br>        &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;<br>            e.printStackTrace();<br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+<h3 id="debug-apt"><a href="#debug-apt" class="headerlink" title="debug apt"></a>debug apt</h3><p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/80a14bc35000">如何debug自定义AbstractProcessor</a> 好用</p>
+<p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/4fef2ad51f5a">Android APT 编译期进入debug模式</a><br>选 app 或者生成代码的 module</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs lua">netstat -aon|findstr <span class="hljs-string">&quot;5005&quot;</span><br>tasklist|findstr <span class="hljs-string">&quot;5005&quot;</span><br>gradlew <span class="hljs-comment">--daemon</span><br><br>gradlew clean :app:assembleDebug -Dorg.gradle.<span class="hljs-built_in">debug</span>=<span class="hljs-literal">true</span> <span class="hljs-comment">--no-daemon</span><br>gradlew clean assembleDebug<br></code></pre></td></tr></table></figure>
+
+
+<h2 id="AspectJ"><a href="#AspectJ" class="headerlink" title="AspectJ"></a>AspectJ</h2><p>AspectJ 就是面向切面编程在 Java 中的一种具体实现。</p>
+<p>Join point：程序中执行代码插入的点，例如方法调用时或者方法执行时。</p>
+<p><a target="_blank" rel="noopener" href="https://juejin.im/post/5cf1d81551882549657ce1cf#comment">Android开发之AOP编程(不错)</a></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-type">boolean</span> <span class="hljs-variable">enabled</span> <span class="hljs-operator">=</span> <span class="hljs-literal">true</span>;<br><br><span class="hljs-comment">//在连接点进行方法替换</span><br><span class="hljs-meta">@Around(&quot;execution(@com.allin.medrecorddossier.aop.annotation.PMUserPermission * *(..))&quot;)</span><br><span class="hljs-keyword">public</span> Object <span class="hljs-title function_">aroundJoinPoint</span><span class="hljs-params">(ProceedingJoinPoint joinPoint)</span> <span class="hljs-keyword">throws</span> Throwable &#123;<br>	<span class="hljs-keyword">if</span> (enabled) &#123;<br>		<span class="hljs-keyword">return</span> joinPoint.proceed();<span class="hljs-comment">//执行原方法</span><br>	&#125;<br>	<span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>双击</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Aspect</span>  <br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">AspectOnClick</span> &#123;  <br><br>    <span class="hljs-comment">//上次点击的时间  </span><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-type">Long</span> <span class="hljs-variable">sLastclick</span> <span class="hljs-operator">=</span> <span class="hljs-number">0L</span>;  <br><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">Long</span> <span class="hljs-variable">FILTER_TIMEM</span> <span class="hljs-operator">=</span> <span class="hljs-number">500L</span>;  <br>    <span class="hljs-comment">//上次点击事件View  </span><br>    <span class="hljs-keyword">private</span> WeakReference&lt;View&gt; weakReference;  <br>    <br>    <span class="hljs-comment">//是否过滤点击 默认是  </span><br>    <span class="hljs-keyword">private</span> <span class="hljs-type">boolean</span> <span class="hljs-variable">checkClick</span> <span class="hljs-operator">=</span> <span class="hljs-literal">true</span>;  <br>    <br>    <span class="hljs-meta">@Pointcut(&quot;execution(* android.view.View.OnClickListener.onClick(..))&quot;)</span>  <br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">setOnClick</span><span class="hljs-params">()</span> &#123;  <br>    &#125;  <br>  <br>    <span class="hljs-meta">@Around(&quot;setOnClick()&quot;)</span>  <br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span>  <span class="hljs-title function_">aroundSetOnClick</span><span class="hljs-params">(ProceedingJoinPoint proceedingJoinPoint )</span> <span class="hljs-keyword">throws</span> Throwable &#123;  <br>        <span class="hljs-keyword">if</span> (System.currentTimeMillis() - sLastclick &gt;= FILTER_TIMEM) &#123;  <br>            doClick(proceedingJoinPoint);  <br>        &#125; <span class="hljs-keyword">else</span> &#123;  <br>            <span class="hljs-comment">//---- update content ----- 判断是否需要过滤点击  </span><br>            <span class="hljs-comment">//小于指定秒数 但是不是同一个view 可以点击 或者不过滤点击  </span><br>            <span class="hljs-keyword">if</span> (!checkClick || weakReference == <span class="hljs-literal">null</span> || weakReference.get() != proceedingJoinPoint.getArgs()[<span class="hljs-number">0</span>]) &#123;  <br>                doClick(proceedingJoinPoint);  <br>            &#125; <span class="hljs-keyword">else</span> &#123;  <br>                <span class="hljs-comment">//大于指定秒数 且是同一个view  </span><br><span class="hljs-comment">//                Log.e(TAG, &quot;重复点击,已过滤&quot;);  </span><br>            &#125;  <br>        &#125;  <br>    &#125;  <br>  <br>  <br>    <span class="hljs-comment">//执行原有的 onClick 方法  </span><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">doClick</span><span class="hljs-params">(ProceedingJoinPoint joinPoint)</span> <span class="hljs-keyword">throws</span> Throwable &#123;  <br>        <span class="hljs-comment">//判断 view 是否存在  </span><br>        <span class="hljs-keyword">if</span> (joinPoint.getArgs().length == <span class="hljs-number">0</span>) &#123;  <br>            joinPoint.proceed();  <br>            <span class="hljs-keyword">return</span>;  <br>        &#125;  <br>        <span class="hljs-comment">//记录点击的view  </span><br>        <span class="hljs-type">View</span> <span class="hljs-variable">lastView</span> <span class="hljs-operator">=</span> (View) (joinPoint).getArgs()[<span class="hljs-number">0</span>];  <br>        weakReference = <span class="hljs-keyword">new</span> <span class="hljs-title class_">WeakReference</span>&lt;&gt;(lastView); <br>        <span class="hljs-comment">//记录点击事件  </span><br>        sLastclick = System.currentTimeMillis();  <br>        <span class="hljs-comment">//执行点击事件  </span><br>        joinPoint.proceed();  <br>  <br>    &#125;    <br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+<h2 id="IOC-思想"><a href="#IOC-思想" class="headerlink" title="IOC (思想)"></a>IOC (思想)</h2><p>原来由程序代码中主动获取的资源，转变由第三方获取并使原来的代码被动接收的方式，以达到解耦的效果，称为控制反转<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/09/15/2024-02-06-14-36-342a714123aa06d8aade1fe8380aff94-18-51-39-342a714123aa06d8aade1fe8380aff94-unknown_filename.4-fc5fb1-e7410c.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.4|600"></p>
+<ol>
+<li>运行时注入 xUtils, eventBus, springMVC （在运行的时候获取注解、解析注解）</li>
+<li>源码时注入 android studio 插件</li>
+<li>编译时注入 butterknife, dagger2 （apt 就是编译时注入，生成文件，运行的时候加载这个文件调方法就可以了）</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">JettButterknife</span> &#123;<br>	<span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">bind</span><span class="hljs-params">(Activity activity)</span>&#123;<br>		String name=activity.getClass().getName()+<span class="hljs-string">&quot;_ViewBinding&quot;</span>;<br>		<span class="hljs-keyword">try</span>&#123;<br>			Class&lt;?&gt; aClass=Class.forName(name);<br>			IBinder iBinder=(IBinder)aClass.newInstance();<br>			iBinder.bind(activity);<br>		&#125;<span class="hljs-keyword">catch</span>(Exception e)&#123;<br><br>		&#125;<br>	&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Java/" class="category-chain-item">Java</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>注解、AOP、APT</div>
+      <div>http://peiniwan.github.io/2025/12/e15cb1ec3664.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>六月的雨</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年12月16日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/12/7092fe14667b.html" title="1-开发实战">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">1-开发实战</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/12/7cded30043dc.html" title="加密">
+                        <span class="hidden-mobile">加密</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"OwNIdaopOn1rwNhtotGOGC0B-gzGzoHsz","appKey":"eadytQ2XqWmxuvAKeg08XX83","path":"window.location.pathname","placeholder":null,"avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":true,"recordIP":false,"serverURLs":"https://ownidaop.lc-cn-n1-shared.com","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

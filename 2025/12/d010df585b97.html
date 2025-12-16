@@ -1,0 +1,765 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="六月的雨">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Android知识点开发tip getApplication()返回的Context是属于Application的，它会在整个应用的生命周期内存在，远大于某个组件的生命周期，所以即使某个引用长期持有Context对象也不会引发内存泄露。比如toast，而Dialog则必须在一个Activity上面弹出（除非是System Alert类型的Dialog），因此在这种场景下，我们只能使用Activit">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android知识点">
+<meta property="og:url" content="http://peiniwan.github.io/2025/12/d010df585b97.html">
+<meta property="og:site_name" content="六月的雨的笔记">
+<meta property="og:description" content="Android知识点开发tip getApplication()返回的Context是属于Application的，它会在整个应用的生命周期内存在，远大于某个组件的生命周期，所以即使某个引用长期持有Context对象也不会引发内存泄露。比如toast，而Dialog则必须在一个Activity上面弹出（除非是System Alert类型的Dialog），因此在这种场景下，我们只能使用Activit">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/unknown_filename.png">
+<meta property="article:published_time" content="2025-12-16T13:59:22.344Z">
+<meta property="article:modified_time" content="2024-03-14T07:15:00.000Z">
+<meta property="article:author" content="六月的雨">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/unknown_filename.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>Android知识点 - 六月的雨的笔记</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"peiniwan.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>六月的雨的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Android知识点"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-12-16 21:59" pubdate>
+          2025年12月16日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.7k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          23 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Android知识点</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="Android知识点"><a href="#Android知识点" class="headerlink" title="Android知识点"></a>Android知识点</h1><h3 id="开发tip"><a href="#开发tip" class="headerlink" title="开发tip"></a>开发tip</h3><ul>
+<li><p>getApplication()返回的Context是属于Application的，它会在整个应用的生命周期内存在，远大于某个组件的生命周期，所以即使某个引用长期持有Context对象也不会引发内存泄露。比如toast，而Dialog则必须在一个Activity上面弹出（除非是System Alert类型的Dialog），因此在这种场景下，我们只能使用Activity类型的Context，否则将会出错。</p>
+</li>
+<li><p>频繁操作的文件建议考虑使用缓冲提高程序性能，intent不要传递大量数据，使用持久化数据来处理（存在文件中），不要在application中缓存数据</p>
+</li>
+<li><p>在涉及网络的操作中，必须要考虑到没有网络和信号差等情况</p>
+</li>
+<li><p>一些华为机器log和Toast打印一直异常，不要在这上面耽误时间</p>
+</li>
+<li><p>代码至少每天备份一次，或者是完善一个功能就备份一次，不要堆积之后一次性备份，因为在你的代码出问题需要回溯代码时你需要从服务器上重新取代码，同时也可以避免代码不是最新导致最后和其他人合并时不知道改了哪些地方</p>
+</li>
+<li><p>不少比较有经验的Android程序员可能都遇到过这个情况，就是当你的项目变得越来越大，有的时候加载一张drawable-hdpi下的图片，程序就直接OOM崩掉了，但如果将这张图放到drawable-xhdpi或drawable-xxhdpi下就不会崩掉，其实就是这个道理。那么经过上面一系列的分析，答案自然也就出来了，图片资源应该尽量放在高密度文件夹下，这样可以节省图片的内存开支，而UI在设计图片的时候也应该尽量面向高密度屏幕的设备来进行设计。就目前来讲，<em>最佳放置图片资源的文件夹就是drawable-xxhdpi</em>。那么有的朋友可能会问了，不是还有更高密度的drawable-xxxhdpi吗？干吗不放在这里？这是因为，市面上480dpi到640dpi的设备实在是太少了，如果针对这种级别的屏幕密度来设计图片，图片在不缩放的情况下本身就已经很大了，<em>基本也起不到节省内存开支的作用</em>了。</p>
+</li>
+<li><p>不能在 Activity 没有完全显示时显示PopupWindow和Dialog。例如在activity的onCreate方法里面调用popupwindow的show方法，有可能由于activity没有完全初始化导致程序异常（android.view.WindowManager$BadTokenException: Unable to add window – token null is not valid），如果非要在一进activity就显示popupwindow，用handler.post、View.postDelay来处理</p>
+</li>
+<li><p>所有的图片务必先用<a target="_blank" rel="noopener" href="http://tinypng.com压一遍用/">http://tinypng.com压一遍用</a></p>
+</li>
+</ul>
+<p><strong>JPG 代替 PNG，由于 JPG 没有 Alpha 通道，所以文件更小，适用于不需要透明度的图片可以考虑。</strong></p>
+<ul>
+<li>不同Module的资源文件、布局名不要相同</li>
+<li>需要管理相互独立的并且隶属于Activity的Fragment使用FragmentManager（），而在Fragment中动态的添加Fragment要使用getChildFragmetManager（）来管理，而不是getFragmentManager。</li>
+<li>在ScrollView中添加一个Android:fillViewport&#x3D;”true”属性就可以了。顾名思义，这个属性<em>允许 ScrollView中的组件去充满它</em>。 当ScrollView没有fillViewport&#x3D;“true”时, 里面的元素(比如LinearLayout)会按照wrap_content来计算(不论它是否设了”fill_parent”)</li>
+<li>radiobutton布局下面俩个button切换时，fragment里有listview会顶到下面，可以在布局初始化完后lv.setFocusable(false)</li>
+<li>有一种情况是手机并不在我们身边,我们也无法使用调试工具。 可以选择把日志存到本地文件中。再由使用手机的人发回来。一般这个人是测试。如果app未接入任何日志保存工具,可以在data&#x2F;anr&#x2F;目录下查看到所有的ANR异常信息。但需要su权限。否则无法访问到。</li>
+</ul>
+<p><strong>当无法通过搜索解决问题的时候，读源码是最快的解决思路。千万不要瞎猜和尝试随缘写代码来解决问题。</strong></p>
+<ul>
+<li>.9图的左上代表可以拉伸的区域，右下代表可以填充的区域</li>
+<li>多语言字符串设置要都配置上，要不然就报android.content.res.Resources$NotFoundException</li>
+<li>在8.0上切换语言部分文字没有切换，原因是getResources原来是通过application的，改成activity的就可以了</li>
+<li>找不到问题，可以二分注释代码来定位问题（万不得已）</li>
+</ul>
+<p><strong>TextView.setTextColor方法不能用R.Color.XXX设置颜色</strong></p>
+<ul>
+<li>页面比较整体的view拆分，逻辑拆分</li>
+<li>做除数运算时，一定要判断被除数不能为0</li>
+<li>列表里，当item里VISIBLE和GONE时，就要考虑使用多itemType布局</li>
+</ul>
+<hr>
+<h3 id="UI问题"><a href="#UI问题" class="headerlink" title="UI问题"></a>UI问题</h3><p>一段文字颜色不同点击不同，不想写多个textview，可以这样写</p>
+<figure class="highlight livescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs livescript"><span class="hljs-built_in">String</span> html=<span class="hljs-string">&quot;仅限&lt;font color=<span class="hljs-subst">#FF9900</span>&gt;&quot;</span>+offer.getCardGroupName()+<span class="hljs-string">&quot;&lt;/font&gt;使用&quot;</span>;<br>nrbankTextView.setText(Html.fromHtml(html));    <br><br></code></pre></td></tr></table></figure>
+
+<p>也可以这样写</p>
+<figure class="highlight haxe"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs haxe"><span class="hljs-keyword">String</span> content = <span class="hljs-string">&quot;发现&quot;</span> + <span class="hljs-keyword">new</span><span class="hljs-type">Group</span>.size() + <span class="hljs-string">&quot;张新卡片&quot;</span>;<br>int textColor = getResources().getColor(R.color.import_card_red);<br>SpannableString spannableString = TextStyleUtils.setTextStyle(content, <span class="hljs-keyword">new</span><span class="hljs-type">Group</span>.size() + <span class="hljs-string">&quot;张&quot;</span>, textColor);<br>tv_.setText(spannableString);<br><br></code></pre></td></tr></table></figure>
+
+<p>也可以这样写：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">setCurrentTip</span><span class="hljs-params">(Context context)</span> &#123;<br>     <span class="hljs-type">StringBuilder</span> <span class="hljs-variable">actionText</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">StringBuilder</span>();<br>     actionText.append(<span class="hljs-string">&quot;&lt;a href=&#x27;text&#x27; &gt;请你务必审慎阅。&lt;br /&gt;你可阅读&lt;/a&gt;&quot;</span>);<br>     actionText.append(<span class="hljs-string">&quot;&lt;a  href=&#x27;text&#x27; &gt;及&lt;/a&gt;&quot;</span>);<br>     actionText.append(<span class="hljs-string">&quot;&lt;a href=&#x27;blue&#x27; &gt;《隐私政策》&lt;/a&gt;&quot;</span>);<br>     messageTv.setText(Html.fromHtml(actionText.toString()));<br>     messageTv.setMovementMethod(LinkMovementMethod.getInstance());<br>     <span class="hljs-type">CharSequence</span> <span class="hljs-variable">text</span> <span class="hljs-operator">=</span> messageTv.getText();<br>     <span class="hljs-type">int</span> <span class="hljs-variable">ends</span> <span class="hljs-operator">=</span> text.length();<br>     <span class="hljs-type">Spannable</span> <span class="hljs-variable">spannable</span> <span class="hljs-operator">=</span> (Spannable) messageTv.getText();<br>     URLSpan[] urlspan = spannable.getSpans(<span class="hljs-number">0</span>, ends, URLSpan.class);<br>     <span class="hljs-type">SpannableStringBuilder</span> <span class="hljs-variable">stylesBuilder</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">SpannableStringBuilder</span>(text);<br>     stylesBuilder.clearSpans();<br>     <span class="hljs-keyword">for</span> (URLSpan url : urlspan) &#123;<br>         <span class="hljs-type">FeedTextViewURLSpan</span> <span class="hljs-variable">myURLSpan</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">FeedTextViewURLSpan</span>(url.getURL(), context);<br>         stylesBuilder.setSpan(myURLSpan, spannable.getSpanStart(url), spannable.getSpanEnd(url), spannable.SPAN_EXCLUSIVE_EXCLUSIVE);<br>     &#125;<br>     messageTv.setText(stylesBuilder);<br>     messageTv.setHighlightColor(context.getResources().getColor(android.R.color.transparent));<br> &#125;<br>    <br> <span class="hljs-keyword">static</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">FeedTextViewURLSpan</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">ClickableSpan</span> &#123;<br>     <span class="hljs-keyword">private</span> String clickString;<br>     <span class="hljs-keyword">private</span> Context context;<br>    <br>     <span class="hljs-keyword">public</span> <span class="hljs-title function_">FeedTextViewURLSpan</span><span class="hljs-params">(String clickString, Context context)</span> &#123;<br>         <span class="hljs-built_in">this</span>.clickString = clickString;<br>         <span class="hljs-built_in">this</span>.context = context;<br>     &#125;<br>    <br>     <span class="hljs-meta">@Override</span><br>     <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">updateDrawState</span><span class="hljs-params">(TextPaint ds)</span> &#123;<br>         ds.setUnderlineText(<span class="hljs-literal">false</span>);<br>         <span class="hljs-keyword">if</span> (clickString.equals(<span class="hljs-string">&quot;blue&quot;</span>)) &#123;<br>             ds.setColor(Color.parseColor(<span class="hljs-string">&quot;#1677FF&quot;</span>));<br>         &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (clickString.equals(<span class="hljs-string">&quot;text&quot;</span>)) &#123;<br>             ds.setColor(Color.parseColor(<span class="hljs-string">&quot;#666666&quot;</span>));<br>         &#125;<br>     &#125;<br>    <br>     <span class="hljs-meta">@Override</span><br>     <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">onClick</span><span class="hljs-params">(View widget)</span> &#123;<br>         <span class="hljs-keyword">if</span> (clickString.equals(<span class="hljs-string">&quot;blue&quot;</span>)) &#123;<br>             <span class="hljs-type">Intent</span> <span class="hljs-variable">intent</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Intent</span>(context, WebViewActivity.class);<br>             intent.putExtra(<span class="hljs-string">&quot;type&quot;</span>, <span class="hljs-number">4</span>);<br>             context.startActivity(intent);<br>         &#125;<br>     &#125;<br>    <br>     <span class="hljs-keyword">void</span> <span class="hljs-title function_">avoidHintColor</span><span class="hljs-params">(View view)</span>&#123;<br>         <span class="hljs-keyword">if</span>(view <span class="hljs-keyword">instanceof</span> TextView)<br>             ((TextView)view).setHighlightColor(context.getResources().getColor(android.R.color.transparent));<br>     &#125;<br> &#125;<br></code></pre></td></tr></table></figure>
+<p>想每次进入页面刷新，可以放在onResume方法里（不推荐）<br>颜色透明度：#7f000000 代表50%透明度的黑色<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/unknown_filename.png" srcset="/img/loading.gif" lazyload alt="unknown_filename"></p>
+<p>ImageView的android:adjustViewBounds属性</p>
+<p><a target="_blank" rel="noopener" href="http://blog.csdn.net/pingchuanyang/article/details/9252689">http://blog.csdn.net/pingchuanyang/article/details/9252689</a></p>
+<p><strong>framelayout两布局重叠,如何让下层不响应事件</strong><br>在layout文件里本层下增加Android:clickable&#x3D;”true”<br>在上层布局的父布局上增加android:clickable&#x3D;”true”</p>
+<p>给图片设置背景,例如ui给的图背景透明的图片</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">layer-list</span> <span class="hljs-attr">xmlns:andro</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">item</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">shape</span>&gt;</span><br>            <span class="hljs-tag">&lt;<span class="hljs-name">solid</span> <span class="hljs-attr">android:color</span>=<span class="hljs-string">&quot;#1c69ac&quot;</span> /&gt;</span><br>            <span class="hljs-tag">&lt;<span class="hljs-name">corners</span> <span class="hljs-attr">android:radius</span>=<span class="hljs-string">&quot;5dp&quot;</span>/&gt;</span><br>        <span class="hljs-tag">&lt;/<span class="hljs-name">shape</span>&gt;</span><br>    <span class="hljs-tag">&lt;/<span class="hljs-name">item</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">item</span></span><br><span class="hljs-tag">        <span class="hljs-attr">android:left</span>=<span class="hljs-string">&quot;15dp&quot;</span></span><br><span class="hljs-tag">        <span class="hljs-attr">android:right</span>=<span class="hljs-string">&quot;15dp&quot;</span></span><br><span class="hljs-tag">        <span class="hljs-attr">android:top</span>=<span class="hljs-string">&quot;15dp&quot;</span></span><br><span class="hljs-tag">        <span class="hljs-attr">android:bottom</span>=<span class="hljs-string">&quot;15dp&quot;</span></span><br><span class="hljs-tag">        <span class="hljs-attr">android:drawable</span>=<span class="hljs-string">&quot;@drawable/icon_yingwen_fuhao_keyboard_del_default&quot;</span></span><br><span class="hljs-tag">         /&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">layer-list</span>&gt;</span><br></code></pre></td></tr></table></figure>
+<p>listview设置tag</p>
+<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs scss">if (TextUtils.isEmpty(item.getAvatar())) &#123;<br>    ivStarRelationAvater<span class="hljs-selector-class">.setImageResource</span>(R.drawable.shape_circle_default_bg);<br>&#125; else if (!item.getAvatar()<span class="hljs-selector-class">.equals</span>(rlRelationPart.getTag()) ) &#123;<br>        ImageLoader<span class="hljs-selector-class">.with</span>(mContext)<br>                <span class="hljs-selector-class">.asCircle</span>()<br>                <span class="hljs-selector-class">.url</span>(item.getAvatar())<br>                <span class="hljs-selector-class">.into</span>(ivStarRelationAvater);<br>&#125;<br>rlRelationPart<span class="hljs-selector-class">.setTag</span>(item.getAvatar());<br></code></pre></td></tr></table></figure>
+<p><strong>viewpager+fragment</strong></p>
+<figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs aspectj"><span class="hljs-comment">//界面可见时再加载数据</span><br>   <span class="hljs-meta">@Override</span><br>   <span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">setUserVisibleHint</span><span class="hljs-params">(<span class="hljs-keyword">boolean</span> isVisibleToUser&#123;</span></span><br><span class="hljs-params"><span class="hljs-function">       <span class="hljs-keyword">super</span>.setUserVisibleHint(isVisibleToUser)</span></span>;<br>       <span class="hljs-keyword">if</span> (isVisibleToUser) &#123;<br>           mMyWalletPresenter.reqRanking(position);<span class="hljs-comment">//[2周排行，1总排行]</span><br>       &#125;<br>   &#125;<br></code></pre></td></tr></table></figure>
+<p><strong>CardView</strong><br>使用android:background设置背景颜色无效。 app:cardBackgroundColor 设置背景颜色</p>
+<h5 id="NestedScrollView嵌套RecyclerView滑动卡顿解决方案"><a href="#NestedScrollView嵌套RecyclerView滑动卡顿解决方案" class="headerlink" title="NestedScrollView嵌套RecyclerView滑动卡顿解决方案"></a>NestedScrollView嵌套RecyclerView滑动卡顿解决方案</h5><p>如果你APP的API适配的minSdkVersion高于21,直接在RecyclerView中加上<strong>android:nestedScrollingEnabled&#x3D;”false”或者禁用recycleview滑动</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">//解决滑动滑动冲突</span><br>  <span class="hljs-type">LinearLayoutManager</span> <span class="hljs-variable">linearLayoutManager</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">LinearLayoutManager</span>(getActivity(), LinearLayoutManager.VERTICAL, <span class="hljs-literal">false</span>) &#123;<br>      <span class="hljs-meta">@Override</span><br>      <span class="hljs-keyword">public</span> <span class="hljs-type">boolean</span> <span class="hljs-title function_">canScrollVertically</span><span class="hljs-params">()</span> &#123;<br>          <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;<br>      &#125;<br>  &#125;;<br>    <br></code></pre></td></tr></table></figure>
+
+<p><strong>selector异常</strong><br>Caused by: org.xmlpull.v1.XmlPullParserException: Binary XML file line #3 : &lt;\item&gt; tag requires a ‘drawable’ attribute or child tag defining a drawable<br>产生原因:我的一个button按钮的background属性中设置成”@color&#x2F;button_text_selector”,按照异常来说，<strong>这个background这个属性的值必须是drawable类型的，不能是color类型。</strong></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-meta">&lt;?xml version=<span class="hljs-string">&quot;1.0&quot;</span> encoding=<span class="hljs-string">&quot;utf-8&quot;</span>?&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">selector</span> <span class="hljs-attr">xmlns:andro</span>&gt;</span><br><br>    <span class="hljs-comment">&lt;!--&lt;item android:color=&quot;@color/iqb_ui_base_color_1004&quot; android:state_enabled=&quot;true&quot; /&gt;--&gt;</span><br>    <span class="hljs-comment">&lt;!--&lt;item android:color=&quot;@color/iqb_ui_base_color_1005&quot; android:state_enabled=&quot;false&quot; /&gt;--&gt;</span><br>    <span class="hljs-comment">&lt;!--&lt;item android:color=&quot;@color/iqb_ui_base_color_1004&quot; /&gt;--&gt;</span><br><br>    <span class="hljs-tag">&lt;<span class="hljs-name">item</span> <span class="hljs-attr">android:state_enabled</span>=<span class="hljs-string">&quot;true&quot;</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">shape</span>&gt;</span><br>            <span class="hljs-tag">&lt;<span class="hljs-name">solid</span> <span class="hljs-attr">android:color</span>=<span class="hljs-string">&quot;@color/iqb_ui_base_color_1004&quot;</span> /&gt;</span><br>        <span class="hljs-tag">&lt;/<span class="hljs-name">shape</span>&gt;</span><br>    <span class="hljs-tag">&lt;/<span class="hljs-name">item</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">item</span> <span class="hljs-attr">android:state_enabled</span>=<span class="hljs-string">&quot;false&quot;</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">shape</span>&gt;</span><br>            <span class="hljs-tag">&lt;<span class="hljs-name">solid</span> <span class="hljs-attr">android:color</span>=<span class="hljs-string">&quot;@color/iqb_ui_base_color_1005&quot;</span> /&gt;</span><br>        <span class="hljs-tag">&lt;/<span class="hljs-name">shape</span>&gt;</span><br>    <span class="hljs-tag">&lt;/<span class="hljs-name">item</span>&gt;</span><br><br><br><span class="hljs-tag">&lt;/<span class="hljs-name">selector</span>&gt;</span><br></code></pre></td></tr></table></figure>
+<p><strong>数据库升级</strong><br>新增版本号，然后</p>
+<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs scss">if (newVersion == <span class="hljs-number">4</span>) &#123;<span class="hljs-comment">//方法一</span><br>              TableUtils<span class="hljs-selector-class">.dropTable</span>(connectionSource, CardModel.class,<br>                      true);<br>              TableUtils<span class="hljs-selector-class">.createTable</span>(connectionSource, CardModel.class);<br>              return;<br>          &#125;<br>          if (oldVersion &lt; <span class="hljs-number">5</span>) &#123;<span class="hljs-comment">//方法二</span><br>              <span class="hljs-built_in">getUserInfoDao</span>()<span class="hljs-selector-class">.executeRaw</span>(&quot;ALTER TABLE `USERINFOTABLE` ADD COLUMN memberaccesstoken TEXT  DEFAULT&#x27;&#x27;;&quot;);<br>              <span class="hljs-built_in">getUserInfoDao</span>()<span class="hljs-selector-class">.executeRaw</span>(&quot;ALTER TABLE `USERINFOTABLE` ADD COLUMN membertype INTEGER DEFAULT <span class="hljs-number">0</span>;&quot;);<br>              return;<br>          &#125;<br>    <br></code></pre></td></tr></table></figure>
+
+<p><strong>数字后加2个点</strong></p>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs pgsql">DecimalFormat  df = <span class="hljs-built_in">new</span> DecimalFormat(&quot;########0.00&quot;);<br>crt_pp_money.setText(&quot;¥&quot; + df.format(<span class="hljs-type">Double</span>.valueOf(<span class="hljs-type">money</span>)));<br><br></code></pre></td></tr></table></figure>
+
+<p><strong>填充字符串</strong></p>
+<figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs autoit"><br>&lt;<span class="hljs-built_in">string</span> name=<span class="hljs-string">&quot;crt_shift_limit&quot;</span>&gt;银行单笔限额%<span class="hljs-number">1</span>$d万，单日限额号%<span class="hljs-number">2</span>$d万&lt;/<span class="hljs-built_in">string</span>&gt;<br>bankMessage.setText(getResources().getString(R.<span class="hljs-built_in">string</span>.crt_shift_limit,<span class="hljs-number">3</span>,<span class="hljs-number">5</span>))<span class="hljs-comment">;</span><br></code></pre></td></tr></table></figure>
+<hr>
+<h3 id="其他问题"><a href="#其他问题" class="headerlink" title="其他问题"></a>其他问题</h3><p><strong>webview post</strong><br>webView.postUrl(mUrl,postdata.getBytes());</p>
+<p><strong>webview重定向引起的问题</strong><br>解决方法：</p>
+<figure class="highlight arcade"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs arcade"><br>WebView.HitTestResult hitTestResult = webView.getHitTestResult();<br>  <span class="hljs-built_in">Log</span>.d(<span class="hljs-string">&quot;hitTestResult&quot;</span>,hitTestResult.getType()+<span class="hljs-string">&quot;----&quot;</span>+hitTestResult.getExtra());<br>  <span class="hljs-keyword">if</span> (hitTestResult.getType() == WebView.HitTestResult.UNKNOWN_TYPE) &#123;<span class="hljs-comment">//=0发生重定向</span><br>      loadUrl();<br>      <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;<br>  &#125;<span class="hljs-keyword">else</span>&#123;&#125;<br></code></pre></td></tr></table></figure>
+<p>或者</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs typescript"> <span class="hljs-meta">@Override</span><br> <span class="hljs-keyword">public</span> <span class="hljs-built_in">void</span> <span class="hljs-title function_">onPageFinished</span>(<span class="hljs-params">WebView view, <span class="hljs-built_in">String</span> url</span>) &#123;<br>             <span class="hljs-variable language_">super</span>.<span class="hljs-title function_">onPageFinished</span>(view, url);<br>             mIsPageLoading= <span class="hljs-literal">false</span>;<span class="hljs-comment">//重定向是不回执行finished方法的</span><br>    <br>         &#125;<br>    <br><span class="hljs-keyword">public</span> <span class="hljs-built_in">void</span> <span class="hljs-title function_">onPageStarted</span>(<span class="hljs-params">WebView view, <span class="hljs-built_in">String</span> url, Bitmap favicon</span>) &#123;<br>             <span class="hljs-variable language_">super</span>.<span class="hljs-title function_">onPageStarted</span>(view, url, favicon);<br>             mIsPageLoading= <span class="hljs-literal">true</span>;<br>                &#125;<br></code></pre></td></tr></table></figure>
+<p>webview：显示404等异常状态都有回调，可以显示一个友好的界面<br>可以通过URL是否包含某个字段判断去哪个页面</p>
+<p>华为等虚拟键盘遮挡问题</p>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs jboss-cli"><br><span class="hljs-string">//</span>因为某些机型是虚拟按键的,所以要加上以下设置防止挡住 <span class="hljs-keyword">set</span>SoftInputMode<span class="hljs-params">(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)</span>;<br></code></pre></td></tr></table></figure>
+<p>如果你触发了一个intent，而且没有任何一个app会去接收这个intent，那么你的app会crash。为了验证是否有合适的activity会响应这个intent，需要执行queryIntentActivities() 来获取到能够接收这个intent的所有activity的list。如果返回的List非空，那么你才可以安全的使用这个intent。例如：</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs angelscript">PackageManager packageManager = getPackageManager();<br>List&lt;ResolveInfo&gt; activities = packageManager.queryIntentActivities(<span class="hljs-built_in">int</span>ent, <span class="hljs-number">0</span>);<br><span class="hljs-built_in">bool</span>ean isIntentSafe = activities.size() &gt; <span class="hljs-number">0</span>;<br><span class="hljs-keyword">if</span> (isIntentSafe) &#123;<br>    startActivity(mapIntent);<br> &#125;<br>    <br></code></pre></td></tr></table></figure>
+
+<p>检查是否有某个权限</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs typescript"> <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-built_in">boolean</span> <span class="hljs-title function_">hasPermissions</span>(<span class="hljs-params">Context context, <span class="hljs-built_in">String</span>... perms</span>) &#123;<br>       <span class="hljs-keyword">if</span> (<span class="hljs-title class_">Build</span>.<span class="hljs-property">VERSION</span>.<span class="hljs-property">SDK_INT</span> &lt; <span class="hljs-title class_">Build</span>.<span class="hljs-property">VERSION_CODES</span>.<span class="hljs-property">M</span>) &#123;<br>           <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;<br>       &#125;<br>    <br>       <span class="hljs-keyword">for</span> (<span class="hljs-title class_">String</span> perm : perms) &#123;<br>           <span class="hljs-comment">//PERMISSION_DENIED</span><br>           <span class="hljs-built_in">boolean</span> hasPerm = (<span class="hljs-title class_">ContextCompat</span>.<span class="hljs-title function_">checkSelfPermission</span>(context, perm) ==<br>                   <span class="hljs-title class_">PackageManager</span>.<span class="hljs-property">PERMISSION_GRANTED</span>);<br>           <span class="hljs-keyword">if</span> (!hasPerm) &#123;<br>               <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;<br>           &#125;<br>       &#125;<br>    <br>       <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;<br>   &#125;<br><span class="hljs-built_in">boolean</span> location = <span class="hljs-title function_">hasPermissions</span>(<span class="hljs-variable language_">this</span>, <span class="hljs-title class_">Manifest</span>.<span class="hljs-property">permission</span>.<span class="hljs-property">ACCESS_COARSE_LOCATION</span>);<br></code></pre></td></tr></table></figure>
+<p>跳转到别的APP</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><code class="hljs typescript">  <span class="hljs-keyword">private</span> <span class="hljs-built_in">void</span> <span class="hljs-title function_">doStartApplicationWithPackageName</span>(<span class="hljs-params"><span class="hljs-built_in">String</span> packagename</span>) &#123;<br><br>        <span class="hljs-title class_">Intent</span> intent = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Intent</span>();<br>        <span class="hljs-title class_">PackageInfo</span> packageinfo = <span class="hljs-literal">null</span>;<br>        <span class="hljs-title class_">PackageManager</span> packageManager = context.<span class="hljs-title function_">getPackageManager</span>();<br>        <span class="hljs-keyword">try</span> &#123;<br>            packageinfo = packageManager.<span class="hljs-title function_">getPackageInfo</span>(packagename, <span class="hljs-number">0</span>);<br>        &#125; <span class="hljs-keyword">catch</span> (<span class="hljs-title class_">PackageManager</span>.<span class="hljs-property">NameNotFoundException</span> e) &#123;<br>            e.<span class="hljs-title function_">printStackTrace</span>();<br>        &#125;<br>        <span class="hljs-keyword">if</span> (packageinfo == <span class="hljs-literal">null</span>) &#123;<br>            intent.<span class="hljs-title function_">setClass</span>(context, <span class="hljs-title class_">NoLianshuaActivity</span>.<span class="hljs-property">class</span>);<br>            context.<span class="hljs-title function_">startActivity</span>(intent);<br>            <span class="hljs-title function_">dismiss</span>();<br>            <span class="hljs-keyword">return</span>;<br>        &#125;<br>        intent = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Intent</span>(<span class="hljs-title class_">Intent</span>.<span class="hljs-property">ACTION_VIEW</span>,<br>                <span class="hljs-title class_">Uri</span>.<span class="hljs-title function_">parse</span>(<span class="hljs-string">&quot;mydemo://go?money=&quot;</span> + money <br>                + <span class="hljs-string">&quot;&amp;isFromMydemo=&quot;</span> + <span class="hljs-literal">true</span>));<br>    &#125;<br><br><br>&lt;activity <span class="hljs-attr">android</span>:name=<span class="hljs-string">&quot;.Main2Activity&quot;</span>&gt;<br>    <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">intent-filter</span>&gt;</span></span><br><span class="language-xml">        <span class="hljs-tag">&lt;<span class="hljs-name">action</span> <span class="hljs-attr">android:name</span>=<span class="hljs-string">&quot;android.intent.action.VIEW&quot;</span> /&gt;</span></span><br><span class="language-xml">        <span class="hljs-tag">&lt;<span class="hljs-name">category</span> <span class="hljs-attr">android:name</span>=<span class="hljs-string">&quot;android.intent.category.DEFAULT&quot;</span> /&gt;</span></span><br><span class="language-xml">        <span class="hljs-tag">&lt;<span class="hljs-name">data</span> <span class="hljs-attr">android:scheme</span>=<span class="hljs-string">&quot;mydemo&quot;</span> /&gt;</span></span><br><span class="language-xml">    <span class="hljs-tag">&lt;/<span class="hljs-name">intent-filter</span>&gt;</span></span><br>&lt;/activity&gt;<br><br></code></pre></td></tr></table></figure>
+
+<p>另一个APP</p>
+<figure class="highlight lasso"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs lasso"><span class="hljs-keyword">private</span> <span class="hljs-literal">void</span> parseIntentUrl() &#123;<br>    Intent intent = getIntent();<br>    <span class="hljs-built_in">String</span> action = intent.getAction();<br>    <span class="hljs-keyword">if</span> (Intent.ACTION_VIEW.<span class="hljs-keyword">equals</span>(action)) &#123;<br>        Uri uri = intent.getData();<br>        <span class="hljs-keyword">if</span> (uri != <span class="hljs-built_in">null</span>) &#123;<br>            <span class="hljs-built_in">String</span> host = uri.getHost();<br>            <span class="hljs-built_in">String</span> dataString = intent.getDataString();<br>            <span class="hljs-built_in">String</span> id = uri.getQueryParameter(<span class="hljs-string">&quot;goodsId&quot;</span>);<br>            <span class="hljs-built_in">String</span> path = uri.getPath();<br>            <span class="hljs-built_in">String</span> path1 = uri.getEncodedPath();<br>            <span class="hljs-built_in">String</span> queryString = uri.getQuery();<br>            <span class="hljs-keyword">Log</span>.d(<span class="hljs-string">&quot;Alex&quot;</span>, <span class="hljs-string">&quot;host:&quot;</span>+host);<br>            <span class="hljs-keyword">Log</span>.d(<span class="hljs-string">&quot;Alex&quot;</span>, <span class="hljs-string">&quot;dataString:&quot;</span> + dataString);<br>            <span class="hljs-keyword">Log</span>.d(<span class="hljs-string">&quot;Alex&quot;</span>, <span class="hljs-string">&quot;id:&quot;</span> + id);<br>            <span class="hljs-keyword">Log</span>.d(<span class="hljs-string">&quot;Alex&quot;</span>, <span class="hljs-string">&quot;path:&quot;</span> + path);<br>            <span class="hljs-keyword">Log</span>.d(<span class="hljs-string">&quot;Alex&quot;</span>, <span class="hljs-string">&quot;path1:&quot;</span> + path1);<br>            <span class="hljs-keyword">Log</span>.d(<span class="hljs-string">&quot;Alex&quot;</span>, <span class="hljs-string">&quot;queryString:&quot;</span> + queryString);<br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p><strong>ViewPager越界</strong><br>ViewPager的子控件个数（getChildCount()）最多为3（在destroyItem()中调用了removeView()），如果要获取ViewPager某个子页面，千万不能使用getChildAt(position)，会造成数组越界。可以通过这样来获取。</p>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs pgsql">@Override<br><span class="hljs-built_in">public</span> <span class="hljs-keyword">Object</span> instantiateItem(ViewGroup container, <span class="hljs-type">int</span> position) &#123;<br>	<span class="hljs-keyword">view</span>.setTag(DEFAULT_TAG + position);<br>	container.addView(<span class="hljs-keyword">view</span>);<br>	<span class="hljs-keyword">return</span> <span class="hljs-keyword">view</span>;<br>&#125;<br><br><span class="hljs-keyword">View</span> child = mViewPager.findViewWithTag(DEFAULT_TAG + position));<br></code></pre></td></tr></table></figure>
+<p>友盟埋点：StatisticalUtils<br>加密工具：EncryptTools<br>截图分享：ScreenShorUtils、ScreenShotListenManager</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Android/" class="category-chain-item">Android</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Android知识点</div>
+      <div>http://peiniwan.github.io/2025/12/d010df585b97.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>六月的雨</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年12月16日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"OwNIdaopOn1rwNhtotGOGC0B-gzGzoHsz","appKey":"eadytQ2XqWmxuvAKeg08XX83","path":"window.location.pathname","placeholder":null,"avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":true,"recordIP":false,"serverURLs":"https://ownidaop.lc-cn-n1-shared.com","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

@@ -1,0 +1,727 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="六月的雨">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="通信Flutter 是如何与原生 Android、iOS 进行通信的？Flutter 通过 PlatformChannel 与原生进行交互，其中 PlatformChannel 分为三种：BasicMessageChannel ：用于传递字符串和半结构化的信息。MethodChannel ：用于传递方法调用（method invocation）。EventChannel : 用于数据流（event">
+<meta property="og:type" content="article">
+<meta property="og:title" content="6-和原生通信">
+<meta property="og:url" content="http://peiniwan.github.io/2025/12/68fd6e9693db.html">
+<meta property="og:site_name" content="六月的雨的笔记">
+<meta property="og:description" content="通信Flutter 是如何与原生 Android、iOS 进行通信的？Flutter 通过 PlatformChannel 与原生进行交互，其中 PlatformChannel 分为三种：BasicMessageChannel ：用于传递字符串和半结构化的信息。MethodChannel ：用于传递方法调用（method invocation）。EventChannel : 用于数据流（event">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-12-16T13:59:22.529Z">
+<meta property="article:modified_time" content="2024-03-25T05:05:00.000Z">
+<meta property="article:author" content="六月的雨">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>6-和原生通信 - 六月的雨的笔记</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"peiniwan.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>六月的雨的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="6-和原生通信"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-12-16 21:59" pubdate>
+          2025年12月16日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.2k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          11 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">6-和原生通信</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="通信"><a href="#通信" class="headerlink" title="通信"></a>通信</h1><p><strong>Flutter 是如何与原生 Android、iOS 进行通信的？</strong><br>Flutter 通过 PlatformChannel 与原生进行交互，其中 PlatformChannel 分为三种：<br>BasicMessageChannel ：用于传递字符串和半结构化的信息。<br>MethodChannel ：用于传递方法调用（method invocation）。<br>EventChannel : 用于数据流（event streams）的通信。</p>
+<p><a target="_blank" rel="noopener" href="https://flutter.cn/docs/development/add-to-app">将 Flutter 集成到现有应用</a><br><a target="_blank" rel="noopener" href="https://learnku.com/articles/32448">Flutter 与 Android 的相互通信</a></p>
+<p>可以从 Native 层调用 flutter 层的 dart 代码，也可以在 flutter 层调用 Native 的代码，而作为通讯桥梁就是 MethodChannel，这个类在初始化的时候需要注册一个渠道值。<br>这个值必须是唯一的，并且在使用到的 Native 层和 Flutter 层互相对应。</p>
+<h2 id="flutter-调用-Android"><a href="#flutter-调用-Android" class="headerlink" title="flutter 调用 Android"></a><strong>flutter 调用 Android</strong></h2><p>注册</p>
+<figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs aspectj"><span class="hljs-keyword">static</span> <span class="hljs-keyword">const</span> nativeChannel =<span class="hljs-function"><span class="hljs-keyword">const</span> <span class="hljs-title">MethodChannel</span><span class="hljs-params">(<span class="hljs-string">&#x27;com.example.flutter/native&#x27;</span>)</span></span>;<br></code></pre></td></tr></table></figure>
+<p>flutter</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs dart"><span class="hljs-built_in">Map</span>&lt;<span class="hljs-built_in">String</span>, <span class="hljs-built_in">dynamic</span>&gt; result = &#123;<span class="hljs-string">&#x27;message&#x27;</span>: <span class="hljs-string">&#x27;我从Flutter页面回来了&#x27;</span>&#125;;<br>              nativeChannel.invokeMethod(<span class="hljs-string">&#x27;goBackWithResult&#x27;</span>, result);<br></code></pre></td></tr></table></figure>
+<p>Android</p>
+<figure class="highlight livescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs livescript">MethodChannel nativeChannel = <span class="hljs-keyword">new</span> MethodChannel(flutterEngine.getDartExecutor(), CHANNEL_NATIVE);<br>       nativeChannel.setMethodCallHandler<span class="hljs-function"><span class="hljs-params">((methodCall, result) -&gt; &#123;</span></span><br><span class="hljs-params"><span class="hljs-function">           <span class="hljs-keyword">switch</span> (methodCall.method) &#123;</span></span><br><span class="hljs-params"><span class="hljs-function">               <span class="hljs-regexp">//回调</span></span></span><br><span class="hljs-regexp"><span class="hljs-params"><span class="hljs-function">           case &quot;goBackWithResult&quot;:</span></span></span><br><span class="hljs-regexp"><span class="hljs-params"><span class="hljs-function">                   //</span> 返回上一页，携带数据</span></span><br><span class="hljs-params"><span class="hljs-function">                   ActivityManager.getInstance().finishActivity(FlutterActivity.<span class="hljs-keyword">class</span>);</span></span><br><span class="hljs-params"><span class="hljs-function">                   Toast.makeText(this, (<span class="hljs-built_in">String</span>) methodCall.argument(<span class="hljs-string">&quot;message&quot;</span>), Toast.LENGTH_SHORT).show();</span></span><br><span class="hljs-params"><span class="hljs-function">                   <span class="hljs-keyword">break</span>;</span></span><br><span class="hljs-params"><span class="hljs-function">               <span class="hljs-keyword">case</span> <span class="hljs-string">&quot;getSendParams&quot;</span>:</span></span><br><span class="hljs-params"><span class="hljs-function">                   result.success(getSendParams());</span></span><br><span class="hljs-params"><span class="hljs-function">                   <span class="hljs-keyword">break</span>;</span></span><br><span class="hljs-params"><span class="hljs-function">               <span class="hljs-keyword">default</span>:</span></span><br><span class="hljs-params"><span class="hljs-function">                   result.notImplemented();</span></span><br><span class="hljs-params"><span class="hljs-function">                   <span class="hljs-keyword">break</span>;</span></span><br><span class="hljs-params"><span class="hljs-function">           &#125;</span></span><br><span class="hljs-params"><span class="hljs-function">       &#125;)</span>;</span><br><span class="hljs-function">    </span><br></code></pre></td></tr></table></figure>
+
+<p>异步</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs csharp"><span class="hljs-function">Future <span class="hljs-title">getSendParams</span>() <span class="hljs-keyword">async</span></span> &#123;<br>   String <span class="hljs-keyword">params</span> = <span class="hljs-keyword">await</span> _SendFeedBackState.nativeChannel<br>       .invokeMethod(<span class="hljs-string">&#x27;getSendParams&#x27;</span>, <span class="hljs-string">&quot;&quot;</span>);<br>   print(<span class="hljs-string">&quot;getSendParams：&quot;</span> + <span class="hljs-keyword">params</span>);<br> &#125;<br></code></pre></td></tr></table></figure>
+<h2 id="Android-调用-flutter"><a href="#Android-调用-flutter" class="headerlink" title="Android 调用 flutter"></a><strong>Android 调用 flutter</strong></h2><p>Android</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs dart"><span class="hljs-built_in">Map</span>&lt;<span class="hljs-built_in">String</span>, <span class="hljs-built_in">Object</span>&gt; result = <span class="hljs-keyword">new</span> HashMap&lt;&gt;();<br>result.put(<span class="hljs-string">&quot;message&quot;</span>, message);<br><span class="hljs-comment">// 创建MethodChannel</span><br>MethodChannel flutterChannel = <span class="hljs-keyword">new</span> MethodChannel(flutterEngine.getDartExecutor(), CHANNEL_FLUTTER);<br>flutterChannel.invokeMethod(<span class="hljs-string">&quot;onActivityResult&quot;</span>, result);<br></code></pre></td></tr></table></figure>
+<p>flutter<br>setMethodCallHandler</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs csharp">@override<br><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">initState</span>()</span> &#123;<br>  super.initState();<br>  <span class="hljs-function">Future&lt;<span class="hljs-built_in">dynamic</span>&gt; <span class="hljs-title">handler</span>(<span class="hljs-params">MethodCall call</span>) <span class="hljs-keyword">async</span></span> &#123;<br>    <span class="hljs-keyword">switch</span> (call.method) &#123;<br>      <span class="hljs-keyword">case</span> <span class="hljs-string">&#x27;onActivityResult&#x27;</span>:<br>        Fluttertoast.showToast(<br>          msg: call.arguments[<span class="hljs-string">&#x27;message&#x27;</span>],<br>          toastLength: Toast.LENGTH_SHORT,<br>        );<br>        <span class="hljs-keyword">break</span>;<br>      <span class="hljs-keyword">case</span> <span class="hljs-string">&#x27;goBack&#x27;</span>:<br>        <span class="hljs-comment">// 返回上一页</span><br>        <span class="hljs-keyword">if</span> (Navigator.canPop(context)) &#123;<br>          Navigator.of(context).pop();<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>          nativeChannel.invokeMethod(<span class="hljs-string">&#x27;goBack&#x27;</span>);<br>        &#125;<br>        <span class="hljs-keyword">break</span>;<br>    &#125;<br>  &#125;<br>    <br>  flutterChannel.setMethodCallHandler(handler);<br>&#125;<br>    <br></code></pre></td></tr></table></figure>
+
+
+<h1 id="Flutter-页面放原生-view"><a href="#Flutter-页面放原生-view" class="headerlink" title="Flutter 页面放原生 view"></a>Flutter 页面放原生 view</h1><p> 将 Native UI 嵌入到 Flutter 中去使用, 需要准备四步</p>
+<h2 id="第一步"><a href="#第一步" class="headerlink" title="第一步"></a>第一步</h2><p>自定义 view<br>FVideoView , 要嵌入到 Flutter 的 iOS view 或者 Android view</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">class</span> <span class="hljs-title class_">FVideoView</span> <span class="hljs-meta">@JvmOverloads</span> constructor(<br>    context: Context? = ContextManager.getContext(),<br>    attrs: AttributeSet? = <span class="hljs-literal">null</span>,<br>    defStyleAttr: Int = <span class="hljs-number">0</span><br>) : LinearLayout(context!!, attrs, defStyleAttr), DefaultLifecycleObserver &#123;<br>    <span class="hljs-keyword">var</span> flVideoView: FrameLayout? = <span class="hljs-literal">null</span><br>    <span class="hljs-keyword">private</span> <span class="hljs-type">val</span> <span class="hljs-variable">TAG</span> <span class="hljs-operator">=</span> <span class="hljs-built_in">this</span>.javaClass.simpleName<br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">var</span> currentVideoData: BookVideoLiteManager.VideoPlayerData? = <span class="hljs-literal">null</span><br><br><br>    init &#123;<br>        BookLogger.i(TAG, <span class="hljs-string">&quot;FVideoView--init&quot;</span>)<br>        LayoutInflater.from(context).inflate(R.layout.flutter_video_view, <span class="hljs-built_in">this</span>, <span class="hljs-literal">true</span>)<br>        <span class="hljs-comment">// 找到子视图</span><br>        flVideoView = findViewById(R.id.flVideoView)<br><br>        <span class="hljs-keyword">if</span> (context != <span class="hljs-literal">null</span> &amp;&amp; context is FragmentActivity) &#123;<br>            context.lifecycle.addObserver(<span class="hljs-built_in">this</span>)<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-keyword">private</span> fun <span class="hljs-title function_">initCurrentVideoData</span><span class="hljs-params">(fVideoPlayBean: FVideoPlayBean)</span> &#123;<br>        fVideoPlayBean.run &#123;<br>            <span class="hljs-type">val</span> <span class="hljs-variable">module</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">if</span> (<span class="hljs-keyword">module</span> == <span class="hljs-number">1</span>) &#123;<br>                BookVpDataSource.Module.VIP_MODULE<br>            &#125; <span class="hljs-keyword">else</span> &#123;<br>                BookVpDataSource.Module.STUDY_MODULE<br>            &#125;<br>            <span class="hljs-type">val</span> <span class="hljs-variable">playerType</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">if</span> (playerType == <span class="hljs-number">1</span>) &#123;<br>                BookVpPlayerTypeMode.ALI_YUN<br>            &#125; <span class="hljs-keyword">else</span> &#123;<br>                BookVpPlayerTypeMode.PS_MEDIA<br>            &#125;<br>            currentVideoData = BookVideoLiteManager<br>                .VideoPlayerData(WeakReference(flVideoView))<br>                .setModule(<span class="hljs-keyword">module</span>)<br>                .setBusinessType(businessType ?: <span class="hljs-number">0</span>)<br>                .setUrlType(BookVpDataSource.URL_TYPE_FID)<br>                .setPlayerType(playerType)<br>                .setFid(fid ?: <span class="hljs-string">&quot;&quot;</span>)<br>                .setScaleMode(BookVpScaleMode.SCALE_ASPECT_FIT)<br>                .setBusinessSensorMap(mutableMapOf())<br>                .setIsVideoNoWifiPlay(<span class="hljs-literal">true</span>)<br>        &#125;<br>    &#125;<br><br>    fun <span class="hljs-title function_">startPlay</span><span class="hljs-params">(json: String?)</span> &#123;<br>        <span class="hljs-type">val</span> <span class="hljs-variable">fVideoPlayBean</span> <span class="hljs-operator">=</span> GsonUtil.getInstance().fromJson(json, FVideoPlayBean::class.java)<br>        initCurrentVideoData(fVideoPlayBean)<br>        resumePlay()<br>    &#125;<br><br>    fun <span class="hljs-title function_">pausePlay</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-keyword">if</span>(currentVideoData!=<span class="hljs-literal">null</span>)&#123;<br>            BookVideoLiteManager.getInstance().videoPlayerPause(currentVideoData)<br>        &#125;<br>    &#125;<br><br>    fun <span class="hljs-title function_">resumePlay</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-keyword">if</span> (currentVideoData != <span class="hljs-literal">null</span>) &#123;<br>            BookVideoLiteManager.getInstance().videoPlayerResume(currentVideoData)<br>        &#125;<br>    &#125;<br><br>    fun <span class="hljs-title function_">releasePlay</span><span class="hljs-params">()</span> &#123;<br>        BookVideoLiteManager.getInstance().videoPlayerRelease(currentVideoData)<br>        currentVideoData = <span class="hljs-literal">null</span><br>    &#125;<br><br>    override fun <span class="hljs-title function_">onCreate</span><span class="hljs-params">(owner: LifecycleOwner)</span> &#123;<br>        <span class="hljs-built_in">super</span>.onCreate(owner)<br>        BookLogger.i(TAG, <span class="hljs-string">&quot;FVideoView--onCreate&quot;</span>)<br>    &#125;<br><br>    override fun <span class="hljs-title function_">onPause</span><span class="hljs-params">(owner: LifecycleOwner)</span> &#123;<br>        pausePlay()<br>        <span class="hljs-built_in">super</span>.onPause(owner)<br>        BookLogger.i(TAG, <span class="hljs-string">&quot;FVideoView--onPause&quot;</span>)<br>    &#125;<br><br>    override fun <span class="hljs-title function_">onStop</span><span class="hljs-params">(owner: LifecycleOwner)</span> &#123;<br>        <span class="hljs-built_in">super</span>.onStop(owner)<br>        BookLogger.i(TAG, <span class="hljs-string">&quot;FVideoView--onStop&quot;</span>)<br>    &#125;<br><br>    override fun <span class="hljs-title function_">onResume</span><span class="hljs-params">(owner: LifecycleOwner)</span> &#123;<br>        <span class="hljs-built_in">super</span>.onResume(owner)<br>        resumePlay()<br>        BookLogger.i(TAG, <span class="hljs-string">&quot;FVideoView--onResume&quot;</span>)<br>    &#125;<br><br><br>    override fun <span class="hljs-title function_">onDestroy</span><span class="hljs-params">(owner: LifecycleOwner)</span> &#123;<br>        releasePlay()<br>        <span class="hljs-built_in">super</span>.onDestroy(owner)<br>        BookLogger.i(TAG, <span class="hljs-string">&quot;FVideoView--onDestroy&quot;</span>)<br>        <span class="hljs-keyword">if</span> (context != <span class="hljs-literal">null</span> &amp;&amp; context is FragmentActivity) &#123;<br>            (context as FragmentActivity).lifecycle.removeObserver(<span class="hljs-built_in">this</span>)<br>        &#125;<br>    &#125;<br><br>&#125;<br></code></pre></td></tr></table></figure>
+<h2 id="第二步"><a href="#第二步" class="headerlink" title="第二步"></a>第二步</h2><p>FVideoViewController , FVideoView 的控制器, 用来创建和管理 FVideoView<br>继承 PlatformView、MethodChannel</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">class</span> <span class="hljs-title class_">FVideoViewController</span>(context: Context?, messenger: BinaryMessenger, id: Int?, args: Any?) :<br>    PlatformView, MethodChannel.MethodCallHandler &#123;<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">var</span> videoView: FVideoView = FVideoView(context)<br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">var</span> methodChannel: MethodChannel?=<span class="hljs-literal">null</span><br><br>    init &#123;<br>        BookLogger.i(<span class="hljs-string">&quot;FlutterCacheManager&quot;</span>, <span class="hljs-string">&quot;FVideoViewController&quot;</span>)<br><br>        <span class="hljs-comment">//通信</span><br>        methodChannel = MethodChannel(messenger, <span class="hljs-string">&quot;FVideoView_$id&quot;</span>)<br>        methodChannel?.setMethodCallHandler(<span class="hljs-built_in">this</span>)<br>        <span class="hljs-keyword">if</span> (args!=<span class="hljs-literal">null</span> &amp;&amp; args is String) &#123;<br>            videoView.startPlay(args)<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 用于返回Native View,这个View会被嵌入到Flutter的视图结构中</span><br><span class="hljs-comment">     */</span><br>    override fun <span class="hljs-title function_">getView</span><span class="hljs-params">()</span>: View &#123;<br>        <span class="hljs-keyword">return</span> videoView<br>    &#125;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 当Flutter要决定销毁PlatformView时会调用这个方法,</span><br><span class="hljs-comment">     * 通常在Flutter的一个widget销毁时调用,我们可以在这个方法中做一些资源释放的工作</span><br><span class="hljs-comment">     */</span><br>    override fun <span class="hljs-title function_">dispose</span><span class="hljs-params">()</span> &#123;<br>        BookLogger.i(<span class="hljs-string">&quot;FlutterCacheManager&quot;</span>, <span class="hljs-string">&quot;dispose&quot;</span>)<br>        methodChannel?.setMethodCallHandler(<span class="hljs-literal">null</span>)<br>        methodChannel=<span class="hljs-literal">null</span><br>    &#125;<br><br>    <span class="hljs-comment">//通信flutter调用原生</span><br>    override fun <span class="hljs-title function_">onMethodCall</span><span class="hljs-params">(call: MethodCall, result: MethodChannel.Result)</span> &#123;<br>        when (call.method) &#123;<br>            <span class="hljs-string">&quot;startPlay&quot;</span>-&gt;&#123;<br>                videoView.startPlay(call.arguments as? String)<br>            &#125;<br>            <span class="hljs-string">&quot;pausePlay&quot;</span>-&gt;&#123;<br>                videoView.pausePlay()<br>            &#125;<br>            <span class="hljs-string">&quot;resumePlay&quot;</span>-&gt;&#123;<br>                videoView.resumePlay()<br>            &#125;<br>            <span class="hljs-string">&quot;releasePlay&quot;</span>-&gt;&#123;<br>                videoView.releasePlay()<br>            &#125;<br>            <span class="hljs-keyword">else</span> -&gt; &#123;<br>                result.notImplemented()<br>            &#125;<br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="第三步"><a href="#第三步" class="headerlink" title="第三步"></a>第三步</h2><p>继承 PlatformViewFactory，FVideoViewFactory , 用于向 Flutter 提供 FVideoView  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">class</span> <span class="hljs-title class_">FVideoViewFactory</span> (<span class="hljs-keyword">private</span> val messenger: BinaryMessenger) :<br>    PlatformViewFactory(StandardMessageCodec.INSTANCE) &#123;<br><br>    override fun <span class="hljs-title function_">create</span><span class="hljs-params">(context: Context?, viewId: Int, args: Any?)</span>: PlatformView &#123;<br>        BookLogger.i(<span class="hljs-string">&quot;FlutterCacheManager&quot;</span>, <span class="hljs-string">&quot;FVideoViewFactory&quot;</span>)<br>        <span class="hljs-keyword">return</span> FVideoViewController(context, messenger, viewId, args)<br>    &#125;<br><br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+<h2 id="第四步"><a href="#第四步" class="headerlink" title="第四步"></a>第四步</h2><p>FVideoViewPlugin , 用于向 Flutter 注册 FVideoView</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">class</span> <span class="hljs-title class_">FVideoViewPlugin</span> &#123;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 需要在创建Flutter引擎的时候去注册(重要)</span><br><span class="hljs-comment">     */</span><br>    fun <span class="hljs-title function_">registerWith</span><span class="hljs-params">(flutterEngine: FlutterEngine)</span> &#123;<br>        flutterEngine.platformViewsController.registry.registerViewFactory(<br>            <span class="hljs-string">&quot;FVideoView&quot;</span>,<br>            FVideoViewFactory(flutterEngine.dartExecutor.binaryMessenger)<br>        )<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>FVideoViewPlugin().registerWith(flutterEngine)</p>
+<hr>
+<h2 id="Flutter-注册"><a href="#Flutter-注册" class="headerlink" title="Flutter 注册"></a>Flutter 注册</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">class</span> <span class="hljs-title class_">FVideoViewController</span> &#123;<br>  late MethodChannel _channel;<br><br>  FVideoViewController(<span class="hljs-type">int</span> id) &#123;<br>    _channel = MethodChannel(<span class="hljs-string">&quot;FVideoView_$id&quot;</span>);<br>    _channel.setMethodCallHandler(_handleMethod);<br>    tallog(<span class="hljs-string">&quot;FVideoViewController---$id&quot;</span>);<br>  &#125;<br><br>  <span class="hljs-comment">///来自native view的调用</span><br>  Future&lt;dynamic&gt; <span class="hljs-title function_">_handleMethod</span><span class="hljs-params">(MethodCall call)</span> async &#123;<br>    <span class="hljs-keyword">switch</span> (call.method) &#123;<br>      <span class="hljs-keyword">case</span> <span class="hljs-string">&quot;method name&quot;</span>:<br>        <span class="hljs-type">var</span> <span class="hljs-variable">text</span> <span class="hljs-operator">=</span> call.arguments as String;<br>        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Future</span>.value(<span class="hljs-string">&quot;Text from native:$text&quot;</span>);<br>    &#125;<br>  &#125;<br><br>  <span class="hljs-comment">///后期有实际业务，写真实参数</span><br>  Future&lt;<span class="hljs-keyword">void</span>&gt; <span class="hljs-title function_">startPlay</span><span class="hljs-params">()</span> async &#123;<br>    <span class="hljs-keyword">try</span> &#123;<br>      <span class="hljs-type">var</span> <span class="hljs-variable">map</span> <span class="hljs-operator">=</span> &#123;<br>        <span class="hljs-string">&quot;fid&quot;</span>: <span class="hljs-string">&quot;VE_E8kdxv&quot;</span>,<br>        <span class="hljs-string">&quot;businessType&quot;</span>: <span class="hljs-number">1</span>,<br>        <span class="hljs-string">&quot;playerType&quot;</span>: <span class="hljs-number">0</span>,<br>        <span class="hljs-string">&quot;module&quot;</span>: <span class="hljs-number">1</span>,<br>      &#125;;<br>      await _channel.invokeMethod(<span class="hljs-string">&quot;startPlay&quot;</span>, jsonEncode(map));<br>    &#125; on PlatformException <span class="hljs-title function_">catch</span> <span class="hljs-params">(e)</span> &#123;<br>      tallog(e.message);<br>    &#125;<br>  &#125;<br><br>  Future&lt;<span class="hljs-keyword">void</span>&gt; <span class="hljs-title function_">pausePlay</span><span class="hljs-params">()</span> async &#123;<br>    <span class="hljs-keyword">try</span> &#123;<br>      await _channel.invokeMethod(<span class="hljs-string">&quot;pausePlay&quot;</span>);<br>    &#125; on PlatformException <span class="hljs-title function_">catch</span> <span class="hljs-params">(e)</span> &#123;<br>      tallog(e.message);<br>    &#125;<br>  &#125;<br><br>  Future&lt;<span class="hljs-keyword">void</span>&gt; <span class="hljs-title function_">resumePlay</span><span class="hljs-params">()</span> async &#123;<br>    <span class="hljs-keyword">try</span> &#123;<br>      await _channel.invokeMethod(<span class="hljs-string">&quot;resumePlay&quot;</span>);<br>    &#125; on PlatformException <span class="hljs-title function_">catch</span> <span class="hljs-params">(e)</span> &#123;<br>      tallog(e.message);<br>    &#125;<br>  &#125;<br><br>  Future&lt;<span class="hljs-keyword">void</span>&gt; <span class="hljs-title function_">releasePlay</span><span class="hljs-params">()</span> async &#123;<br>    <span class="hljs-keyword">try</span> &#123;<br>      await _channel.invokeMethod(<span class="hljs-string">&quot;releasePlay&quot;</span>);<br>    &#125; on PlatformException <span class="hljs-title function_">catch</span> <span class="hljs-params">(e)</span> &#123;<br>      tallog(e.message);<br>    &#125;<br>  &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+
+<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs java">Widget <span class="hljs-title function_">getPlatformView</span><span class="hljs-params">(TestVideoLogic logic, MaterialColor color)</span> &#123;<br>  <span class="hljs-keyword">if</span> (Platform.isAndroid) &#123;<br>    <span class="hljs-keyword">return</span> Column(<br>      children: [<br>        Container(<br>          color: color,<br>          child: SizedBox(<br>            height: <span class="hljs-number">200</span>,<br>            child: AndroidView(<br>              viewType: <span class="hljs-string">&quot;FVideoView&quot;</span>,<br>              creationParams: <span class="hljs-literal">null</span>,<br>              creationParamsCodec: StandardMessageCodec(),<br>              onPlatformViewCreated: (id) &#123;<br>                <span class="hljs-type">var</span> <span class="hljs-variable">controller</span> <span class="hljs-operator">=</span> FVideoViewController(id);<br>                logic.controller = controller;<br>                logic.startPlay();<br>              &#125;,<br>            ),<br>          ),<br>        ),<br>      ],<br>    );<br>  &#125; <span class="hljs-keyword">else</span> &#123;<br>    <span class="hljs-keyword">return</span> UiKitView(viewType: <span class="hljs-string">&quot;FVideoView&quot;</span>);<br>  &#125;<br></code></pre></td></tr></table></figure>
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%85%B6%E4%BB%96%E8%AF%AD%E8%A8%80/" class="category-chain-item">其他语言</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>6-和原生通信</div>
+      <div>http://peiniwan.github.io/2025/12/68fd6e9693db.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>六月的雨</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年12月16日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/12/7c997ff43b8f.html" title="7-上传Maven">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">7-上传Maven</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/12/888ee5ddd5f7.html" title="6-Dart语言">
+                        <span class="hidden-mobile">6-Dart语言</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"OwNIdaopOn1rwNhtotGOGC0B-gzGzoHsz","appKey":"eadytQ2XqWmxuvAKeg08XX83","path":"window.location.pathname","placeholder":null,"avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":true,"recordIP":false,"serverURLs":"https://ownidaop.lc-cn-n1-shared.com","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

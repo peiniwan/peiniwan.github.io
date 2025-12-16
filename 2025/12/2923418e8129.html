@@ -1,0 +1,932 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="六月的雨">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="ANR什么是 ANRANR 全称 Applicatipon No Response；Android 设计 ANR 的用意，是系统通过与之交互的组件 (Activity，Service，Receiver，Provider) 以及用户交互 (InputEvent) 进行超时监控，以判断应用进程 (主线程) 是否存在卡死或响应过慢的问题。其实就是很多系统中看门狗 (watchdog) 的设计思想。 An">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2.ANR及问题排查">
+<meta property="og:url" content="http://peiniwan.github.io/2025/12/2923418e8129.html">
+<meta property="og:site_name" content="六月的雨的笔记">
+<meta property="og:description" content="ANR什么是 ANRANR 全称 Applicatipon No Response；Android 设计 ANR 的用意，是系统通过与之交互的组件 (Activity，Service，Receiver，Provider) 以及用户交互 (InputEvent) 进行超时监控，以判断应用进程 (主线程) 是否存在卡死或响应过慢的问题。其实就是很多系统中看门狗 (watchdog) 的设计思想。 An">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android%E5%85%B6%E4%BB%96%E4%BC%98%E5%8C%96.resources/2023/09/15/18-49-35-37ba3ad4b94e35e194ad63e0fc8c6b99-unknown_filename.3-176d2f.png">
+<meta property="article:published_time" content="2025-12-16T13:59:22.409Z">
+<meta property="article:modified_time" content="2024-03-27T02:04:00.000Z">
+<meta property="article:author" content="六月的雨">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android%E5%85%B6%E4%BB%96%E4%BC%98%E5%8C%96.resources/2023/09/15/18-49-35-37ba3ad4b94e35e194ad63e0fc8c6b99-unknown_filename.3-176d2f.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>2.ANR及问题排查 - 六月的雨的笔记</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"peiniwan.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>六月的雨的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="2.ANR及问题排查"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-12-16 21:59" pubdate>
+          2025年12月16日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          4.4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          37 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">2.ANR及问题排查</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="ANR"><a href="#ANR" class="headerlink" title="ANR"></a>ANR</h2><h3 id="什么是-ANR"><a href="#什么是-ANR" class="headerlink" title="什么是 ANR"></a>什么是 ANR</h3><p>ANR 全称 Applicatipon No Response；Android 设计 ANR 的用意，是系统通过与之交互的组件 (Activity，Service，Receiver，Provider) 以及用户交互 (InputEvent) 进行超时监控，以判断应用进程 (主线程) 是否存在<em>卡死或响应过慢</em>的问题。其实就是很多系统中看门狗 (watchdog) 的设计思想。</p>
+<p>Android 在主线程是不能做阻塞耗时操作的，例如加载网络数据、数据库查询、文件读写，如果在应用中无响应的话会导致 ANR (Application Not Response)<br><strong>手机可分配的 CPU 占满也会发生 ANR</strong></p>
+<p>没有在规定的时间内，干完要干的事情，就会发生 ANR。也有可能不是自己应用的问题</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android%E5%85%B6%E4%BB%96%E4%BC%98%E5%8C%96.resources/2023/09/15/18-49-35-37ba3ad4b94e35e194ad63e0fc8c6b99-unknown_filename.3-176d2f.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.3|600"></p>
+<p><strong>ANR 触发流程解析</strong></p>
+<ol>
+<li><p><strong>SystemServer（系统服务进程）</strong>    </p>
+<ul>
+<li>通过 <code>setTimeOut</code> 设置广播接收的超时阈值（前台广播 10 秒，后台广播 60 秒）</li>
+<li>通过 Binder 线程向 APP 发送广播：<code>mAppThread.scheduleReceiver()</code></li>
+</ul>
+</li>
+<li><p><strong>APP 进程接收广播</strong></p>
+<ul>
+<li>Binder 线程收到广播后，向主线程的 <code>MessageQueue</code> 插入消息（图中多个 <code>Message1</code>）</li>
+<li>消息内容：要求执行 <code>Receiver.onReceive()</code></li>
+</ul>
+</li>
+<li><p><strong>主线程处理延迟</strong></p>
+<ul>
+<li>主线程正处理其他消息（<code>Message1</code> 队列积压）</li>
+<li>无法及时执行广播接收器的 <code>onReceive()</code> 方法</li>
+</ul>
+</li>
+<li><p><strong>AMS 监控超时</strong></p>
+<ul>
+<li>ActivityManagerService (AMS) 在后台计时</li>
+<li>超时前未收到 <code>ActivityManagerProxy.finishReceiver()</code> 完成通知</li>
+</ul>
+</li>
+<li><p><strong>触发 ANR</strong></p>
+<ul>
+<li>AMS 检测超时后，判定应用无响应</li>
+<li>系统弹出 ANR 对话框并记录日志</li>
+</ul>
+</li>
+</ol>
+<h3 id="分类"><a href="#分类" class="headerlink" title="分类"></a>分类</h3><p>根据具体的原因和场景，可以将 ANR 分为以下几种类型：</p>
+<ul>
+<li><p><strong>Input dispatching timeout</strong></p>
+<ul>
+<li>主线程卡住没处理输入事件（touch&#x2F;key）</li>
+<li>典型：UI线程执行耗时操作</li>
+</ul>
+</li>
+<li><p><strong>BroadcastQueue timeout</strong></p>
+<ul>
+<li>广播接收器 <code>onReceive()</code> 超时</li>
+</ul>
+</li>
+<li><p><strong>Service timeout</strong></p>
+<ul>
+<li><code>onCreate()</code> 或 <code>onStartCommand()</code> 耗时</li>
+</ul>
+</li>
+<li><p><strong>ContentProvider timeout</strong></p>
+<ul>
+<li>主线程在 <code>ContentProvider</code> 的 <code>onCreate()</code>、<code>query()</code> 阻塞</li>
+</ul>
+</li>
+<li><p><strong>system_server Watchdog</strong></p>
+<ul>
+<li>关键系统服务（AMS&#x2F;WMS&#x2F;PMS）卡住</li>
+</ul>
+</li>
+</ul>
+<p> 5s 内没有响应用户输入事件<br>10s 内广播接收器没有处理完毕<br>20s 内服务没有处理完毕</p>
+<h3 id="造成-ANR-的常见原因"><a href="#造成-ANR-的常见原因" class="headerlink" title="造成 ANR 的常见原因"></a>造成 ANR 的常见原因</h3><ol>
+<li>应用在主线程上进行长时间的计算、耗时的 I&#x2F;O 的操作。</li>
+<li>主线程处于阻塞状态，等待获取锁。</li>
+<li>主线程与其他线程之间发生死锁。</li>
+<li>主线程在对另一个进程进行同步 Binder 调用，而后者需要很长时间才能返回。(如果我们知道调用远程方法需要很长时间，我们应该避免在主线程调用)</li>
+</ol>
+<p>A.主线程耗时操作，如复杂的layout，庞大的for循环，IO等。<br>B.主线程被子线程同步锁block<br>C.主线程被Binder 对端block<br>D.Binder被占满导致主线程无法和SystemServer通信<br>E.得不到系统资源（CPU&#x2F;RAM&#x2F;IO）</p>
+<h3 id="分析-anr"><a href="#分析-anr" class="headerlink" title="分析 anr"></a><strong>分析 anr</strong></h3><p>adb pull &#x2F;data&#x2F;anr&#x2F;traces. txt trace. txt<br>ANR 产生时, 系统会生成一个 traces. txt 的文件放在&#x2F;data&#x2F;anr&#x2F;下. 可以通过 adb 命令将其导出到本地，这个文件里有 ANR 发生的进程 pid, 时间, 以及进程名字 (包名)，还有 anr 产生的位置和方法。最新的 ANR 信息在最开始部分。</p>
+<p>[[Trace 文件怎么读]]</p>
+<p>主要原因是主线程做了耗时操作（io、网络、数据库）</p>
+<ul>
+<li>先 确定发生 ANR 的时间具体时间点、什么类型的 anr</li>
+<li>当 ANR 被发现后，两个很重要的日志输出是：<em>CPU 使用情况和进程的函数调用栈</em>，这两类日志是我们解决 ANR 问题的关键</li>
+</ul>
+<ul>
+<li><em>看 cpu，如果 cpu 占用很高，说明主线程可能阻塞</em>。</li>
+<li>看线程转态，是阻塞还是等待</li>
+<li>看 stackSize</li>
+</ul>
+<p><strong>第一步: 确定发生ANR的时间具体时间点、什么类型的 anr</strong></p>
+<ul>
+<li>event log，通过检索”<em>am_anr</em>”关键字，可以找到发生 ANR 的应用</li>
+<li>main log，通过检索”<em>ANR in</em> “关键字，可以找到 ANR 的信息，<em>日志的上下文会包含 CPU 的使用情况</em></li>
+<li>往下翻找到“main”线程则可看到对应的阻塞 log</li>
+</ul>
+<p>根据这行log我们确定的信息<br>发生anr的时间点：12-17 06:02:14.463,<br>进程pid：8769,<br>进程名：com.android.updater,<br>发生ANR的类型是：BroadcastTimeout,</p>
+<p>发生的具体类或者原因：{ act&#x3D;android.intent.action.BOOT_COMPLETED flg&#x3D;0x9000010 cmp&#x3D;com.android.updater&#x2F;.BootCompletedReceiver (has extras) }</p>
+<p><strong>eg:</strong>  </p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">12</span>-<span class="hljs-number">17</span> <span class="hljs-number">06</span>:<span class="hljs-number">02</span>:<span class="hljs-number">00</span>.<span class="hljs-number">370</span> <span class="hljs-number">1566</span> <span class="hljs-number">1583</span> W BroadcastQueue: Timeout of broadcast BroadcastRecord&#123;<span class="hljs-number">21</span>ef8c2 u0 android.intent.action.BOOT_COMPLETED&#125; - receiver=android.os.BinderProxy@<span class="hljs-number">2</span>a6c365, started **<span class="hljs-number">60006</span>ms** ago<br><br><span class="hljs-attribute">12</span>-<span class="hljs-number">17</span> <span class="hljs-number">06</span>:<span class="hljs-number">02</span>:<span class="hljs-number">00</span>.<span class="hljs-number">370</span>  <span class="hljs-number">1566</span>  <span class="hljs-number">1583</span> W BroadcastQueue: Receiver during timeout: ResolveInfo&#123;<span class="hljs-number">5</span>a8283a com.android.updater/.BootCompletedReceiver m=<span class="hljs-number">0</span>x108000&#125;<br></code></pre></td></tr></table></figure>
+
+<p>这行日志中很多信息是和Events log是重合的,但是我们我们可以通过” <em>started 60006ms ago</em>“可以知道这信息是在1分多钟之前执行的,现在还没有执行结束,已经达到了发生ANR规定的时间,可以确定这是个后台广播,所以我们可以把信息锁定在时间点:12-17 06:02:00.370<em>往前推算的一分钟内</em>,观察在这段时间内具体执行了哪些操作,导致后台广播没有执行完成.</p>
+<p>注意:</p>
+<ol>
+<li><em>ANR in对应的ANR的时间点往往是比am_anr的时间点是靠后的</em>,一般不使用这个时间确定ANR发生的具体时间点</li>
+<li>cpu占用95%有时候并不算高，在多核中每个核最大占用率都是100%（八核占用率是800%）</li>
+</ol>
+<p><strong>第二步：ANR发生时打印的堆栈和系统附加信息</strong><br>发生ANR时,各个应用进程和系统进程的函数堆栈信息都输出到了一个&#x2F;data&#x2F;anr&#x2F;traces.txt的文件.我们往往比较关注的是发生ANR的应用进程主线程具体执行堆栈,我们可以知道在发生ANR这个时间点主线程具体在做什么,为什么卡住了,是等锁,binder call调用还是主线程存在耗时的操作等等.</p>
+<p><strong>eg:</strong></p>
+<p><em>main(线程名)、prio(线程优先级,默认是5)、tid(线程唯一标识ID)、Sleeping(线程当前状态)</em></p>
+<p>“main” prio&#x3D;5 tid&#x3D;1 Sleeping<br>| group&#x3D;”main” sCount&#x3D;1 dsCount&#x3D;0 obj&#x3D;0x73132d10 self&#x3D;0x5598a5f5e0<br><em>&#x2F;&#x2F;sysTid是线程号(主线程的线程号和进程号相同)</em><br>| sysTid&#x3D;17027 nice&#x3D;0 cgrp&#x3D;default sched&#x3D;0&#x2F;0 handle&#x3D;0x7fb6db6fe8<br>| state&#x3D;S schedstat&#x3D;( 420582038 5862546 143 ) utm&#x3D;24 stm&#x3D;18 core&#x3D;6 HZ&#x3D;100<br>| stack&#x3D;0x7fefba3000-0x7fefba5000 stackSize&#x3D;8MB<br>| held mutexes&#x3D;<br>&#x2F;&#x2F; java 堆栈调用信息(这里可查看导致ANR的代码调用流程)(<em>分析ANR最重要的信息</em>)<br>at java.lang.Thread.sleep!(Native method)  </p>
+<ul>
+<li>sleeping on &lt;0x0c60f3c7&gt; (a java.lang.Object)<br>at java.lang.Thread.sleep(Thread.java:1031)  </li>
+<li><em>locked</em> &lt;0x0c60f3c7&gt; (a java.lang.Object) &#x2F;&#x2F; <em>锁住对象0x0c60f3c7</em><br>at java.lang.Thread.sleep(Thread.java:985)<br>at android.os.SystemClock.sleep(SystemClock.java:120)<br>at org.code.ipc.MessengerService.onCreate(MessengerService.java:63) &#x2F;&#x2F;<em>导致ANR的代码</em><br>at android.app.ActivityThread.handleCreateService(ActivityThread.java:2877)<br>at android.app.ActivityThread.access$1900(ActivityThread.java:150)<br>at android.app.ActivityThread$H.handleMessage(ActivityThread.java:1427)<br>at android.os.Handler.dispatchMessage(Handler.java:102)<br>at android.os.Looper.loop(Looper.java:148)<br>at android.app.ActivityThread.main(ActivityThread.java:5417)<br>at java.lang.reflect.Method.invoke!(Native method)<br>at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:726)<br>at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:616)</li>
+</ul>
+<p>查看系统耗时关键字: binder_sample、dvm_lock_sample、am_lifecycle_sample、binder thread<br>结合源码和以上的信息进行分析</p>
+<h3 id="具体例子"><a href="#具体例子" class="headerlink" title="具体例子"></a>具体例子</h3><p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/bacd320b36b3">Android造成ANR的常见原因及示例分析 - 简书</a></p>
+<ol>
+<li>主线程获取播放器总时长</li>
+<li>主线程上执行复杂的布局计算，例如嵌套的布局层次、动态布局调整或复杂的测量和布局过程，主线程可能会花费过长的时间来计算布局，recycleview 嵌套，csharpReason: Input dispatching timed out </li>
+<li>读一个大文件</li>
+<li>主线程中执行长时间的动画操作，可以启动硬件加速、或者如果动画操作涉及到后台任务，例如加载和处理大量图像数据，可以考虑使用异步任务来在后台线程上执行这些操作，并在完成后在主线程上更新动画。</li>
+<li>调 h5方法太频繁或耗时</li>
+<li>在主线程上执行大量的图像处理操作，例如图片压缩、滤镜处理或大型图像的加载和显示，大图优化。内存紧张导致 ANR</li>
+</ol>
+<h3 id="解决办法"><a href="#解决办法" class="headerlink" title="解决办法"></a>解决办法</h3><ol>
+<li>不要在主线程 (UI 线程) 里面做繁重的操作, 增大 VM 内存, 使用 largeHeap 属性, 排查内存泄露</li>
+<li>Thread + Handler + Message ，Thread + Handler + post，AsyncTask，intentservice、runOnUiThread (Runnable) 在子线程中直接使用该方法，可以更新 UI，记得注意内存泄露</li>
+</ol>
+<h3 id="锁"><a href="#锁" class="headerlink" title="锁"></a>锁</h3><p>比较少，大部分是做了耗时操作</p>
+<h4 id="主线程处于阻塞状态，等待获取锁"><a href="#主线程处于阻塞状态，等待获取锁" class="headerlink" title="主线程处于阻塞状态，等待获取锁"></a>主线程处于阻塞状态，等待获取锁</h4><p>先让后台线程获取锁，做耗时操作，然后主线程再尝试获取锁。然后多次点击返回键，制造ANR。</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs csharp"><span class="hljs-string">&quot;main&quot;</span> prio=<span class="hljs-number">5</span> tid=<span class="hljs-number">1</span> Blocked<br>  | <span class="hljs-keyword">group</span>=<span class="hljs-string">&quot;main&quot;</span> sCount=<span class="hljs-number">1</span> dsCount=<span class="hljs-number">0</span> obj=<span class="hljs-number">0x77d21af8</span> self=<span class="hljs-number">0x7fa2ea2a00</span><br>  | sysTid=<span class="hljs-number">20008</span> nice=<span class="hljs-number">-10</span> cgrp=<span class="hljs-literal">default</span> sched=<span class="hljs-number">0</span>/<span class="hljs-number">0</span> handle=<span class="hljs-number">0x7fa6f4ba98</span><br>  | state=S schedstat=( <span class="hljs-number">278831875</span> <span class="hljs-number">7233747</span> <span class="hljs-number">156</span> ) utm=<span class="hljs-number">22</span> stm=<span class="hljs-number">5</span> core=<span class="hljs-number">0</span> HZ=<span class="hljs-number">100</span><br>  | stack=<span class="hljs-number">0x7fd42e0000</span><span class="hljs-number">-0x7fd42e2000</span> stackSize=<span class="hljs-number">8</span>MB<br>  | held mutexes=<br>  at com.example.android.jetpackdemo.StartActivity.onClick(StartActivity.kt:<span class="hljs-number">61</span>)<br>  - <span class="hljs-function">waiting to <span class="hljs-title">lock</span> &lt;0x0f8c80b0&gt; (<span class="hljs-params">a java.lang.Object</span>) held <span class="hljs-keyword">by</span> thread 16</span><br></code></pre></td></tr></table></figure>
+<p>在等待一个锁对象 <code>&lt;0x0f8c80b0&gt;</code>，该对象是一个 <code>Object</code> 对象(a java.lang.Object)，这个锁对象正在被线程id为16的线程持有。那么我们下面在traces.txt文件中搜索一下这个锁对象 <code>&lt;0x0f8c80b0&gt;</code>，然后找到对应代码</p>
+<h4 id="主线程与其他线程之间发生死锁"><a href="#主线程与其他线程之间发生死锁" class="headerlink" title="主线程与其他线程之间发生死锁"></a>主线程与其他线程之间发生死锁</h4><p><strong>traces.txt部分信息</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">----- pid 13626 at 2020-06-04 15:07:37 -----<br>Cmd line: com.example.android.jetpackdemo<br>Build fingerprint: <span class="hljs-string">&#x27;HUAWEI/MLA-AL10/HWMLA:7.0/HUAWEIMLA-AL10/C00B364:user/release-keys&#x27;</span><br></code></pre></td></tr></table></figure>
+<p>通过进程号pid 13626搜索</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs csharp"><span class="hljs-string">&quot;main&quot;</span> prio=<span class="hljs-number">5</span> tid=<span class="hljs-number">1</span> Blocked<br>  | <span class="hljs-keyword">group</span>=<span class="hljs-string">&quot;main&quot;</span> sCount=<span class="hljs-number">1</span> dsCount=<span class="hljs-number">0</span> obj=<span class="hljs-number">0x77d21af8</span> self=<span class="hljs-number">0x7fa2ea2a00</span><br>  | sysTid=<span class="hljs-number">13626</span> nice=<span class="hljs-number">-10</span> cgrp=<span class="hljs-literal">default</span> sched=<span class="hljs-number">0</span>/<span class="hljs-number">0</span> handle=<span class="hljs-number">0x7fa6f4ba98</span><br>  | state=S schedstat=( <span class="hljs-number">288564792</span> <span class="hljs-number">6939269</span> <span class="hljs-number">224</span> ) utm=<span class="hljs-number">23</span> stm=<span class="hljs-number">5</span> core=<span class="hljs-number">0</span> HZ=<span class="hljs-number">100</span><br>  | stack=<span class="hljs-number">0x7fd42e0000</span><span class="hljs-number">-0x7fd42e2000</span> stackSize=<span class="hljs-number">8</span>MB<br>  | held mutexes=<br>  at com.example.android.jetpackdemo.StartActivity.mockDeadLock(StartActivity.kt:<span class="hljs-number">142</span>)<br>  - <span class="hljs-function">waiting to <span class="hljs-title">lock</span> &lt;0x0a43b5c8&gt; (<span class="hljs-params">a java.lang.String</span>) held <span class="hljs-keyword">by</span> thread 17</span><br></code></pre></td></tr></table></figure>
+<p>主线程状态是线程状态是Blocked，说明正在等待获取锁对象，等待获取的锁对象<code>&lt;0x0a43b5c8&gt;</code>是一个String对象(a java.lang.String)，该对象被线程id为17的线程持有。然后我们搜索这个锁对象。</p>
+<h2 id="traces关注点"><a href="#traces关注点" class="headerlink" title="traces关注点"></a>traces关注点</h2><p><strong>traces.txt 里的主要关注点</strong></p>
+<p>ANR 发生时，系统会把当时所有进程的线程堆栈 dump 到 <code>/data/anr/traces.txt</code>。常看这些：</p>
+<ul>
+<li><p><strong>main 线程堆栈（UI线程）</strong></p>
+<ul>
+<li><code>state</code>（状态：Running &#x2F; Sleeping &#x2F; Blocked）</li>
+<li>是否在等待锁（<code>- locked</code>、<code>- waiting to lock</code>）</li>
+<li>是否在 Binder 调用（跨进程阻塞）</li>
+<li>是否有耗时操作（IO、sleep、数据库、循环计算等）</li>
+</ul>
+</li>
+<li><p><strong>Binder 线程池（Binder_xxx）</strong></p>
+<ul>
+<li>否卡在某个系统服务 &#x2F; 应用 Service 调用上</li>
+<li>常见问题：binder 死锁 &#x2F; binder 队列阻塞</li>
+</ul>
+</li>
+<li><p><strong>GC &#x2F; FinalizerDaemon &#x2F; ReferenceQueueDaemon</strong></p>
+<ul>
+<li>是否 GC 卡顿</li>
+<li>是否对象回收线程停滞，拖慢主线程</li>
+</ul>
+</li>
+<li><p><strong>系统服务进程（system_server）</strong></p>
+<ul>
+<li><code>ActivityManager</code>、<code>InputDispatcher</code>、<code>WindowManager</code> 的堆栈</li>
+<li>重点：system_server 如果被卡住，所有 app 都可能 ANR</li>
+</ul>
+</li>
+</ul>
+<p><strong>traces.txt 里的关键 tag（系统打的日志点）</strong></p>
+<p>你提到的几个关键字，其实是 <strong>systrace&#x2F;atrace 打点 + ANR 打印扩展</strong>，能辅助定位卡点：</p>
+<ul>
+<li><p><strong>binder_sample</strong></p>
+<ul>
+<li>说明 <strong>Binder 调用超时</strong>，可能是调用方 &#x2F; 被调用方处理过慢。</li>
+<li>binder thread 堆栈能看到调用的接口。</li>
+</ul>
+</li>
+<li><p><strong>dvm_lock_sample &#x2F; art_lock_sample</strong></p>
+<ul>
+<li>表示 <strong>Java 锁竞争严重</strong>，有线程长时间持有锁。</li>
+<li>常见场景：主线程 <code>synchronized</code> 锁住，子线程要获取；或者数据库锁未释放。</li>
+</ul>
+</li>
+<li><p><strong>am_lifecycle_sample</strong></p>
+<ul>
+<li>ActivityManager 监控到某个 <strong>生命周期回调耗时</strong>。</li>
+<li>比如 <code>onCreate()</code>、<code>onResume()</code>、<code>onStart()</code> 超时。</li>
+</ul>
+</li>
+<li><p><strong>binder thread</strong></p>
+<ul>
+<li>binder 线程池的堆栈信息，可以看到是否卡在等待 &#x2F; 处理事务。<br>这些信息配合 <code>system_server</code> 和 app 主线程堆栈一起看，能快速定位卡因。</li>
+</ul>
+</li>
+</ul>
+<h2 id="线上问题排查"><a href="#线上问题排查" class="headerlink" title="线上问题排查"></a>线上问题排查</h2><p>adb bugreport<br>生成的 log 位于 &#x2F;data&#x2F;user_de&#x2F;0&#x2F;com. android. shell&#x2F;files&#x2F;bugreports&#x2F; 目录下<br>如何查看 FC：</p>
+<ol>
+<li>搜索关键字 system_app_crash   am_crash </li>
+<li>关键字 AndroidRuntime  </li>
+<li>F DEBUG ,native 崩溃会用到</li>
+</ol>
+<ul>
+<li>日志打点怕打太多也怕太少，担心出现问题没有足够丰富的信息去定位分析问题。应该打多少日志，如何去打日志并没有一个非常严格的准则，这需要整个团队在长期实践中慢慢去摸索。在最开始的时候，可能大家都不重视也不愿意去增加关键代码的日志，但是当我们通过日志平台解决了一些疑难问题以后，团队内部的成功案例越来越多的时候，这种习惯也就慢慢建立起来了。</li>
+<li>使用 Mars 的 xlog，Java 实现写日志，GC 频繁，而 C 实现并不会出现这种情况，因为它不会占用 Java 的堆内存。</li>
+<li>使用阿里云日志采集服务</li>
+<li>俩种方式上报日志：push 上报，主动上报（在用户出现奔溃，反馈问题时主动上报日志（可以重启了上报））</li>
+<li>正因为反复“痛过”，才会有了微信的用户日志和点击流平台，才会有美团的 <strong>Logan</strong> 和 <strong>Homles</strong>（看看） 统一日志系统。所谓团队的“提质增效”，就是寻找团队中这些痛点，思考如何去改进。无论是流程的自动化，还是开发新的工具、新的平台，都是朝着这个目标前进。</li>
+</ul>
+<p><strong>Android 混淆后还怎么看错误</strong></p>
+<p>保留关键信息：在混淆配置文件（通常是 <code>proguard-rules.pro</code>）中，您可以添加规则来保留某些类、方法或字段的名称，以便在混淆后的应用程序中仍然能够识别它们。例如：</p>
+<figure class="highlight axapta"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs axapta"><br>-keep <span class="hljs-keyword">class</span> <span class="hljs-title class_">android</span>.** &#123; *; &#125; <span class="hljs-comment">// 保留 android 包及其子包下的所有类和成员</span><br>-keep <span class="hljs-keyword">class</span> <span class="hljs-title class_">androidx</span>.** &#123; *; &#125; <span class="hljs-comment">// 保留 androidx 包及其子包下的所有类和成员</span><br><br>-keep <span class="hljs-keyword">class</span> <span class="hljs-title class_">com</span>.example.MyClass &#123; *; &#125; <span class="hljs-comment">// 保留 MyClass 及其成员</span><br>-keepclassmembers <span class="hljs-keyword">class</span> <span class="hljs-title class_">com</span>.example.MyClass &#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> myMethod(); <span class="hljs-comment">// 保留 MyClass 中的 myMethod 方法</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><strong>注解混淆</strong></p>
+<p>不想混淆的类需要一个个添加到 proguard-rules. pro (或 proguard. cfg) 中吗？这样会导致 proguard 配置文件变得杂乱无章，同时需要团队所有成员对其语法有所了解。<br>解决方法1：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">//新建表示统一标识的注解 NotProguard</span><br><span class="hljs-meta">@Retention(RetentionPolicy.CLASS)</span><br><span class="hljs-meta">@Target(&#123;ElementType.TYPE, ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.FIELD&#125;)</span><br><span class="hljs-keyword">public</span> <span class="hljs-meta">@interface</span> NotProguard &#123;<br> <br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<p>NotProguard 是个编译时注解，不会对运行时性能有任何影响。可修饰类、方法、构造函数、属性。<br>然后在 Proguard 配置文件中过滤被这个注解修饰的元素，表示不混淆被 NotProguard 修饰的类、属性和方法。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs java"># Keep annotated by NotProguard<br>-keep <span class="hljs-meta">@cn</span>.trinea.android.lib.annotation.NotProguard class * &#123;*;&#125;<br>-keep,allowobfuscation <span class="hljs-meta">@interface</span> cn.trinea.android.lib.annotation.NotProguard<br>-keepclassmembers class * &#123;<br>    <span class="hljs-meta">@cn</span>.trinea.android.lib.annotation.NotProguard *;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>解决方法2：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs java">## keep 不想要混淆的类<br>-keep <span class="hljs-keyword">class</span> <span class="hljs-title class_">com</span>.utils.ProguardKeep &#123;*;&#125;<br>-keep class * <span class="hljs-keyword">implements</span> <span class="hljs-title class_">com</span>.utils.ProguardKeep &#123;*;&#125;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 实现这个接口的类不会进行混淆</span><br><span class="hljs-comment"> *  proguard keep</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">interface</span> <span class="hljs-title class_">ProguardKeep</span>  &#123;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<h3 id="问题不是自己-app，怎么解决"><a href="#问题不是自己-app，怎么解决" class="headerlink" title="问题不是自己 app，怎么解决"></a>问题不是自己 app，怎么解决</h3><p>bugly 报的很多问题不是自己 app 的类，怎么解决</p>
+<ol>
+<li><p>第三方库或依赖项：Bugly 可以报告与您的应用程序相关的第三方库或依赖项中出现的问题。这可能是由于库本身的 bug、版本不兼容或配置错误等原因引起的。在这种情况下，您可以尝试更新相关的库版本，查看是否已经发布了修复此问题的更新版本。另外，您还可以尝试搜索相关问题的解决方案或在开发者社区中提问以获得帮助。</p>
+</li>
+<li><p>系统组件或操作系统问题：有时 Bugly 报告的问题可能涉及到 Android 系统组件或操作系统本身的问题。这可能是由于特定设备、Android 版本或其他环境因素导致的。在这种情况下，您可以尝试查看 Bugly 提供的详细信息，例如堆栈跟踪、设备信息等，以了解问题发生的背景。然后，您可以尝试在 Bugly 或其他社区中搜索相关问题，看是否有其他开发者遇到过类似问题，并找到解决方案或工作回避方法。</p>
+</li>
+<li><p>混淆和符号化：如果您在应用程序中使用了代码混淆（如 ProGuard）并启用了符号化配置，Bugly 报告的问题可能显示的是混淆后的类名或方法名。在这种情况下，您可以尝试使用<em>符号化映射文件</em>（mapping file）将混淆后的类名还原为原始的类名，以便更好地理解问题出现的位置和上下文。您可以通过在 Bugly 控制台中上传符号化映射文件来实现这一点。</p>
+</li>
+</ol>
+<h3 id="符号化映射文件"><a href="#符号化映射文件" class="headerlink" title="符号化映射文件"></a>符号化映射文件</h3><p>将应用程序的崩溃堆栈信息转换为可读形式的文件。它包含了应用程序的符号表（Symbol Table）信息，将编译后的函数和变量名映射回原始的源代码符号，使得崩溃日志更易于理解和分析。</p>
+<p>符号化映射文件通常在应用程序构建过程中生成，并与应用程序的发布版本一起打包。在 Android 开发中，常用的构建工具如 ProGuard 或 R8 可以生成符号化映射文件。该文件通常具有 “.mapping” 或 “.txt” 的扩展名。</p>
+<p>需要注意的是，符号化映射文件包含敏感信息，<em>如函数名和行号</em>等。因此，为了保护应用程序的安全，符号化映射文件应妥善管理，并不应该随意公开或共享。</p>
+<p>Mapping 文件的默认位置为 <code>app/build/outputs/mapping/release/mapping.txt</code></p>
+<h2 id="卡顿优化"><a href="#卡顿优化" class="headerlink" title="卡顿优化"></a>卡顿优化</h2><p>卡顿的原因<br>频繁 GC 造成卡顿、物理内存不足时系统会触发 low memory killer 机制，系统负载过高是造成卡顿的俩个原因。<em>用时分配，及时释放</em></p>
+<p>大部分的卡顿问题都比较好定位，例如<em>主线程执行一个耗时任务、读一个非常大的文件或者是执行网络请求</em>等。</p>
+<p>Android 端采用 Matrix 来整理和汇总数据, 同步到实时监控日志</p>
+<p>Traceview、systrace 以及 AS 自带的 Profiler 工具。</p>
+<p>[[7.优化工具使用#卡顿监测]]</p>
+<p>[[第三方框架源码#BlockCanary原理]]</p>
+<p>导致卡顿的原因有很多，比如函数非常耗时、I&#x2F;O 非常慢、线程间的竞争或者锁等，其实很多时候卡顿问题并不难解决，相较解决来说，更困难的是如何快速发现这些卡顿点，以及通过更多的辅助信息找到真正的卡顿原因。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Android/" class="category-chain-item">Android</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>2.ANR及问题排查</div>
+      <div>http://peiniwan.github.io/2025/12/2923418e8129.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>六月的雨</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年12月16日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/12/69d6bc2a702f.html" title="3.冷启动优化">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">3.冷启动优化</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/12/860d5e680c4f.html" title="1.Android内存优化">
+                        <span class="hidden-mobile">1.Android内存优化</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"OwNIdaopOn1rwNhtotGOGC0B-gzGzoHsz","appKey":"eadytQ2XqWmxuvAKeg08XX83","path":"window.location.pathname","placeholder":null,"avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":true,"recordIP":false,"serverURLs":"https://ownidaop.lc-cn-n1-shared.com","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

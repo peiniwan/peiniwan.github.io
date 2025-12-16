@@ -1,0 +1,917 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="六月的雨">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="四大组件Activity四大组件之一,一个和用户交的互界面就是一个 activity，是所有 View 的容器 生命周期生命周期描述的是一个类从创建(new出来)到死亡(垃圾回收)的过程中会执行的方法，在这个过程中会针对不同的生命阶段会调用不同的方法。这些回调方法包括： 123456oncreate:Activity对象创建完毕，但此时不可见onstart:Activity在屏幕可见，但是此时没有">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android（一）">
+<meta property="og:url" content="http://peiniwan.github.io/2025/12/2a4c1471c008.html">
+<meta property="og:site_name" content="六月的雨的笔记">
+<meta property="og:description" content="四大组件Activity四大组件之一,一个和用户交的互界面就是一个 activity，是所有 View 的容器 生命周期生命周期描述的是一个类从创建(new出来)到死亡(垃圾回收)的过程中会执行的方法，在这个过程中会针对不同的生命阶段会调用不同的方法。这些回调方法包括： 123456oncreate:Activity对象创建完毕，但此时不可见onstart:Activity在屏幕可见，但是此时没有">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android%EF%BC%88%E4%B8%80%EF%BC%89.resources/2023/09/15/18-48-41-0eb8e744012c77533eae8818ffef5b50-wpsF22B-1e1cb4.jpg">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android%EF%BC%88%E4%B8%80%EF%BC%89.resources/2023/09/15/18-48-41-21777d9b65be1ecb685fb6f191aa8dc7-unknown_filename-ad563c.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android%EF%BC%88%E4%B8%80%EF%BC%89.resources/2023/09/15/18-48-41-1c78f67c55317123cc1a587eb7227d29-unknown_filename.1-a61bc7.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android%EF%BC%88%E4%B8%80%EF%BC%89.resources/2023/09/15/18-48-41-568c23259949a12e0533083690a74e75-unknown_filename.2-00df06.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android%EF%BC%88%E4%B8%80%EF%BC%89.resources/2023/09/15/18-48-41-fd81ff34823cb6edf47b2425f2369899-05a8c7a67e7b5a582ec85bade979cad2-c23cce.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android%EF%BC%88%E4%B8%80%EF%BC%89.resources/2023/09/15/18-48-41-92a9400996ef48c827b4c4d65700440f-fragment-life-faebc4.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android%EF%BC%88%E4%B8%80%EF%BC%89.resources/2023/09/15/18-48-41-6659d319ca25cd2b6b698bad507a3119-f770be1f-7024-41dd-907b-02eccb007a97-83103a.jpg">
+<meta property="article:published_time" content="2025-12-16T13:59:22.347Z">
+<meta property="article:modified_time" content="2024-03-31T08:16:00.000Z">
+<meta property="article:author" content="六月的雨">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android%EF%BC%88%E4%B8%80%EF%BC%89.resources/2023/09/15/18-48-41-0eb8e744012c77533eae8818ffef5b50-wpsF22B-1e1cb4.jpg">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>Android（一） - 六月的雨的笔记</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"peiniwan.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>六月的雨的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Android（一）"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-12-16 21:59" pubdate>
+          2025年12月16日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          7.4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          62 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Android（一）</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="四大组件"><a href="#四大组件" class="headerlink" title="四大组件"></a>四大组件</h2><h3 id="Activity"><a href="#Activity" class="headerlink" title="Activity"></a>Activity</h3><p>四大组件之一,一个和用户交的互界面就是一个 activity，是所有 View 的容器</p>
+<h4 id="生命周期"><a href="#生命周期" class="headerlink" title="生命周期"></a>生命周期</h4><p>生命周期描述的是一个类从创建(new出来)到死亡(垃圾回收)的过程中会执行的方法，在这个过程中会针对不同的生命阶段会调用不同的方法。这些回调方法包括：</p>
+<figure class="highlight pf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs pf">oncreate:Activity对象创建完毕，但此时不可见<br>onstart:Activity在屏幕可见，但是此时没有焦点<br><span class="hljs-keyword">on</span>Resume：Activity在屏幕可见，并且获得焦点<br><span class="hljs-keyword">on</span>Pause：Activity此时在屏幕依然可见，但是已经没有焦点<br><span class="hljs-keyword">on</span>Stop：Activity已经不可见了，但此时Activity的对象还在内存中<br><span class="hljs-keyword">on</span>Destroy：Activity对象被销毁<br></code></pre></td></tr></table></figure>
+
+<p>其实这些方法都是两两对应的：</p>
+<figure class="highlight pf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs pf"><span class="hljs-keyword">on</span>Create创建与<span class="hljs-keyword">on</span>Destroy销毁；<br><span class="hljs-keyword">on</span>Start可见与<span class="hljs-keyword">on</span>Stop不可见；<br><span class="hljs-keyword">on</span>Resume可编辑（即焦点）与<span class="hljs-keyword">on</span>Pause；<br></code></pre></td></tr></table></figure>
+
+<p> onRestart 方法：在 Activity 被 onStop 后，但是没有被 onDestroy，在再次启动此 Activity 时就调用 onRestart（而不再调用 onCreate）方法；如果被 onDestroy 了，则是调用 onCreate 方法。当一个 Activity 启动另一个 Activity，然后按返回键返回到前一个 Activity 时。</p>
+<ul>
+<li><p>两个Activity之间跳转时必然会执行的是哪几个方法<br>一般情况比如说有两个activity,分别叫A,B ,当在A里面激活B组件的时候, A 会调用 onPause()方法,!<br>然后B 调用onCreate() ,onStart(), OnResume() ,这个时候B覆盖了窗体, A会调用onStop()方法.  如果B是个透明的,或者是对话框的样式, 就不会调用onStop()方法。</p>
+</li>
+<li><p>横竖屏切换时候Activity的生命周期<br>这个生命周期跟清单文件里的配置有关系<br>设置Activity的android:configChanges&#x3D;”orientation|keyboardHidden|screenSize”时，切屏不会重新调用各个生命周期，只会执行onConfigurationChanged方法，游戏开发中, 屏幕的朝向都是写死的</p>
+</li>
+<li><p>如果后台的Activity由于某原因被系统回收了，如何在被系统回收之前保存当前状态？<br>  <img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android%EF%BC%88%E4%B8%80%EF%BC%89.resources/2023/09/15/18-48-41-0eb8e744012c77533eae8818ffef5b50-wpsF22B-1e1cb4.jpg" srcset="/img/loading.gif" lazyload alt="wpsF22B"></p>
+</li>
+</ul>
+<p>除了在栈顶的activity,其他的activity都有可能在内存不足的时候被系统回收,一个activity越处于栈底,被回收的可能性越大.如果有多个后台进程，在选择杀死的目标时，采用最近最少使用算法（LRU）。</p>
+<ol>
+<li>Activity中提供了一个 onSaveInstanceState()回调方法，这个方法会保证一定在活动被回收之前调用， 可以通过这个方法来解决活动被回收时临时数据得不到保存的问题。</li>
+<li>通过onRestoreInstanceState来存储和恢复数据，区别是不需要判断空了，onRestoreInstanceState调用一定是有值的</li>
+</ol>
+<p>Activity的 onSaveInstanceState() 和 onRestoreInstanceState()并不是生命周期方法，它们并不一定会被触发。<br>当应用遇到意外情况，由系统销毁一个Activity，onSaveInstanceState() 会被调用。但是当用户主动去销毁一个Activity时，例如在应用中按返回键，onSaveInstanceState()就不会被调用。<br>除非该activity是被用户主动销毁的，通常onSaveInstanceState()只适合用于保存一些临时性的状态</p>
+<blockquote>
+<p>当用户按下 HOME 键时<br>长按 HOME 键，选择运行其他的程序时<br>锁屏时<br>从 activity A 中启动一个新的 activity 时<br>屏幕方向切换时</p>
+</blockquote>
+<ul>
+<li>发送特定广播：&#x2F;&#x2F;在baseactivity里注册广播   registerReceiver(receiver, filter)&#x2F;&#x2F;想退出的时候就在onRecriver方法里finish()。</li>
+<li>可以通过 intent的flag 来实现， intent.setFlag(FLAG_ACTIVITY_CLEAR_TOP)激活一个新的activity,然后在新的activity的oncreate方法里面就可以finish掉.</li>
+</ul>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android%EF%BC%88%E4%B8%80%EF%BC%89.resources/2023/09/15/18-48-41-21777d9b65be1ecb685fb6f191aa8dc7-unknown_filename-ad563c.png" srcset="/img/loading.gif" lazyload alt="unknown_filename"></p>
+<ul>
+<li>如何返回数据基本流程<br>  使用 startActivityForResult(Intent intent, int requestCode) 方法打开 Activity；<br>  新 Activity 中调用 setResult(int resultCode, Intent data) 设置返回数据之后，关闭 Activity 就会调用onActivityResult 方法；在原来的activity里重写 onActivityResult(int requestCode, int resultCode, Intent data) 方法；</li>
+</ul>
+<blockquote>
+<p>注意：新的 Activity 的启动模式不能设置成 singleTask（如果已创建，会使用以前创建的）与 singleInstance（单独的任务栈），不能被摧毁（执行不到 finish 方法） ，父 Activity 中的 onActivityResult 方法将不会执行；</p>
+</blockquote>
+<p>PendingIntent简单地理解为延迟执行的 Intent。</p>
+<ol>
+<li>任务栈的概念问：一个手机里面有多少个任务栈？<br>答：一般情况下，有多少个应用正在运行，就对应开启多少个任务栈；每开启一个应用程序就会创建一个与之对应的任务栈；栈：后进先出，最先进栈，就会最后出栈。Activity的启动模式就是修改任务栈的排列情况</li>
+<li>任务栈的作用：它是存放 Activity 的引用的，Activity不同的启动模式，对应不同的任务栈的存放；可通过 getTaskId()来获取任务栈的 ID，如果前面的任务栈已经清空，新开的任务栈 ID+1，是自动增长的；</li>
+</ol>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android%EF%BC%88%E4%B8%80%EF%BC%89.resources/2023/09/15/18-48-41-1c78f67c55317123cc1a587eb7227d29-unknown_filename.1-a61bc7.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.1"></p>
+<h4 id="启动模式"><a href="#启动模式" class="headerlink" title="启动模式"></a>启动模式</h4><ol>
+<li>standard 标准启动模式</li>
+<li>singleTop 单一顶部模式如果任务栈的栈顶存在这个要开启的activity，不会重新的创建activity，而是复用已经存在的activity,会调用 onNewInstance()，复用已经存在的实例。如果栈顶没有或者不在栈顶，会重新创建。应用场景：singleTop适合接收通知启动的内容显示页面。例如，某个新闻客户端的新闻内容页面，如果收到10个新闻推送，每次都打开一个新闻内容页面是很耗内存的。</li>
+<li>singeTask 单一任务栈，在当前任务栈里面只能有一个实例存在当开启activity的时候，就去检查在任务栈里面是否有实例已经存在，如果有实例存在就复用这个已经存在的activity，并且把这个activity上面的所有的别的activity都清空，复用这个已经存在的activity。<strong>保证整个任务栈里面只有自己的一个实例存在</strong>。会调用 onNewInstance()，复用已经存在的实例。应用场景：singleTask适合作为程序入口点，例如应用中的主页（Home页）。假设用户在主页跳转到其他页面，运行多次操作后想返回到主页，假设不使用SingleTask模式，在点击返回的过程中会多次看到主页，这明显就是设计不合理了。</li>
+<li>singleInstance：activity会运行在自己的任务栈里面，并且这个任务栈里面只有一个实例存在如果你要保证一个activity在整个手机操作系统里面只有一个实例存在，使用singleInstance应用场景： 电话拨打界面。singleInstance适合需要与程序分离开的页面。例如我们有个需求，需要打开别的应用，这个时候如果不设置singleInstance的话，这个新打开的应用在我们程序的任务栈里，用户想要按任务键切换的话没法切换。</li>
+</ol>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android%EF%BC%88%E4%B8%80%EF%BC%89.resources/2023/09/15/18-48-41-568c23259949a12e0533083690a74e75-unknown_filename.2-00df06.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.2"></p>
+<p><a target="_blank" rel="noopener" href="https://rengwuxian.com/dang-wo-an-xia-home-jian-zai-qie-hui-lai-hui-fa-sheng-shen-me/">https://rengwuxian.com/dang-wo-an-xia-home-jian-zai-qie-hui-lai-hui-fa-sheng-shen-me/</a></p>
+<p>singleInstance 和 singleTask 的区别：singleTask 强调的只是唯一性：我只会在一个 Task 里出现；而且这个 Task 里也只会有一个我的实例。而 singleInstance 除了唯一性，还要求独占性：我要独自霸占一个完整的 Task。</p>
+<p>使用 singleTask 模式的场景主要包括：</p>
+<ol>
+<li><strong>任务的入口点</strong>：适用于任务的入口点，例如应用的主界面，确保整个应用只有一个实例。</li>
+<li><strong>处理特定动作的Activity</strong>：比如一个音乐播放器的播放界面，通过设置为singleTask，可以确保只有一个播放界面存在。<br>值得注意的是，使用 singleTask 要小心处理 Activity 的生命周期，尤其是在 onNewIntent 方法中接收新的 Intent，并进行相应的处理。</li>
+</ol>
+<p><strong>问题</strong>：如何使用 LaunchMode 来实现单实例 Activity？<br>可以使用 singleTask 或 singleInstance 模式来实现单实例 Activity。</p>
+<p><strong>问题</strong>：如何在不同的任务栈中启动 Activity？<br>要在不同的任务栈中启动 Activity，可以通过设置 Intent 的 FLAG_ACTIVITY_NEW_TASK 标志位，然后调用 startActivity()方法。例如：</p>
+<figure class="highlight fortran"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs fortran"><span class="hljs-keyword">Intent</span> <span class="hljs-keyword">intent</span> = new <span class="hljs-keyword">Intent</span>(this, TargetActivity.<span class="hljs-keyword">class</span>);<br><span class="hljs-keyword">intent</span>.setFlags(<span class="hljs-keyword">Intent</span>.FLAG_ACTIVITY_NEW_TASK);<br>startActivity(<span class="hljs-keyword">intent</span>);<br></code></pre></td></tr></table></figure>
+<p>这样，TargetActivity 就会在一个新的任务栈中启动。需要注意的是，<em>如果目标 Activity 已经存在于其他任务栈中，系统会将其移动到新的任务栈</em></p>
+<h5 id="Affinity"><a href="#Affinity" class="headerlink" title="Affinity"></a>Affinity</h5><p>在 Android 里，<em>一个 App 默认只能有一个 Task 显示在最近任务列表里</em>。但其实用来甄别这份唯一性的并不是 App，而是一个叫做 taskAffinity 的东西。Affinity 就是相似、有关联的的意思，在 Android 里，每个 Activity 都有一个 taskAffinity，它就相当于是对每个 Activity 预先进行的分组。它的值默认取自它所在的 Application 的 taskAffinity，而 Application 的 taskAffinity 默认是 App 的包名。</p>
+<h5 id="onNewIntent"><a href="#onNewIntent" class="headerlink" title="onNewIntent"></a>onNewIntent</h5><p>简单理解： onResume 前面多了 onNewIntent（）方法</p>
+<p>第一种情况：activity launchMode为singleTask或者singleInstance<br>1、activitya start activityb<br>2、activityb start activitya<br>在第二步被执行后，activitya就会顺序执行 onNewIntent onRestart onStart onResume</p>
+<p>第二种情况：（一般情况）<br>大概意思是当Activity被设以singleTop模式启动，当需要再次响应此Activity启动需求时，会复用栈顶的已有Activity，还会调用onNewIntent方法。并且，再接受新发送来的intent(onNewIntent方法）之前，一定会先执行onPause方法<br><strong>onPause onNewIntent onResume</strong></p>
+<p>第二种情况：如果ActivityA在栈顶,且现在要再启动ActivityA，这时会调用onNewIntent()方法，生命周期顺序为：onCreate—&gt;onStart—&gt;onResume—onPause&gt; onNewIntent—&gt;onResume</p>
+<blockquote>
+<p>在内存吃紧的情况下，系统可能会 kill 掉后台运行的 Activity ，如果不巧要启动的那个 activity 实例被系统 kill 了，那么系统就会调用 onCreate 方法，而不调用 onNewIntent 方法。这里有个解决方法就是在 onCreate 和 onNewIntent 方法中调用同一个处理数据的方法</p>
+</blockquote>
+<ul>
+<li>​<strong>​<code>standard</code>（默认模式）​</strong>​：每次启动都会创建新实例，​<strong>​会调用 <code>onCreate()</code>​</strong>​，无论是否已存在。</li>
+<li>​<strong>​ <code>singleTop</code> ​</strong>、<code>singleTask</code> &#x2F; <code>singleInstance</code> ​<strong>​​：若目标 Activity 已在栈顶，则复用实例并调用 <code>onNewIntent()</code>，​</strong>​不会触发 <code>onCreate()</code> ​**​；否则行为同 <code>standard</code>。</li>
+</ul>
+<h4 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h4><p>一个应用有 4 个 Activity, ABCD, 他们的启动模式分别为 standard, singleTop，singleTask, singlelnstance, 现在 A&gt;B&gt;C&gt;D&gt;A&gt;B&gt;C&gt;D<br>A 启动 B，B 启动 C, C 启动 D, D 启动 A, A 启动 B，B 启动 C, C 启动 D。现在这个应用 ABCDAcvity 实例各几个????有几个 Acvity 栈?? ?</p>
+<p>1)当 CActivity 的 taskAfFinity 和大家一样时启动流程是这样的:<br>A 启动 B 没有任何波澜，他们都是在一个堆栈，取名栈 1，启动 C，c 寻找 taskAffnity 一样的栈，发现栈 1，而栈 1 中没有 C 实例，所有创建 C 实例。启动 D 时<br>D 为 singlelnstance，所有会另开一个栈，存放 D。一轮启动过后! 目前栈为2个<br>栈 1 里面的实例是 ABC<br>栈 2 里面的实例是 D</p>
+<p>D 启动 A&#x3D;》A 会在栈 1中创建<br>栈 1 里面的实例是 ABCA 栈 2 里面的实例是 D<br>A 启动 b&#x3D;》B 会在栈 1中创建<br>栈 1 里面的实例是 ABCAB<br>栈 2 里面的实例是 D</p>
+<p>B 启动 C&#x3D;》由于但是由于栈 1 有 c，所有 singleTask 的特性会将 c 上的实例通通清除<br>栈 1 里面的实例是 ABC<br>栈 2 里面的实例是 D</p>
+<p>C 启动 D&#x3D;》D 为 singleInstance, 而现在 D <em>又有实例，所有不会创建新的，复用原本的 D 实例栈</em> 1 里面的实例是 ABC<br>栈 2 里面的实例是 D<br>最终结果是: ABCD 实例各一个，栈 2 个</p>
+<p>2)当 CActivity 的 taskAffinity 和大家不一样时启动流程是这样的:<br>A 启动 B 没有任何波澜，他们都是在一个栈取名栈 1，启动 c 时。由于 C 的 <em>taskAffinity</em> 和 A 不一样，也就是栈 1 不一样，所有会单独创建个栈 2，存放 C。<br>C 启动 D，D 为 singleInstance 所有会另开一个栈 3，存放 d。一轮启动过后目前栈为3个<br>栈 1 里面的实例是 AB<br>栈 2 里面的实例是 C<br>栈 3 里面的实例是 D  </p>
+<p>D 启动 A&#x3D;》A 会在栈 1 中创建栈 1 里面的实例是 ABA 栈 2 里面的实例是 C   栈 3 里面的实例是 D<br>A 启动 b&#x3D;》B 会在栈 1 中创建栈 1 里面的实例是 ABAB 栈 2 里面的实例是 C   栈 3 里面的实例是 D<br>B 启动 C&#x3D;》C 会去找 taskAffinity 相同的栈，也就是栈 2，栈 2 的 c 在最上面所有复用 C 实例<br>栈 1 里面的实例是 ABAB<br>栈2里面的实例是 C<br>栈 3 里面的实例是 D</p>
+<p>C 启动 D&#x3D;》D 为 singleInstance, 而现在 D 又有实例，所有不会创建新的，复用原本的 D 实例<br>栈 1 里面的实例是 ABAB<br>栈 2 里面的实例是 C<br>栈 3 里面的实例是 D<br>最终结果是: AB 实例各 2 个，CD 实例各 1 个  栈3个</p>
+<ul>
+<li>Android下的进程进程是被系统创建的，当内存不足的时候，又会被系统回收内存管理<br>  Android 系统在运行多个进程时，如果系统资源不足，会强制结束一些进程,优先选择哪个进程来结束是有优先级的。会按照以下顺序杀死(进程级别)：<br>  ①、空： 进程中没有任何组件（无组件启动，做进程缓存使用，恢复速度快），任务栈清空，意味着程序退出了，但进程留着，这个就是空进程，容易被系统回收；<br>  ②、后台：进程中只有停止状态(onStop)的 Activity；<br>  ③、服务：进程中有正在运行的服务；<br>  ④、可见：进程中有一个暂停状态(onPause)的 Activity；<br>  ⑤、前台：进程中正在运行一个 Activity；Activity 在退出的时候进程不会销毁, 会保留一个空进程方便以后启动. 但在内存不足时进程会被销毁；<br>  不要在 Activity 做耗时的操作, 因为 Activity 切换到后台之后（Activity 停止了）, 内存不足时, 也容易被销毁；热启动：退出后在进入应用不会执行application里的代码了。</li>
+</ul>
+<p><strong>横竖屏切换生命周期</strong></p>
+<ol>
+<li>、不设置 Activity 的 Android: configChanges 时，切屏会重新调用生命周期，切横屏会调用一次，切竖屏会调用两次。<br>2)、设置 Activity 的 Android:configChanges&#x3D;”orientation”时，切开还是会重新调用生命周期，切横竖屏都只调用次生命周期。<br>3)、设置 Activity 的 Android: configChanges “orientation keyboardHidden: 切屏不会重新调用冬个生命周期，只会调用 onConfigurationChanged 方法</li>
+</ol>
+<hr>
+<h3 id="Service"><a href="#Service" class="headerlink" title="Service"></a>Service</h3><p><strong>什么时候使用 Service？</strong><br>    1、Service 的特点可以让他在后台一直运行, 可以在 service 里面创建线程去完成耗时的操作.<br>    2、Broadcast receiver 捕获到一个事件之后, 可以起一个 service 来完成一个耗时的操作.</p>
+<p>Service的生命周期。Service有哪些启动方法，有什么区别，怎样停用Service?<br>    在Service的生命周期有onCreate, onStartCommand, onDestroy,onBind和onUnbind。<br>    一旦在项目的任何位置调用了Context的startService()方法，相应的服务就会启动起来，并回调onStartCommand()方法。如果这个服务之前还没有创建过，onCreate()方法会先于onStartCommand()方法执行。<br>    通常有两种方式启动一个Service,他们对Service生命周期的影响是不一样的。</p>
+<ol>
+<li>通过startService    <br> Service会经历 onCreate 到onStartCommand，然后处于运行状态，stopService的时候调用onDestroy方法。 如果是调用者自己直接退出而没有调用stopService的话，Service会一直在后台运行。</li>
+<li>通过bindService      <br> Service会运行onCreate，然后是调用onBind， 这个时候调用者和Service绑定在一起。调用者退出了，Srevice就会调用onUnbind-&gt;onDestroyed方法。所谓绑定在一起就共存亡了。调用者也可以通过调用unbindService方法来停止服务，这时候Srevice就会调用onUnbind-&gt;onDestroyed方法。</li>
+</ol>
+<p>音乐播放：<br>增加StartService，来增加后台播放功能 startService(intent);<br>StartService后，onUnbind不会停服务，会解除绑定</p>
+<ul>
+<li>service如何杀不死</li>
+</ul>
+<ol>
+<li>onStartCommand方法，返回START_STICKY（粘性）当service因内存不足被kill，当内存又有的时候，service又被重新创建</li>
+<li>设置优先级</li>
+<li>在服务里的ondestory里发送广播，在广播里再次开启这个服务,双进程守护</li>
+</ol>
+<p><strong>service是否在main thread中执行, service里面是否能执行耗时的操作?</strong><br>    Service和Activity是运行在当前app所在进程的main thread(UI主线程)里面service里面不能执行耗时的操作(网络请求,拷贝数据库,大文件 )，需要在子线程中执行 new Thread(){}.start()</p>
+<p><strong>service里面可以弹土司吗</strong> <br>    由于没有关联的界面，土司会无法显示出来，创建一个Handler，并将其与主线程的Looper关联起来。然后，在需要弹出土司的地方，通过Handler来发送弹出土司的消息</p>
+<figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs aspectj"><span class="hljs-meta">@Override</span>  <br>   <span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">onCreate</span><span class="hljs-params">()</span></span>&#123;  <br>       <span class="hljs-keyword">handler</span> = <span class="hljs-keyword">new</span> Handler(Looper.getMainLooper());                          <br>       System.out.println(<span class="hljs-string">&quot;service started&quot;</span>);  <br>       <span class="hljs-keyword">handler</span>.post(<span class="hljs-keyword">new</span> Runnable() &#123;    <br>            <span class="hljs-meta">@Override</span>    <br>            <span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">run</span><span class="hljs-params">()</span> </span>&#123;    <br>               Toast.makeText(getApplicationContext(), <span class="hljs-string">&quot;Test&quot;</span>,Toast.LENGTH_SHORT).show();<br>    &#125;);<br></code></pre></td></tr></table></figure>
+<ul>
+<li>什么是IntentService？有何优点？<br>  普通的service ,默认运行在ui main 主线程，Sdk给我们提供的方便的,带有异步处理的service类<strong>OnHandleIntent()</strong> 处理耗时的操作，不需要开启子线程，这个方法已经在子线程中运行了Intentservice，<strong>若未执行完成上一次的任务，将不会新开一个线程，是等待之前的任务完成后，再执行新的任务</strong>，等任务完成后再次调用stopService()</li>
+</ul>
+<p><strong>startForeground(id, notification)</strong><br>拥有service的进程具有较高的优先级。当内存不足时，拥有service的进程具有较高的优先级。将service设置为前台状态，那么系统就认为是对用户可见的，并不会在内存不足时killed</p>
+<hr>
+<h3 id="广播"><a href="#广播" class="headerlink" title="广播"></a>广播</h3><p>请描述一下 Broadcast Receiver。</p>
+<p>Android 中：系统在运行过程中，会产生会多事件，那么某些事件产生时，比如：电量改变、收发短信、拨打电话、屏幕解锁、开机，系统会发送广播，只要应用程序接收到这条广播，就知道系统发生了相应的事件，从而执行相应的代码。使用广播接收者，就可以收听广播广播分三种：有序广播、无序广播、本地广播</p>
+<ol>
+<li>无序广播（标准广播）：无序广播不可中断，不能互相传递数据；所有与广播中的 action 匹配的广播接收者都可以收到这条广播，并且是没有先后顺序，视为同时收到</li>
+<li>有序广播：一个接一个的传递，广播可中断，通过调用 abortBroadcast()方法；接收者之间可以传递数据（intent）所有与广播中的action匹配的广播接收者都可以收到这条广播，但是是有先后顺序的，按照广播接收者的优先级排序优先级的定义</li>
+</ol>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">intent-filter</span> <span class="hljs-attr">android:priority</span>=<span class="hljs-string">&quot;100&quot;</span> &gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">action</span> <span class="hljs-attr">android:name</span>=<span class="hljs-string">&quot;com.example.broadcasttest.MY_BROADCAST&quot;</span>/&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">intent-filter</span>&gt;</span><br><br></code></pre></td></tr></table></figure>
+
+<p>最终接收者：所有广播接收者都接收到广播之后，它才接收，并且一定会接收abortBroadCast：阻止其他接收者接收这条广播，类似拦截，只有有序广播可以被拦截发送有序广播：sendOrderedBroadcast(intent)</p>
+<p>本地广播</p>
+<ul>
+<li>与全局广播相比，LocalBroadcast 更加高效和安全，因为它只在应用内部传递消息，不会被其他应用接收到，也不需要进行权限检查。</li>
+<li>需要注意的是，在 Android 10 及以上版本中，LocalBroadcast 机制已经被废弃，<em>建议使用其他方式进行应用内部通信，如使用 ViewModel 或 LiveData。</em></li>
+</ul>
+<h4 id="如何注册广播"><a href="#如何注册广播" class="headerlink" title="如何注册广播"></a>如何注册广播</h4><p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android%EF%BC%88%E4%B8%80%EF%BC%89.resources/2023/09/15/18-48-41-fd81ff34823cb6edf47b2425f2369899-05a8c7a67e7b5a582ec85bade979cad2-c23cce.png" srcset="/img/loading.gif" lazyload alt="05a8c7a67e7b5a582ec85bade979cad2"></p>
+<p>广播的方式一般有两种，在代码中注册和在 AndroidManifest.xml中注册，其中前者也被称为动态注册，后者也被称为静态注册<br>动态注册：安卓中有一些广播接收者，必须使用代码注册，清单文件注册是无效的，屏幕锁屏和解锁电量改变</p>
+<p>静态注册：可以使用清单文件注册，广播一旦发出，系统就会去所有清单文件中寻找，哪个广播接收者的 action 和广播的 action 是匹配的，如果找到了，就把该广播接收者的进程启动起来</p>
+<p>【强制】 避免使用隐式 Intent 广播（静态、动态注册）敏感信息，信息可能被其他注册了对应 BroadcastReceiver 的 App 接收如果广播仅限于应用内，则可以使用 <em>LocalBroadcastManager</em> 的 sendBroadcast ()实现，避免敏感信息外泄和 Intent 拦截的风险。 （效率更高，使用的 handler，静态是 pms）</p>
+<p>正例：</p>
+<figure class="highlight haxe"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs haxe">Intent intent = <span class="hljs-keyword">new</span> <span class="hljs-type">Intent</span>(<span class="hljs-string">&quot;my-sensitive-event&quot;</span>);<br>intent.putExtra(<span class="hljs-string">&quot;event&quot;</span>, <span class="hljs-string">&quot;this is a test event&quot;</span>);<br>LocalBroadcastManager.getInstance(<span class="hljs-built_in">this</span>).sendBroadcast(intent); <br></code></pre></td></tr></table></figure>
+
+<p>LocalBroadcastReceiver 是应用内广播，利用 Handler 实现，利用了 IntentFilter 的 match 功能提供消息的发布与接收功能，实现应用内通信，效率和安全性比较高，仅支持动态注册<br>4大组件其中比较特殊的是广播接收者，可以不在清单文件中配置，可以通过代码进行注册。其他组件全部在清单文件中注册</p>
+<h4 id="广播的生命周期"><a href="#广播的生命周期" class="headerlink" title="广播的生命周期"></a>广播的生命周期</h4><ol>
+<li>广播接收者的生命周期非常短暂的，<em>在接收到广播的时候创建，onReceive()方法结束之后销毁；</em></li>
+<li>广播接收者中不要做一些耗时的工作，否则会弹出 Application No Response错误对话框；</li>
+<li>最好也不要在广播接收者中创建子线程做耗时的工作，因为广播接收者被销毁后进程就成为了空进程，很容易被系统杀掉；</li>
+<li>耗时的较长的工作最好放在服务中完成；</li>
+</ol>
+<p><strong>广播产生的问题</strong></p>
+<p>广播的最大问题就是被滥用，各种全家桶app的相互唤醒，以及保活措施导致设备占用内存增多，性能下降。</p>
+<p><strong>google 是如何处理这些问题的</strong></p>
+<p>在新版本api中去除了影响较大的全局跨进程广播，比如网络状态变化，新图片或新视频的添加等 。<br>即使你在app中对这些广播进行了静态注册，依然不会被唤醒 ；如果需要监听网络环境改变，谷歌建议使用JobScheduler（系统服务）来监听；而图片和视频的广播在api24中被完全禁用了。</p>
+<hr>
+<h3 id="内容提供者"><a href="#内容提供者" class="headerlink" title="内容提供者"></a>内容提供者</h3><p>Android 设计 ContentProvider 主要是<em>为了实现跨进程通信</em>。</p>
+<p><em>调用系统功能，拍照、裁剪、查联系人、短信、系统文件、音乐的时候用到</em></p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs dart"><br>ContentResolver cr = getContentResolver();<br>Cursor c = cr.query(<span class="hljs-built_in">Uri</span>.parse(<span class="hljs-string">&quot;content://sms&quot;</span>), <span class="hljs-keyword">new</span> <span class="hljs-built_in">String</span>[]&#123;<span class="hljs-string">&quot;body&quot;</span>, <span class="hljs-string">&quot;date&quot;</span>, <span class="hljs-string">&quot;address&quot;</span>, <span class="hljs-string">&quot;type&quot;</span>&#125;, <span class="hljs-keyword">null</span>, <span class="hljs-keyword">null</span>, <span class="hljs-keyword">null</span>);<br><br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>提供一种统一的数据访问格式。调用者无需关心数据源于何处（如DB、XML文件和网络等），只需获取到对应的ContentResolver来进行增删查改即可。</li>
+<li><strong>四大组件之一，主要用于在不同的应用程序之间实现数据共享的功能</strong>，不同于sharepreference和文件存储中的两种全局可读写操作模式，<strong>内容提供其可以选择只对哪一部分数据进行共享，从而保证我们程序中的隐私数据不会有泄漏的风险通常</strong>，是把私有数据库的数据暴露给其他应用在清单文件中定义内容提供者的标签。</li>
+<li>注意必须要有authorities属性，这是内容提供者的主机名，功能类似地址 ，可以自己定义。若需提供数据给其他应用，则 exported 要设为true</li>
+</ul>
+<p>scheme前缀是固定的： content:&#x2F;&#x2F;<br>授权host：此例中为 com.xxx.yyy.provide<br>r路径与参数：此例中为 test_path&#x2F;1</p>
+<blockquote>
+<p>原理：packmanagerservice里注册，在使用ContentResolver来进行查询操作时，query 方法层层调用到 ActivityThread 的 acquireExistingProvider 方法，根据URI字符串当中的授权host（即 authority ）和当前所在用户的 userId 来获取对应的Provider实例。</p>
+</blockquote>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">provider</span> <span class="hljs-attr">android:name</span>=<span class="hljs-string">&quot;com.itheima.contentprovider.PersonProvider&quot;</span></span><br><span class="hljs-tag">     <span class="hljs-attr">android:authorities</span>=<span class="hljs-string">&quot;com.itheima.person&quot;</span>  </span><br><span class="hljs-tag">     <span class="hljs-attr">android:exported</span>=<span class="hljs-string">&quot;true&quot;</span></span><br><span class="hljs-tag">  &gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">provider</span>&gt;</span><br>    <br></code></pre></td></tr></table></figure>
+
+<p>把自己的数据通过uri的形式共享出去，android 系统下不同程序，数据默认是不能共享访问 需要去实现一个类去继承ContentProvider。</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><code class="hljs typescript"><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">PersonContentProvider</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_ inherited__">ContentProvider</span>&#123;<br><span class="hljs-keyword">public</span> <span class="hljs-built_in">boolean</span> <span class="hljs-title function_">onCreate</span>(<span class="hljs-params"></span>)&#123;<br>   <span class="hljs-comment">//实例化UriMatcher对象</span><br>        uriMatcher = <span class="hljs-keyword">new</span> <span class="hljs-title class_">UriMatcher</span>(<span class="hljs-title class_">UriMatcher</span>.<span class="hljs-property">NO_MATCH</span>);<br>        <span class="hljs-comment">//可以实现匹配URI的功能</span><br>        <span class="hljs-comment">//参数1：authority 参数2：路径 参数3：自定义代码</span><br>        uriMatcher.<span class="hljs-title function_">addURI</span>(<span class="hljs-variable constant_">AUTHORITY</span>, <span class="hljs-string">&quot;userdemo&quot;</span>, <span class="hljs-variable constant_">USER_DIR</span>);<br>        uriMatcher.<span class="hljs-title function_">addURI</span>(<span class="hljs-variable constant_">AUTHORITY</span>, <span class="hljs-string">&quot;userdemo/#&quot;</span>, <span class="hljs-variable constant_">USER_ITEM</span>);<br>&#125;<br><span class="hljs-title function_">query</span>(<span class="hljs-title class_">Uri</span>, <span class="hljs-title class_">String</span>[], <span class="hljs-title class_">String</span>, <span class="hljs-title class_">String</span>[], <span class="hljs-title class_">String</span>)<br><span class="hljs-meta">@Override</span><br><span class="hljs-keyword">public</span> <span class="hljs-title class_">Uri</span> <span class="hljs-title function_">insert</span>(<span class="hljs-params">Uri uri, ContentValues values</span>) &#123;<br> <span class="hljs-keyword">switch</span> (uriMatcher.<span class="hljs-title function_">match</span>(uri)) &#123; <br>  <span class="hljs-keyword">case</span> <span class="hljs-attr">USER_DIR</span>:<br>db.<span class="hljs-title function_">insert</span>(<span class="hljs-string">&quot;person&quot;</span>, <span class="hljs-literal">null</span>, values);<br><span class="hljs-keyword">return</span> uri;<br>&#125;<br><br><span class="hljs-title function_">update</span>(<span class="hljs-title class_">Uri</span>, <span class="hljs-title class_">ContentValues</span>, <span class="hljs-title class_">String</span>, <span class="hljs-title class_">String</span>[])<br><span class="hljs-title function_">delete</span>(<span class="hljs-title class_">Uri</span>, <span class="hljs-title class_">String</span>, <span class="hljs-title class_">String</span>[])<br>&#125;<br><br><span class="hljs-keyword">public</span> <span class="hljs-built_in">void</span> <span class="hljs-title function_">click</span>(<span class="hljs-params">View v</span>)&#123;<br><span class="hljs-comment">//得到内容分解器对象</span><br><span class="hljs-title class_">ContentResolver</span> cr = <span class="hljs-title function_">getContentResolver</span>();<br><span class="hljs-title class_">ContentValues</span> cv = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ContentValues</span>();<br>cv.<span class="hljs-title function_">put</span>(<span class="hljs-string">&quot;name&quot;</span>, <span class="hljs-string">&quot;小方&quot;</span>);<br>cv.<span class="hljs-title function_">put</span>(<span class="hljs-string">&quot;phone&quot;</span>, <span class="hljs-number">138856</span>);<br>cv.<span class="hljs-title function_">put</span>(<span class="hljs-string">&quot;money&quot;</span>, <span class="hljs-number">3000</span>);<br><span class="hljs-comment">//url:内容提供者的主机名</span><br>cr.<span class="hljs-title function_">insert</span>(<span class="hljs-title class_">Uri</span>.<span class="hljs-title function_">parse</span>(<span class="hljs-string">&quot;content://com.itheima.person&quot;</span>), cv);<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<p>为什么要用ContentProvider？它和sql的实现上有什么差别？<br>屏蔽数据存储的细节,对用户透明,用户只需要关心操作数据的uri就可以了不同app之间共享,操作数据Sql也有增删改查的方法，但是contentprovider 还可以去增删改查本地文件. xml文件的读取,更改，网络数据读取更改</p>
+<p>请介绍下Android的数据存储方式</p>
+<ol>
+<li>文件储存，在内部文件和SD卡getCacheDir()，在data&#x2F;data&#x2F;包名&#x2F;cachegetFilesDir(),在data&#x2F;data&#x2F;包名&#x2F;filesSD卡：首先通过File file &#x3D; new File(Environment.getExternalStorageDirectory(), “info.txt”)，然后通过io存储</li>
+<li>SharedPreference</li>
+<li>SQLite数据库：当应用程序需要处理的数据量比较大时，为了更加合理地存储、管理、查询数据，往往使用关系数据库来存储数据。</li>
+<li>ContentProvider</li>
+</ol>
+<p>通知图库更新</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs typescript"><span class="hljs-keyword">private</span> <span class="hljs-built_in">void</span> <span class="hljs-title function_">setMediaDtore</span>(<span class="hljs-params"><span class="hljs-built_in">String</span> fileName</span>) &#123;<br>      <span class="hljs-keyword">try</span> &#123;<br>          <span class="hljs-title class_">MediaStore</span>.<span class="hljs-property">Images</span>.<span class="hljs-property">Media</span>.<span class="hljs-title function_">insertImage</span>(context.<span class="hljs-title function_">getContentResolver</span>(),<br>                  currentFile.<span class="hljs-title function_">getAbsolutePath</span>(), fileName, <span class="hljs-literal">null</span>);<br>      &#125; <span class="hljs-keyword">catch</span> (<span class="hljs-title class_">Exception</span> e) &#123;<br>          e.<span class="hljs-title function_">printStackTrace</span>();<br>      &#125;<br>  &#125;<br>    <br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="Fragment"><a href="#Fragment" class="headerlink" title="Fragment"></a>Fragment</h2><ul>
+<li>简单说说Fragment？<br>  用途：在一个Activity里切换界面，切换界面时只切换Fragment里面的内容生命周期方法跟Activity一致，可以理解把其为就是一个Activity，与Activity同存亡，Activity的XX方法调用，Fragment的XX方法就调用</li>
+</ul>
+<p><strong>fragment懒加载</strong><br>懒加载就是页面对用户可见时再去加载数据使用add hide() show()方法切换fragment ，不会走任何的生命周期，无法通过生命周期进行刷新，而是使用onHiddenChanged()<br>当fragment结合viewpager使用的时候，显示隐藏调用的是setUserVisibleHint()所以需要在这两个方法都判断下，让fragment显示再去加载数据（loadData），当然要先判断是否初始化完成</p>
+<ul>
+<li>他们是怎么进行传递数据的?</li>
+</ul>
+<ol>
+<li>活动传递给Fragment:为了方便碎片和活动之间进行通信， FragmentManager提供了一个findFragmentById的方法，专门用于从布局文件中获取碎片的实例，前提是自己在布局文件中定义fragment这个标签，还有findViewByTag，在replace 的时候设置tag或者在fragment里声明接口，然后activity获得fragment对象调用接口里的方法</li>
+<li>fragment数据传递给活动，直接getActivity就可以调用活动里的方法了</li>
+<li>activity给fragment传递数据一般不通过fragment的构造方法来传递，会通过<em>setArguments</em>来传递，因为当横竖屏会调用fragment的空参构造函数，数据丢失。</li>
+<li>fragment和fragment数据传递首先在一个fragment可以得到与它相关联的活动，然后再通过这个活动去获取另外一个fragment的实例，这样也就实现了不同fragment之间的通信功能FragmentManager</li>
+</ol>
+<ul>
+<li>add 和 replace 有什么区别?<br>  用add方式实现fragment的效果就是：切换fragment时不会重新创建，是什么样子切换回来还是什么样子；<br>  用replace的效果就是：切换fragment时每次都会重新创建初始化</li>
+</ul>
+<ol start="3">
+<li>使用add的情况下，这个FrameLayout其实有2层，多层肯定要比一层的来得浪费，所以还是推荐使用replace。</li>
+<li>当然有时候还是需要使用add的。比如要实现轮播图的效果，每个轮播图都是一个独立的Fragment，而他的容器FrameLayout需要add多个Fragment，这样他就可以根据提供的逻辑进行轮播了。</li>
+<li>而至于返回键的时候，这个跟事务有关，跟使用add还是replace没有任何关系。replace()方法会将被替换掉的那个Fragment彻底地移除掉，因此最好的解决方案就是使用hide()和show()方法来隐藏和显示Fragment，这就不会让Fragment的生命周期重走一遍了。</li>
+</ol>
+<ul>
+<li>Fragment和view的区别</li>
+</ul>
+<ol>
+<li>Fragment可以有效的对 view进行管理（增删和替换）而且结构更加清晰，有模块化的实现思想。用view 很多逻辑代码可能都需要写在Activity里，如果view很多， 耦合度会很高。用Fragment则可以各自管理，起了解耦的作用。一般软件简单的话直接view，复杂的用Fragment。</li>
+<li>viewpager是一个滑动切换的控件，Fragment是一个轻量级的Activity，这个Fragment可以放到这个Viewpager里面去运行。例如QQ或微信那样,可以来回切换不同的选项卡,即切换了不同的Fragment。</li>
+<li>通常Viewpager 会放 fargment或者view。</li>
+<li>在一个Activity里切换界面，切换界面时只切换Fragment里面的内容。Fragment通常用来作为一个activity界面的一部分。</li>
+<li>fragment有生命周期</li>
+</ol>
+<ul>
+<li>回退栈<br>  Activity切换是通过栈的形式，不断压栈出栈，在Fragment的时候，如果不是手动开启回退栈，它是直接销毁再重建，但如果将Fragment任务添加到回退栈，情况就会不一样了，它就有了类似Activity的栈管理方式。</li>
+</ul>
+<p><strong>popBackStack()</strong> 弹出堆栈中的一个并且显示，类似按下返回键的操作；<br><strong>popBackStack(String tag,int flags)</strong><br>tag可以为null或者相对应的tag，flags只有0和1(POP_BACK_STACK_INCLUSIVE)两种情况</p>
+<p>如果tag为null，flags为0时，弹出回退栈中最上层的那个fragment。</p>
+<p>如果tag为null ，flags为1时，弹出回退栈中所有fragment。</p>
+<p>如果tag不为null，那就会找到这个tag所对应的fragment，flags为0时，弹出该</p>
+<p>fragment以上的Fragment，如果是1，弹出该fragment（包括该fragment）以上的fragment。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs java"><br><span class="hljs-type">Fragment2</span> <span class="hljs-variable">f2</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Fragment2</span>();<br><span class="hljs-type">FragmentManager</span> <span class="hljs-variable">fm</span> <span class="hljs-operator">=</span> getFragmentManager();<br><span class="hljs-type">FragmentTransaction</span> <span class="hljs-variable">tx</span> <span class="hljs-operator">=</span> fm.beginTransaction();<br>tx.replace(R.id.fl, f2);<br><span class="hljs-comment">//将当前的事务添加到了回退栈</span><br>tx.addToBackStack(<span class="hljs-literal">null</span>);<br>tx.commit();<br><br><span class="hljs-comment">//返回，回退到Fragment2，Fragment2不回执行onDestory</span><br><span class="hljs-type">FragmentManager</span> <span class="hljs-variable">fm</span> <span class="hljs-operator">=</span> getFragmentManager();<br>fm.popBackStack();<br><br></code></pre></td></tr></table></figure>
+
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android%EF%BC%88%E4%B8%80%EF%BC%89.resources/2023/09/15/18-48-41-92a9400996ef48c827b4c4d65700440f-fragment-life-faebc4.png" srcset="/img/loading.gif" lazyload alt="fragment-life"><br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android%EF%BC%88%E4%B8%80%EF%BC%89.resources/2023/09/15/18-48-41-6659d319ca25cd2b6b698bad507a3119-f770be1f-7024-41dd-907b-02eccb007a97-83103a.jpg" srcset="/img/loading.gif" lazyload alt="f770be1f-7024-41dd-907b-02eccb007a97"></p>
+<hr>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Android/" class="category-chain-item">Android</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Android（一）</div>
+      <div>http://peiniwan.github.io/2025/12/2a4c1471c008.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>六月的雨</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年12月16日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/12/8a805a2fd5e9.html" title="Android（二）">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Android（二）</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/12/c5ce6a779cad.html" title="Android 机型适配问题整理">
+                        <span class="hidden-mobile">Android 机型适配问题整理</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"OwNIdaopOn1rwNhtotGOGC0B-gzGzoHsz","appKey":"eadytQ2XqWmxuvAKeg08XX83","path":"window.location.pathname","placeholder":null,"avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":true,"recordIP":false,"serverURLs":"https://ownidaop.lc-cn-n1-shared.com","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

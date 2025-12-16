@@ -1,0 +1,830 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="六月的雨">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="总结树是无向、连通的无环图。  二叉树的提出其实主要就是为了提高查找效率，比如我们常用的 HashMap 在处理哈希冲突严重时，拉链过长导致查找效率降低，就引入了红黑树。我们知道，二分查找可以缩短查找的时间，但是它要求查找的数据必须是有序的。每次查找、操作时都要维护一个有序的数据集，于是有了二叉查找树这个概念。  分类 二叉树即是每个节点最多包含左子节点与右子节点这两个节点的树形数据结构 满二叉树">
+<meta property="og:type" content="article">
+<meta property="og:title" content="4-二叉树">
+<meta property="og:url" content="http://peiniwan.github.io/2025/12/49ca49d8c5cf.html">
+<meta property="og:site_name" content="六月的雨的笔记">
+<meta property="og:description" content="总结树是无向、连通的无环图。  二叉树的提出其实主要就是为了提高查找效率，比如我们常用的 HashMap 在处理哈希冲突严重时，拉链过长导致查找效率降低，就引入了红黑树。我们知道，二分查找可以缩短查找的时间，但是它要求查找的数据必须是有序的。每次查找、操作时都要维护一个有序的数据集，于是有了二叉查找树这个概念。  分类 二叉树即是每个节点最多包含左子节点与右子节点这两个节点的树形数据结构 满二叉树">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E4%BA%8C%E5%8F%89%E6%A0%91.resources/2023/09/15/17-36-30-d82ca8831c6bbe2dfe2d044de0a6dde4-unknown_filename.8-193dc8.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/09/15/2024-02-26-17-00-668736023ca043396c940f27c32dfe5c-17-36-30-668736023ca043396c940f27c32dfe5c-unknown_filename.15-e22bf1-2d0d6f.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E4%BA%8C%E5%8F%89%E6%A0%91.resources/2023/09/15/17-36-30-b2d628d2e2c9c72a272c81423fd1cf78-unknown_filename.5-30c9d3.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E4%BA%8C%E5%8F%89%E6%A0%91.resources/2023/09/15/17-36-30-9980d7c417ac55883bd7346741561c5a-unknown_filename.4-5bedd7.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E4%BA%8C%E5%8F%89%E6%A0%91.resources/2023/09/15/17-36-30-3366dcd99ebcb6946e18577cd3b274ae-unknown_filename.2-c5c983.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E4%BA%8C%E5%8F%89%E6%A0%91.resources/2023/09/15/17-36-30-c14b4f66b44fdfeb4fe0502ae9b924c2-unknown_filename.6-6ba1d6.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E4%BA%8C%E5%8F%89%E6%A0%91.resources/2023/09/15/17-36-30-419bef62a53c1b1fe1f68822e75f3ddf-unknown_filename.3-41863a.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E4%BA%8C%E5%8F%89%E6%A0%91.resources/2023/09/15/17-36-30-24fb39feac68ae2a9211a753c972771a-unknown_filename-b1329f.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E4%BA%8C%E5%8F%89%E6%A0%91.resources/2023/09/15/17-36-30-cca968c669ec908aeeec646ad8dca686-unknown_filename.7-670cea.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E4%BA%8C%E5%8F%89%E6%A0%91.resources/2023/09/15/17-36-30-25776fea3ce0a963baafda9628c9d857-unknown_filename.1-6fe514.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E4%BA%8C%E5%8F%89%E6%A0%91.resources/2023/09/15/17-36-30-de97b4abf67315f65d5961c100bac29a-unknown_filename.18-37a305.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E4%BA%8C%E5%8F%89%E6%A0%91.resources/2023/09/15/17-36-30-79d982e3e7882526e27e7d6142aebec8-unknown_filename.17-59997f.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E4%BA%8C%E5%8F%89%E6%A0%91.resources/2023/09/15/17-36-30-1832c72e9962575bec59158a7921afbe-unknown_filename.19-d62196.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E4%BA%8C%E5%8F%89%E6%A0%91.resources/2023/09/15/17-36-30-56ff3e18852772169a9dcfe1f818ccf5-unknown_filename.12-e0986b.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E4%BA%8C%E5%8F%89%E6%A0%91.resources/2023/09/15/17-36-30-3ab160b4c7e2b15ae2e3d3f8d79edb1c-unknown_filename.11-5e2a14.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E4%BA%8C%E5%8F%89%E6%A0%91.resources/2023/09/15/17-36-30-fb250e48401acc6876a16790429eff4e-unknown_filename.14-5cc5f9.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E4%BA%8C%E5%8F%89%E6%A0%91.resources/2023/09/15/17-36-30-172ba5e33416357a8fadf20517cde378-unknown_filename.9-b66081.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E4%BA%8C%E5%8F%89%E6%A0%91.resources/2023/09/15/17-36-30-f5b1561f68e7b81d08a9630d56225775-unknown_filename.13-579649.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/picgo/picgo-clipboard-images/2024-02-26-16-21-90b17ff2e644b785c9ebeefead2c407e-20240226162135-250c70.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E4%BA%8C%E5%8F%89%E6%A0%91.resources/2023/09/15/17-36-30-1bbca372e5aa5e66f3414fa11e160840-unknown_filename.10-b068f1.jpeg">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E4%BA%8C%E5%8F%89%E6%A0%91.resources/2023/09/15/17-36-30-b868f2d6faea9d0e508fdb92cc0f7ca5-unknown_filename.16-4d5fcf.png">
+<meta property="article:published_time" content="2025-12-16T13:59:22.642Z">
+<meta property="article:modified_time" content="2024-03-13T03:59:00.000Z">
+<meta property="article:author" content="六月的雨">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E4%BA%8C%E5%8F%89%E6%A0%91.resources/2023/09/15/17-36-30-d82ca8831c6bbe2dfe2d044de0a6dde4-unknown_filename.8-193dc8.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>4-二叉树 - 六月的雨的笔记</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"peiniwan.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>六月的雨的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="4-二叉树"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-12-16 21:59" pubdate>
+          2025年12月16日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          6.6k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          56 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">4-二叉树</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p><strong>树是无向、连通的无环图。</strong></p>
+<blockquote>
+<p>二叉树的提出其实主要就是为了提高查找效率，比如我们常用的 HashMap 在处理哈希冲突严重时，拉链过长导致查找效率降低，就引入了红黑树。<br>我们知道，二分查找可以缩短查找的时间，但是它要求查找的数据必须是有序的。每次查找、操作时都要维护一个有序的数据集，于是有了二叉查找树这个概念。</p>
+</blockquote>
+<h3 id="分类"><a href="#分类" class="headerlink" title="分类"></a>分类</h3><ol>
+<li>二叉树即是每个节点最多包含左子节点与右子节点这两个节点的树形数据结构</li>
+<li>满二叉树: 树中的每个节点仅包含 0 或 2 个节点。</li>
+<li>完美二叉树（Perfect Binary Tree）: 二叉树中的每个叶节点都拥有两个子节点，并且具有相同的高度。</li>
+<li><em>完全二叉树</em>: 除最后一层外，每一层上的结点数均达到最大值；在最后一层上只缺少右边的若干结点</li>
+<li>Binary Search Tree（查找二叉树）</li>
+</ol>
+<p>查找二叉树（BST）是一种特殊的二叉树，其任何节点中的值都会大于或者等于其左子树中存储的值并且小于或者等于其右子树中存储的值。</p>
+<blockquote>
+<p>二叉查找树好的情况下是O(logN)，最坏情况下是O(N)，查找最大的次数是二叉树的高度。比如：将一个数组{1,2,3,4}依次插入树的时候，有建立树与没建立树对于数据的增删查改已经没有了任何帮助，反而增添了维护的成本，所以有了平衡二叉树。</p>
+</blockquote>
+<ol start="6">
+<li>平衡二叉树（AVL）<br> 平衡二叉树的提出就是为了保证树不至于太倾斜，尽量保证两边平衡（旋转）。因此它的定义如下：</li>
+</ol>
+<blockquote>
+<p>平衡二叉树要么是一棵空树<br>要么保证左右子树的高度之差不大于 1<br>子树也必须是一颗平衡二叉树</p>
+</blockquote>
+<p>7.红黑树<br>红黑是平衡二叉树的一种<br>和AVl区别：avl插入、删除操作，为了保持平衡需要旋转。适合用于插入与删除次数比较少，但查找多的情况。</p>
+<p>红黑树：相对于要求严格的AVL树来说，它的旋转次数少，所以对于搜索，插入，删除操作较多的情况下，我们就用红黑树。</p>
+<h3 id="求二叉树的深度"><a href="#求二叉树的深度" class="headerlink" title="求二叉树的深度"></a>求二叉树的深度</h3><p>1.判断根节点是否为空<br>2.递归获取左子树的深度<br>3.递归获取右子树的深度<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E4%BA%8C%E5%8F%89%E6%A0%91.resources/2023/09/15/17-36-30-d82ca8831c6bbe2dfe2d044de0a6dde4-unknown_filename.8-193dc8.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.8"></p>
+<p>讲一下这里的递归原理：当遍历到C和E时，左子树node.getLeftChild()和右子树node.getRightChild()返回0+1，此时深度为1，当到B和D时，B和D的深度都为1，此时返回1+1&#x3D;2，同理，一步一步往回退，直到左右子树遍历一遍得到左右子树的深度然后进行比较返回最大的值+1就是整棵树的深度。深度是2<br>那么求二叉树的所有节点的个数，递归原理与此相同。</p>
+<p><strong>深度优先</strong>遍历的非递归的通用做法是<strong>采用栈。按深度</strong><br><strong>广度优先</strong>遍历的非递归的通用做法是<strong>采用队列。按层遍历</strong></p>
+<h3 id="遍历"><a href="#遍历" class="headerlink" title="遍历"></a>遍历</h3><p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/09/15/2024-02-26-17-00-668736023ca043396c940f27c32dfe5c-17-36-30-668736023ca043396c940f27c32dfe5c-unknown_filename.15-e22bf1-2d0d6f.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.15|600"><br>都是12345</p>
+<p>二叉搜索树，按中序遍历 (左根右)时是有序的，每个元素都应该比下一个元素小。</p>
+<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs scss">public void <span class="hljs-built_in">preOrder</span>(TreeNode root) &#123;<br>     if (root == null) &#123;<br>         return;<br>     &#125;<br>     System<span class="hljs-selector-class">.out</span><span class="hljs-selector-class">.print</span>(root.val);<br>     <span class="hljs-built_in">preOrder</span>(root.left);<br>     <span class="hljs-built_in">preOrder</span>(root.right);<br> &#125;<br>    <br></code></pre></td></tr></table></figure>
+
+<p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/456af5480cee">非递归遍历</a></p>
+<h2 id="详解"><a href="#详解" class="headerlink" title="详解"></a>详解</h2><h3 id="高度、深度、层"><a href="#高度、深度、层" class="headerlink" title="高度、深度、层"></a>高度、深度、层</h3><p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E4%BA%8C%E5%8F%89%E6%A0%91.resources/2023/09/15/17-36-30-b2d628d2e2c9c72a272c81423fd1cf78-unknown_filename.5-30c9d3.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.5"><br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E4%BA%8C%E5%8F%89%E6%A0%91.resources/2023/09/15/17-36-30-9980d7c417ac55883bd7346741561c5a-unknown_filename.4-5bedd7.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.4"><br>“高度”这个概念，其实就是<code>从下往上度量</code>，比如我们要度量第 10 层楼的高度、第 13 层楼的高度，起点都是地面。所以，树这种数据结构的高度也是一样，从最底层开始计数，并且计数的起点是 0。<br>“深度”这个概念在生活中是<code>从上往下度量</code>的，比如水中鱼的深度，是从水平面开始度量的。所以，树这种数据结构的深度也是类似的，从根结点开始度量，并且计数起点也是 0。<br>“层数”跟深度的计算类似，不过，计数起点是 1，也就是说根节点的位于第 1 层。</p>
+<h3 id="二叉树"><a href="#二叉树" class="headerlink" title="二叉树"></a>二叉树</h3><h4 id="如何表示一棵二叉树"><a href="#如何表示一棵二叉树" class="headerlink" title="如何表示一棵二叉树"></a>如何表示一棵二叉树</h4><p>一种是基于指针或者引用的二叉链式存储法<br>一种是基于数组的顺序存储法。<br><strong>链式存储法</strong><br>每个节点有三个字段，其中一个存储数据，另外两个是指向左右子节点的指针。我们只要拎住根节点，就可以通过左右子节点的指针，把整棵树都串起来。这种存储方式我们比较常用。<strong>大部分二叉树代码都是通过这种结构来实现的</strong>。<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E4%BA%8C%E5%8F%89%E6%A0%91.resources/2023/09/15/17-36-30-3366dcd99ebcb6946e18577cd3b274ae-unknown_filename.2-c5c983.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.2"></p>
+<p>基于数组的<strong>顺序存储法</strong><br>把根节点存储在下标 i &#x3D; 1 的位置，那左子节点存储在下标 2 * i &#x3D; 2 的位置，右子节点存储在 2 * i + 1 &#x3D; 3 的位置。以此类推，B 节点的左子节点存储在 2 * i &#x3D; 2 * 2 &#x3D; 4 的位置，右子节点存储在 2 * i + 1 &#x3D; 2 * 2 + 1 &#x3D; 5 的位置。<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E4%BA%8C%E5%8F%89%E6%A0%91.resources/2023/09/15/17-36-30-c14b4f66b44fdfeb4fe0502ae9b924c2-unknown_filename.6-6ba1d6.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.6"></p>
+<h4 id="二叉树的遍历"><a href="#二叉树的遍历" class="headerlink" title="二叉树的遍历"></a>二叉树的遍历</h4><p>前序遍历、中序遍历和后序遍历<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E4%BA%8C%E5%8F%89%E6%A0%91.resources/2023/09/15/17-36-30-419bef62a53c1b1fe1f68822e75f3ddf-unknown_filename.3-41863a.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.3"></p>
+<p>写递归代码的关键，就是看能不能写出递推公式，而<strong>写递推公式的关键就是，如果要解决问题 A，就假设子问题 B、C 已经解决，然后再来看如何利用 B、C 来解决 A</strong>。所以，我们可以把前、中、后序遍历的递推公式都写出来。</p>
+<p><strong>二叉树遍历的时间复杂度</strong><br>从我前面画的前、中、后序遍历的顺序图，可以看出来，每个节点最多会被访问两次，所以遍历操作的时间复杂度，跟节点的个数 n 成正比，也就是说二叉树遍历的时间复杂度是 O(n)。</p>
+<h3 id="二叉查找树（Binary-Search-Tree）"><a href="#二叉查找树（Binary-Search-Tree）" class="headerlink" title="二叉查找树（Binary Search Tree）"></a>二叉查找树（Binary Search Tree）</h3><p>二叉查找树要求，在树中的任意一个节点，其左子树中的每个节点的值，都要小于这个节点的值，而右子树节点的值都大于这个节点的值。<br>叉查找树最大的特点就是，<strong>支持动态数据集合的快速插入、删除、查找操作</strong>。不需要有序</p>
+<p><strong>1. 二叉查找树的查找操作</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs java"><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">BinarySearchTree</span> &#123;<br>  <span class="hljs-keyword">private</span> Node tree;<br><br>  <span class="hljs-keyword">public</span> Node <span class="hljs-title function_">find</span><span class="hljs-params">(<span class="hljs-type">int</span> data)</span> &#123;<br>    <span class="hljs-type">Node</span> <span class="hljs-variable">p</span> <span class="hljs-operator">=</span> tree;<br>    <span class="hljs-keyword">while</span> (p != <span class="hljs-literal">null</span>) &#123;<br>      <span class="hljs-keyword">if</span> (data &lt; p.data) p = p.left;<br>      <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (data &gt; p.data) p = p.right;<br>      <span class="hljs-keyword">else</span> <span class="hljs-keyword">return</span> p;<br>    &#125;<br>    <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;<br>  &#125;<br>&#125;<br><br><br></code></pre></td></tr></table></figure>
+
+<p><strong>2. 二叉查找树的插入操作</strong><br>二叉查找树的插入过程有点类似查找操作。新插入的数据一般都是在叶子节点上，所以我们只需要从根节点开始，依次比较要插入的数据和节点的大小关系。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">insert</span><span class="hljs-params">(<span class="hljs-type">int</span> data)</span> &#123;<br>  <span class="hljs-keyword">if</span> (tree == <span class="hljs-literal">null</span>) &#123;<br>    tree = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Node</span>(data);<br>    <span class="hljs-keyword">return</span>;<br>  &#125;<br><br>  <span class="hljs-type">Node</span> <span class="hljs-variable">p</span> <span class="hljs-operator">=</span> tree;<br>  <span class="hljs-keyword">while</span> (p != <span class="hljs-literal">null</span>) &#123;<br>    <span class="hljs-keyword">if</span> (data &gt; p.data) &#123;<br>      <span class="hljs-keyword">if</span> (p.right == <span class="hljs-literal">null</span>) &#123;<br>        p.right = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Node</span>(data);<br>        <span class="hljs-keyword">return</span>;<br>      &#125;<br>      p = p.right;<br>    &#125; <span class="hljs-keyword">else</span> &#123; <span class="hljs-comment">// data &lt; p.data</span><br>      <span class="hljs-keyword">if</span> (p.left == <span class="hljs-literal">null</span>) &#123;<br>        p.left = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Node</span>(data);<br>        <span class="hljs-keyword">return</span>;<br>      &#125;<br>      p = p.left;<br>    &#125;<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>来源：<a target="_blank" rel="noopener" href="https://time.geekbang.org/column/article/68334"> 二叉树基础（下）：有了如此高效的散列表，为什么还需要二叉树？</a></p>
+<h4 id="二叉查找树的时间复杂度分析"><a href="#二叉查找树的时间复杂度分析" class="headerlink" title="二叉查找树的时间复杂度分析"></a>二叉查找树的时间复杂度分析</h4><p>中序遍历二叉查找树，可以输出有序的数据序列，时间复杂度是 O(n)，非常高效。因此，二叉查找树也叫作二叉排序树。</p>
+<p>看图2，<strong>查找、插入、删除等很多操作的时间复杂度都跟树的高度成正比</strong><br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E4%BA%8C%E5%8F%89%E6%A0%91.resources/2023/09/15/17-36-30-24fb39feac68ae2a9211a753c972771a-unknown_filename-b1329f.png" srcset="/img/loading.gif" lazyload alt="unknown_filename"><br>图中第一种<em>二叉查找树</em>，根节点的左右子树极度不平衡，已经退化成了链表，所以查找的时间复杂度就变成了 O(n)。</p>
+<p>我们现在来分析一个最理想的情况，二叉查找树是一棵完全二叉树（或满二叉树）。这个时候，插入、删除、查找的时间复杂度是多少呢？</p>
+<p>从我前面的例子、图，以及还有代码来看，不管操作是插入、删除还是查找，时间复杂度其实都跟树的高度成正比，也就是 O(height)。既然这样，现在问题就转变成另外一个了，也就是，<strong>如何求一棵包含 n 个节点的完全二叉树的高度？</strong></p>
+<p>树的高度就等于最大层数减一，为了方便计算，我们转换成层来表示。从图中可以看出，包含 n 个节点的完全二叉树中，第一层包含 1 个节点，第二层包含 2 个节点，第三层包含 4 个节点，依次类推，下面一层节点个数是上一层的 2 倍，第 K 层包含的节点个数就是 2^(K-1)。</p>
+<p><strong>平衡二叉查找树的高度接近 logn，所以插入、删除、查找操作的时间复杂度也比较稳定，是 O(logn)。</strong></p>
+<h4 id="二叉查找树和散列表"><a href="#二叉查找树和散列表" class="headerlink" title="二叉查找树和散列表"></a>二叉查找树和散列表</h4><p>散列表的插入、删除、查找操作的时间复杂度可以做到常量级的 O(1)，非常高效。而二叉查找树在比较平衡的情况下，插入、删除、查找操作时间复杂度才是 O(logn)，相对散列表，好像并没有什么优势，那我们为什么还要用二叉查找树呢？</p>
+<p>第一，<em>散列表中的数据是无序存储的，如果要输出有序的数据，需要先进行排序。而对于二叉查找树来说，我们只需要中序遍历，就可以在 O(n) 的时间复杂度内，输出有序的数据序列</em>。</p>
+<p>第二，散列表扩容耗时很多，而且当遇到散列冲突时，性能不稳定，尽管二叉查找树的性能不稳定，但是在工程中，我们最常用的平衡二叉查找树的性能非常稳定，时间复杂度稳定在 O(logn)。</p>
+<p>第三，笼统地来说，尽管散列表的查找等操作的时间复杂度是常量级的，但因为哈希冲突的存在，这个常量不一定比 logn 小，所以实际的查找速度可能不一定比 O(logn) 快。加上哈希函数的耗时，也不一定就比平衡二叉查找树的效率高。</p>
+<p>第四，散列表的构造比二叉查找树要复杂，需要考虑的东西很多。比如散列函数的设计、冲突解决办法、扩容、缩容等。平衡二叉查找树只需要考虑平衡性这一个问题，而且这个问题的解决方案比较成熟、固定。</p>
+<p>最后，为了避免过多的散列冲突，散列表装载因子不能太大，特别是基于开放寻址法解决冲突的散列表，不然会浪费一定的存储空间。</p>
+<h3 id="红黑树"><a href="#红黑树" class="headerlink" title="红黑树"></a>红黑树</h3><h4 id="平衡二叉查找树"><a href="#平衡二叉查找树" class="headerlink" title="平衡二叉查找树"></a>平衡二叉查找树</h4><p>平衡二叉树的严格定义是这样的：二叉树中任意一个节点的左右子树的高度相差不能大于 1。从这个定义来看，上一节我们讲的完全二叉树、满二叉树其实都是平衡二叉树，但是非完全二叉树也有可能是平衡二叉树。</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E4%BA%8C%E5%8F%89%E6%A0%91.resources/2023/09/15/17-36-30-cca968c669ec908aeeec646ad8dca686-unknown_filename.7-670cea.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.7"><br>很多平衡二叉查找树其实并没有严格符合上面的定义（树中任意一个节点的左右子树的高度相差不能大于 1），比如我们下面要讲的红黑树，它从根节点到各个叶子节点的最长路径，有可能会比最短路径大一倍。</p>
+<p>平衡二叉查找树中“平衡”的意思，其实就是让整棵树左右看起来比较“对称”、比较“平衡”，不要出现左子树很高、右子树很矮的情况。这样就能让整棵树的高度相对来说低一些，相应的插入、删除、查找等操作的效率高一些。</p>
+<p>AVL树不存在变色的问题，只有左旋转、右旋转这两种操作。</p>
+<h4 id="如何定义一棵“红黑树”？"><a href="#如何定义一棵“红黑树”？" class="headerlink" title="如何定义一棵“红黑树”？"></a>如何定义一棵“红黑树”？</h4><p>新加入的就是红节点</p>
+<p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=MzIxMjE5MTE1Nw==&mid=2653204996&idx=2&sn=ecf932d2db8cb6e4fcb841a2b6a5bfba&chksm=8c99c0debbee49c86dc8e82a2d195389a93e81d8e5ca8af7d4dd2eec5c7fe209038c91444964&scene=21#wechat_redirect">漫话红黑树</a><br>红黑树的英文是“Red-Black Tree”，简称 R-B Tree。<br>顾名思义，红黑树中的节点，一类被标记为黑色，一类被标记为红色。除此之外，一棵红黑树还需要满足这样几个要求：</p>
+<ol>
+<li>结点是红色或黑色。</li>
+<li>根结点是黑色。</li>
+<li>每个叶子结点都是黑色的空结点（NIL结点）。</li>
+<li>每个红色结点的两个子结点都是黑色。(从每个叶子到根的所有路径上不能有两个连续的红色结点)</li>
+<li>从任一结点到其每个叶子的所有路径都包含相同数目的黑色结点。</li>
+</ol>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E4%BA%8C%E5%8F%89%E6%A0%91.resources/2023/09/15/17-36-30-25776fea3ce0a963baafda9628c9d857-unknown_filename.1-6fe514.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.1"></p>
+<p>正是因为这些规则限制,才保证了红黑树的自平衡。红黑树<em>从根到叶子的最长路径不会超过最短路径的2倍</em>。<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E4%BA%8C%E5%8F%89%E6%A0%91.resources/2023/09/15/17-36-30-de97b4abf67315f65d5961c100bac29a-unknown_filename.18-37a305.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.18"></p>
+<p>调整的方法有两种:<strong>变色和旋转</strong>。而旋转又包含两种方式左旋转和右旋转</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E4%BA%8C%E5%8F%89%E6%A0%91.resources/2023/09/15/17-36-30-79d982e3e7882526e27e7d6142aebec8-unknown_filename.17-59997f.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.17"></p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E4%BA%8C%E5%8F%89%E6%A0%91.resources/2023/09/15/17-36-30-1832c72e9962575bec59158a7921afbe-unknown_filename.19-d62196.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.19"></p>
+<p><strong>为什么工程中都喜欢用红黑树，而不是其他平衡二叉查找树呢？</strong></p>
+<p>AVL 树是一种高度平衡的二叉树，所以查找的效率非常高，但是，有利就有弊，AVL 树为了维持这种高度的平衡，就要付出更多的代价。每次插入、删除都要做调整，就比较复杂、耗时。所以，对于有频繁的插入、删除操作的数据集合，使用 AVL 树的代价就有点高了。</p>
+<p>红黑树只是做到了近似平衡，并不是严格的平衡，所以在维护平衡的成本上，要比 AVL 树要低。<br>红黑树是一种平衡二叉查找树。它是为了解决普通二叉查找树在数据更新的过程中，复杂度退化的问题而产生的。红黑树的高度近似 log2n，所以它是近似平衡，插入、删除、查找操作的时间复杂度都是 O(logn)。</p>
+<h3 id="递归树分析算法复杂度"><a href="#递归树分析算法复杂度" class="headerlink" title="递归树分析算法复杂度"></a>递归树分析算法复杂度</h3><p>借助递归树来分析递归算法的时间复杂度。<br><strong>递归的思想就是，将大问题分解为小问题来求解，然后再将小问题分解为小小问题。这样一层一层地分解，直到问题的数据规模被分解得足够小，不用继续递归分解为止。</strong><br>如果我们把这个一层一层的分解过程画成图，它其实就是一棵树。我们给这棵树起一个名字，叫作<strong>递归树</strong>。</p>
+<h4 id="递归树与时间复杂度分析"><a href="#递归树与时间复杂度分析" class="headerlink" title="递归树与时间复杂度分析"></a>递归树与时间复杂度分析</h4><p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E4%BA%8C%E5%8F%89%E6%A0%91.resources/2023/09/15/17-36-30-56ff3e18852772169a9dcfe1f818ccf5-unknown_filename.12-e0986b.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.12"><br>每一层归并操作消耗的时间总和是一样的，跟要排序的数据规模有关。我们把每一层归并操作消耗的时间记作 n。<br>现在，我们只需要知道这棵树的高度 h，用高度 h 乘以每一层的时间消耗 n，就可以得到总的时间复杂度 O(n∗h)。<br>归并排序递归树是一棵满二叉树。我们前两节中讲到，满二叉树的高度大约是 log2​n，（第 K 层包含的节点个数就是 2^(K-1)）<br>所以，归并排序递归实现的时间复杂度就是 O(nlogn)。</p>
+<p>接下来我会通过三个实际的递归算法，带你实战一下递归的复杂度分析。学完这节课之后，你应该能真正掌握递归代码的复杂度分析。</p>
+<p><strong>实战一：分析快速排序的时间复杂度</strong><br>我们还是取 k 等于 9，也就是说，每次分区都很不平均，一个分区是另一个分区的 9 倍。如果我们把递归分解的过程画成递归树，就是下面这个样子：<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E4%BA%8C%E5%8F%89%E6%A0%91.resources/2023/09/15/17-36-30-3ab160b4c7e2b15ae2e3d3f8d79edb1c-unknown_filename.11-5e2a14.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.11"><br>排序的过程中，每次分区都要遍历待分区区间的所有数据，所以，每一层分区操作所遍历的数据的个数之和就是 n。我们现在只要求出递归树的高度 h，这个快排过程遍历的数据个数就是 h∗n ，也就是说，时间复杂度就是 O(h∗n)。</p>
+<p><strong>实战二：分析斐波那契数列的时间复杂度</strong></p>
+<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs scss"><br>int <span class="hljs-built_in">f</span>(int n) &#123;<br>  if (n == <span class="hljs-number">1</span>) return <span class="hljs-number">1</span>;<br>  if (n == <span class="hljs-number">2</span>) return <span class="hljs-number">2</span>;<br>  return <span class="hljs-built_in">f</span>(n-<span class="hljs-number">1</span>) + <span class="hljs-built_in">f</span>(n-<span class="hljs-number">2</span>);<br>&#125;<br><br><br></code></pre></td></tr></table></figure>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E4%BA%8C%E5%8F%89%E6%A0%91.resources/2023/09/15/17-36-30-fb250e48401acc6876a16790429eff4e-unknown_filename.14-5cc5f9.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.14"><br>每次分解之后的合并操作只需要一次加法运算，我们把这次加法运算的时间消耗记作 1。所以，从上往下，第一层的总时间消耗是 1，第二层的总时间消耗是 2，第三层的总时间消耗就是 2^n。依次类推，第 k 层的时间消耗就是 2^k−1，那整个算法的总的时间消耗就是每一层时间消耗之和。</p>
+<p>如果路径长度都为 n，那这个总和就是 2^n−1。</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E4%BA%8C%E5%8F%89%E6%A0%91.resources/2023/09/15/17-36-30-172ba5e33416357a8fadf20517cde378-unknown_filename.9-b66081.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.9"></p>
+<p>这个算法的时间复杂度就介于上面之间。虽然这样得到的结果还不够精确，只是一个范围，但是我们也基本上知道了上面算法的时间复杂度是指数级的，非常高。</p>
+<p><strong>实战三：分析全排列的时间复杂度</strong></p>
+<p>如何把 n 个数据的所有排列都找出来<br><strong>如果我们确定了最后一位数据，那就变成了求解剩下 n−1 个数据的排列问题。而最后一位数据可以是 n 个数据中的任意一个，因此它的取值就有 n 种情况。所以，“n 个数据的排列”问题，就可以分解成 n 个“n−1 个数据的排列”的子问题。</strong></p>
+<blockquote>
+<p>假设数组中存储的是1，2， 3…n。<br>f(1,2,…n) &#x3D; {最后一位是1, f(n-1)} + {最后一位是2, f(n-1)} +…+{最后一位是n, f(n-1)}。</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">// 调用方式：</span><br><span class="hljs-comment">// int[]a = a=&#123;1, 2, 3, 4&#125;; printPermutations(a, 4, 4);</span><br><span class="hljs-comment">// k表示要处理的子数组的数据个数</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">printPermutations</span><span class="hljs-params">(<span class="hljs-type">int</span>[] data, <span class="hljs-type">int</span> n, <span class="hljs-type">int</span> k)</span> &#123;<br>  <span class="hljs-keyword">if</span> (k == <span class="hljs-number">1</span>) &#123;<br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> <span class="hljs-variable">i</span> <span class="hljs-operator">=</span> <span class="hljs-number">0</span>; i &lt; n; ++i) &#123;<br>      System.out.print(data[i] + <span class="hljs-string">&quot; &quot;</span>);<br>    &#125;<br>    System.out.println();<br>  &#125;<br><br>  <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> <span class="hljs-variable">i</span> <span class="hljs-operator">=</span> <span class="hljs-number">0</span>; i &lt; k; ++i) &#123;<br>    <span class="hljs-type">int</span> <span class="hljs-variable">tmp</span> <span class="hljs-operator">=</span> data[i];<br>    data[i] = data[k-<span class="hljs-number">1</span>];<br>    data[k-<span class="hljs-number">1</span>] = tmp;<br><br>    printPermutations(data, n, k - <span class="hljs-number">1</span>);<br><br>    tmp = data[i];<br>    data[i] = data[k-<span class="hljs-number">1</span>];<br>    data[k-<span class="hljs-number">1</span>] = tmp;<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E4%BA%8C%E5%8F%89%E6%A0%91.resources/2023/09/15/17-36-30-f5b1561f68e7b81d08a9630d56225775-unknown_filename.13-579649.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.13"></p>
+<h3 id="完全二叉树"><a href="#完全二叉树" class="headerlink" title="完全二叉树"></a>完全二叉树</h3><p>完全二叉树的特点：叶子结点只能出现在最下层和次下层，且最下层的叶子结点集中在树的左部。需要注意的是，满二叉树肯定是完全二叉树，而完全二叉树不一定是满二叉树。<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/picgo/picgo-clipboard-images/2024-02-26-16-21-90b17ff2e644b785c9ebeefead2c407e-20240226162135-250c70.png" srcset="/img/loading.gif" lazyload alt="image.png|600"></p>
+<ul>
+<li>如果树为空，则直接返回错</li>
+<li>如果树不为空：层序遍历二叉树<br>2.1&gt;如果一个结点左右孩子都不为空，则pop该节点，将其左右孩子入队列；<br>2.1&gt;如果遇到一个结点，左孩子为空，右孩子不为空，则该树一定不是完全二叉树；<br>2.2&gt;如果遇到一个结点，左孩子不为空，右孩子为空；或者左右孩子都为空，且则该节点之后的队列中的结点都为叶子节点，该树才是完全二叉树，否则就不是完全二叉树；</li>
+</ul>
+<h2 id="堆排序"><a href="#堆排序" class="headerlink" title="堆排序"></a>堆排序</h2><ul>
+<li>堆排序是利用堆这种数据结构而设计的一种排序算法，它的最坏，最好，平均时间复杂度均为O(nlogn)，它也是不稳定排序。堆是具有以下性质的完全二叉树：每个结点的值都大于或等于其左右孩子结点的值，称为大顶堆；或者每个结点的值都小于或等于其左右孩子结点的值，称为小顶堆。一般升序采用大顶堆，降序采用小顶堆。</li>
+<li>堆排序的基本思想是：将待排序序列构造成一个大顶堆，此时，整个序列的最大值就是堆顶的根节点。将其与末尾元素进行交换，此时末尾就为最大值。然后将剩余n-1个元素重新构造成一个堆，这样会得到n个元素的次小值。如此反复执行，便能得到一个有序序列了<br>  <img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E4%BA%8C%E5%8F%89%E6%A0%91.resources/2023/09/15/17-36-30-1bbca372e5aa5e66f3414fa11e160840-unknown_filename.10-b068f1.jpeg" srcset="/img/loading.gif" lazyload alt="unknown_filename.10"></li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">HeapSort</span> &#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> &#123;<br>        <span class="hljs-type">HeapSort</span> <span class="hljs-variable">heapSort</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">HeapSort</span>();<br>        <span class="hljs-type">int</span>[] array = &#123;<span class="hljs-number">19</span>, <span class="hljs-number">8</span>, <span class="hljs-number">27</span>, <span class="hljs-number">6</span>, <span class="hljs-number">35</span>, <span class="hljs-number">14</span>, <span class="hljs-number">3</span>, <span class="hljs-number">12</span>, <span class="hljs-number">1</span>, <span class="hljs-number">0</span>, <span class="hljs-number">9</span>, <span class="hljs-number">10</span>, <span class="hljs-number">7</span>&#125;;<br>        <span class="hljs-comment">//&#123;35, 8, 27, 6, 19, 14, 3, 12, 1, 0, 9, 10, 7&#125;</span><br>        System.out.println(<span class="hljs-string">&quot;Before heap:&quot;</span>);<br>        heapSort.printArray(array);<br><br>        heapSort.heapSort(array);<br><br>        System.out.println(<span class="hljs-string">&quot;After heap sort:&quot;</span>);<br>        heapSort.printArray(array);<br>    &#125;<br><br>    <span class="hljs-comment">//(1)</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">heapSort</span><span class="hljs-params">(<span class="hljs-type">int</span>[] array)</span> &#123;<br>        buildMaxHeap(array);<span class="hljs-comment">//建立最大堆</span><br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> <span class="hljs-variable">i</span> <span class="hljs-operator">=</span> array.length - <span class="hljs-number">1</span>; i &gt;= <span class="hljs-number">1</span>; i--) &#123;<br>            <span class="hljs-comment">//最大的在0位置，那么开始沉降，这样每交换一次最大的值就丢到最后了</span><br>            exchangeElements(array, <span class="hljs-number">0</span>, i);<br>            <span class="hljs-comment">//继续获取0位置最大值，将第一次排序后到了最后面的最大值排除</span><br>            <span class="hljs-comment">//重新调整结构，使其满足堆，然后继续交换堆顶元素与当前末尾元素，</span><br>            <span class="hljs-comment">//反复执行调整+交换步骤，直到整个序列有序。</span><br>            maxHeap(array, i, <span class="hljs-number">0</span>);<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-comment">//(2)建立最大堆</span><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">buildMaxHeap</span><span class="hljs-params">(<span class="hljs-type">int</span>[] array)</span> &#123;<br>        <span class="hljs-keyword">if</span> (array == <span class="hljs-literal">null</span> || array.length &lt;= <span class="hljs-number">1</span>) &#123;<br>            <span class="hljs-keyword">return</span>;<br>        &#125;<br>        <span class="hljs-type">int</span> <span class="hljs-variable">half</span> <span class="hljs-operator">=</span> (array.length - <span class="hljs-number">1</span>) / <span class="hljs-number">2</span>;<span class="hljs-comment">//从一半开始，6</span><br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> <span class="hljs-variable">i</span> <span class="hljs-operator">=</span> half; i &gt;= <span class="hljs-number">0</span>; i--) &#123;<br>            maxHeap(array, array.length, i);<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">maxHeap</span><span class="hljs-params">(<span class="hljs-type">int</span>[] array, <span class="hljs-type">int</span> heapSize, <span class="hljs-type">int</span> index)</span> &#123;<span class="hljs-comment">//index堆头</span><br>        <span class="hljs-type">int</span> <span class="hljs-variable">left</span> <span class="hljs-operator">=</span> index * <span class="hljs-number">2</span> + <span class="hljs-number">1</span>;<br>        <span class="hljs-type">int</span> <span class="hljs-variable">right</span> <span class="hljs-operator">=</span> index * <span class="hljs-number">2</span> + <span class="hljs-number">2</span>;<br>        <span class="hljs-type">int</span> <span class="hljs-variable">largest</span> <span class="hljs-operator">=</span> index;<br>        <span class="hljs-comment">//三者找最大值</span><br>        <span class="hljs-keyword">if</span> (left &lt; heapSize &amp;&amp; array[left] &gt; array[index]) &#123;<br>            largest = left;<br>        &#125;<br>        <span class="hljs-keyword">if</span> (right &lt; heapSize &amp;&amp; array[right] &gt; array[largest]) &#123;<br>            largest = right;<br>        &#125;<br>        <span class="hljs-keyword">if</span> (index != largest) &#123;<br>            exchangeElements(array, index, largest);<br>            <span class="hljs-comment">//继续构造下面的大堆</span><br>            maxHeap(array, heapSize, largest);<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-comment">//（3）换位置</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">exchangeElements</span><span class="hljs-params">(<span class="hljs-type">int</span>[] array, <span class="hljs-type">int</span> index1, <span class="hljs-type">int</span> index2)</span> &#123;<br>        <span class="hljs-type">int</span> <span class="hljs-variable">temp</span> <span class="hljs-operator">=</span> array[index1];<br>        array[index1] = array[index2];<br>        array[index2] = temp;<br>    &#125;<br><br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">printArray</span><span class="hljs-params">(<span class="hljs-type">int</span>[] array)</span> &#123;<br>        System.out.print(<span class="hljs-string">&quot;&#123;&quot;</span>);<br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> <span class="hljs-variable">i</span> <span class="hljs-operator">=</span> <span class="hljs-number">0</span>; i &lt; array.length; i++) &#123;<br>            System.out.print(array[i]);<br>            <span class="hljs-keyword">if</span> (i &lt; array.length - <span class="hljs-number">1</span>) &#123;<br>                System.out.print(<span class="hljs-string">&quot;, &quot;</span>);<br>            &#125;<br>        &#125;<br>        System.out.println(<span class="hljs-string">&quot;&#125;&quot;</span>);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<h2 id="Trie树"><a href="#Trie树" class="headerlink" title="Trie树"></a>Trie树</h2><p>如何实现搜索引擎的搜索关键词提示功能？</p>
+<p>Trie 树，也叫“字典树”。顾名思义，它是一个树形结构。它是一种专门处理字符串匹配的数据结构，用来解决在一组字符串集合中快速查找某个字符串的问题。<br>Trie 树的本质，就是利用字符串之间的公共前缀，将重复的前缀合并在一起。最后构造出来的就是下面这个图中的样子。<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E4%BA%8C%E5%8F%89%E6%A0%91.resources/2023/09/15/17-36-30-b868f2d6faea9d0e508fdb92cc0f7ca5-unknown_filename.16-4d5fcf.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.16"><br>其中，根节点不包含任何信息。每个节点表示一个字符串中的字符，从根节点到红色节点的一条路径表示一个字符串（注意：红色节点并不都是叶子节点）。</p>
+<p>如果要在一组字符串中，频繁地查询某些字符串，用 Trie 树会非常高效。构建 Trie 树的过程，需要扫描所有的字符串，时间复杂度是 O(n)（n 表示所有字符串的长度和）。但是一旦构建成功之后，后续的查询操作会非常高效。</p>
+<p>每次查询时，如果要查询的字符串长度是 k，那我们只需要比对大约 k 个节点，就能完成查询操作。跟原本那组字符串的长度和个数没有任何关系。所以说，构建好 Trie 树后，在其中查找字符串的时间复杂度是 O(k)，k 表示要查找的字符串的长度。</p>
+<p>刚刚我们在讲 Trie 树的实现的时候，讲到用数组来存储一个节点的子节点的指针。如果字符串中包含从 a 到 z 这 26 个字符，那每个节点都要存储一个长度为 26 的数组，并且每个数组存储一个 8 字节指针（或者是 4 字节，这个大小跟 CPU、操作系统、编译器等有关）。而且，即便一个节点只有很少的子节点，远小于 26 个，比如 3、4 个，我们也要维护一个长度为 26 的数组。</p>
+<p>按照我们上面举的例子，数组长度为 26，每个元素是 8 字节，那每个节点就会额外需要 26* 8&#x3D;208 个字节。而且这还是只包含 26 个字符的情况。</p>
+<p>如果字符串中不仅包含小写字母，还包含大写字母、数字、甚至是中文，那需要的存储空间就更多了。所以，也就是说，在某些情况下，Trie 树不一定会节省存储空间。在重复的前缀并不多的情况下，Trie 树不但不能节省内存，还有可能会浪费更多的内存。</p>
+<p>我们可以<code>稍微牺牲一点查询的效率</code>，将每个节点中的数组换成其他数据结构，来存储一个节点的子节点指针。用哪种数据结构呢？我们的选择其实有很多，比如有序数组、跳表、散列表、红黑树等。</p>
+<p>假设我们用有序数组，数组中的指针按照所指向的子节点中的字符的大小顺序排列。查询的时候，我们可以通过二分查找的方法，快速查找到某个字符应该匹配的子节点的指针。但是，在往 Trie 树中插入一个字符串的时候，我们为了维护数组中数据的有序性，就会稍微慢了点。</p>
+<p>一组字符串中查找字符串，Trie 树实际上表现得并不好。它对要处理的字符串有及其严苛的要求。<br>第一，字符串中包含的字符集不能太大。我们前面讲到，如果字符集太大，那存储空间可能就会浪费很多。即便可以优化，但也要付出牺牲查询、插入效率的代价。<br>第二，要求字符串的前缀重合比较多，不然空间消耗会变大很多。<br>第三，如果要用 Trie 树解决问题，那我们就要自己从零开始实现一个 Trie 树，还要保证没有 bug，这个在工程上是将简单问题复杂化，除非必须，一般不建议这样做。<br>第四，我们知道，通过指针串起来的数据块是不连续的，而 Trie 树中用到了指针，所以，对缓存并不友好，性能上会打个折扣。</p>
+<p>实际上，Trie 树只是不适合精确匹配查找，这种问题更适合用散列表或者红黑树来解决。Trie 树比较适合的是查找前缀匹配的字符串，也就是类似开篇问题的那种场景。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E7%AE%97%E6%B3%95/" class="category-chain-item">算法</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>4-二叉树</div>
+      <div>http://peiniwan.github.io/2025/12/49ca49d8c5cf.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>六月的雨</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年12月16日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/12/f45f5449b6bd.html" title="5-链表题">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">5-链表题</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/12/44b7a9053841.html" title="3-二分、字符串">
+                        <span class="hidden-mobile">3-二分、字符串</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"OwNIdaopOn1rwNhtotGOGC0B-gzGzoHsz","appKey":"eadytQ2XqWmxuvAKeg08XX83","path":"window.location.pathname","placeholder":null,"avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":true,"recordIP":false,"serverURLs":"https://ownidaop.lc-cn-n1-shared.com","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

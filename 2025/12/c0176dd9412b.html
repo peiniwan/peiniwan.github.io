@@ -1,0 +1,721 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="六月的雨">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="12re.compile(&#x27;&lt;div.\*?author&quot;&gt;.\*?&lt;a.\*?&lt;img.\*?&gt;(.\*?)&lt;&#x2F;a&gt;.\*?&lt;div.\*?&#x27;+&#x27;content&quot;&gt;(.\*?)&lt;!--(.\*?)--&gt;.\*?&lt;&#x2F;div&gt;(.\*?)&lt;div class&#x3D;&amp;qu">
+<meta property="og:type" content="article">
+<meta property="og:title" content="正则表达式">
+<meta property="og:url" content="http://peiniwan.github.io/2025/12/c0176dd9412b.html">
+<meta property="og:site_name" content="六月的雨的笔记">
+<meta property="og:description" content="12re.compile(&#x27;&lt;div.\*?author&quot;&gt;.\*?&lt;a.\*?&lt;img.\*?&gt;(.\*?)&lt;&#x2F;a&gt;.\*?&lt;div.\*?&#x27;+&#x27;content&quot;&gt;(.\*?)&lt;!--(.\*?)--&gt;.\*?&lt;&#x2F;div&gt;(.\*?)&lt;div class&#x3D;&amp;qu">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F.html.resources/2023-12-29-15-02-bb53b0480b65cf528294a9e41c4bb56c-unknown_filename.3-f0c740.jpeg">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%96%87%E5%AD%97%E7%BC%96%E7%A0%81.html.resources/2023-12-29-15-02-a709b855c38a9e4e4fbd2abc6c554474-unknown_filename.1-7de6bc.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F.html.resources/2023-12-29-15-02-b480f572098dae99d4af405586fc67af-unknown_filename.2-00cb58.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F.html.resources/2023-12-29-15-02-0210e6228903668e0b0bd95d0b2155b9-unknown_filename-8c764e.png">
+<meta property="article:published_time" content="2025-12-16T13:59:22.573Z">
+<meta property="article:modified_time" content="2024-03-13T03:59:00.000Z">
+<meta property="article:author" content="六月的雨">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F.html.resources/2023-12-29-15-02-bb53b0480b65cf528294a9e41c4bb56c-unknown_filename.3-f0c740.jpeg">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>正则表达式 - 六月的雨的笔记</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"peiniwan.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>六月的雨的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="正则表达式"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-12-16 21:59" pubdate>
+          2025年12月16日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.1k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          18 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">正则表达式</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F.html.resources/2023-12-29-15-02-bb53b0480b65cf528294a9e41c4bb56c-unknown_filename.3-f0c740.jpeg" srcset="/img/loading.gif" lazyload alt="unknown_filename.3"></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs xml">re.compile(&#x27;&lt;div.\*?author&quot;&gt;.\*?&lt;a.\*?&lt;img.\*?&gt;(.\*?)<span class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span>.\*?&lt;div.\*?&#x27;+&#x27;content&quot;&gt;(.\*?)<span class="hljs-comment">&lt;!--(.\*?)--&gt;</span>.\*?<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>(.\*?)<span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;stats.\*?class=&quot;</span><span class="hljs-attr">number</span>&quot;&gt;</span>(.\*?)<span class="hljs-tag">&lt;/<span class="hljs-name">i</span>&gt;</span>&#x27;,re.S)<br>pattern = re.compile(&#x27;<span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;main-image&quot;</span>&gt;</span>.\*?<span class="hljs-tag">&lt;<span class="hljs-name">img</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&quot;(.\*?)&quot;</span><span class="hljs-attr">.</span>\*?/&gt;</span>&#x27;, re.S)<br></code></pre></td></tr></table></figure>
+
+<h2 id="匹配数字"><a href="#匹配数字" class="headerlink" title="匹配数字"></a>匹配数字</h2><p>a &#x3D; ‘asdfasf1234567fasd555fas’<br>b &#x3D; re.findall(‘(\d+)’, a)</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%96%87%E5%AD%97%E7%BC%96%E7%A0%81.html.resources/2023-12-29-15-02-a709b855c38a9e4e4fbd2abc6c554474-unknown_filename.1-7de6bc.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.1"></p>
+<p>反盗链</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-attr">self.user_agent</span> = <span class="hljs-string">&#x27;Mozilla/4.0 (compatible; MSIE 5.5; Windows NT)&#x27;</span><br><span class="hljs-comment"># 初始化 headers</span><br><span class="hljs-attr">self.headers</span> = &#123;<span class="hljs-string">&#x27;User-Agent&#x27;</span>: self.user_agent&#125;<br></code></pre></td></tr></table></figure>
+
+<p>如果不行，看有没有referer<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F.html.resources/2023-12-29-15-02-b480f572098dae99d4af405586fc67af-unknown_filename.2-00cb58.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.2"></p>
+<p>1）.*? 是一个固定的搭配，.和*代表可以匹配任意无限多个字符，加上？表示使用非贪婪模式进行匹配，也就是我们会尽可能短地做匹配，以后我们还会大量用到.*? 的搭配。<br>2）(.*?)代表一个分组，在这个正则表达式中我们匹配了五个分组，在后面的遍历item中，item[0]就代表第一个(.*?)所指代的内容，item[1]就代表第二个(.*?)所指代的内容，以此类推。<br>tem[0] 是一个段子的发布者，item[1] 是内容，item[2] 是发布时间, item[4] 是点赞数<br>3）re.S 标志代表在匹配时为点任意匹配模式，点 . 也可以代表换行符。</p>
+<p>match：匹配string 开头，成功返回Match object, 失败返回None，只匹配一个。<br>search：在string中进行搜索，成功返回Match object, 失败返回None, 只匹配一个。<br>findall：在string中查找所有 匹配成功的组, 即用括号括起来的部分。返回list对象，每个list item是由每个匹配的所有组组成的list。<br>finditer：在string中查找所有 匹配成功的字符串, 返回iterator，每个item是一个Match object。</p>
+<h2 id="基础"><a href="#基础" class="headerlink" title="基础"></a>基础</h2><p>\d可以匹配一个数字，\w可以匹配一个字母或数字<br>.可以匹配任意字符，所以：’py.’可以匹配’pyc’、’pyo’、’py!’等等。<br>，用*表示任意个字符（包括0个），用+表示至少一个字符(没有空格)<br>用?表示0个或1个字符，用{n}表示n个字符，用{n,m}表示n-m个字符：<br>\d{3}\s+\d{3,8}。<br>\d{3}表示匹配3个数字，例如’010’；<br>\s可以匹配一个空格（也包括Tab等空白符），所以\s+表示至少有一个空格，例如匹配’ ‘，’ ‘等；<br>\d{3,8}表示3-8个数字，例如’1234567’。<br>要匹配’010-12345’这样的号码呢？由于’-‘是特殊字符，在正则表达式中，要用’\‘转义，所以正则是\d{3}\-\d{3,8}。</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F.html.resources/2023-12-29-15-02-0210e6228903668e0b0bd95d0b2155b9-unknown_filename-8c764e.png" srcset="/img/loading.gif" lazyload alt="unknown_filename|728x0"></p>
+<h2 id="进阶"><a href="#进阶" class="headerlink" title="进阶"></a>进阶</h2><p>要做更精确地匹配，可以用[]表示范围<br>[0-9a-zA-Z\_]可以匹配一个数字、字母或者下划线；<br>[0-9a-zA-Z\_]+可以匹配至少由一个数字、字母或者下划线组成的字符串，比如’a100’，’0_Z’，’Py3000’等等；<br>[a-zA-Z\_][0-9a-zA-Z\_]*可以匹配由字母或下划线开头，后接任意个由一个数字、字母或者下划线组成的字符串，也就是Python合法的变量；<br>[a-zA-Z\_][0-9a-zA-Z\_]{0, 19}更精确地限制了变量的长度是1-20个字符（前面1个字符+后面最多19个字符）。</p>
+<p>A|B可以匹配A或B，所以(P|p)ython可以匹配’Python’或者’python’。<br>^表示行的开头，^\d表示必须以数字开头。<br>$表示行的结束，\d$表示必须以数字结束。<br>py也可以匹配’python’，但是加上^py$就变成了整行匹配，就只能匹配’py’了。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br></pre></td><td class="code"><pre><code class="hljs python">content = <span class="hljs-string">&#x27;333STR1666STR299&#x27;</span><br>regex = <span class="hljs-string">r&#x27;([A-Z]+(\d))&#x27;</span><br><span class="hljs-comment"># 最外边的括号去掉，即regex = r&#x27;[A-Z]+(\d)&#x27;，组的个数就会减少一个</span><br><span class="hljs-comment"># content的开头不符合正则，所以结果为None。</span><br><span class="hljs-built_in">print</span>(re.<span class="hljs-keyword">match</span>(regex, content))<br><span class="hljs-comment"># None</span><br><br><span class="hljs-comment"># 只会找一个匹配，match[0]是regex所代表的整个字符串，match[1]是第一个()中的内容，match[2]是第二对()中的内容。</span><br><span class="hljs-keyword">match</span> = re.search(regex, content)<br><span class="hljs-built_in">print</span>(<span class="hljs-string">&#x27;\nre.search() return value: &#x27;</span> + <span class="hljs-built_in">str</span>(<span class="hljs-built_in">type</span>(<span class="hljs-keyword">match</span>)))<br><span class="hljs-built_in">print</span>(<span class="hljs-keyword">match</span>.group(<span class="hljs-number">0</span>), <span class="hljs-keyword">match</span>.group(<span class="hljs-number">1</span>), <span class="hljs-keyword">match</span>.group(<span class="hljs-number">2</span>))<br><span class="hljs-comment"># re.search() return value: &lt;type &#x27;_sre.SRE_Match&#x27;&gt;</span><br><span class="hljs-comment"># (&#x27;STR1&#x27;, &#x27;STR1&#x27;, &#x27;1&#x27;)</span><br><br>result1 = re.findall(regex, content)<br><span class="hljs-built_in">print</span>(<span class="hljs-string">&#x27;\nre.findall() return value: &#x27;</span> + <span class="hljs-built_in">str</span>(<span class="hljs-built_in">type</span>(result1)))<br><span class="hljs-keyword">for</span> m <span class="hljs-keyword">in</span> result1:<br>    <span class="hljs-built_in">print</span>(m[<span class="hljs-number">0</span>], m[<span class="hljs-number">1</span>])<br><span class="hljs-comment"># re.findall() return value: &lt;type &#x27;list&#x27;&gt;</span><br><span class="hljs-comment"># (&#x27;STR1&#x27;, &#x27;1&#x27;)</span><br><span class="hljs-comment"># (&#x27;STR2&#x27;, &#x27;2&#x27;)</span><br><br>result2 = re.finditer(regex, content)<br><span class="hljs-built_in">print</span>(<span class="hljs-string">&#x27;\nre.finditer() return value: &#x27;</span> + <span class="hljs-built_in">str</span>(<span class="hljs-built_in">type</span>(result2)))<br><span class="hljs-keyword">for</span> m <span class="hljs-keyword">in</span> result2:<br>    <span class="hljs-built_in">print</span>(m.group(<span class="hljs-number">0</span>), m.group(<span class="hljs-number">1</span>), m.group(<span class="hljs-number">2</span>))  <span class="hljs-comment">#字符串</span><br><span class="hljs-comment"># re.finditer() return value: &lt;type &#x27;callable-iterator&#x27;&gt;</span><br><span class="hljs-comment"># (&#x27;STR1&#x27;, &#x27;STR1&#x27;, &#x27;1&#x27;)</span><br><span class="hljs-comment"># (&#x27;STR2&#x27;, &#x27;STR2&#x27;, &#x27;2&#x27;)</span><br><br><span class="hljs-comment"># 切分字符串</span><br><span class="hljs-built_in">print</span> re.<span class="hljs-keyword">match</span>(<span class="hljs-string">r&#x27;^\d&#123;3&#125;\-\d&#123;3,8&#125;</span><br><span class="hljs-string"></span><br><span class="hljs-string">, &#x27;</span><span class="hljs-number">0</span>10-<span class="hljs-number">12345</span><span class="hljs-string">&#x27;)</span><br><span class="hljs-string"># _sre.SRE_Match object at 0x1026e18b8&gt;</span><br><span class="hljs-string">print re.match(r&#x27;</span>^\d&#123;<span class="hljs-number">3</span>&#125;\-\d&#123;<span class="hljs-number">3</span>,<span class="hljs-number">8</span>&#125;<br><br>, <span class="hljs-string">&#x27;010 12345&#x27;</span>)<br><br><span class="hljs-built_in">print</span> re.split(<span class="hljs-string">r&#x27;\s+&#x27;</span>, <span class="hljs-string">&#x27;a b   c&#x27;</span>)<br><span class="hljs-built_in">print</span> re.split(<span class="hljs-string">r&#x27;[\s\,]+&#x27;</span>, <span class="hljs-string">&#x27;a,b, c  d&#x27;</span>)<br><span class="hljs-comment"># 空格或，或；+至少一个空格</span><br><span class="hljs-built_in">print</span> re.split(<span class="hljs-string">r&#x27;[\s\,\;]+&#x27;</span>, <span class="hljs-string">&#x27;a b;; c  d&#x27;</span>)<br><br><span class="hljs-comment"># 分组</span><br><span class="hljs-comment"># 用()表示的就是要提取的分组（Group）</span><br><span class="hljs-comment"># group(0)永远是原始字符串，group(1)、group(2)……表示第1、2、……个子串。</span><br>m = re.<span class="hljs-keyword">match</span>(<span class="hljs-string">r&#x27;^(\d&#123;3&#125;)-(\d&#123;3,8&#125;)</span><br><span class="hljs-string"></span><br><span class="hljs-string">, &#x27;</span><span class="hljs-number">0</span>10-<span class="hljs-number">12345</span><span class="hljs-string">&#x27;)</span><br><span class="hljs-string">print m.group(0)</span><br><span class="hljs-string">print m.group(1)</span><br><span class="hljs-string">print m.group(2)</span><br><span class="hljs-string"></span><br><span class="hljs-string">t = &#x27;</span><span class="hljs-number">19</span>:05:<span class="hljs-number">30</span><span class="hljs-string">&#x27;</span><br><span class="hljs-string">m = re.match(</span><br><span class="hljs-string">    r&#x27;</span>^(<span class="hljs-number">0</span>[<span class="hljs-number">0</span>-<span class="hljs-number">9</span>]|<span class="hljs-number">1</span>[<span class="hljs-number">0</span>-<span class="hljs-number">9</span>]|<span class="hljs-number">2</span>[<span class="hljs-number">0</span>-<span class="hljs-number">3</span>]|[<span class="hljs-number">0</span>-<span class="hljs-number">9</span>])\:(<span class="hljs-number">0</span>[<span class="hljs-number">0</span>-<span class="hljs-number">9</span>]|<span class="hljs-number">1</span>[<span class="hljs-number">0</span>-<span class="hljs-number">9</span>]|<span class="hljs-number">2</span>[<span class="hljs-number">0</span>-<span class="hljs-number">9</span>]|<span class="hljs-number">3</span>[<span class="hljs-number">0</span>-<span class="hljs-number">9</span>]|<span class="hljs-number">4</span>[<span class="hljs-number">0</span>-<span class="hljs-number">9</span>]|<span class="hljs-number">5</span>[<span class="hljs-number">0</span>-<span class="hljs-number">9</span>]|[<span class="hljs-number">0</span>-<span class="hljs-number">9</span>])\:(<span class="hljs-number">0</span>[<span class="hljs-number">0</span>-<span class="hljs-number">9</span>]|<span class="hljs-number">1</span>[<span class="hljs-number">0</span>-<span class="hljs-number">9</span>]|<span class="hljs-number">2</span>[<span class="hljs-number">0</span>-<span class="hljs-number">9</span>]|<span class="hljs-number">3</span>[<span class="hljs-number">0</span>-<span class="hljs-number">9</span>]|<span class="hljs-number">4</span>[<span class="hljs-number">0</span>-<span class="hljs-number">9</span>]|<span class="hljs-number">5</span>[<span class="hljs-number">0</span>-<span class="hljs-number">9</span>]|[<span class="hljs-number">0</span>-<span class="hljs-number">9</span>])<br><br>,<br>    t)<br><span class="hljs-built_in">print</span> m.groups()<br><br><span class="hljs-comment"># 识别日期：&#x27;^(0[1-9]|1[0-2]|[0-9])-(0[1-9]|1[0-9]|2[0-9]|3[0-1]|[0-9])</span><br><br><br><span class="hljs-comment"># 对于&#x27;2-30&#x27;，&#x27;4-31&#x27;这样的非法日期，用正则还是识别不了，或者说写出来非常困难，这时就需要程序配合识别了。</span><br><br><span class="hljs-comment"># 正则匹配默认是贪婪匹配，也就是匹配尽可能多的字符。举例如下，匹配出数字后面的0：</span><br><span class="hljs-built_in">print</span> re.<span class="hljs-keyword">match</span>(<span class="hljs-string">r&#x27;^(\d+)(0*)</span><br><span class="hljs-string"></span><br><span class="hljs-string">, &#x27;</span><span class="hljs-number">102300</span><span class="hljs-string">&#x27;).groups()</span><br><span class="hljs-string"># (&#x27;</span><span class="hljs-number">102300</span><span class="hljs-string">&#x27;, &#x27;</span><span class="hljs-string">&#x27;)</span><br><span class="hljs-string"># 由于\d+采用贪婪匹配，直接把后面的0全部匹配了，结果0*只能匹配空字符串了。</span><br><span class="hljs-string"># 必须让\d+采用非贪婪匹配（也就是尽可能少匹配），才能把后面的0匹配出来，加个?就可以让\d+采用非贪婪匹配：</span><br><span class="hljs-string">print re.match(r&#x27;</span>^(\d+?)(<span class="hljs-number">0</span>*)<br><br>, <span class="hljs-string">&#x27;102300&#x27;</span>).groups()<br><span class="hljs-comment"># (&#x27;1023&#x27;, &#x27;00&#x27;)</span><br><br><span class="hljs-comment"># 预编译该正则表达式</span><br>re_telephone = re.<span class="hljs-built_in">compile</span>(<span class="hljs-string">r&#x27;^(\d&#123;3&#125;)-(\d&#123;3,8&#125;)</span><br><span class="hljs-string"></span><br><span class="hljs-string">)</span><br><span class="hljs-string"># 使用：</span><br><span class="hljs-string">print re_telephone.match(&#x27;</span><span class="hljs-number">0</span>10-<span class="hljs-number">12345</span><span class="hljs-string">&#x27;).groups()</span><br><span class="hljs-string"># (&#x27;</span><span class="hljs-number">0</span>10<span class="hljs-string">&#x27;, &#x27;</span><span class="hljs-number">12345</span><span class="hljs-string">&#x27;)</span><br><span class="hljs-string">print re_telephone.match(&#x27;</span><span class="hljs-number">0</span>10-<span class="hljs-number">8086</span><span class="hljs-string">&#x27;).groups()</span><br><span class="hljs-string"># (&#x27;</span><span class="hljs-number">0</span>10<span class="hljs-string">&#x27;, &#x27;</span><span class="hljs-number">8086</span><span class="hljs-string">&#x27;)</span><br><span class="hljs-string"></span><br><span class="hljs-string"># someone@gmail.com</span><br><span class="hljs-string"># &lt;Tom Paris&gt; tom@voyager.org</span><br><span class="hljs-string"></span><br><span class="hljs-string"># 正则表达式中，“.”的作用是匹配除“\n”以外的任何字符，也就是说，</span><br><span class="hljs-string"># 它是在一行中进行匹配。这里的“行”是以“\n”进行区分的。a字符串有每行的末尾有一个“\n”，不过它不可见。</span><br><span class="hljs-string"># 如果不使用re.S参数，则只在每一行内进行匹配，如果一行没有，就换下一行重新开始，不会跨行。而使用re.S参数以后，</span><br><span class="hljs-string"># 正则表达式会将这个字符串作为一个整体，将“\n”当做一个普通的字符加入到这个字符串中，在整体中进行匹配。</span><br><span class="hljs-string">a = &#x27;</span><span class="hljs-string">&#x27;&#x27;</span>asdfhellopass:<br>    <span class="hljs-number">123</span><br>    worldaf<br>    <span class="hljs-string">&#x27;&#x27;&#x27;</span><br><span class="hljs-string">b = re.findall(&#x27;hello(.*?)world&#x27;, a)</span><br><span class="hljs-string">c = re.findall(&#x27;hello(.*?)world&#x27;, a, re.S)</span><br><span class="hljs-string">print &#x27;b is &#x27;, b</span><br><span class="hljs-string">print &#x27;c is &#x27;, c</span><br><span class="hljs-string"># b is  []</span><br><span class="hljs-string"># c is  [&#x27;pass:\n\t123\n\t&#x27;]</span><br><span class="hljs-string"></span><br><span class="hljs-string">text = &#x27;&#x27;</span><br><span class="hljs-string">file = open(&#x27;sina.html&#x27;)</span><br><span class="hljs-string">for line in file:</span><br><span class="hljs-string">    text = text + line</span><br><span class="hljs-string"></span><br><span class="hljs-string">file.close()</span><br><span class="hljs-string"></span><br><span class="hljs-string"># &#123;&#125;表示位数，[][]表示第一位第二位</span><br><span class="hljs-string"># ()是或者，几个（）就是几个元素的数组，没有会是&quot;&quot;，所以过滤了下</span><br><span class="hljs-string"># match和findall的区别</span><br><span class="hljs-string"># 1）.*? 是一个固定的搭配，.和*代表可以匹配任意无限多个字符，加上？表示使用非贪婪模式进行匹配，</span><br><span class="hljs-string"># 也就是我们会尽可能短地做匹配，以后我们还会大量用到 .*? 的搭配。</span><br><span class="hljs-string"># 2）(.*?)代表一个分组，在这个正则表达式中我们匹配了五个分组，在后面的遍历item中，</span><br><span class="hljs-string"># item[0]就代表第一个(.*?)所指代的内容，item[1]就代表第二个(.*?)所指代的内容，以此类推。</span><br><span class="hljs-string">pattern = re.compile(</span><br><span class="hljs-string">    &#x27;&lt;div class=&quot;author clearfix&quot;&gt;.*?&lt;a.*?&lt;h2&gt;(.*?)&lt;/h2&gt;.*?&lt;div class=&quot;articleGender manIcon&quot;&gt;(.*?)&lt;/div&gt;.*?&lt;div class=&quot;content&quot;&gt;.*?&lt;span&gt;(.*?)&lt;/span&gt;.*?&lt;span class=&quot;stats-vote&quot;&gt;&lt;i class=&quot;number&quot;&gt;(.*?)&lt;/i&gt;&#x27;,</span><br><span class="hljs-string">    re.S)</span><br><span class="hljs-string">items = re.findall(pattern, text)</span><br><span class="hljs-string">for item in items:</span><br><span class="hljs-string">    print item</span><br><span class="hljs-string"></span><br><span class="hljs-string"># final_result = set()</span><br><span class="hljs-string"># for pair in result:</span><br><span class="hljs-string">#     if pair[0] not in final_result:</span><br><span class="hljs-string">#         final_result.add(pair[0])</span><br><span class="hljs-string">#         if pair[1] not in final_result:</span><br><span class="hljs-string">#             final_result.add(pair[1])</span><br><span class="hljs-string">#</span><br><span class="hljs-string"># final_result.remove(&#x27;&#x27;)</span><br><span class="hljs-string"># print(final_result)</span><br><span class="hljs-string">print items</span><br></code></pre></td></tr></table></figure>
+
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%85%B6%E4%BB%96%E8%AF%AD%E8%A8%80/" class="category-chain-item">其他语言</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E5%85%B6%E4%BB%96%E8%AF%AD%E8%A8%80/Python/" class="category-chain-item">Python</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>正则表达式</div>
+      <div>http://peiniwan.github.io/2025/12/c0176dd9412b.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>六月的雨</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年12月16日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/12/385f783fe040.html" title="SurfaceView和视频">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">SurfaceView和视频</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/12/6541df92357d.html" title="文字编码">
+                        <span class="hidden-mobile">文字编码</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"OwNIdaopOn1rwNhtotGOGC0B-gzGzoHsz","appKey":"eadytQ2XqWmxuvAKeg08XX83","path":"window.location.pathname","placeholder":null,"avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":true,"recordIP":false,"serverURLs":"https://ownidaop.lc-cn-n1-shared.com","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

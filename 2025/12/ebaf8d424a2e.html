@@ -1,0 +1,844 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="六月的雨">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="AOSP 极速上手 | Android Framework Excerpt今天分享的内容是怎么快速上手 AOSP，主要分为以下几个步骤：   今天分享的内容是怎么快速上手 AOSP，主要分为以下几个步骤：  硬件要求 虚拟机安装 开发环境搭建 下载编译源码 从一个简单的实际开发需求体验 Framework 开发  # 硬件要求用于 Android Framework 开发的电脑需要较强的 CPU，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AOSP 极速上手">
+<meta property="og:url" content="http://peiniwan.github.io/2025/12/ebaf8d424a2e.html">
+<meta property="og:site_name" content="六月的雨的笔记">
+<meta property="og:description" content="AOSP 极速上手 | Android Framework Excerpt今天分享的内容是怎么快速上手 AOSP，主要分为以下几个步骤：   今天分享的内容是怎么快速上手 AOSP，主要分为以下几个步骤：  硬件要求 虚拟机安装 开发环境搭建 下载编译源码 从一个简单的实际开发需求体验 Framework 开发  # 硬件要求用于 Android Framework 开发的电脑需要较强的 CPU，">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/MyImages@main/img/2023-09-25-16-53-d7a919c9affe652b2f5834cc3c9a289d-20230703154038-4fd96f.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/MyImages@main/img/2023-09-25-16-53-7c62618ee6d5e4c99374929dc1a2c085-20230703154049-9a8fea.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/MyImages@main/img/2023-09-25-16-53-d981022bdadca84e1322da2dd5566332-20230703154101-0ba2da.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/MyImages@main/img/2023-09-25-16-53-eeb33b8b94648c2f8243721802419028-20230703154114-671d2f.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/MyImages@main/img/2023-09-25-16-53-22cdaa3311ca9c2acee76ddd0890d604-20230703154124-30cb93.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/MyImages@main/img/2023-09-25-16-53-cdfa1a62fd729e497aa7afe3545a6c85-20230703154140-b562be.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/MyImages@main/img/2023-09-25-16-53-4f2320ca8a6943893fdcecd73dca4a82-20230703154205-4f6551.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/MyImages@main/img/2023-09-25-16-53-50a7c41a2331fcd8112f482cb7993e0d-20230703154218-5f2cd2.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/MyImages@main/img/2023-09-25-16-53-7a3bea76fd27dbf99af7767972a4ecef-20230703154224-e1a841.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/MyImages@main/img/2023-09-25-16-53-472687dd87e9a338e9bbcf319f9ffcdd-20230703154235-85ee39.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/MyImages@main/img/2023-09-25-16-53-9ddb7b30569626e215e6efa1318bf81d-20230703154242-664f05.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/MyImages@main/img/2023-09-25-16-53-8e56ec4f893528093a42933ad2e230fd-20230703154249-b94464.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/MyImages@main/img/2023-09-25-16-53-1a7e34617bdb7c26fe2198530b278dfb-20230703154258-f1c8f3.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/MyImages@main/img/2023-09-25-16-53-6f70b76430b4fb78535d1266f552ccac-20230703154307-0dc4ab.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/MyImages@main/img/2023-09-25-16-53-7de6fee8798fd5bf0290d9c70fea21c8-20230703154314-519921.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/MyImages@main/img/2023-09-25-16-53-ef9d4844ba0d7c7bc30e13904e23ece3-20230703154324-fbc28c.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/MyImages@main/img/2023-09-25-16-53-6979468c83bd463acf67ae1c6a730385-20230703154333-ff9f60.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/MyImages@main/img/2023-09-25-16-53-7de6fee8798fd5bf0290d9c70fea21c8-20230703154350-9bed05.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/MyImages@main/img/2023-09-25-16-53-24efe596c012bf54e4a9b297af19a6cc-20230703154402-c8ff4d.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/MyImages@main/img/2023-09-25-16-53-bb212a4fb6822d14f42073cfcf6bc4a4-20230703154413-74f24f.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/MyImages@main/img/2023-09-25-16-53-112ea1f437121522c819ab97e012891f-20230703154423-e34a43.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/MyImages@main/img/2023-09-25-16-53-1188a577906e7d7a21a7818e41bfb0df-20230703154433-be054e.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/MyImages@main/img/2023-09-25-16-53-37e16fb3f6134f6d70d988baccc18bd1-20230703154445-d8d01a.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/MyImages@main/img/2023-09-25-16-53-cb8c102f42f6a8121635f1263db0d3d2-20230703154453-83864d.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/MyImages@main/img/2023-09-25-16-53-edb76cd37ba3806c07766bbad255d0a5-20230703154501-bd79be.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/MyImages@main/img/2023-09-25-16-53-4393c75caa6c58b21bb156155d0681ca-20230703154510-15f08b.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/MyImages@main/img/2023-09-25-16-53-563d985d612ba4fba5920f4fd1d293f6-20230703154519-47db27.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/MyImages@main/img/2023-09-25-16-53-89a20278478fa00d085e95282e947ec1-20230703154533-e51512.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/MyImages@main/img/2023-09-25-16-53-e100b66e5e354cefd514b91cd7cc37df-20230703154600-bbacd9.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/MyImages@main/img/2023-09-25-16-53-b67f6118ef9035377ae6bd88585eb7b8-20230703154609-b8695c.png">
+<meta property="article:published_time" content="2025-12-16T13:59:22.688Z">
+<meta property="article:modified_time" content="2024-03-25T11:55:00.000Z">
+<meta property="article:author" content="六月的雨">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/MyImages@main/img/2023-09-25-16-53-d7a919c9affe652b2f5834cc3c9a289d-20230703154038-4fd96f.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>AOSP 极速上手 - 六月的雨的笔记</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"peiniwan.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>六月的雨的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="AOSP 极速上手"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-12-16 21:59" pubdate>
+          2025年12月16日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.9k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          16 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">AOSP 极速上手</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="AOSP-极速上手-Android-Framework"><a href="#AOSP-极速上手-Android-Framework" class="headerlink" title="AOSP 极速上手 | Android Framework"></a>AOSP 极速上手 | Android Framework</h1><blockquote>
+<h2 id="Excerpt"><a href="#Excerpt" class="headerlink" title="Excerpt"></a>Excerpt</h2><p>今天分享的内容是怎么快速上手 AOSP，主要分为以下几个步骤：</p>
+</blockquote>
+<hr>
+<p>今天分享的内容是<strong>怎么快速上手 AOSP</strong>，主要分为以下几个步骤：</p>
+<ul>
+<li>硬件要求</li>
+<li>虚拟机安装</li>
+<li>开发环境搭建</li>
+<li>下载编译源码</li>
+<li>从一个简单的实际开发需求体验 Framework 开发</li>
+</ul>
+<h2 id="硬件要求"><a href="#硬件要求" class="headerlink" title="# 硬件要求"></a><a target="_blank" rel="noopener" href="https://yuandaimaahao.github.io/AndroidFrameworkTutorialPages/002.%E7%8E%A9%E8%BD%ACAOSP%E7%AF%87/002.%20%E7%B3%BB%E7%BB%9F%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7%E6%8E%A8%E8%8D%90.html#%E7%A1%AC%E4%BB%B6%E8%A6%81%E6%B1%82">#</a> 硬件要求</h2><p>用于 Android Framework 开发的电脑需要较强的 CPU，大内存，大存储，一般来说需要满足以下要求：</p>
+<ul>
+<li>CPU 不低于 6 核心，建议 8 核及以上</li>
+<li>内存不低于 32G，建议 64G</li>
+<li>存储空间不低于 500G，建议 1TB SSD</li>
+</ul>
+<h2 id="虚拟机安装"><a href="#虚拟机安装" class="headerlink" title="# 虚拟机安装"></a><a target="_blank" rel="noopener" href="https://yuandaimaahao.github.io/AndroidFrameworkTutorialPages/002.%E7%8E%A9%E8%BD%ACAOSP%E7%AF%87/002.%20%E7%B3%BB%E7%BB%9F%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7%E6%8E%A8%E8%8D%90.html#%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AE%89%E8%A3%85">#</a> 虚拟机安装</h2><p>这里推荐在 Windows 下使用 VMware 虚拟机软件安装 Ubuntu20.04 进行开发（AOSP 官网推荐的的是 Ubuntu18.04，但 Ubuntu20.04 在 VMware下兼容性更好，实测也没有任何兼容性问题），安装系统的过程如下：</p>
+<h3 id="1-在官网-opens-new-window-下载好-Ubuntu20-04-桌面版系统镜像"><a href="#1-在官网-opens-new-window-下载好-Ubuntu20-04-桌面版系统镜像" class="headerlink" title="# 1. 在官网 (opens new window)下载好 Ubuntu20.04 桌面版系统镜像"></a><a target="_blank" rel="noopener" href="https://yuandaimaahao.github.io/AndroidFrameworkTutorialPages/002.%E7%8E%A9%E8%BD%ACAOSP%E7%AF%87/002.%20%E7%B3%BB%E7%BB%9F%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7%E6%8E%A8%E8%8D%90.html#_1-%E5%9C%A8%E5%AE%98%E7%BD%91%E4%B8%8B%E8%BD%BD%E5%A5%BD-ubuntu20-04-%E6%A1%8C%E9%9D%A2%E7%89%88%E7%B3%BB%E7%BB%9F%E9%95%9C%E5%83%8F">#</a> 1. 在<a target="_blank" rel="noopener" href="https://releases.ubuntu.com/focal/">官网 (opens new window)</a>下载好 Ubuntu20.04 桌面版系统镜像</h3><p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/MyImages@main/img/2023-09-25-16-53-d7a919c9affe652b2f5834cc3c9a289d-20230703154038-4fd96f.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="2-VMware-新建虚拟机"><a href="#2-VMware-新建虚拟机" class="headerlink" title="# 2. VMware 新建虚拟机"></a><a target="_blank" rel="noopener" href="https://yuandaimaahao.github.io/AndroidFrameworkTutorialPages/002.%E7%8E%A9%E8%BD%ACAOSP%E7%AF%87/002.%20%E7%B3%BB%E7%BB%9F%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7%E6%8E%A8%E8%8D%90.html#_2-vmware-%E6%96%B0%E5%BB%BA%E8%99%9A%E6%8B%9F%E6%9C%BA">#</a> 2. VMware 新建虚拟机</h3><p>打开 VMware，菜单栏选择 <code>文件 -&gt; 新建虚拟机</code> 后，出现以下界面：</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/MyImages@main/img/2023-09-25-16-53-7c62618ee6d5e4c99374929dc1a2c085-20230703154049-9a8fea.png" srcset="/img/loading.gif" lazyload></p>
+<p>选择 <code>自定义高级</code>，然后点击 <code>下一步</code>，出现以下界面：</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/MyImages@main/img/2023-09-25-16-53-d981022bdadca84e1322da2dd5566332-20230703154101-0ba2da.png" srcset="/img/loading.gif" lazyload></p>
+<p>这里不用改，点击 <code>下一步</code>，出现以下界面：</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/MyImages@main/img/2023-09-25-16-53-eeb33b8b94648c2f8243721802419028-20230703154114-671d2f.png" srcset="/img/loading.gif" lazyload></p>
+<p>选择 <code>稍候安装操作系统</code>，点击 <code>下一步</code>，出现以下界面：</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/MyImages@main/img/2023-09-25-16-53-22cdaa3311ca9c2acee76ddd0890d604-20230703154124-30cb93.png" srcset="/img/loading.gif" lazyload></p>
+<p>操作系统选择 <code>Linux</code>，版本选择 <code>Ubuntu 64位</code>，然后点击 <code>下一步</code>，出现以下界面：</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/MyImages@main/img/2023-09-25-16-53-cdfa1a62fd729e497aa7afe3545a6c85-20230703154140-b562be.png" srcset="/img/loading.gif" lazyload></p>
+<p><code>虚拟机名称</code>处取一个你喜欢的名字，<code>位置</code>选择剩余空间超过 500G 的路径，然后点击 <code>下一步</code>，出现以下界面：</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/MyImages@main/img/2023-09-25-16-53-4f2320ca8a6943893fdcecd73dca4a82-20230703154205-4f6551.png" srcset="/img/loading.gif" lazyload></p>
+<p><code>处理器数量</code>选择 1，<code>每个处理器的内核数量</code>选择你 CPU 的线程数，比如我的 CPU 是 amd ryzen 3800x，8核心16线程，那么选择 16,然后点击 <code>下一步</code>，出现以下界面：</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/MyImages@main/img/2023-09-25-16-53-50a7c41a2331fcd8112f482cb7993e0d-20230703154218-5f2cd2.png" srcset="/img/loading.gif" lazyload></p>
+<p>虚拟机内存的设置建议尽可能的大一些，内存小了，全编译系统会出错，这里选择 32G：</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/MyImages@main/img/2023-09-25-16-53-7a3bea76fd27dbf99af7767972a4ecef-20230703154224-e1a841.png" srcset="/img/loading.gif" lazyload></p>
+<p>网络类型选择 <code>使用桥接网络</code>，然后点击 <code>下一步</code>，出现以下界面：</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/MyImages@main/img/2023-09-25-16-53-472687dd87e9a338e9bbcf319f9ffcdd-20230703154235-85ee39.png" srcset="/img/loading.gif" lazyload></p>
+<p>这里不改动，直接点击下一步，出现以下界面：</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/MyImages@main/img/2023-09-25-16-53-9ddb7b30569626e215e6efa1318bf81d-20230703154242-664f05.png" srcset="/img/loading.gif" lazyload></p>
+<p>这里不改动，直接点击 <code>下一步</code>，出现以下界面：</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/MyImages@main/img/2023-09-25-16-53-8e56ec4f893528093a42933ad2e230fd-20230703154249-b94464.png" srcset="/img/loading.gif" lazyload></p>
+<p>这里不改动，直接点击 <code>下一步</code>，出现以下界面：</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/MyImages@main/img/2023-09-25-16-53-1a7e34617bdb7c26fe2198530b278dfb-20230703154258-f1c8f3.png" srcset="/img/loading.gif" lazyload></p>
+<p>根据你磁盘的空间，<code>最大磁盘大小</code>尽可能设置大一点，我这里设置为 1024 G，然后点击 <code>下一步</code>，出现以下界面：</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/MyImages@main/img/2023-09-25-16-53-6f70b76430b4fb78535d1266f552ccac-20230703154307-0dc4ab.png" srcset="/img/loading.gif" lazyload></p>
+<p>这里不改动，直接点击 <code>下一步</code>，出现以下界面：</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/MyImages@main/img/2023-09-25-16-53-7de6fee8798fd5bf0290d9c70fea21c8-20230703154314-519921.png" srcset="/img/loading.gif" lazyload></p>
+<p>选择 <code>自定义硬件</code>，出现以下界面：</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/MyImages@main/img/2023-09-25-16-53-ef9d4844ba0d7c7bc30e13904e23ece3-20230703154324-fbc28c.png" srcset="/img/loading.gif" lazyload></p>
+<p>选择 <code>新 CD/DVD(SATA)</code>，出现以下界面：</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/MyImages@main/img/2023-09-25-16-53-6979468c83bd463acf67ae1c6a730385-20230703154333-ff9f60.png" srcset="/img/loading.gif" lazyload></p>
+<p>右侧选择 <code>使用 ISO 映像文件</code>，点击浏览，选择我们刚才下载好的系统镜像，然后点击 <code>关闭</code>，出现以下界面：</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/MyImages@main/img/2023-09-25-16-53-7de6fee8798fd5bf0290d9c70fea21c8-20230703154350-9bed05.png" srcset="/img/loading.gif" lazyload></p>
+<p>然后点击完成，至此，虚拟机新建完毕。</p>
+<h3 id="3-系统安装"><a href="#3-系统安装" class="headerlink" title="# 3. 系统安装"></a><a target="_blank" rel="noopener" href="https://yuandaimaahao.github.io/AndroidFrameworkTutorialPages/002.%E7%8E%A9%E8%BD%ACAOSP%E7%AF%87/002.%20%E7%B3%BB%E7%BB%9F%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7%E6%8E%A8%E8%8D%90.html#_3-%E7%B3%BB%E7%BB%9F%E5%AE%89%E8%A3%85">#</a> 3. 系统安装</h3><p>打开 VMware 虚拟机软件：</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/MyImages@main/img/2023-09-25-16-53-24efe596c012bf54e4a9b297af19a6cc-20230703154402-c8ff4d.png" srcset="/img/loading.gif" lazyload></p>
+<p>点击左侧 <code>Ubuntu 64位</code> 即我们刚才新建的虚拟机，点击右侧 <code>开启此虚拟机</code>，然后就进入了 Ubuntu 的系统安装流程：</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/MyImages@main/img/2023-09-25-16-53-bb212a4fb6822d14f42073cfcf6bc4a4-20230703154413-74f24f.png" srcset="/img/loading.gif" lazyload></p>
+<p>左侧选择 <code>English</code>，右侧点击 <code>install Ubuntu</code>：</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/MyImages@main/img/2023-09-25-16-53-112ea1f437121522c819ab97e012891f-20230703154423-e34a43.png" srcset="/img/loading.gif" lazyload></p>
+<p>点击 <code>continue</code>：</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/MyImages@main/img/2023-09-25-16-53-1188a577906e7d7a21a7818e41bfb0df-20230703154433-be054e.png" srcset="/img/loading.gif" lazyload></p>
+<p>点击 <code>continue</code>：</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/MyImages@main/img/2023-09-25-16-53-37e16fb3f6134f6d70d988baccc18bd1-20230703154445-d8d01a.png" srcset="/img/loading.gif" lazyload></p>
+<p>点击 <code>install now</code>：</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/MyImages@main/img/2023-09-25-16-53-cb8c102f42f6a8121635f1263db0d3d2-20230703154453-83864d.png" srcset="/img/loading.gif" lazyload></p>
+<p>点击 <code>continue</code>：</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/MyImages@main/img/2023-09-25-16-53-edb76cd37ba3806c07766bbad255d0a5-20230703154501-bd79be.png" srcset="/img/loading.gif" lazyload></p>
+<p>点击以后会显示一张地图，这里就不贴图了（有地图审核不过），就是一张地图，点击一下中国即可。</p>
+<p>然后点一下中国地图，下面显示 <code>Shanghai</code>，点击 <code>continue</code>：</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/MyImages@main/img/2023-09-25-16-53-4393c75caa6c58b21bb156155d0681ca-20230703154510-15f08b.png" srcset="/img/loading.gif" lazyload></p>
+<p>依次输入：</p>
+<ul>
+<li>名字</li>
+<li>电脑名字</li>
+<li>用户名</li>
+<li>密码</li>
+</ul>
+<p>然后点击 <code>continue</code>，然后等待安装完成，重启虚拟机即可。</p>
+<p>系统安装完成后，关闭虚拟机，点击 <code>编辑虚拟机设置</code>：</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/MyImages@main/img/2023-09-25-16-53-563d985d612ba4fba5920f4fd1d293f6-20230703154519-47db27.png" srcset="/img/loading.gif" lazyload></p>
+<p>选择<code>处理器</code>，并勾选上虚拟化引擎两个选项（如果是 Intel 处理器，勾选第一个即可）：</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/MyImages@main/img/2023-09-25-16-53-89a20278478fa00d085e95282e947ec1-20230703154533-e51512.png" srcset="/img/loading.gif" lazyload></p>
+<h2 id="开发环境搭建"><a href="#开发环境搭建" class="headerlink" title="# 开发环境搭建"></a><a target="_blank" rel="noopener" href="https://yuandaimaahao.github.io/AndroidFrameworkTutorialPages/002.%E7%8E%A9%E8%BD%ACAOSP%E7%AF%87/002.%20%E7%B3%BB%E7%BB%9F%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7%E6%8E%A8%E8%8D%90.html#%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA">#</a> 开发环境搭建</h2><p>安装好系统后需要安装必要的软件：</p>
+<figure class="highlight q"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs q">sudo apt-<span class="hljs-built_in">get</span> install git-core gnupg flex bison build-essential zip curl zlib1g-<span class="hljs-built_in">dev</span> gcc-multilib g++-multilib libc6-<span class="hljs-built_in">dev</span>-i386 libncurses5 lib32ncurses5-<span class="hljs-built_in">dev</span> x11proto-core-<span class="hljs-built_in">dev</span> libx11-<span class="hljs-built_in">dev</span> lib32z1-<span class="hljs-built_in">dev</span> libgl1-mesa-<span class="hljs-built_in">dev</span> libxml2-utils xsltproc unzip fontconfig python<br></code></pre></td></tr></table></figure>
+
+
+<p>至此，开发环境就搭建好了。</p>
+<h2 id="下载编译源码"><a href="#下载编译源码" class="headerlink" title="# 下载编译源码"></a><a target="_blank" rel="noopener" href="https://yuandaimaahao.github.io/AndroidFrameworkTutorialPages/002.%E7%8E%A9%E8%BD%ACAOSP%E7%AF%87/002.%20%E7%B3%BB%E7%BB%9F%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7%E6%8E%A8%E8%8D%90.html#%E4%B8%8B%E8%BD%BD%E7%BC%96%E8%AF%91%E6%BA%90%E7%A0%81">#</a> 下载编译源码</h2><h3 id="1-下载-repo-工具"><a href="#1-下载-repo-工具" class="headerlink" title="# 1. 下载 repo 工具"></a><a target="_blank" rel="noopener" href="https://yuandaimaahao.github.io/AndroidFrameworkTutorialPages/002.%E7%8E%A9%E8%BD%ACAOSP%E7%AF%87/002.%20%E7%B3%BB%E7%BB%9F%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7%E6%8E%A8%E8%8D%90.html#_1-%E4%B8%8B%E8%BD%BD-repo-%E5%B7%A5%E5%85%B7">#</a> 1. 下载 repo 工具</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">mkdir</span> ~/bin<br>curl https://mirrors.tuna.tsinghua.edu.cn/git/git-repo -o ~/bin/repo<br><span class="hljs-built_in">chmod</span> +x ~/bin/repo<br></code></pre></td></tr></table></figure>
+
+
+
+<p>repo 的运行过程中会尝试访问官方的 git 源更新自己，如果想使用 tuna 的镜像源进行更新，可以将如下内容复制到你的 ~&#x2F;.bashrc 或者 ~&#x2F;.zshrc 里。</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs routeros"><span class="hljs-built_in">export</span> <span class="hljs-attribute">REPO_URL</span>=<span class="hljs-string">&#x27;https://mirrors.tuna.tsinghua.edu.cn/git/git-repo&#x27;</span><br><span class="hljs-attribute">PATH</span>=~/bin:$PATH<br></code></pre></td></tr></table></figure>
+
+
+<p>然后 source 一下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">source</span> ~/.bashrc<br><span class="hljs-comment">#如果使用的是 zsh</span><br><span class="hljs-comment">#source ~/.zshrc</span><br></code></pre></td></tr></table></figure>
+
+
+<h3 id="2-初始化仓库并同步远程代码"><a href="#2-初始化仓库并同步远程代码" class="headerlink" title="# 2. 初始化仓库并同步远程代码"></a><a target="_blank" rel="noopener" href="https://yuandaimaahao.github.io/AndroidFrameworkTutorialPages/002.%E7%8E%A9%E8%BD%ACAOSP%E7%AF%87/002.%20%E7%B3%BB%E7%BB%9F%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7%E6%8E%A8%E8%8D%90.html#_2-%E5%88%9D%E5%A7%8B%E5%8C%96%E4%BB%93%E5%BA%93%E5%B9%B6%E5%90%8C%E6%AD%A5%E8%BF%9C%E7%A8%8B%E4%BB%A3%E7%A0%81">#</a> 2. 初始化仓库并同步远程代码</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs bash">git config --global user.email <span class="hljs-string">&quot;you@example.com&quot;</span><br>git config --global user.name <span class="hljs-string">&quot;Your Name&quot;</span><br><span class="hljs-built_in">mkdir</span> aosp <br><span class="hljs-built_in">cd</span> aosp<br><span class="hljs-comment">#初始化仓库,-b 指示分支，这里使用 android10</span><br>repo init -u https://mirrors.tuna.tsinghua.edu.cn/git/AOSP/platform/manifest -b android-10.0.0_r41<br><span class="hljs-comment">#同步远程代码</span><br>repo <span class="hljs-built_in">sync</span><br></code></pre></td></tr></table></figure>
+
+<p>-b 后面的值参考<a target="_blank" rel="noopener" href="https://source.android.com/docs/setup/start/build-numbers?hl=zh-cn#source-code-tags-and-builds">源代码标记和 build (opens new window)</a>。这里选用了 android-10.0.0_r41 版本用于学习。Android 每年都会更新一个大版本，学习的角度来说，选择一个不太老的版本即可，不必追新。</p>
+<h3 id="3-编译源码"><a href="#3-编译源码" class="headerlink" title="# 3. 编译源码"></a><a target="_blank" rel="noopener" href="https://yuandaimaahao.github.io/AndroidFrameworkTutorialPages/002.%E7%8E%A9%E8%BD%ACAOSP%E7%AF%87/002.%20%E7%B3%BB%E7%BB%9F%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7%E6%8E%A8%E8%8D%90.html#_3-%E7%BC%96%E8%AF%91%E6%BA%90%E7%A0%81">#</a> 3. 编译源码</h3><figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs vim"><span class="hljs-keyword">source</span> build/envsetup.<span class="hljs-keyword">sh</span><br>lunch aosp_x86_64-eng<br><span class="hljs-keyword">make</span> -j16<br></code></pre></td></tr></table></figure>
+
+
+<h3 id="4-运行模拟器"><a href="#4-运行模拟器" class="headerlink" title="# 4. 运行模拟器"></a><a target="_blank" rel="noopener" href="https://yuandaimaahao.github.io/AndroidFrameworkTutorialPages/002.%E7%8E%A9%E8%BD%ACAOSP%E7%AF%87/002.%20%E7%B3%BB%E7%BB%9F%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7%E6%8E%A8%E8%8D%90.html#_4-%E8%BF%90%E8%A1%8C%E6%A8%A1%E6%8B%9F%E5%99%A8">#</a> 4. 运行模拟器</h3><figure class="highlight maxima"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs maxima">emulator -<span class="hljs-built_in">verbose</span> -cores <span class="hljs-number">4</span> -<span class="hljs-built_in">show</span>-kernel<br></code></pre></td></tr></table></figure>
+
+<p>1  </p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/MyImages@main/img/2023-09-25-16-53-e100b66e5e354cefd514b91cd7cc37df-20230703154600-bbacd9.png" srcset="/img/loading.gif" lazyload></p>
+<h2 id="从一个简单的实际开发需求体验-Framework-开发"><a href="#从一个简单的实际开发需求体验-Framework-开发" class="headerlink" title="# 从一个简单的实际开发需求体验 Framework 开发"></a><a target="_blank" rel="noopener" href="https://yuandaimaahao.github.io/AndroidFrameworkTutorialPages/002.%E7%8E%A9%E8%BD%ACAOSP%E7%AF%87/002.%20%E7%B3%BB%E7%BB%9F%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7%E6%8E%A8%E8%8D%90.html#%E4%BB%8E%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84%E5%AE%9E%E9%99%85%E5%BC%80%E5%8F%91%E9%9C%80%E6%B1%82%E4%BD%93%E9%AA%8C-framework-%E5%BC%80%E5%8F%91">#</a> 从一个简单的实际开发需求体验 Framework 开发</h2><p>需求：去掉原生 Launcher 中的 google 搜索栏。</p>
+<p>很多产品，比如用于仓库，电商，物流的 pda 等，更多的是考虑功能性和稳定性，UI 的美观和易用性是其次的。这些产品一般是不会重新开发和定制 Launcher 的，但是会对 Launcher 做一些修改，比如一个常见的需求是：<strong>去掉原生 Launcher 中的 google 搜索栏</strong>。</p>
+<p>由于众所周知的原因 google 搜索栏在中国是没有办法使用的。在中国销售的产品，肯定是要把它去掉的。</p>
+<p>第一步：修改文件 <code>packages/apps/Launcher3/res/layout/search_container_workspace.xml</code>，将以下内容注释掉：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-comment">&lt;!-- &lt;fragment</span><br><span class="hljs-comment">    android:name=&quot;com.android.launcher3.qsb.QsbContainerView$QsbFragment&quot;</span><br><span class="hljs-comment">    android:layout_width=&quot;match_parent&quot;</span><br><span class="hljs-comment">    android:tag=&quot;qsb_view&quot;</span><br><span class="hljs-comment">    android:layout_height=&quot;match_parent&quot;/&gt; --&gt;</span><br></code></pre></td></tr></table></figure>
+
+
+
+<p>第二步：修改文件：<code>packages/apps/Launcher3/src/com/android/launcher3/Workspace.java</code> 将以下内容注释掉</p>
+<figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs 1c"><span class="hljs-comment">// CellLayout.LayoutParams lp = new CellLayout.LayoutParams(0, 0, firstPage.getCountX(), 1);</span><br><span class="hljs-comment">// lp.canReorder = false;</span><br><span class="hljs-comment">// if (!firstPage.addViewToCellLayout(qsb, 0, R.id.search_container_workspace, lp, true)) &#123;</span><br><span class="hljs-comment">//     Log.e(TAG, &quot;Failed to add to item at (0, 0) to CellLayout&quot;);</span><br><span class="hljs-comment">// &#125;</span><br></code></pre></td></tr></table></figure>
+
+
+<p>第三步：重新编译源码，启动模拟器</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/MyImages@main/img/2023-09-25-16-53-b67f6118ef9035377ae6bd88585eb7b8-20230703154609-b8695c.png" srcset="/img/loading.gif" lazyload></p>
+<p>可以看到 Google 搜索框没有了。</p>
+<p>很多同学可能有疑问，你怎么知道这么改就可以了？其实办法就一个——<strong>读源码</strong>。Launcher 也是一个 Android 应用，和我们平时开发的 App 没有本质的区别。就像我们接手别人开发的项目，去解决项目中的 bug，添加新的需求是一样的。</p>
+<p>Android Framework 不同的是，代码量大，涉及知识广泛，App 开发同学如果没有人指导，阅读起来比较吃力。后续内容我们带着大家由浅入深，步步分解，为 App 开发的同学解开 Android Framework 的神秘面纱。</p>
+<h2 id="配置好的虚拟机"><a href="#配置好的虚拟机" class="headerlink" title="# 配置好的虚拟机"></a><a target="_blank" rel="noopener" href="https://yuandaimaahao.github.io/AndroidFrameworkTutorialPages/002.%E7%8E%A9%E8%BD%ACAOSP%E7%AF%87/002.%20%E7%B3%BB%E7%BB%9F%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7%E6%8E%A8%E8%8D%90.html#%E9%85%8D%E7%BD%AE%E5%A5%BD%E7%9A%84%E8%99%9A%E6%8B%9F%E6%9C%BA">#</a> 配置好的虚拟机</h2><p>如果你不想配置系统，可以使用我配置好的 vmware 17 虚拟机：</p>
+<p>链接：<a target="_blank" rel="noopener" href="https://pan.baidu.com/s/1/_XHOpEr7egN1cQs1uSZ2ug">https://pan.baidu.com/s/1\_XHOpEr7egN1cQs1uSZ2ug</a> 提取码：1234</p>
+<p>下载下来，使用7zip解压，vmware17打开，根据自己电脑情况调整虚拟机的内存和cpu核心数</p>
+<p>账号: android 密码: android 源码路径：~&#x2F;aosp&#x2F;android10_r41 进入源码路径：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">source</span> build/envsetup.sh<br>lunch aosp_x86_64-eng<br>m<br>emulator<br></code></pre></td></tr></table></figure>
+
+
+<p>就可以看到启动的模拟器了</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="# 总结"></a><a target="_blank" rel="noopener" href="https://yuandaimaahao.github.io/AndroidFrameworkTutorialPages/002.%E7%8E%A9%E8%BD%ACAOSP%E7%AF%87/002.%20%E7%B3%BB%E7%BB%9F%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7%E6%8E%A8%E8%8D%90.html#%E6%80%BB%E7%BB%93">#</a> 总结</h2><p>本文主要介绍了以下几个方面的内容：</p>
+<ul>
+<li>虚拟机安装</li>
+<li>开发环境搭建</li>
+<li>下载编译源码</li>
+<li>从一个简单的实际开发需求体验 Framework 开发</li>
+</ul>
+<p>基本是偏向实际操作的内容，感兴趣的同学可以按照上面介绍的步骤体验一番。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/AOSP/" class="category-chain-item">AOSP</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>AOSP 极速上手</div>
+      <div>http://peiniwan.github.io/2025/12/ebaf8d424a2e.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>六月的雨</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年12月16日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"OwNIdaopOn1rwNhtotGOGC0B-gzGzoHsz","appKey":"eadytQ2XqWmxuvAKeg08XX83","path":"window.location.pathname","placeholder":null,"avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":true,"recordIP":false,"serverURLs":"https://ownidaop.lc-cn-n1-shared.com","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

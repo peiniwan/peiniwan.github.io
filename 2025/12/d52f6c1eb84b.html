@@ -1,0 +1,844 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="六月的雨">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="事件分发 当点击事件发生时，事件最先传递给 Activity，Activity 会首先将事件将被所属的 Window（PhoneWinodw)进行处理，即调用 superDispatchTouchEvent () 方法。通过观察 superDispatchTouchEvent ()方法的调用链，我们可以发现事件的传递顺序：  PhoneWinodw.SuperDispatchTouchEvent">
+<meta property="og:type" content="article">
+<meta property="og:title" content="5-事件分发机制">
+<meta property="og:url" content="http://peiniwan.github.io/2025/12/d52f6c1eb84b.html">
+<meta property="og:site_name" content="六月的雨的笔记">
+<meta property="og:description" content="事件分发 当点击事件发生时，事件最先传递给 Activity，Activity 会首先将事件将被所属的 Window（PhoneWinodw)进行处理，即调用 superDispatchTouchEvent () 方法。通过观察 superDispatchTouchEvent ()方法的调用链，我们可以发现事件的传递顺序：  PhoneWinodw.SuperDispatchTouchEvent">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%A7%A6%E6%91%B8%E5%8F%8D%E9%A6%88%E3%80%81input.resources/2023/09/15/18-49-14-772a5c539ce4aa5f0e21c37de88b20a8-unknown_filename.4-cde615.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%A7%A6%E6%91%B8%E5%8F%8D%E9%A6%88%E3%80%81input.resources/2023/09/15/18-49-14-3f1e3f67b10e49ce1cfb506b8ce0c874-unknown_filename.5-1a3852.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%A7%A6%E6%91%B8%E5%8F%8D%E9%A6%88%E3%80%81input.resources/2023/09/15/18-49-14-85736f53cca2c4b9b4958f6fd2b4b4dc-unknown_filename.1-27d911.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%A7%A6%E6%91%B8%E5%8F%8D%E9%A6%88%E3%80%81input.resources/2023/09/15/18-49-14-31da755be9ce2a1a186e834a01189ac6-unknown_filename.2-e828cf.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%A7%A6%E6%91%B8%E5%8F%8D%E9%A6%88%E3%80%81input.resources/2023/09/15/18-49-14-ee874c7ca1c7886f6af40e4d35b1579e-unknown_filename.3-5b00cd.png">
+<meta property="article:published_time" content="2025-12-16T13:59:22.716Z">
+<meta property="article:modified_time" content="2024-03-22T03:31:00.000Z">
+<meta property="article:author" content="六月的雨">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%A7%A6%E6%91%B8%E5%8F%8D%E9%A6%88%E3%80%81input.resources/2023/09/15/18-49-14-772a5c539ce4aa5f0e21c37de88b20a8-unknown_filename.4-cde615.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>5-事件分发机制 - 六月的雨的笔记</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"peiniwan.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>六月的雨的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="5-事件分发机制"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-12-16 21:59" pubdate>
+          2025年12月16日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.7k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          31 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">5-事件分发机制</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="事件分发"><a href="#事件分发" class="headerlink" title="事件分发"></a>事件分发</h2><p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%A7%A6%E6%91%B8%E5%8F%8D%E9%A6%88%E3%80%81input.resources/2023/09/15/18-49-14-772a5c539ce4aa5f0e21c37de88b20a8-unknown_filename.4-cde615.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.4"></p>
+<p>当点击事件发生时，事件最先传递给 Activity，Activity 会首先将事件将被所属的 Window（PhoneWinodw)进行处理，即调用 superDispatchTouchEvent () 方法。通过观察 superDispatchTouchEvent ()方法的调用链，我们可以发现事件的传递顺序：</p>
+<ol>
+<li>PhoneWinodw.SuperDispatchTouchEvent ()</li>
+<li>DecorView（FrameLayout）. DispatchTouchEvent (event)</li>
+<li>ViewGroup.DispatchTouchEvent (event)</li>
+</ol>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%A7%A6%E6%91%B8%E5%8F%8D%E9%A6%88%E3%80%81input.resources/2023/09/15/18-49-14-3f1e3f67b10e49ce1cfb506b8ce0c874-unknown_filename.5-1a3852.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.5"></p>
+<ul>
+<li>事件一层层传递到了 ViewGroup 里。</li>
+<li>每到一个子 view，看他的 onInterceptTouchEvent 方法是否拦截，ontouch 是否消费方法，如果没有继续向下 dispatchTouchEvent 分发事件，都不处理向上传（事件流向），都不处理就会回溯到 activity，若顶层（activity）也不对此事件进行处理，此事件相当于消失了（无效果）。</li>
+<li>return true 代表终止事件传递，return false 则是回溯到父 View 的 onTouchEvent 方法。</li>
+<li>View<strong>没有 onInterceptTouchEvent ()方法</strong>，有 dispatchTouchEvent，一但有点击事件传递给它，它的 ouTouchEvent ()方法就会被调用。</li>
+<li>ouTouchEvent 是否消费事件取决于 ACTION_DOWN 事件或 POINT_DOWN 事件是否返回为 <code>true</code></li>
+<li>只有前一个事件（如 ACTION_DOWN）返回 true，才会收到 ACTION_MOVE 和 ACTION_UP 的事件。</li>
+</ul>
+<h2 id="事件冲突"><a href="#事件冲突" class="headerlink" title="事件冲突"></a>事件冲突</h2><p><strong>不同向嵌套</strong></p>
+<ol>
+<li>外部处理，重写父 view 的 onInterceptTouchEvent ，MotionEvent 的事件全部返回 false，不拦截；</li>
+<li>内部处理。重写子 view 的 dispatchTouchEvent，通过 requestDisallowInterceptTouchEvent 方法（这个方法可以在子元素中干预父元素的事件分发过程），请求父控件不拦截自己的事件，true 是不拦截，false 是拦截。</li>
+</ol>
+<figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs aspectj"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 事件分发, 请求父控件及祖宗控件是否拦截事件</span><br><span class="hljs-comment"> */</span><br><span class="hljs-meta">@Override</span><br><span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">boolean</span> <span class="hljs-title">dispatchTouchEvent</span><span class="hljs-params">(MotionEvent ev)</span> </span>&#123;<br>	<span class="hljs-keyword">if</span> (getCurrentItem() != <span class="hljs-number">0</span>) &#123;<br>		getParent().requestDisallowInterceptTouchEvent(<span class="hljs-keyword">true</span>);<span class="hljs-comment">// 用getParent去请求,</span><br>																<span class="hljs-comment">// 不拦截</span><br>	&#125; <span class="hljs-keyword">else</span> &#123;<span class="hljs-comment">// 如果是第一个页面,需要显示侧边栏, 请求父控件拦截</span><br>		getParent().requestDisallowInterceptTouchEvent(<span class="hljs-keyword">false</span>);<span class="hljs-comment">// 拦截</span><br>	&#125;<br>	<span class="hljs-function"><span class="hljs-keyword">return</span> <span class="hljs-keyword">super</span>.<span class="hljs-title">dispatchTouchEvent</span><span class="hljs-params">(ev)</span></span>;<br>&#125;<br>    <br></code></pre></td></tr></table></figure>
+<p><strong>同向嵌套</strong><br>父 View 会彻底卡住子 View<br>原因：抢夺条件一致，但父 View 的 onInterceptTouchEvent () 早于子 View 的 dispatchTouchEvent ()<br>本质上是策略问题：嵌套状态下用户手指滑动，他是想滑谁？<br>解决⽅方案：<br>实现策略—父 View、子 View 谁来消费事件可以实时协商</p>
+<ol>
+<li>换成 NestedScrollView：可以滑动</li>
+<li>实现 NestedScrollingChild 3 接口来实现自定义的嵌套滑动逻辑</li>
+</ol>
+<p>[[NestedScrollingParent]]</p>
+<h2 id="自定义-ViewGroup-的触摸反馈"><a href="#自定义-ViewGroup-的触摸反馈" class="headerlink" title="自定义 ViewGroup 的触摸反馈"></a>自定义 ViewGroup 的触摸反馈</h2><ul>
+<li>除了重写 onTouchEvent () ，还需要重写 onInterceptTouchEvent ()</li>
+<li>onInterceptTouchEvent () 不用在第一时间返回 true，而是在任意事件，需要拦截的时候返回 true 就行<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs typescript"><br><span class="hljs-comment">//伪代码</span><br>view.<span class="hljs-title function_">dispatchTouchEvent</span>();<br>    <br><span class="hljs-keyword">public</span> <span class="hljs-built_in">boolean</span> <span class="hljs-title function_">dispatchTouchEvent</span>(<span class="hljs-params">MotionEvent event</span>) &#123;<br>    <span class="hljs-keyword">return</span> <span class="hljs-title function_">ontouchEvent</span>();<br>&#125;<br>    <br><span class="hljs-title class_">ViewGroup</span>.<span class="hljs-title function_">dispatchTouchEvent</span>();<br>    <br><span class="hljs-keyword">public</span> <span class="hljs-built_in">boolean</span> <span class="hljs-title function_">dispatchTouchEvent</span>(<span class="hljs-params">MotionEvent event</span>) &#123;<br>    <span class="hljs-built_in">boolean</span> result;<br>    <span class="hljs-keyword">if</span> (<span class="hljs-title function_">interceptTouchEvent</span>()) &#123;<br>        result = <span class="hljs-title function_">ontouchEvent</span>();<br>    &#125; <span class="hljs-keyword">else</span> &#123;<br>        result = 子 view的 dispatchTouchEvent ();<br>    &#125;<br>    <span class="hljs-keyword">return</span> result;<br>&#125;<br></code></pre></td></tr></table></figure></li>
+</ul>
+<p>Dialog 是 Focusable 的。如果不是 Focusable 的，那么 Dialog 弹出后 Activity 还是可以响应用户事件的</p>
+<blockquote>
+<p>ViewGroup 类中，实际是没有 onTouchEvent 方法的，但是由于 ViewGroup 继承自 View，而 View 拥有 onTouchEvent 方法，故 ViewGroup 的对象也是可以调用 onTouchEvent 方法的。故在表格中表明 ViewGroup 中存在 onTouchEvent 方法的。</p>
+</blockquote>
+<p>递归<br>ViewGroup (View). DispatchTouchEvent ()</p>
+<ul>
+<li>ViewGroup.OnInterceptTouchEvent ()</li>
+<li>child.DispatchTouchEvent ()<ul>
+<li>View.OnTouchEvent ()</li>
+</ul>
+</li>
+</ul>
+<p><strong>Activity 的分发方法中调用了 onUserInteraction法，你能说说这个方法有什么作用吗?</strong></p>
+<p>这个方法在 Activity 接收到 down 的时候会被调用，本身是个空方法，需要开发者自己去重写。<br>这个方法会在我们以任意的方式开始与 Activity 进行交互的时候被调用。<br>比较常见的场景就是屏保: 当我们段时间没有操作会显示一张图片，当我们开始与 Activity 交互的时候可在这个方法中取消屏保: 另外还有没有操作自动隐藏工具栏，可以在这个方法中让工具栏重新显示。</p>
+<h4 id="一个场景"><a href="#一个场景" class="headerlink" title="一个场景"></a>一个场景</h4><blockquote>
+<p>有一个 ViewGroup, 然后手指头接触 Button , 手指头滑开了, 滑开又松手的过程, 整个事件发生了什么? 经历了什么?</p>
+</blockquote>
+<p>一开始 ViewGroup 会接受到整个事件序列的第一个事件： ACTION_DOWN，ViewGroup <em>dispatchTouchEvent</em> 收到 ACTION_DOWN 后,<br>  开始询问 ViewGroup <em>onInterceptTouchEvent</em> 是否需要拦截，<br>  默认情况下 ViewGroup <em>onInterceptTouchEvent</em> 返回 false 不拦截，开始向下传递 ACTION_DOWN 事件，<br>  Buttton <em>dispatchTouchEvent</em> 收到 ACTION_DOWN 询问 onTouchEvent 是否处理，<br>  Button 默认处理，此后的所有事件序列都直接跨过 ViewGroup <em>onInterceptTouchEvent</em> 的判断直接传递给 Button，<br>  但 ViewGroup <em>dispatchTouchEvent</em> 会收到所有事件。随着手指的滑动 Button 的坐标发生了改变，当手指抬起时触发 <code>Button onClick</code> 事件。（<strong>移动出自己的范围，就消失了</strong>）</p>
+<p>点击 button，recycleview 中滑动，滑动会收到 cancel 事件</p>
+<h2 id="自定义单-View-的触摸反馈"><a href="#自定义单-View-的触摸反馈" class="headerlink" title="自定义单 View 的触摸反馈"></a>自定义单 View 的触摸反馈</h2><h3 id="View-OnTouchEvent"><a href="#View-OnTouchEvent" class="headerlink" title="View.OnTouchEvent ()"></a>View.OnTouchEvent ()</h3><ul>
+<li><p>如果不在滑动控件中，切换至按下状态，并注册长按计时器</p>
+</li>
+<li><p>重绘 Ripple Effect</p>
+</li>
+<li><p>如果<em>移动出自己的范围，自我标记本次事件失效，忽略后续事</em>件</p>
+</li>
+<li><p>如果是按下状态并且未触发长按，切换至抬起状态并触发点击事件，并清除⼀切状态</p>
+</li>
+<li><p>如果已经触发长按，切换至抬起状态并清除一切状态</p>
+</li>
+<li><p>切换至抬起状态，并清除一切状态</p>
+</li>
+</ul>
+<p>判断是否需要拦截 —&gt; 主要是根据 onInterceptTouchEvent 方法的返回值来决定是否拦截；<br>在 DOWN 事件中将 touch 事件分发给子 View —&gt; 这一过程如果有子 View 捕获消费了 touch 事件，会对 mFirstTouchTarget 进行赋值；<br>最后一步，DOWN、MOVE、UP 事件都会根据 mFirstTouchTarget 是否为 null，决定是自己处理 touch 事件，还是再次分发给子 View。</p>
+<p>然后介绍了整个事件分发中的几个特殊的点。<br>DOWN 事件的特殊之处：事件的起点；决定后续事件由谁来消费处理；<br>MFirstTouchTarget 的作用：<em>记录捕获消费 touch 事件的 View，是一个链表结构</em></p>
+<h3 id="View-DispatchTouchEvent"><a href="#View-DispatchTouchEvent" class="headerlink" title="View.DispatchTouchEvent ()"></a>View.DispatchTouchEvent ()</h3><p>View 中 setOnTouchListener 的 onTouch，onTouchEvent，onClick 的执行顺序</p>
+<p>View 的 <em>dispatchTouchEvent</em> 源码</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs csharp"><span class="hljs-function"><span class="hljs-keyword">public</span> boolean <span class="hljs-title">dispatchTouchEvent</span>(<span class="hljs-params">MotionEvent <span class="hljs-keyword">event</span></span>)</span> &#123;  <br>        <span class="hljs-keyword">if</span> (!onFilterTouchEventForSecurity(<span class="hljs-keyword">event</span>)) &#123;  <br>            <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;  <br>        &#125;  <br><br>        <span class="hljs-keyword">if</span> (mOnTouchListener != <span class="hljs-literal">null</span> &amp;&amp; (mViewFlags &amp; ENABLED_MASK) == ENABLED &amp;&amp; <br>                mOnTouchListener.onTouch(<span class="hljs-keyword">this</span>, <span class="hljs-keyword">event</span>)) &#123;  <br>            <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;  <br>        &#125;  <br>        <span class="hljs-keyword">return</span> onTouchEvent(<span class="hljs-keyword">event</span>);  <br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>当以下三个条件任意一个不成立时</p>
+<ol>
+<li>mOnTouchListener 不为 null</li>
+<li>View 是 enable 的状态</li>
+<li>mOnTouchListener.OnTouch (this, event)返回 true</li>
+</ol>
+<p>函数会执行到 onTouchEvent。在这里我们可以看到，首先执行的是 mOnTouchListener. OnTouch 的方法，然后是 onTouchEvent 方法继续追溯源码，到 onTouchEvent ()观察，发现在处理 ACTION_UP 事件里有这么一段代码</p>
+<figure class="highlight gcode"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs gcode"><span class="hljs-keyword">If</span> <span class="hljs-comment">(! Post (mPerformClick)</span>) &#123;        performClick <span class="hljs-comment">()</span>;    &#125;<br></code></pre></td></tr></table></figure>
+
+
+<p>此时可知，onClick 方法也在最后得到了执行所以三者的顺序是：</p>
+<ol>
+<li>OnTouchListener () 的 onTouch</li>
+<li>OnTouchEvent ()</li>
+<li>OnClick ()</li>
+</ol>
+<p>首先，他会判断是否存在 onTouchListener，存在则会调用他的 onTouch 方法来处理事件。如果该方法返回 true 那么就分发结束直接返回。<br>而如果该监听器为 null 或者 onTouch 方法返回了 false，则会调用 onTouchEvent 方法来处理事件</p>
+<p><em>OnTouchEvent 方法中支持了两种监听器:</em> onClickListener 和 onLongClickListener。 View 会根据不同的触摸情况来调用这两个监听器。同时进入到 onTouchEvent 方法中，无论该 view 是否是 enable，只要是 clickable，他的分发方法都是返回 true。</p>
+<p>总结一下就是: 先调用 onTouchListener，再调用 onClickListener 利 onlongClicklistener.</p>
+<p><strong>OnTouch 利 onTouchEvent 区别，调用顺序?</strong><br>在 Android 开发中，<code>onTouch</code> 和 <code>onTouchEvent</code> 都是用来处理触摸事件的方法，但是它们之间有一些区别：</p>
+<ol>
+<li><code>onTouch</code> 方法是 View 类的一个回调方法，用于处理触摸事件。它通常用于实现对触摸事件的自定义处理逻辑。<code>onTouch</code> 方法需要返回一个布尔值，表示是否消费了该触摸事件。</li>
+<li><code>onTouchEvent</code> 方法同样是 View 类的一个回调方法，也用于处理触摸事件。与 <code>onTouch</code> 方法不同的是，<code>onTouchEvent</code> 方法是一个事件处理器，用于处理特定类型的触摸事件。在 <code>onTouchEvent</code> 方法中，你可以根据不同的动作类型（如<strong>按下、移动、抬起</strong>等）来处理触摸事件。</li>
+</ol>
+<p>调用顺序通常是这样的：</p>
+<ol>
+<li>当一个触摸事件发生时，首先会调用 <code>dispatchTouchEvent</code> 方法，该方法会将触摸事件分发给相应的 View。</li>
+<li>如果一个 View 的 <code>onTouch</code> 方法被调用，那么它会处理该触摸事件，并返回一个布尔值，表示是否消费了该事件。如果 <code>onTouch</code> 方法返回 true，表示事件被消费；如果返回 false，会继续向下传递。</li>
+<li>如果事件未被 <code>onTouch</code> 方法消费，那么会调用该 View 的 <code>onTouchEvent</code> 方法进行处理。</li>
+</ol>
+<p>总结起来，<code>onTouch</code> 方法和 <code>onTouchEvent</code> 方法都是用于处理触摸事件的，但是 <code>onTouch</code> 方法更加灵活，可以自定义处理逻辑并决定是否消费事件，而 <code>onTouchEvent</code> 方法则是针对具体的触摸事件类型进行处理的事件处理器。</p>
+<p><strong>一般什么时候需要 onTouch 返回 true</strong></p>
+<ol>
+<li>拦截点击事件：如果你想拦截点击事件，阻止它向下传递给其他视图或控件，可以在 <code>onTouch</code> 方法中返回 <code>true</code>。</li>
+<li>处理滑动事件：当你需要在自定义 View 中实现滑动操作时，你可能会在 <code>onTouch</code> 方法中捕获滑动手势并返回 <code>true</code>，以表示你已经处理了该滑动操作。</li>
+<li>自定义触摸交互：如果你希望在自定义 View 中实现特定的触摸交互，例如绘制、缩放、旋转等，你可能需要在 <code>onTouch</code> 方法中返回 <code>true</code> 以消费触摸事件。</li>
+</ol>
+<p>总的来说，当你希望在自定义 View 中控制触摸事件的传递和处理逻辑时，你可能需要在 <code>onTouch</code> 方法中返回 <code>true</code>。这样可以确保触摸事件被当前视图消费，并阻止其传递给其他视图或控件。</p>
+<p><strong>view 的事件分发：View 为啥会有 dispatchTouchEvent 方法？</strong><br>View 可以注册很多事件监听器，事件的调度顺序是 onTouch&gt; onTouchEvent&gt;onLongClickListener&gt; onClickListener</p>
+<p><strong>事件分发的流程</strong><br>事件分发是针对一次手势的过程，这个手势包含一次 ACTION_DOWN，多次 ACTION_MOVE，和一次 ACTION_UP”，在 ACTION_DOWN 的时候来决定本次事件的“<em>TargetView</em>”，该 View 会决定这次事件分发的事件流向。父控件可以在 ACTION_DOWN 或者 targetView 不为空的情况下，进行拦截，如果拦截了 targetView 的事件，会给它发一个 <em>ACTION_CANCEL</em>。</p>
+<p><strong>CANCEL 事件的触发场景</strong><br>当父视图先不拦截，然后在 MOVE 事件中重新拦截，此时子 View 会接收到一个 CANCEL 事件。</p>
+<p><strong>TouchTarget</strong><br>作用：记录每个子 View 是被哪些 pointer（手指）按下的<br>结构：单向链表</p>
+<p><strong>一次事件分发过程中会有多次 ACTION_POINT_DOWN 吗</strong><br>会。多指的时候，你按下第一个手指，再按下第二个手指 ACTION_POINTER_DOWN 就来了。你可以看看 ViewPager，ScrollView 这些官方类源码，都有多指的处理。</p>
+<p><strong>一个 LinearLayout 内部有两个 Button，当我第一个手指按在第一个 Button 上，第二个手指按在第二个 Button 上，这两个 Button 哪个会收到 ACTION_DOWN？分别抬起每个手指，哪个 Button 的 Click 会被触发？</strong><br>第一个手指按下第一个 Button 上，第一个 Button 收到 ACTION_DOWN。第二个手指按在第二个 Button 上，第二个 Button 竟然也收到了 ACTION_DOWN。分别抬起时，两个 Button 的 Click 依次触发。<br>当第二根手指去按下 Button 2 之后，确实会在 Button 2 中收到 ACTION_ DOWN 事件, 这样加上 Button 1 按下时收到的 ACTION_ DOWN, - -共就两次了，这两次 ACTION_ DOWN 都是在同- -次事件分发中发生的。<br>但是，<strong>对于一个 View 自身来说，同一次事件分发中是不会收到两次 ACTION_ DOWN 的</strong>(手动重写 dispatchTouchEvent 并在里面改了Action 的不算)。</p>
+<p><strong>一次事件分发过程中，可能会有多次 ACTION_DOWN 吗？</strong><br>没有，只有你第一个手指按下才是 ACTION_DOWN，从第二个开始都是 ACTION_POINTER_DOWN，当然了前提是你自己不修改 dispatchTouchEvent 分发逻辑哈。</p>
+<h3 id="ViewGroup-DispatchTouchEvent"><a href="#ViewGroup-DispatchTouchEvent" class="headerlink" title="ViewGroup.DispatchTouchEvent ()"></a>ViewGroup.DispatchTouchEvent ()</h3><ul>
+<li>如果是用户初次按下（ACTION_DOWN），清空 TouchTargets 和 DISALLOW_INTERCEPT 标记</li>
+<li>拦截处理</li>
+<li>如果不拦截并且不是 CANCEL 事件，并且是 DOWN 或者 POINTER_DOWN，尝试把 pointer（手指）通过 TouchTarget 分配给子 View；并且如果分配给了新的子 View，调用 child.DispatchTouchEvent () 把事件传给子 View<ul>
+<li>如果没有，调用⾃己的 super.DispatchTouchEvent ()</li>
+<li>如果有，调用 child.DispatchTouchEvent () 把事件传给对应的子 View（如果有的话）</li>
+</ul>
+</li>
+<li>如果是 POINTER_UP，从 TouchTargets 中清除 POINTER 信息；如果是 UP 或 CANCEL，重置状态</li>
+</ul>
+<p>ViewGroup 第一步会判读这个事件是否需要分发给了 view，如果是则调用 onInterceptTouchEvent 方法判断是否要进行拦截。<br>第二步是如果这个事件是 down 事件，那么需要为他寻找一个消费此事件的子控件，如果找到则为他创建一个 TouchTarget。<br>第三步是派发事件，<em>如果存在 TouchTarget，说明找到了消费事件序列的子 view，直接分发给他</em>。如果没有则交给自己处理</p>
+<p><strong>onInterceptTouchEvent返回false， dispatchTouchEvent返回true会发生什么</strong></p>
+<p>当 <code>onInterceptTouchEvent</code> 方法返回 <code>false</code>，而 <code>dispatchTouchEvent</code> 方法返回 <code>true</code> 时，<strong>触摸事件会继续传递给子视图进行处理，并且该 ViewGroup 不会拦截触摸事件</strong>。许触摸事件在视图层次结构中向下传递，直到找到一个视图来处理该事件。</p>
+<p>具体来说，当一个触摸事件到达一个 ViewGroup 时，首先会调用该 ViewGroup 的 <code>onInterceptTouchEvent</code> 方法来判断是否要拦截该触摸事件。如果 <code>onInterceptTouchEvent</code> 返回 <code>false</code>，表示该 ViewGroup 不拦截触摸事件，将会继续传递给子视图。</p>
+<p>接着，如果 <code>dispatchTouchEvent</code> 方法返回 <code>true</code>，则表示该 ViewGroup 处理了触摸事件，并且将事件传递给子视图进行进一步处理。子视图的 <code>dispatchTouchEvent</code> 方法会被调用，触摸事件会在子视图间进行传递，直到找到一个视图处理该事件或事件被消费。</p>
+<p><strong>如果都是false</strong><br><em>事件会继续向上传递给它的父视图，以便父视图处理该事件</em>。 因此，在 onInterceptTouchEvent 返回 false 且 dispatchTouchEvent 返回 false 的情况下，触摸事件会继续向上层视图传递，直到找到一个视图来处理该事件。如果没有找到可以处理该事件的视图，那么事件可能会被传递给包含该视图的 Activity 或窗口进行处理，或者被丢弃。最终的处理结果取决于视图层次结构中的其他视图和应用程序的逻辑</p>
+<h3 id="自定义-viewpager-的-onInterceptTouchEvent"><a href="#自定义-viewpager-的-onInterceptTouchEvent" class="headerlink" title="自定义 viewpager 的 onInterceptTouchEvent"></a>自定义 viewpager 的 onInterceptTouchEvent</h3><p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%A7%A6%E6%91%B8%E5%8F%8D%E9%A6%88%E3%80%81input.resources/2023/09/15/18-49-14-85736f53cca2c4b9b4958f6fd2b4b4dc-unknown_filename.1-27d911.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.1"></p>
+<p>OnTouchEvent<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%A7%A6%E6%91%B8%E5%8F%8D%E9%A6%88%E3%80%81input.resources/2023/09/15/18-49-14-31da755be9ce2a1a186e834a01189ac6-unknown_filename.2-e828cf.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.2"><br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%A7%A6%E6%91%B8%E5%8F%8D%E9%A6%88%E3%80%81input.resources/2023/09/15/18-49-14-ee874c7ca1c7886f6af40e4d35b1579e-unknown_filename.3-5b00cd.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.3"></p>
+<p><strong>一般自定义 onTouchEvent 方法流程</strong></p>
+<ol>
+<li>在 down 的时候去记录坐标点<br> GetX&#x2F;getY 获取相对于当前 View 左上角的坐标，getRawX&#x2F;getRawY 获取相对于屏幕左上角的坐标。比如接触到按钮时，x，y 是相对于该按钮左上点的相对位置。而 rawx, rawy 始终是相对于屏幕的位置。</li>
+<li>Move 的时候计算偏移量，并用 scrollTo ()或 scrollBy ()方法移动 view。这俩个方法都是快速滑动，是瞬间移动的。注意：滚动的并不是 viewgroup 内容本身，而是它的矩形边框。</li>
+<li>在 up 的时候，判断应显示的页面位置，并计算距离、滑动页面。</li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%BA%90%E7%A0%81/" class="category-chain-item">源码</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E6%BA%90%E7%A0%81/Framework/" class="category-chain-item">Framework</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>5-事件分发机制</div>
+      <div>http://peiniwan.github.io/2025/12/d52f6c1eb84b.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>六月的雨</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年12月16日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/12/a97b25b96215.html" title="6-系统源码">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">6-系统源码</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/12/e0c946fd77df.html" title="4-WMS">
+                        <span class="hidden-mobile">4-WMS</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"OwNIdaopOn1rwNhtotGOGC0B-gzGzoHsz","appKey":"eadytQ2XqWmxuvAKeg08XX83","path":"window.location.pathname","placeholder":null,"avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":true,"recordIP":false,"serverURLs":"https://ownidaop.lc-cn-n1-shared.com","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

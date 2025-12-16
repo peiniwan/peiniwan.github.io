@@ -1,0 +1,749 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="六月的雨">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="序列化序列化的三种场景：  持久化存储 通过 Socket 进行网络传输 深拷贝  把数据对象（⼀般是内存中的，例如 JVM 中的对象）转换成字节序列的过程。对象在程序内存⾥的存放形式是散乱的（存放在不同的内存区域、并且由引⽤进⾏连接），通过序列化可以把内存中的对象转换成⼀个字节序列，从⽽使⽤ byte[] 等形式进⾏本地存储或⽹络传输，在需要的时候重新组装（反序列化）来使⽤。把内存中的对象变成二">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Serializable 与 Parcelable">
+<meta property="og:url" content="http://peiniwan.github.io/2025/12/7f82c2b853c1.html">
+<meta property="og:site_name" content="六月的雨的笔记">
+<meta property="og:description" content="序列化序列化的三种场景：  持久化存储 通过 Socket 进行网络传输 深拷贝  把数据对象（⼀般是内存中的，例如 JVM 中的对象）转换成字节序列的过程。对象在程序内存⾥的存放形式是散乱的（存放在不同的内存区域、并且由引⽤进⾏连接），通过序列化可以把内存中的对象转换成⼀个字节序列，从⽽使⽤ byte[] 等形式进⾏本地存储或⽹络传输，在需要的时候重新组装（反序列化）来使⽤。把内存中的对象变成二">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/09/15/2024-02-07-11-42-5b61ea69003ebac0802a791bc126f2fe-18-48-56-5b61ea69003ebac0802a791bc126f2fe-unknown_filename.1-868316-0dd353.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/09/15/2024-02-07-11-43-1afba11681441b6a8ab8f0d86337ea28-18-23-45-1afba11681441b6a8ab8f0d86337ea28-1afba11681441b6a8ab8f0d86337ea28-f2bdba-7800d2.png">
+<meta property="article:published_time" content="2025-12-16T13:59:22.666Z">
+<meta property="article:modified_time" content="2024-03-13T04:11:00.000Z">
+<meta property="article:author" content="六月的雨">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/09/15/2024-02-07-11-42-5b61ea69003ebac0802a791bc126f2fe-18-48-56-5b61ea69003ebac0802a791bc126f2fe-unknown_filename.1-868316-0dd353.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>Serializable 与 Parcelable - 六月的雨的笔记</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"peiniwan.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>六月的雨的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Serializable 与 Parcelable"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-12-16 21:59" pubdate>
+          2025年12月16日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.2k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          19 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Serializable 与 Parcelable</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="序列化"><a href="#序列化" class="headerlink" title="序列化"></a>序列化</h2><p>序列化的三种场景：</p>
+<ol>
+<li>持久化存储</li>
+<li>通过 Socket 进行网络传输</li>
+<li>深拷贝</li>
+</ol>
+<p>把数据对象（⼀般是内存中的，例如 JVM 中的对象）转换成<strong>字节序列</strong>的过程。对象在程序内存⾥的存放形式是散乱的（存放在不同的内存区域、并且由引⽤进⾏连接），<strong>通过序列化可以把内存中的对象转换成⼀个字节序列，从⽽使⽤ byte[] 等形式进⾏本地存储或⽹络传输</strong>，在需要的时候重新组装（反序列化）来使⽤。<br>把内存中的对象变成二进制形式</p>
+<p><strong>⽬的</strong><br>让内存中的对象可以被储存和传输。</p>
+<p><strong>序列化是编码吗？</strong><br>不是</p>
+<p><strong>和编码的区别</strong><br>编码是把数据由⼀种数据格式转换成另⼀种数据格式；⽽序列化是把数据由内存中的对象（⽽不是某种具体的格式）转换成字节序列。</p>
+<p><strong>如何实现序列化，有什么意义</strong><br>序列化就是一种用来处理对象流的机制，所谓对象流也就是将对象的内容进行流化。可以对流化后的对象进行读写操作，也可将流化后的对象传输于网络之间。<br>序列化除了能够实现对象的持久化之外，还能够用于对象的深度克隆。</p>
+<p><strong>浅拷贝和深拷贝</strong><br>深拷贝是指在计算机编程中，将一个对象的所有属性和方法复制到另一个对象的过程。<br>与浅拷贝不同，深拷贝会递归地复制对象的所有子对象，而不仅仅是复制对象的引用<br>这样，当修改原始对象时，深拷贝的对象不会受到影响，因为它们是独立的副本。</p>
+<h3 id="如何实现对象克隆"><a href="#如何实现对象克隆" class="headerlink" title="如何实现对象克隆"></a><strong>如何实现对象克隆</strong></h3><p>有两种方式：</p>
+<ol>
+<li>实现 Cloneable 接口并重写 Object 类中的 clone ()方法；</li>
+<li>实现 Serializable 接口，通过对象的序列化和反序列化实现克隆，可以实现真正的深度克隆，代码如下：<br>序列化其实就是将对象封装到本地。<strong>用作对象的持久化存储，也就是用流存放到硬盘上</strong>，Serializable: 用于给被序列化的类加入 ID 号。<br>用于判断类和对象是否是同一个版本。静态不能被序列化， transient 关键字修饰的不能被序列化<br>使用 <em>ByteArrayOutputStream</em><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">MyUtil</span> &#123;<br><br><span class="hljs-keyword">private</span> <span class="hljs-title function_">MyUtil</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">AssertionError</span>();<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> &lt;T&gt; T <span class="hljs-title function_">clone</span><span class="hljs-params">(T obj)</span> <span class="hljs-keyword">throws</span> Exception &#123;<br>        <span class="hljs-type">ByteArrayOutputStream</span> <span class="hljs-variable">bout</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ByteArrayOutputStream</span>();<br>        <span class="hljs-type">ObjectOutputStream</span> <span class="hljs-variable">oos</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ObjectOutputStream</span>(bout);<br>        oos.writeObject(obj);<br><br>        <span class="hljs-type">ByteArrayInputStream</span> <span class="hljs-variable">bin</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ByteArrayInputStream</span>(bout.toByteArray());<br>        <span class="hljs-type">ObjectInputStream</span> <span class="hljs-variable">ois</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ObjectInputStream</span>(bin);<br>        <span class="hljs-keyword">return</span> (T) ois.readObject();<br><br> <span class="hljs-comment">// 说明：调用ByteArrayInputStream或ByteArrayOutputStream对象的close方法没有任何意义</span><br><span class="hljs-comment">// 这两个基于内存的流只要垃圾回收器清理对象就能够释放资源，这一点不同于对外部资源（如文件流）的释放</span><br>    &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure></li>
+</ol>
+<p>下面是测试代码：</p>
+<figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><code class="hljs arduino"><span class="hljs-keyword">import</span> java.io.Serializable;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 人类</span><br><span class="hljs-comment"> *</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Person</span> implements Serializable &#123;<br>    <span class="hljs-keyword">private</span> <span class="hljs-type">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">long</span> serialVersionUID = <span class="hljs-number">-9102017020286042305L</span>;<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-type">String</span> name;    <span class="hljs-comment">// 姓名</span><br>    <span class="hljs-keyword">private</span> <span class="hljs-type">int</span> age;        <span class="hljs-comment">// 年龄</span><br>    <span class="hljs-keyword">private</span> Car car;        <span class="hljs-comment">// 座驾</span><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">Person</span><span class="hljs-params">(<span class="hljs-type">String</span> name, <span class="hljs-type">int</span> age, Car car)</span> </span>&#123;<br>        <span class="hljs-keyword">this</span>.name = name;<br>        <span class="hljs-keyword">this</span>.age = age;<br>        <span class="hljs-keyword">this</span>.car = car;<br>    &#125;<br><span class="hljs-comment">//get、set方法...</span><br><br>    @<span class="hljs-function">Override</span><br><span class="hljs-function">    <span class="hljs-keyword">public</span> <span class="hljs-type">String</span> <span class="hljs-title">toString</span><span class="hljs-params">()</span> </span>&#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;Person [name=&quot;</span> + name + <span class="hljs-string">&quot;, age=&quot;</span> + age + <span class="hljs-string">&quot;, car=&quot;</span> + car + <span class="hljs-string">&quot;]&quot;</span>;<br>    &#125;<br><br>&#125;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 小汽车类</span><br><span class="hljs-comment"> *</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Car</span> implements Serializable &#123;<br>    <span class="hljs-keyword">private</span> <span class="hljs-type">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">long</span> serialVersionUID = <span class="hljs-number">-5713945027627603702L</span>;<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-type">String</span> brand;       <span class="hljs-comment">// 品牌</span><br>    <span class="hljs-keyword">private</span> <span class="hljs-type">int</span> maxSpeed;       <span class="hljs-comment">// 最高时速</span><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">Car</span><span class="hljs-params">(<span class="hljs-type">String</span> brand, <span class="hljs-type">int</span> maxSpeed)</span> </span>&#123;<br>        <span class="hljs-keyword">this</span>.brand = brand;<br>        <span class="hljs-keyword">this</span>.maxSpeed = maxSpeed;<br>    &#125;<br><span class="hljs-comment">//get、set方法、tostring...</span><br><br>&#125;<br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">CloneTest</span> &#123;<br><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-type">static</span> <span class="hljs-type">void</span> <span class="hljs-title">main</span><span class="hljs-params">(<span class="hljs-type">String</span>[] args)</span> </span>&#123;<br>        <span class="hljs-keyword">try</span> &#123;<br>            Person p1 = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Person</span>(<span class="hljs-string">&quot;Hao LUO&quot;</span>, <span class="hljs-number">33</span>, <span class="hljs-keyword">new</span> <span class="hljs-built_in">Car</span>(<span class="hljs-string">&quot;Benz&quot;</span>, <span class="hljs-number">300</span>));<br>            Person p2 = MyUtil.<span class="hljs-built_in">clone</span>(p1);   <span class="hljs-comment">// 深度克隆</span><br>            p2.<span class="hljs-built_in">getCar</span>().<span class="hljs-built_in">setBrand</span>(<span class="hljs-string">&quot;BYD&quot;</span>);<br> <span class="hljs-comment">// 修改克隆的Person对象p2关联的汽车对象的品牌属性</span><br><span class="hljs-comment">// 原来的Person对象p1关联的汽车不会受到任何影响</span><br><span class="hljs-comment">// 因为在克隆Person对象时其关联的汽车对象也被克隆了</span><br>            System.out.<span class="hljs-built_in">println</span>(p1);<br>        &#125; <span class="hljs-built_in">catch</span> (Exception e) &#123;<br>            e.<span class="hljs-built_in">printStackTrace</span>();<br>        &#125;<br>    &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+
+<h2 id="Serializable"><a href="#Serializable" class="headerlink" title="Serializable"></a><strong>Serializable</strong></h2><p>Serializable 和 Parcelable 是用来序列化和反序列化的，其中 Serializable 是 Java 提供的一个序列化接口，它是一个空接口，专门为对象提供标准的序列化和反序列化操作，使用起来比较简单。而 Parcelable 则稍显复杂，实现该接口重写两个模版方法，并且需要提供一个 Creator。</p>
+<ul>
+<li>原理是<em>通过 ObjectInputStream 和 ObjectOutputStream 来实现的</em>，整个序列化过程使用了大量的反射和临时变量，而且在序列化对象的时候，不仅会序列化当前对象本身，还需要递归序列化对象引用的其他对象。</li>
+<li>整个过程计算非常复杂，而且因为存在大量反射和 GC 的影响，序列化的性能会比较差。另外一方面因为<em>序列化文件需要包含的信息非常多，导致它的大小比 Class 文件本身还要大很多</em>，这样又会导致 I&#x2F;O 读写上的性能问题</li>
+<li>Serializable 使用 I&#x2F;O 读写存储在硬盘上，序列化过程中产生大量的临时变量，会引起频繁 GC，效率低下。而 Parcelable 是直接在内存中读写，更加高效。</li>
+</ul>
+<figure class="highlight axapta"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs axapta"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">User</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_ inherited__">Serializable</span> &#123;<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-built_in">long</span> serialVersionUID = <span class="hljs-number">-541329592684050557</span>L;<br><br>    <span class="hljs-keyword">public</span> String name;<br>    <span class="hljs-keyword">public</span> <span class="hljs-built_in">int</span> age;<br>    <br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<h5 id="serialVersionUID"><a href="#serialVersionUID" class="headerlink" title="serialVersionUID"></a>serialVersionUID</h5><p>它是用来辅助序列化和反序列化的，虽然在序列化的时候系统会自动生成一个 UID，但是还是推荐在手动提供一个 serialVersionUID。序列化操作的时候系统会<em>把当前类的 serialVersionUID 写入序列化文件中，当反序列化的时候会去检测文件中的 serialVersionUID，判断它是否与当前类的 serialVersionUID 一致，如果一致就说明序列化类与当前类版本一致，可以反序列化成功</em>，否则就可能抛异常。手动添加 serialVersionUID 的话，即使当类结构发生变化时，系统也会尽可能的恢复原有类结构，也不至于抛 InvalidClassException 异常。</p>
+<h5 id="父类的序列化"><a href="#父类的序列化" class="headerlink" title="父类的序列化"></a>父类的序列化</h5><p>一个子类实现了 Serializable 接口，而父类没有实现 Serializable 接口，序列化该子类对象，然后反序列化后输出父类定义的成员变量的值，该数值与序列化时的数值不同。</p>
+<p>要想将父类对象也序列化，就需要让父类对象也实现 Serializable 接口。如果父类对象不实现的话，就需要有默认的无参的构造方法。在父类没有实现 Serializable 接口时，虚拟机是不会序列化父对象的，而一个 Java 对象的构造必须先有父对象，才有子对象，反序列化也不例外。所以反序列化时，为了构造父对象，只能调用父类的无参构造方法作为默认的父对象。因此当我们取父对象的变量值时，它的值是调用父类无参构造函数后的值，即初始值。</p>
+<p>因此，我们也可以通过将不需要序列化的成员变量放到未 Serializable 的父类当中，达到和 transient 关键字一样的效果。</p>
+<h2 id="Parcelable"><a href="#Parcelable" class="headerlink" title="Parcelable"></a>Parcelable</h2><p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/09/15/2024-02-07-11-42-5b61ea69003ebac0802a791bc126f2fe-18-48-56-5b61ea69003ebac0802a791bc126f2fe-unknown_filename.1-868316-0dd353.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.1|600"></p>
+<figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><code class="hljs aspectj"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">User</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">Parcelable</span> </span>&#123;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> Creator&lt;User&gt; CREATOR = <span class="hljs-keyword">new</span> Creator&lt;User&gt;() &#123;<br>        <span class="hljs-meta">@Override</span><br>        <span class="hljs-keyword">public</span> <span class="hljs-function">User <span class="hljs-title">createFromParcel</span><span class="hljs-params">(Parcel source)</span> </span>&#123;<br>            <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> User(source);<br>        &#125;<br><br>        <span class="hljs-meta">@Override</span><br>        <span class="hljs-keyword">public</span> User[] newArray(<span class="hljs-keyword">int</span> size) &#123;<br>            <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> User[size];<br>        &#125;<br>    &#125;;<br>    <span class="hljs-keyword">public</span> String name;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> age;<br><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">User</span><span class="hljs-params">(String name, <span class="hljs-keyword">int</span> age)</span> </span>&#123;<br>        <span class="hljs-keyword">this</span>.name = name;<br>        <span class="hljs-keyword">this</span>.age = age;<br>    &#125;<br><br>    <span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-title">User</span><span class="hljs-params">(Parcel in)</span> </span>&#123;<br>        <span class="hljs-keyword">this</span>.name = in.readString();<br>        <span class="hljs-keyword">this</span>.age = in.readInt();<br>    &#125;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">describeContents</span><span class="hljs-params">()</span> </span>&#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>    &#125;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">writeToParcel</span><span class="hljs-params">(Parcel dest, <span class="hljs-keyword">int</span> flags)</span> </span>&#123;<br>        dest.writeString(<span class="hljs-keyword">this</span>.name);<br>        dest.writeInt(<span class="hljs-keyword">this</span>.age);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="Intent-序列化"><a href="#Intent-序列化" class="headerlink" title="Intent 序列化"></a>Intent 序列化</h2><p><strong>为何 Intent 不能直接在组件间传递对象而要通过序列化机制？</strong></p>
+<ul>
+<li>因为跨进程</li>
+<li>Intent 在启动其他组件时，会离开当前应用程序进程，进入 ActivityManagerService 进程（intent. prepareToLeaveProcess ()），这也就意味着，Intent 所携带的数据要能够在不同进程间传输。首先我们知道，Android 是基于 Linux 系统，不同进程之间的 java 对象是无法传输，所以我们此处要对对象进行序列化，从而实现对象在应用程序进程和 ActivityManagerService 进程之间传输。</li>
+<li>而 Parcel 或者 Serializable 都可以将对象序列化，其中，Serializable 使用方便，但性能不如 Parcel 容器，后者也是 Android 系统专门推出的用于进程间通信等的接口</li>
+</ul>
+<h2 id="Serial-的优点"><a href="#Serial-的优点" class="headerlink" title="Serial 的优点"></a><strong>Serial 的优点</strong></h2><ol>
+<li>相比起传统的反射序列化方案更加高效（没有使用反射）</li>
+<li>性能相比传统方案提升了3倍 （序列化的速度提升了5倍，反序列化提升了2.5倍）</li>
+<li>序列化生成的数据量（byte[]）大约是之前的1&#x2F;5</li>
+<li>开发者对于序列化过程的控制较强，可定义哪些 object、field 需要被序列化</li>
+<li>有很强的 debug 能力，可以调试序列化的过程（详见：调试）</li>
+</ol>
+<p><strong>数据的序列化</strong></p>
+<p>Serial 性能看起来还不错，但是对象的序列化要记录的信息还是比较多，在操作比较频繁的时候，对应用的影响还是不少的，这个时候我们可以选择使用数据的序列化。</p>
+<p>json: 原生、gosn、fastjson（数据量大了的时候最快）<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/09/15/2024-02-07-11-43-1afba11681441b6a8ab8f0d86337ea28-18-23-45-1afba11681441b6a8ab8f0d86337ea28-1afba11681441b6a8ab8f0d86337ea28-f2bdba-7800d2.png" srcset="/img/loading.gif" lazyload alt="1afba11681441b6a8ab8f0d86337ea28|600"></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%BA%90%E7%A0%81/" class="category-chain-item">源码</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Serializable 与 Parcelable</div>
+      <div>http://peiniwan.github.io/2025/12/7f82c2b853c1.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>六月的雨</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年12月16日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/12/96e9a68a331d.html" title="SparseArray 和 ArrayMap">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">SparseArray 和 ArrayMap</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/12/5adbecbe8164.html" title="HashMap、lru、散列表">
+                        <span class="hidden-mobile">HashMap、lru、散列表</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"OwNIdaopOn1rwNhtotGOGC0B-gzGzoHsz","appKey":"eadytQ2XqWmxuvAKeg08XX83","path":"window.location.pathname","placeholder":null,"avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":true,"recordIP":false,"serverURLs":"https://ownidaop.lc-cn-n1-shared.com","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

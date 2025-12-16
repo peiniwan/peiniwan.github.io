@@ -1,0 +1,790 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="六月的雨">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="SurfaceView一篇文章看明白 Android 图形系统 Surface 与 SurfaceFlinger 之间的关系_android sufaceflinger 怎么和surface 交互的-CSDN博客 SurfaceView 和View的区别view必须在UI的主线程中更新画面。如果更新时间过长，就会被你正在画的函数阻塞，那么将无法响应按键、触屏等消息。当使用SurfaceView由于">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SurfaceView和视频">
+<meta property="og:url" content="http://peiniwan.github.io/2025/12/385f783fe040.html">
+<meta property="og:site_name" content="六月的雨的笔记">
+<meta property="og:description" content="SurfaceView一篇文章看明白 Android 图形系统 Surface 与 SurfaceFlinger 之间的关系_android sufaceflinger 怎么和surface 交互的-CSDN博客 SurfaceView 和View的区别view必须在UI的主线程中更新画面。如果更新时间过长，就会被你正在画的函数阻塞，那么将无法响应按键、触屏等消息。当使用SurfaceView由于">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/SurfaceView%E5%92%8C%E8%A7%86%E9%A2%91.resources/2023/09/18/09-57-08-ad2c5ee0ec451e44ec363b42f62b8cd0-1240-113da1.jpg">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/SurfaceView%E5%92%8C%E8%A7%86%E9%A2%91.resources/2023/09/18/09-57-08-7a14a4ea1edd35b00640957d167bb117-unknown_filename.1-99a74d.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/SurfaceView%E5%92%8C%E8%A7%86%E9%A2%91.resources/2023/09/18/09-57-08-bf719ef4f05d166b08e4aa93691def99-unknown_filename.2-ecf1aa.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/SurfaceView%E5%92%8C%E8%A7%86%E9%A2%91.resources/2023/09/18/09-57-08-e10a1b911a85cc4817a2971b0b1f97a3-unknown_filename.3-80882d.png">
+<meta property="article:published_time" content="2025-12-16T13:59:22.578Z">
+<meta property="article:modified_time" content="2024-03-25T09:57:00.000Z">
+<meta property="article:author" content="六月的雨">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/SurfaceView%E5%92%8C%E8%A7%86%E9%A2%91.resources/2023/09/18/09-57-08-ad2c5ee0ec451e44ec363b42f62b8cd0-1240-113da1.jpg">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>SurfaceView和视频 - 六月的雨的笔记</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"peiniwan.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>六月的雨的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="SurfaceView和视频"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-12-16 21:59" pubdate>
+          2025年12月16日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          4.4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          37 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">SurfaceView和视频</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="SurfaceView"><a href="#SurfaceView" class="headerlink" title="SurfaceView"></a>SurfaceView</h1><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/freekiteyu/article/details/79483406">一篇文章看明白 Android 图形系统 Surface 与 SurfaceFlinger 之间的关系_android sufaceflinger 怎么和surface 交互的-CSDN博客</a></p>
+<h2 id="SurfaceView-和View的区别"><a href="#SurfaceView-和View的区别" class="headerlink" title="SurfaceView 和View的区别"></a>SurfaceView 和View的区别</h2><p>view必须在UI的主线程中更新画面。如果更新时间过长，就会被你正在画的函数阻塞，那么将无法响应按键、触屏等消息。当使用SurfaceView由于是在新的线程中更新画面所以不会阻塞你的UI主线程。</p>
+<ol>
+<li>View适用于主动更新的情况，而SurfaceView则适用于被动更新的情况，比如频繁刷新界面。</li>
+<li>View在主线程中对页面进行刷新，而SurfaceView则开启一个子线程来对页面进行刷新。</li>
+<li>View在绘图时没有实现双缓冲机制，SurfaceView在底层机制中就实现了双缓冲机制</li>
+</ol>
+<h3 id="SurfaceView、TextureView"><a href="#SurfaceView、TextureView" class="headerlink" title="SurfaceView、TextureView"></a>SurfaceView、TextureView</h3><ul>
+<li>SurfaceView的原理就是在<em>现有View的位置上创建一个新的Window</em>，内容的显示和渲染都在新的Window中。这使得SurfaceView的绘制和刷新可以在单独的线程中进行，从而大大提高效率。但是呢，由于SurfaceView的内容没有显示在View中而是显示在新建的Window中， 使得<em>SurfaceView的显示不受View的属性控制</em>，不能进行平移，缩放等变换，也不能放在其它RecyclerView或ScrollView中，一些View中的特性也无法使用。</li>
+<li>TextureView是在4.0(API level 14)引入的，专门用来渲染像视频或OpenGL场景之类的数据。与SurfaceView相比，它不会创建新的窗口来显示内容。它是<em>将内容流直接投放到View中</em>，并且可以和其它普通View一样进行移动，旋转，缩放，动画等变化。TextureView必须在硬件加速的窗口中使用。好在现在的移动设备基本都有GPU进行硬件加速渲染（连我手里这款破旧的华为测试机都有(o)）。</li>
+</ul>
+<h3 id="SurfaceView、SurfaceHolder与Surface"><a href="#SurfaceView、SurfaceHolder与Surface" class="headerlink" title="SurfaceView、SurfaceHolder与Surface"></a>SurfaceView、SurfaceHolder与Surface</h3><ul>
+<li>SurfaceView 的使用方法，大概是获取 SurfaceHolder 对象，监听 surface 创建，更新，销毁，创新一个新的线程，并在其中绘制并提交</li>
+<li>TextureView 并没有独立的绘图表面，在使用过程中，需要添加监听 surfaceTexture 是否可用，再做相应的处理</li>
+</ul>
+<p>SurfaceView、SurfaceHolder、Surface的关系可以概括为以下几点：</p>
+<ul>
+<li>SurfaceView是拥有独立绘图层的特殊View</li>
+<li>Surface是内存中的一段绘图缓冲区。</li>
+<li>SurfaceView中具有两个Surface，也就是我们所说的双缓冲机制</li>
+<li><strong>SurfaceHolder顾名思义就是Surface的持有者，SurfaceView就是通过过SurfaceHolder来对Surface进行管理控制的。并且SurfaceView.getHolder方法可以获取SurfaceView相应的SurfaceHolder。</strong></li>
+<li>Surface是在SurfaceView所在的Window可见的时候创建的。可以使用SurfaceHolder.addCallback方法来监听Surface的创建与销毁的事件。</li>
+</ul>
+<h3 id="SurfaceView的使用"><a href="#SurfaceView的使用" class="headerlink" title="SurfaceView的使用"></a>SurfaceView的使用</h3><ul>
+<li>需要实现 SurfaceHolder.Callback 接口</li>
+<li>需要在 SurfaceHolder.Callback 的 <strong>surfaceCreated</strong> 方法中开启一个线程进行动画的逐帧的绘制。</li>
+<li>需要在 SufaceHolder.Callback 的 surfaceDestroyed 方法中结束绘画的线程并调用 SurfaceHolder 的 removeCallbck 方法</li>
+<li>绘画线程每一帧开始之前需要通过lockCanvas()方法获得Canvas对象</li>
+<li>绘制完一帧的数据之后需要使用unlockCanvasAndPost()方法将画布内容进行提交</li>
+</ul>
+<h3 id="TextureView-的使用"><a href="#TextureView-的使用" class="headerlink" title="TextureView 的使用"></a>TextureView 的使用</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs java">myTexture = <span class="hljs-keyword">new</span> <span class="hljs-title class_">TextureView</span>(<span class="hljs-built_in">this</span>);<br>myTexture.setSurfaceTextureListener(<span class="hljs-built_in">this</span>);<br>setContentView(myTexture);<br> <br> <span class="hljs-comment">//实现接口</span><br> <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">onSurfaceTextureAvailable</span><span class="hljs-params">(SurfaceTexture surface, <span class="hljs-type">int</span> width, <span class="hljs-type">int</span> height)</span> &#123;<br>        Logger.d(<span class="hljs-string">&quot;player/texture create w=%d, h=%d&quot;</span>, width, height);<br>    &#125;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">onSurfaceTextureSizeChanged</span><span class="hljs-params">(SurfaceTexture surface, <span class="hljs-type">int</span> width, <span class="hljs-type">int</span> height)</span> &#123;<br>    &#125;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-type">boolean</span> <span class="hljs-title function_">onSurfaceTextureDestroyed</span><span class="hljs-params">(SurfaceTexture surface)</span> &#123;<br>        Logger.d(<span class="hljs-string">&quot;player/texture destroyed!&quot;</span>);<br>        <span class="hljs-keyword">if</span> (mSurface != <span class="hljs-literal">null</span>) &#123;<br>            mSurface.release();<br>            mSurface = <span class="hljs-literal">null</span>;<br>        &#125;<br>    &#125;<br></code></pre></td></tr></table></figure>
+<h1 id="播放器比较"><a href="#播放器比较" class="headerlink" title="播放器比较"></a>播放器比较</h1><p>amino：VideoPlayerView<br><strong>封装</strong>：VoiceController<br>单例初始化、开始、停止、暂停、恢复、seek、获取时长、销毁播放器封装，写了些播放状态的回调：完成、错误、播放进度</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs csharp"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">resume</span>()</span> &#123;<br>       <span class="hljs-keyword">if</span> (<span class="hljs-literal">null</span> != player) &#123;<br>           isPause = <span class="hljs-literal">false</span>;<br>           player.setPlayWhenReady(<span class="hljs-literal">true</span>);<br>       &#125;<br>   &#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="VideoView与MediaPlayer"><a href="#VideoView与MediaPlayer" class="headerlink" title="VideoView与MediaPlayer"></a>VideoView与MediaPlayer</h3><p>VideoView使用MediaPlayer + SurfaceView，SurfaceView播放视频时，如果不进行设置，视频宽高总是等于定义的。</p>
+<p>SurfaceView布局宽高，所以视频可能会被拉伸变形。而使用VideoView时，视频宽度等于VideoView布局宽，但是<strong>高是自适应的</strong>，自动调整宽高比到视频原始比例，所以不会有拉伸（就是按比例设置的）。</p>
+<p><strong>VideoView不足、MediaPlayer</strong><br>原生VideoView只能播放mp4和3gp两种格式；<br><em>seekTo定位不准，只能定位到关键帧</em>；<br>VideoView不保存视频播放状态，需自行处理；<br>VideoView加载网络视频时，常见黑屏情况，因为VideoView每次都会重新加载。</p>
+<h2 id="hls协议"><a href="#hls协议" class="headerlink" title="hls协议"></a>hls协议</h2><p>hls协议：由苹果公司提出的基于HTTP的流媒体网络传输协议，它的工作原理是把整个流分成一个个小的基于HTTP的文件来下载，每次只下载一些。</p>
+<p>HLS协议规定：<br>视频的封装格式是TS。<br>视频的编码格式为H264,音频编码格式为MP3、AAC或者AC-3。<br>除了TS视频文件本身，还定义了用来控制播放的m3u8文件（文本文件）<br>m3u8里有很多ts地址，其实就是<strong>分段来加载</strong>。</p>
+<p>ExoPlayer、ijkplayer（FFmpeg）</p>
+<h2 id="ExoPlayer"><a href="#ExoPlayer" class="headerlink" title="ExoPlayer"></a>ExoPlayer</h2><p>支持动态的自适应流 HTTP (DASH) 和 平滑流，任何目前 MediaPlayer 支持的视频格式（同时它还支持 HTTP 直播(HLS)，MP4，MP3，WebM，M4A，MPEG-TS 和 AAC）。<br>支持高级的 HLS 特性，例如正确处理 EXT-X-DISCONTINUITY 标签；<br>还有各种状态<br>支持自定义和扩展，ExoPlayer 专门为此设计；<br>更少的适配性问题。</p>
+<h2 id="ijkplayer"><a href="#ijkplayer" class="headerlink" title="ijkplayer"></a>ijkplayer</h2><p>SurfaceView.getHolder()，然后添加callback，在surfaceCreated里去创建播放器，测量，监听处理<br>surfaceHolder的监听里添加mMediaPlayer.setDisplay(holder);<br>playerContainer是个 FrameLayout</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><code class="hljs java">    <span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">addSurfaceView</span><span class="hljs-params">()</span> &#123;<br>        playerContainer.removeView(mSurfaceView);<br>        mSurfaceView = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ResizeSurfaceView</span>(getContext());<br>        <span class="hljs-type">SurfaceHolder</span> <span class="hljs-variable">surfaceHolder</span> <span class="hljs-operator">=</span> mSurfaceView.getHolder();<br>        surfaceHolder.addCallback(<span class="hljs-keyword">new</span> <span class="hljs-title class_">SurfaceHolder</span>.Callback() &#123;<br><br>            <span class="hljs-meta">@Override</span><br>            <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">surfaceCreated</span><span class="hljs-params">(SurfaceHolder holder)</span> &#123;<br>            &#125;<br><br>            <span class="hljs-meta">@Override</span><br>            <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">surfaceChanged</span><span class="hljs-params">(SurfaceHolder holder, <span class="hljs-type">int</span> format, <span class="hljs-type">int</span> width, <span class="hljs-type">int</span> </span><br><span class="hljs-params">height)</span> &#123;<br>                <span class="hljs-keyword">if</span> (mMediaPlayer != <span class="hljs-literal">null</span>) &#123;<br>                    mMediaPlayer.setDisplay(holder);<br>                &#125;<br>            &#125;<br><br>            <span class="hljs-meta">@Override</span><br>            <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">surfaceDestroyed</span><span class="hljs-params">(SurfaceHolder holder)</span> &#123;<br>            &#125;<br>        &#125;);<br><br>        surfaceHolder.setFormat(PixelFormat.RGBA_8888);<br>        <span class="hljs-type">LayoutParams</span> <span class="hljs-variable">params</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">LayoutParams</span>(<br>                ViewGroup.LayoutParams.MATCH_PARENT,<br>                ViewGroup.LayoutParams.MATCH_PARENT,<br>                Gravity.CENTER);<br>        playerContainer.addView(mSurfaceView, <span class="hljs-number">0</span>, params);<br>    &#125;<br><br></code></pre></td></tr></table></figure>
+
+<p>addTextureView</p>
+<figure class="highlight gauss"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs gauss">mMediaPlayer.setSurface(<span class="hljs-keyword">new</span> <span class="hljs-built_in">Surface</span>(surfaceTexture));<br></code></pre></td></tr></table></figure>
+<p>全屏逻辑<br>先把当前的视频view移出掉，隐藏SystemBar，然后在根view通过全屏的LayoutParams再把这个视频viwe添加进去</p>
+<h1 id="直播"><a href="#直播" class="headerlink" title="直播"></a>直播</h1><p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/SurfaceView%E5%92%8C%E8%A7%86%E9%A2%91.resources/2023/09/18/09-57-08-ad2c5ee0ec451e44ec363b42f62b8cd0-1240-113da1.jpg" srcset="/img/loading.gif" lazyload alt="1240"></p>
+<p>音、视频的采集、 处理（美颜、滤镜）、编码（h264、AAC）、推流、拉流<br><em>直播可以通过 UDP 降低传输延迟</em>。</p>
+<p>播放端<br>ijkplayer是基于FFmpeg的跨平台播放器，这个开源项目已经被多个 App 使用，其中映客、美拍和斗鱼使用了 ijkplayer（5700+️）</p>
+<p>推送端<br>个人的话GitHub上有很多开源项目。商用的话可以选择各大厂商的SDK，网易直播云、七牛、阿里、腾讯、百度、新浪都有。<br>使用直播云的好处就是能快速上线App，功能十分齐全，可以播放器和推流端，服务器一套下来，有专业客服人员帮助集成到工程中，缺点就是流量费太贵了，具体可以了解下各大厂商的收费标准。</p>
+<h2 id="软解和硬解"><a href="#软解和硬解" class="headerlink" title="软解和硬解"></a>软解和硬解</h2><p>视频解码工作从处理器那里分离出来，交给显卡去做，这就叫做“硬解码“，纯粹的“硬解码”在现阶段是不存在的，ＣＰＵ依然在发挥一部分作用，只不过硬解码时ＧＰＵ／ＶＰＵ已经成为运算的主力。</p>
+<p>[[腾讯云直播]]</p>
+<h2 id="流程"><a href="#流程" class="headerlink" title="流程"></a>流程</h2><p>我们分别从摄像头 &#x2F; 录音设备采集数据，将数据送入编码器，分别编码出视轨 &#x2F; 音轨之后，再送入合成器（MediaRemuxer 或者类似 mp4v2、FFmpeg 之类的处理库），最终输出 MP4 文件。<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/SurfaceView%E5%92%8C%E8%A7%86%E9%A2%91.resources/2023/09/18/09-57-08-7a14a4ea1edd35b00640957d167bb117-unknown_filename.1-99a74d.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.1"></p>
+<p>对于目前的视频类 App 来说，还有各种各样的滤镜和美颜效果，实际上都可以基于 OpenGL 来实现。</p>
+<h2 id="视频编辑"><a href="#视频编辑" class="headerlink" title="视频编辑"></a>视频编辑</h2><p>在当下视频类 App 中，你可以见到各种视频裁剪、视频编辑的功能，例如：<br>裁剪视频的一部分。<br>多个视频进行拼接。</p>
+<p><strong>对于视频裁剪、拼接来说，Android 直接提供了 MediaExtractor</strong> 的接口，结合 seek 以及对应读取帧数据 readSampleData 的接口，我们可以直接获取对应时间戳的帧的内容，这样读取出来的是已经编码好的数据，因此无需重新编码，直接可以输入合成器再次合成为 MP4。<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/SurfaceView%E5%92%8C%E8%A7%86%E9%A2%91.resources/2023/09/18/09-57-08-bf719ef4f05d166b08e4aa93691def99-unknown_filename.2-ecf1aa.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.2"><br>我们只需要 seek 到需要裁剪原视频的时间戳，然后一直读取 sampleData，送入 MediaMuxer 即可，这是视频裁剪最简单的实现方式。<br>上面是基础的视频裁剪流程，对于视频拼接，也是类似得到多段 H.264 数据之后，才一同送入合成器。<br>MediaPlayer 无法精准的seek</p>
+<p><strong>视频特效滤镜</strong><br>播放的视频可能是作为视频编辑的一部分，在剪辑时需要实时预览视频特效。我们可以简单配置播放视频的 View 为一个 GLSurfaceView，有了 OpenGL 的环境，我们就可以在这上实现各种特效、滤镜的效果了。而<strong>对于视频编辑常见的快进、倒放之类的播放配置，MediaPlayer 也有直接的接口可以设置</strong>。一般的流程是下面这样的。<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/SurfaceView%E5%92%8C%E8%A7%86%E9%A2%91.resources/2023/09/18/09-57-08-e10a1b911a85cc4817a2971b0b1f97a3-unknown_filename.3-80882d.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.3"><br>我们将解码之后的渲染交给 OpenGL，然后输出到编码器的 InputSurface 上，来实现整套编码流程。</p>
+<p><strong>视频播放</strong></p>
+<ol>
+<li>需要播放的视频可能本身并不在本地，很多可能都是网络视频，有边下边播的需求。</li>
+<li>播放的视频可能是作为视频编辑的一部分，在剪辑时需要实时预览视频特效。<br> 对于第二种场景，我们可以简单配置播放视频的 View 为一个 GLSurfaceView，有了 OpenGL 的环境，我们就可以在这上实现各种特效、滤镜的效果了。而对于视频编辑常见的快进、倒放之类的播放配置，MediaPlayer 也有直接的接口可以设置。</li>
+</ol>
+<p>虽然 MediaPlayer 也能实现在线视频播放，但实际使用下来，会有两个问题：</p>
+<ul>
+<li>通过设置 MediaPlayer 视频 URL 方式下载下来的视频，被放到了一个私有的位置，App 不容易直接访问，这样会导致我们没法做视频预加载，而且之前已经播放完、缓冲完的视频，也不能重复利用原有缓冲内容。</li>
+<li>同视频剪辑直接使用 MediaExtractor 返回的数据问题一样，MediaPlayer 同样无法精确 seek，只能 seek 到有关键帧的地方。</li>
+</ul>
+<p>对于第一个问题，我们可以通过视频 URL 代理下载的方式来解决，通过本地使用 Local HTTP Server 的方式代理下载到一个指定的地方。现在开源社区已经有很成熟的项目实现，例如AndroidVideoCache。<br>而对于第二个问题来说，可以直接使用 Google 开源的ExoPlayer，简单又快捷，而且也能支持设置在线视频 URL。</p>
+<h2 id="边下边播"><a href="#边下边播" class="headerlink" title="边下边播"></a>边下边播</h2><p>常见的网络边下边播视频的格式都是 MP4，但有些视频直接上传到服务器上的时候，我们会发现无论是使用 MediaPlayer 还是 ExoPlayer，似乎都只能等待到整个视频都下载完才能开始播放，没有达到边下边播的体验。<br>这个问题的原因实际上是因为 MP4 的格式导致的，具体来看，是跟 MP4格式中的 moov 有关。</p>
+<p>MP4 格式中有一个叫作 moov 的地方存储这当前 MP4 文件的元信息，包括当前 MP4 文件的音轨视轨格式、视频长度、播放速率、视轨关键帧位置偏移量等重要信息，MP4 文件在线播放的时候，需要 moov 中的信息才能解码音轨视轨。</p>
+<p>而上述问题发生的原因在于，当 moov 在 MP4 文件尾部的时候，播放器没有足够的信息来进行解码，因此视频变得需要直接下载完之后才能解码播放。因此，要实现 MP4 文件的边下边播，则需要将 moov 放到文件头部。目前来说，业界已经有非常成熟的工具，FFmpeg跟mp4v2都可以<strong>将一个 MP4 文件的 moov 提前放到文件头部</strong>。例如使用 FFmpeg，则是如下命令：</p>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs pgsql">ffmpeg -i <span class="hljs-keyword">input</span>.mp4 -movflags faststart -acodec <span class="hljs-keyword">copy</span> -vcodec <span class="hljs-keyword">copy</span> output.mp4<br></code></pre></td></tr></table></figure>
+<p>在视频播放的实践中，除了 MP4 格式来作为边下边播的格式以外，还有更多的场景需要使用其他格式，例如 m3u8、FLV 之类，业界在客户端中常见的实现包括ijkplayer、ExoPlayer，有兴趣的同学可以参考下它们的实现。</p>
+<h2 id="AndroidVideoCache"><a href="#AndroidVideoCache" class="headerlink" title="AndroidVideoCache"></a>AndroidVideoCache</h2><p>AndroidVideoCache是一个音视频缓存库，用于支持VideoView&#x2F;MediaPlayer, ExoPlayer ,IJK等播放器的边下载边播放，按照github列出支持的特性如下：<br>视频文件缓存，预缓存（秒开处理），监控</p>
+<figure class="highlight abnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs abnf">HttpProxyCacheServer proxy <span class="hljs-operator">=</span> getProxy()<span class="hljs-comment">;//注意不能传入本地路径，本地的你还传进来干嘛。</span><br>String proxyUrl <span class="hljs-operator">=</span> proxy.getProxyUrl(VIDEO_URL)<span class="hljs-comment">;</span><br>videoView.setVideoPath(proxyUrl)<span class="hljs-comment">;</span><br></code></pre></td></tr></table></figure>
+<p>该项目的原理其实就是<strong>将流数据源url地址转化为本地的代理服务器url</strong><br><a href="http://127.0.0.1:LocalPort/url，然后它开一个服务器一边下载缓存视频，一边把缓存的数据正常返回给你的播放器，如果已经缓存过的这里会返回一个本地文件路径">http://127.0.0.1:LocalPort/url，然后它开一个服务器一边下载缓存视频，一边把缓存的数据正常返回给你的播放器，如果已经缓存过的这里会返回一个本地文件路径</a></p>
+<p>您可以使用exoPlayer与AndroidVideoCache。查看分支中的sample应用exoPlayer。注意exoPlayer也支持缓存。</p>
+<h1 id="视频知识"><a href="#视频知识" class="headerlink" title="视频知识"></a>视频知识</h1><h2 id="编解码"><a href="#编解码" class="headerlink" title="编解码"></a>编解码</h2><p><strong>编码 就是压缩，解码 就是解压缩</strong>。视频文件的本质其实就是图片的集合而已，当一段连续的图片不断的出现在人眼前(一般一个连贯的电影或者动画至少要求一秒24帧，也就是一秒内连续出现24张图片)，肉眼就会“欺骗性”的告诉大脑我们在看一个视频，而不是幻灯片。<br>假设一张像素为1280X720(清晰度，宽1280个像素点，高720个像素点)的图片，大小为约为1280X720X3 bytes,就是2.7MB。大家可以猜想一下为何我这里还需要乘以一个数字3.那么一段60秒钟的小电影，就需要60X24（24张图片）X2.7MB ，约为3.9GB了！<br>在播放器的客户端，不管是PC，手机也好，他们要显示在屏幕上的，必须是实实在在的图片啊，所以这些被压缩过的文件最终又必须被还原成图片格式，这就是解码，解压缩。</p>
+<p><strong>H.264&#x2F;265都是编解码规范</strong></p>
+<h2 id="MP4"><a href="#MP4" class="headerlink" title="MP4"></a>MP4</h2><p>呆坐了整整30s。那么对于这种“静态的场景”，视频压缩算法会只取这三十秒的前几帧作为基准帧图片，对其余的29s的帧，采取只保存“不同的部分”的策略，这样就不用保存这些差不多相同的图片，这种做法叫“去冗余”。大大减少了视频的体积。<br>mp4,rmvb,avi，他们应该被叫做容器文件(序列)。。。。因为一个容器里，不仅仅包括了视频(video)数据（轨道），还包括了(audio)音频数据，有的容器还内嵌字幕，那么就还有文字(Text)数据。<br>MP4 文件里面最重要的却是这个MetaData，它包含了很多关于视频的原始数据，比如视频的大小，视频的时长，还有一个索引表，这个索引表包含了不同轨道的起始位置。<br>举个简单的例子，有些电影包含粤语，国语两个声道。我们想换声道的时候会告诉播放器，我想听粤语，那么播放器会去索引表查找粤语的轨道起始位置，并且源源不断的读取粤语音轨的数据并播放出来。<br>直接看某一段视频，其实就是http的分段式下载RANGE的header</p>
+<h2 id="编码格式"><a href="#编码格式" class="headerlink" title="编码格式"></a>编码格式</h2><p>对于我们来说，最常见的视频格式就是MP4格式，这是一个通用的容器格式。所谓容器格式，就意味内部要有对应的数据流用来承载内容。而且既然是一个视频，那必然有音轨和视轨，而音轨、视轨本身也有对应的格式。常见的音轨、视轨格式包括：</p>
+<p>视轨：其中，目前大部分 Android 手机都支持 H.264 格式的直接硬件编码和解码；<strong>对于 H.265 来说，Android 5.0 以上的机器就支持直接硬件解码了，但是对于硬件编码，目前只有一部分高端芯片可以支持</strong>，例如高通的 8xx 系列、华为的 98x 系列。对于视轨编码来说，分辨率越大性能消耗也就越大，编码所需的时间就越长。<br>音轨：AAC<br>h265 体积差不多是同质量的 h264 的一半</p>
+<h2 id="码率"><a href="#码率" class="headerlink" title="码率"></a>码率</h2><p>同一个压缩格式下，码率越高质量也就越好，码率越高越清晰，反之则画面粗糙而多马赛克<br>码率：影响体积，与体积成正比：码率越大，体积越大。清晰度正比<br>码率（码流率）&#x3D;采样率 x 位深度 x 声道<br>文件大小 &#x3D; 码率 x 时长<br>码率不是越大越好，码率超过一定数值，对图像的质量没有多大影响。太大体积也大，意味着更多的费用开支。<br>采样率（帧率）越高，就能越真实低保留【原始模拟的音视频细节】</p>
+<h2 id="帧率（FPS）"><a href="#帧率（FPS）" class="headerlink" title="帧率（FPS）"></a>帧率（FPS）</h2><p>帧率就是在1秒钟时间里传输的图片的帧数<br>影响画面流畅度，与画面流畅度成正比：帧率越大，画面越流畅；帧率越小，画面越有跳动感。如果码率为变量，则帧率也会影响体积，帧率越高，每秒钟经过的画面越多，需要的码率也越高，体积也越大。<br>高于16的时候，就会认为是连贯的<br>帧率不要超过24</p>
+<p><strong>分辨率</strong><br>影响图像大小，与图像大小成正比：分辨率越高，图像越大；分辨率越低，图像越小。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Android/" class="category-chain-item">Android</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/Android/view/" class="category-chain-item">view</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>SurfaceView和视频</div>
+      <div>http://peiniwan.github.io/2025/12/385f783fe040.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>六月的雨</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年12月16日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/12/6c2523187470.html" title="WebSocket">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">WebSocket</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/12/c0176dd9412b.html" title="正则表达式">
+                        <span class="hidden-mobile">正则表达式</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"OwNIdaopOn1rwNhtotGOGC0B-gzGzoHsz","appKey":"eadytQ2XqWmxuvAKeg08XX83","path":"window.location.pathname","placeholder":null,"avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":true,"recordIP":false,"serverURLs":"https://ownidaop.lc-cn-n1-shared.com","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
