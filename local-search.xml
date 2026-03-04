@@ -15,6 +15,8 @@
       
       <category>源码</category>
       
+      <category>handler</category>
+      
     </categories>
     
     
@@ -33,6 +35,8 @@
     <categories>
       
       <category>源码</category>
+      
+      <category>handler</category>
       
     </categories>
     
@@ -53,6 +57,8 @@
       
       <category>源码</category>
       
+      <category>handler</category>
+      
     </categories>
     
     
@@ -72,6 +78,8 @@
       
       <category>源码</category>
       
+      <category>handler</category>
+      
     </categories>
     
     
@@ -90,6 +98,8 @@
     <categories>
       
       <category>源码</category>
+      
+      <category>handler</category>
       
     </categories>
     
@@ -151,6 +161,8 @@
     <categories>
       
       <category>源码</category>
+      
+      <category>Framework</category>
       
     </categories>
     
@@ -276,6 +288,8 @@
       
       <category>源码</category>
       
+      <category>Framework</category>
+      
     </categories>
     
     
@@ -314,6 +328,8 @@
     
     <categories>
       
+      <category>源码</category>
+      
       <category>AOSP</category>
       
     </categories>
@@ -332,6 +348,8 @@
     
     
     <categories>
+      
+      <category>源码</category>
       
       <category>AOSP</category>
       
@@ -352,6 +370,8 @@
     
     <categories>
       
+      <category>源码</category>
+      
       <category>AOSP</category>
       
     </categories>
@@ -371,6 +391,8 @@
     
     <categories>
       
+      <category>源码</category>
+      
       <category>AOSP</category>
       
     </categories>
@@ -389,6 +411,8 @@
     
     
     <categories>
+      
+      <category>源码</category>
       
       <category>AOSP</category>
       
@@ -896,7 +920,9 @@
     
     <categories>
       
-      <category>Java</category>
+      <category>其他语言</category>
+      
+      <category>视频</category>
       
     </categories>
     
@@ -917,6 +943,8 @@
       
       <category>其他语言</category>
       
+      <category>视频</category>
+      
     </categories>
     
     
@@ -934,7 +962,9 @@
     
     <categories>
       
-      <category>未分类</category>
+      <category>其他语言</category>
+      
+      <category>视频</category>
       
     </categories>
     
@@ -953,9 +983,9 @@
     
     <categories>
       
-      <category>Android</category>
+      <category>其他语言</category>
       
-      <category>view</category>
+      <category>视频</category>
       
     </categories>
     
@@ -1186,6 +1216,8 @@
       
       <category>其他语言</category>
       
+      <category>kotlin</category>
+      
     </categories>
     
     
@@ -1247,6 +1279,8 @@
       
       <category>其他语言</category>
       
+      <category>flutter</category>
+      
     </categories>
     
     
@@ -1265,6 +1299,8 @@
     <categories>
       
       <category>其他语言</category>
+      
+      <category>flutter</category>
       
     </categories>
     
@@ -1348,6 +1384,8 @@
       
       <category>其他语言</category>
       
+      <category>flutter</category>
+      
     </categories>
     
     
@@ -1388,6 +1426,8 @@
       
       <category>其他语言</category>
       
+      <category>compose</category>
+      
     </categories>
     
     
@@ -1407,7 +1447,7 @@
       
       <category>其他语言</category>
       
-      <category>kotlin</category>
+      <category>compose</category>
       
     </categories>
     
@@ -1427,6 +1467,8 @@
     <categories>
       
       <category>其他语言</category>
+      
+      <category>compose</category>
       
     </categories>
     
@@ -1483,9 +1525,7 @@
     
     <categories>
       
-      <category>其他语言</category>
-      
-      <category>kotlin</category>
+      <category>Java</category>
       
     </categories>
     
@@ -1805,6 +1845,8 @@
       
       <category>Android</category>
       
+      <category>优化</category>
+      
     </categories>
     
     
@@ -1866,6 +1908,8 @@
       
       <category>Android</category>
       
+      <category>优化</category>
+      
     </categories>
     
     
@@ -1884,6 +1928,8 @@
     <categories>
       
       <category>Android</category>
+      
+      <category>优化</category>
       
     </categories>
     
@@ -1988,6 +2034,8 @@
       
       <category>Android</category>
       
+      <category>view</category>
+      
     </categories>
     
     
@@ -2007,6 +2055,8 @@
       
       <category>Android</category>
       
+      <category>view</category>
+      
     </categories>
     
     
@@ -2024,7 +2074,9 @@
     
     <categories>
       
-      <category>源码</category>
+      <category>Android</category>
+      
+      <category>view</category>
       
     </categories>
     
@@ -2044,6 +2096,8 @@
     <categories>
       
       <category>Android</category>
+      
+      <category>view</category>
       
     </categories>
     
