@@ -16,12 +16,12 @@
   <meta name="author" content="六月的雨">
   <meta name="keywords" content="">
   
-    <meta name="description" content="WebView 性能优化[[4-WebView 缓存池]]  在客户端刚启动时，就初始化一个全局的 WebView 待用，并隐藏；当用户访问了 WebView 时，直接使用这个 WebView 加载对应网页，并展示。这种方法可以比较有效的减少初始化 WebView 的时间。 主要的还是 h5那边的优化 Android 版本不同，采用了不同的内核，兼容性 crash oom：WebView 动态加载">
+    <meta name="description" content="WebView 性能优化Android 常见通信方式 addJavascriptInterface shouldOverrideUrlLoading（URL scheme） evaluateJavascript &#x2F; loadUrl(&quot;javascript:...&quot;)   H5 调 Native 是同步还是异步？为什么？ 正确方向：  绝大多数是 异步 JS 单线程 N">
 <meta property="og:type" content="article">
 <meta property="og:title" content="5.Android其他优化">
 <meta property="og:url" content="http://peiniwan.github.io/2025/12/f43e3cf48b3d.html">
 <meta property="og:site_name">
-<meta property="og:description" content="WebView 性能优化[[4-WebView 缓存池]]  在客户端刚启动时，就初始化一个全局的 WebView 待用，并隐藏；当用户访问了 WebView 时，直接使用这个 WebView 加载对应网页，并展示。这种方法可以比较有效的减少初始化 WebView 的时间。 主要的还是 h5那边的优化 Android 版本不同，采用了不同的内核，兼容性 crash oom：WebView 动态加载">
+<meta property="og:description" content="WebView 性能优化Android 常见通信方式 addJavascriptInterface shouldOverrideUrlLoading（URL scheme） evaluateJavascript &#x2F; loadUrl(&quot;javascript:...&quot;)   H5 调 Native 是同步还是异步？为什么？ 正确方向：  绝大多数是 异步 JS 单线程 N">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android%E5%85%B6%E4%BB%96%E4%BC%98%E5%8C%96.resources/2023/09/15/18-49-35-93885f320fefe236b76196fbcf6ad5a0-unknown_filename.7-ef69d2.png">
 <meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android%E5%85%B6%E4%BB%96%E4%BC%98%E5%8C%96.resources/2023/09/15/18-49-35-246cacada30d0c628b8117abffb00621-unknown_filename.2-c8a0a9.png">
@@ -214,7 +214,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          3.2k 字
+          3.3k 字
         
       </span>
     
@@ -225,7 +225,7 @@
         
         
         
-          27 分钟
+          28 分钟
         
       </span>
     
@@ -275,7 +275,20 @@
             
               <div class="markdown-body">
                 
-                <h2 id="WebView-性能优化"><a href="#WebView-性能优化" class="headerlink" title="WebView 性能优化"></a>WebView 性能优化</h2><p>[[4-WebView 缓存池]]</p>
+                <h2 id="WebView-性能优化"><a href="#WebView-性能优化" class="headerlink" title="WebView 性能优化"></a>WebView 性能优化</h2><h3 id="Android-常见通信方式"><a href="#Android-常见通信方式" class="headerlink" title="Android 常见通信方式"></a>Android 常见通信方式</h3><ol>
+<li><code>addJavascriptInterface</code></li>
+<li><code>shouldOverrideUrlLoading</code>（URL scheme）</li>
+<li><code>evaluateJavascript</code> &#x2F; <code>loadUrl(&quot;javascript:...&quot;)</code></li>
+</ol>
+<p> H5 调 Native 是同步还是异步？为什么？</p>
+<p><strong>正确方向：</strong></p>
+<ul>
+<li>绝大多数是 <strong>异步</strong></li>
+<li>JS 单线程</li>
+<li>Native 操作可能耗时</li>
+<li>回调或 Promise</li>
+</ul>
+<p>[[4-WebView 缓存池]]</p>
 <ul>
 <li>在客户端刚启动时，就初始化一个全局的 WebView 待用，并隐藏；当用户访问了 WebView 时，直接使用这个 WebView 加载对应网页，并展示。这种方法可以比较有效的减少初始化 WebView 的时间。</li>
 <li>主要的还是 h5那边的优化</li>
@@ -294,7 +307,12 @@
 <li>用户体验方面，可以在顶部显示一个一个 progress，显示网页加载进度，而不是一个白屏呈现给用户看。</li>
 <li>设置一个全局的 WebView，减少 WebView 初始化的时间，避免后续操作的堵塞</li>
 </ul>
-<h3 id="内存泄露"><a href="#内存泄露" class="headerlink" title="内存泄露"></a>内存泄露</h3><p>removeView、clearHistory、clearView、destroy、置为 null，各种 dialog dismiss</p>
+<h3 id="内存泄露"><a href="#内存泄露" class="headerlink" title="内存泄露"></a>内存泄露</h3><ul>
+<li>WebView 持有 Activity Context</li>
+<li>JSBridge 持有外部引用</li>
+<li>页面未销毁</li>
+</ul>
+<p>removeView、clearHistory、clearView、destroy、置为 null，各种 dialog dismiss</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs java">fun <span class="hljs-title function_">destroyWebView</span><span class="hljs-params">()</span> &#123;<br>	bridgeWebView?.let &#123;<br>		<span class="hljs-keyword">try</span> &#123;<br>			<span class="hljs-type">val</span> <span class="hljs-variable">parent</span> <span class="hljs-operator">=</span> it.parent<br>			parent?.let &#123; p -&gt;<br>				(p as ViewGroup).removeView(bridgeWebView)<br>			&#125;<br>			it.stopLoading()<br>			it.settings.javaScriptEnabled = <span class="hljs-literal">false</span><br>			it.loadDataWithBaseURL(<span class="hljs-literal">null</span>, <span class="hljs-string">&quot;&quot;</span>, <span class="hljs-string">&quot;text/html&quot;</span>, <span class="hljs-string">&quot;utf-8&quot;</span>, <span class="hljs-literal">null</span>)<br>			it.clearHistory()<br>			it.clearView()<br>			it.removeAllViews()<br>			fileJsController?.release()<br>			it.destroy()<br>			bridgeWebView = <span class="hljs-literal">null</span><br>			dialog?.dismiss()<br>			activateDialog?.dismiss()<br>		&#125; <span class="hljs-keyword">catch</span> (e: Exception) &#123;<br>			e.printStackTrace()<br>		&#125;<br>	&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
 
 <h3 id="引擎初始化"><a href="#引擎初始化" class="headerlink" title="引擎初始化"></a>引擎初始化</h3><p>WebView 在实例化的时候，需要<em>先初始化 Chromium 引擎</em>，而 Chromium 引擎又是一个重量级的组件，而且很多初始化的工作都需要在主线程中完成，这样就很容易造成主线程卡顿甚至 ANR。</p>

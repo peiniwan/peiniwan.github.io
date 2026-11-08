@@ -210,67 +210,6 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2025/12/c8be8dba48e3.html" target="_self">
-          6.WebView 缓存池
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2025/12/c8be8dba48e3.html" target="_self">
-        <div>
-          一次把 WebView 秒开：WebView 缓存池的设计与落地移动端只要一碰到 H5，性能问题通常绕不开：首屏白屏、进入慢、返回卡、低端机尤其明显。很多时候并不是页面本身慢，而是 WebView 第一次创建与初始化 太“重”。 如果你的业务里存在「高频打开 WebView」的场景（活动页、协议页、结果页、视频互动层等），那么 WebView 缓存池基本是性价比最高的一类优化：把创建成本前置，把复
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2025-12-16 21:59" pubdate>
-              2025-12-16
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/Android/" class="category-chain-item">Android</a>
-  
-  
-    <span>></span>
-    
-  <a href="/categories/Android/%E4%BC%98%E5%8C%96/" class="category-chain-item">优化</a>
-  
-  
-
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
         <a href="/2025/12/f43e3cf48b3d.html" target="_self">
           5.Android其他优化
         </a>
@@ -279,7 +218,7 @@
       
       <a class="index-excerpt index-excerpt__noimg" href="/2025/12/f43e3cf48b3d.html" target="_self">
         <div>
-          WebView 性能优化[[4-WebView 缓存池]]  在客户端刚启动时，就初始化一个全局的 WebView 待用，并隐藏；当用户访问了 WebView 时，直接使用这个 WebView 加载对应网页，并展示。这种方法可以比较有效的减少初始化 WebView 的时间。 主要的还是 h5那边的优化 Android 版本不同，采用了不同的内核，兼容性 crash oom：WebView 动态加载
+          WebView 性能优化Android 常见通信方式 addJavascriptInterface shouldOverrideUrlLoading（URL scheme） evaluateJavascript &#x2F; loadUrl(&quot;javascript:...&quot;)   H5 调 Native 是同步还是异步？为什么？ 正确方向：  绝大多数是 异步 JS 单线程 N
         </div>
       </a>
 
@@ -428,13 +367,6 @@
   <a href="/categories/Android/" class="category-chain-item">Android</a>
   
   
-    <span>></span>
-    
-  <a href="/categories/Android/%E4%BC%98%E5%8C%96/" class="category-chain-item">优化</a>
-  
-  
-
-  
 
       </span>
     
@@ -488,13 +420,6 @@
         
   <a href="/categories/Android/" class="category-chain-item">Android</a>
   
-  
-    <span>></span>
-    
-  <a href="/categories/Android/%E4%BC%98%E5%8C%96/" class="category-chain-item">优化</a>
-  
-  
-
   
 
       </span>
@@ -794,12 +719,59 @@
   <a href="/categories/Android/" class="category-chain-item">Android</a>
   
   
-    <span>></span>
-    
-  <a href="/categories/Android/view/" class="category-chain-item">view</a>
-  
-  
 
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2025/12/a0bad8cfa7a3.html" target="_self">
+          4.RecycleView 嵌套卡顿
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2025/12/a0bad8cfa7a3.html" target="_self">
+        <div>
+          RecycleView 嵌套卡顿https://blog.csdn.net/qq_30983519/article/details/81280274  共用 RecycledViewPool，holder. innerRecyclerView. setRecycledViewPool (viewPool)2. setInitialPrefetchItemCount (int) 来优化嵌套时预加载性
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2025-12-16 21:59" pubdate>
+              2025-12-16
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Android/" class="category-chain-item">Android</a>
+  
   
 
       </span>

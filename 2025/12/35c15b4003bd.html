@@ -16,12 +16,12 @@
   <meta name="author" content="六月的雨">
   <meta name="keywords" content="">
   
-    <meta name="description" content="文章[[4.Flow学习]] MVVM 进阶版：MVI 架构了解一下 MVI 架构更佳实践：Mavericks 响应式编程 MVI 是在响应式编程的前提下，通过 “将页面状态聚合” 来统一消除上述 2 个问题，也即原先分散在各个 LiveData 中的 String、Boolean 等状态，现全部聚合到一个 JavaBean &#x2F; data class 中，由唯一的粘性观察者回推，所有控件">
+    <meta name="description" content="8T5RHKVMGN ## 文章 [[4.Flow学习]] MVVM 进阶版：MVI 架构了解一下 MVI 架构更佳实践：Mavericks 响应式编程 MVI 是在响应式编程的前提下，通过 “将页面状态聚合” 来统一消除上述 2 个问题，也即原先分散在各个 LiveData 中的 String、Boolean 等状态，现全部聚合到一个 JavaBean &#x2F; data class 中，由">
 <meta property="og:type" content="article">
 <meta property="og:title" content="MVI学习">
 <meta property="og:url" content="http://peiniwan.github.io/2025/12/35c15b4003bd.html">
 <meta property="og:site_name">
-<meta property="og:description" content="文章[[4.Flow学习]] MVVM 进阶版：MVI 架构了解一下 MVI 架构更佳实践：Mavericks 响应式编程 MVI 是在响应式编程的前提下，通过 “将页面状态聚合” 来统一消除上述 2 个问题，也即原先分散在各个 LiveData 中的 String、Boolean 等状态，现全部聚合到一个 JavaBean &#x2F; data class 中，由唯一的粘性观察者回推，所有控件">
+<meta property="og:description" content="8T5RHKVMGN ## 文章 [[4.Flow学习]] MVVM 进阶版：MVI 架构了解一下 MVI 架构更佳实践：Mavericks 响应式编程 MVI 是在响应式编程的前提下，通过 “将页面状态聚合” 来统一消除上述 2 个问题，也即原先分散在各个 LiveData 中的 String、Boolean 等状态，现全部聚合到一个 JavaBean &#x2F; data class 中，由">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/MVI%E5%AD%A6%E4%B9%A0.resources/2023/09/15/17-54-24-7256f73dfbc44cf9009a4e36bb0dc56f-unknown_filename.2-20144d.png">
 <meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/MVI%E5%AD%A6%E4%B9%A0.resources/2023/09/15/17-54-24-11967c835f0c1b4f07e6b4685c4b2024-unknown_filename-5f81eb.png">
@@ -274,7 +274,8 @@
             
               <div class="markdown-body">
                 
-                <h2 id="文章"><a href="#文章" class="headerlink" title="文章"></a>文章</h2><p>[[4.Flow学习]]</p>
+                <p>8T5RHKVMGN ## 文章</p>
+<p>[[4.Flow学习]]</p>
 <p><a target="_blank" rel="noopener" href="https://juejin.cn/post/7022624191723601928">MVVM 进阶版：MVI 架构了解一下</a></p>
 <p><a target="_blank" rel="noopener" href="https://juejin.cn/post/7025222741322121223">MVI 架构更佳实践：Mavericks</a></p>
 <h2 id="响应式编程"><a href="#响应式编程" class="headerlink" title="响应式编程"></a>响应式编程</h2><p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/MVI%E5%AD%A6%E4%B9%A0.resources/2023/09/15/17-54-24-7256f73dfbc44cf9009a4e36bb0dc56f-unknown_filename.2-20144d.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.2|600"></p>
@@ -286,6 +287,7 @@
 <p>但页面的所有状态都通过一个 LiveData 来管理，也带来了一个严重的问题，即页面不支持局部刷新</p>
 <p>虽说如果是 RecyclerView 可以通过 DifferUtil 来解决，但毕竟不是所有页面都是通过 RecyclerView 写的，支持 DifferUtil 也有一定的开发成本</p>
 <p>因此直接使用 MVI 架构会带来一定的性能损耗，相信这是很多人不愿意用 MVI 架构的原因之一</p>
+<p>还有一点重要的：<strong>单向数据流</strong></p>
 <h3 id="MVI"><a href="#MVI" class="headerlink" title="MVI"></a>MVI</h3><p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/MVI%E5%AD%A6%E4%B9%A0.resources/2023/09/15/17-54-24-11967c835f0c1b4f07e6b4685c4b2024-unknown_filename-5f81eb.png" srcset="/img/loading.gif" lazyload alt="unknown_filename|500"><br>由于没有明确的状态管理标准，随着应用程序的增长或添加功能或事先没有计划的功能，视图渲染和业务逻辑可能会变得有点混乱，并且这种情况经常发生在 Android 应用开发过程中。可能你经常遇到状态管理导致<strong>业务逻辑和 UI 渲染的分工不明确</strong>，最终导致应用架构的混乱。而新提出的 MVI 架构，提倡一种单向数据流的设计思想，非常适合数据驱动型的 UI 展示项目。MVI 的架构思想来源于前端，由于 Model、View 和 Intent 三部分组成。</p>
 <p><strong>Model</strong>: 与其他 MVVM 中的 Model 不同的是，MVI 的 Model 主要指 UI 状态（State）。当前界面展示的内容无非就是 UI 状态的一个快照：例如数据加载过程、控件位置等都是一种 UI 状态<br><strong>View</strong>: 与 MVvM 中的 View 一致，可能是一个 Activity、Fragment 或者任意 UI 承载单元。MVI 中的 View 通过订阅 Intent 的变化实现界面刷新<br><strong>Intent</strong>: 此 Intent 不是 Activity 的 Intent，<em>用户的任何操作都被包装成 Intent 后发送给 Model 进行数据请求</em></p>
 <p>运用函数式编程思想将需求翻译成业务意图（I）、数据（M）、界面状态（V）间的函数关系，再用响应式编程的方式将其串联成数据流的过程。</p>

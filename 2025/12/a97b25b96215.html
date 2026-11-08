@@ -24,6 +24,7 @@
 <meta property="og:description" content="SurfaceViewSurfaceView 的绘制原理 在 WMS 中会为这个 Window 分配 Surface，并确定显示层级，可见负责显示界面的是画布 Surface，而不是窗口本身，WMS 将他管理的 Surface 交由 SurfaceFlinger 处理，SurfaceFlinger 将这些 Surface 合并后放入到 buffer 中，屏幕会定时从 buffer 中获取显示数据，">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%B3%BB%E7%BB%9F%E6%BA%90%E7%A0%81.resources/2023/09/15/18-23-14-566532bd5ebd93d5f914b24ef6b00830-unknown_filename.2-9ff731.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/mis/483310b65ce969d2939e14f389b3c3c6.png">
 <meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%B3%BB%E7%BB%9F%E6%BA%90%E7%A0%81.resources/2023/09/15/18-23-14-9564e77420be08d80e487b35d1279a64-unknown_filename.17-d02162.png">
 <meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%B3%BB%E7%BB%9F%E6%BA%90%E7%A0%81.resources/2023/09/15/18-23-14-cd7cb4e3634f82cb911a2d16766b3c2d-unknown_filename.9-4cbd16.png">
 <meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%B3%BB%E7%BB%9F%E6%BA%90%E7%A0%81.resources/2023/09/15/18-23-14-b4e2fbc08e08f9e7481929820cb6d48f-unknown_filename.6-016b82.png">
@@ -283,7 +284,7 @@
 <li><strong>HWComposer 是基于硬件来产生 VSync 信号的，来通知 SurfaceFlinger 重绘控制显示的帧率。</strong></li>
 <li>图像流生产方可以是生成图形缓冲区以供消耗的任何内容。例如 OpenGL ES、Canvas 2D 和 mediaserver 视频解码器。</li>
 </ul>
-<p>![[Pasted image 20250902172407.png]]</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/mis/483310b65ce969d2939e14f389b3c3c6.png" srcset="/img/loading.gif" lazyload></p>
 <h3 id="刷新率"><a href="#刷新率" class="headerlink" title="刷新率"></a>刷新率</h3><p>取的的时间<br>[[2.Handler 里的各种消息]]</p>
 <h2 id="PMS"><a href="#PMS" class="headerlink" title="PMS"></a>PMS</h2><h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><ul>
 <li>应用安装的时候，通过 PackageManagerService 解析 apk 的 AndroidManifest.xml 文件，提取出这个 apk 的信息写入到 system&#x2F;packages.xml 文件中，这些信息包括：权限、应用包名、icon、apk 的安装位置、版本、userID 等等。packages.xml 文件位于系统目录下&#x2F;data&#x2F;system&#x2F;packages.xml。</li>

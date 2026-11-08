@@ -213,7 +213,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          3.6k 字
+          3.7k 字
         
       </span>
     
@@ -224,7 +224,7 @@
         
         
         
-          30 分钟
+          31 分钟
         
       </span>
     
@@ -329,24 +329,23 @@
 <li><strong>灵活性</strong>: 自动保存所有数据可能会导致不必要的开销，因为并非所有数据都需要持久保存。例如，一些临时数据可能只在当前界面中使用，不需要保存到 Bundle 中。</li>
 <li><strong>控制力</strong>: 手动保存数据可以让开发者更好地控制保存哪些数据以及何时保存数据。例如，开发者可以选择在特定条件下才保存数据，或者只保存部分数据。</li>
 </ul>
-<h2 id="LiveData"><a href="#LiveData" class="headerlink" title="LiveData"></a>LiveData</h2><p>一句话概括 LiveData：LiveData 是可感知生命周期的，可观察的数据持有者。作用就是更新 UI。<br>它有一些可以被认为是优点的特性：</p>
-<ul>
-<li><strong>观察者的回调永远发生在主线程</strong> 也是缺点，setValue 主线程中调用，子线程 postValue。</li>
-<li><strong>仅持有单个且最新的数据</strong></li>
-<li>自动取消订阅</li>
-<li>提供「可读可写」和「仅可读」两个版本收缩权限</li>
-<li>配合 DataBinding 实现「双向绑定」</li>
+<h2 id="LiveData"><a href="#LiveData" class="headerlink" title="LiveData"></a>LiveData</h2><h3 id="1-LiveData"><a href="#1-LiveData" class="headerlink" title="1. LiveData"></a>1. LiveData</h3><ul>
+<li>是一个<strong>只读的数据持有者</strong></li>
+<li>只能被观察（observe），<strong>不能主动修改数据</strong></li>
+<li>通常用于对外暴露数据，保证封装性<br><code>val userLiveData: LiveData&lt;User&gt;</code></li>
 </ul>
-<p><a target="_blank" rel="noopener" href="https://juejin.cn/post/7007602776502960165?utm_source=gold_browser_extension#comment">不做跟风党，LiveData，StateFlow，SharedFlow 使用场景对比 - 掘金</a></p>
-<p><strong>监听 Acitivty 生命周期可以这样写</strong><br>实现：DefaultLifecycleObserver<br>注册：getLifecycle (). addObserver (GpsManager. getInstance)</p>
-<p>LiveData 是一个可被观察的数据持有者类，它只<em>有在 STARTED 或者 RESUMED 状态时才会被激活，在 DESTROYED 状态时，会自动 removeObserver ()</em><br>有一种情况下，不会自动 removeObserver ()：当你调用 observeForever ()方法的时候，你需要手动去调用 removeObserver()方法。</p>
-<h3 id="LiveData-的优点"><a href="#LiveData-的优点" class="headerlink" title="LiveData 的优点"></a>LiveData 的优点</h3><p>LiveData 的优点是具备生命周期感知，自动管理 Observer，避免内存泄漏。</p>
-<p>防泄漏：当被绑定的组件销毁（destroy）时，观察者会立刻自动清理自身的数据。<br>防崩溃：当 Activity 处于后台状态时，是不会收到 LiveData 的任何事件的。当某个页面请求网络数据成功后需要同步 UI, 但这个页面已经不可见, 这时就会停止同步 UI 的操作</p>
-<blockquote>
-<p>一条消息能被多个观察者消费，多个页面公用 liveDta, 实现多个页面数据的同时监听</p>
-</blockquote>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">class</span> <span class="hljs-title class_">PlayLiveData</span> &#123;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 当前播放进度</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-type">val</span> <span class="hljs-variable">progressLiveData</span> <span class="hljs-operator">=</span> MutableLiveData&lt;ProgressBean&gt;()<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 播放模式</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-type">val</span> <span class="hljs-variable">playModeLiveData</span> <span class="hljs-operator">=</span> MutableLiveData&lt;Int&gt;()<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 重置</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-type">val</span> <span class="hljs-variable">resetLiveData</span> <span class="hljs-operator">=</span> MutableLiveData&lt;Int&gt;()<br><br>&#125;<br>PlayerManager： <span class="hljs-type">val</span> <span class="hljs-variable">playLiveData</span> <span class="hljs-operator">=</span> PlayLiveData ()<br><br>  PlayerManager.instance.playLiveData.progressLiveData.observe (<span class="hljs-built_in">this</span>, Observer &#123;<br>            playVM?.setProgress (it)<br>        &#125;)<br></code></pre></td></tr></table></figure>
-
+<h3 id="2-MutableLiveData"><a href="#2-MutableLiveData" class="headerlink" title="2. MutableLiveData"></a>2. MutableLiveData</h3><ul>
+<li><p>继承自 LiveData</p>
+</li>
+<li><p><strong>可以修改数据</strong></p>
+</li>
+<li><p>提供：</p>
+<ul>
+<li><code>setValue()</code>（主线程）</li>
+<li><code>postValue()</code>（子线程）</li>
+</ul>
+  <figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><code class="hljs markdown"><span class="hljs-code">    private val _userLiveData = MutableLiveData&lt;User&gt;()</span><br><span class="hljs-code">    val userLiveData: LiveData&lt;User&gt; = _userLiveData</span><br><span class="hljs-code">    </span><br><span class="hljs-code">    ```    </span><br><span class="hljs-code">&gt; 这是官方推荐写法：**内部可变，对外不可变**</span><br><span class="hljs-code"></span><br>一句话概括 LiveData：LiveData 是可感知生命周期的，可观察的数据持有者。作用就是更新 UI。<br>它有一些可以被认为是优点的特性：<br><br><span class="hljs-bullet">*</span> <span class="hljs-strong">**观察者的回调永远发生在主线程**</span> 也是缺点，setValue 主线程中调用，子线程 postValue。<br><span class="hljs-bullet">*</span> <span class="hljs-strong">**仅持有单个且最新的数据**</span><br><span class="hljs-bullet">*</span> 自动取消订阅<br><span class="hljs-bullet">*</span> 提供「可读可写」和「仅可读」两个版本收缩权限<br><span class="hljs-bullet">*</span> 配合 DataBinding 实现「双向绑定」<br><br>[<span class="hljs-string">不做跟风党，LiveData，StateFlow，SharedFlow 使用场景对比 - 掘金</span>](<span class="hljs-link">https://juejin.cn/post/7007602776502960165?utm_source=gold_browser_extension#comment</span>)<br><br><span class="hljs-strong">**监听 Acitivty 生命周期可以这样写**</span><br>实现：DefaultLifecycleObserver<br>注册：getLifecycle (). addObserver (GpsManager. getInstance)<br><br>LiveData 是一个可被观察的数据持有者类，它只<span class="hljs-emphasis">*有在 STARTED 或者 RESUMED 状态时才会被激活，在 DESTROYED 状态时，会自动 removeObserver ()*</span><br>有一种情况下，不会自动 removeObserver ()：当你调用 observeForever ()方法的时候，你需要手动去调用 removeObserver()方法。<br><br><br><span class="hljs-section">### LiveData 的优点</span><br><br>LiveData 的优点是具备生命周期感知，自动管理 Observer，避免内存泄漏。<br><br>防泄漏：当被绑定的组件销毁（destroy）时，观察者会立刻自动清理自身的数据。<br>防崩溃：当 Activity 处于后台状态时，是不会收到 LiveData 的任何事件的。当某个页面请求网络数据成功后需要同步 UI, 但这个页面已经不可见, 这时就会停止同步 UI 的操作<br><br><br><span class="hljs-quote">&gt; 一条消息能被多个观察者消费，多个页面公用 liveDta, 实现多个页面数据的同时监听</span><br><br><span class="hljs-code">```java</span><br><span class="hljs-code">    class PlayLiveData &#123;</span><br><span class="hljs-code">    </span><br><span class="hljs-code">        /**</span><br><span class="hljs-code">         * 当前播放进度</span><br><span class="hljs-code">         */</span><br><span class="hljs-code">        val progressLiveData = MutableLiveData&lt;ProgressBean&gt;()</span><br><span class="hljs-code">    </span><br><span class="hljs-code">        /**</span><br><span class="hljs-code">         * 播放模式</span><br><span class="hljs-code">         */</span><br><span class="hljs-code">        val playModeLiveData = MutableLiveData&lt;Int&gt;()</span><br><span class="hljs-code">    </span><br><span class="hljs-code">        /**</span><br><span class="hljs-code">         * 重置</span><br><span class="hljs-code">         */</span><br><span class="hljs-code">        val resetLiveData = MutableLiveData&lt;Int&gt;()</span><br><span class="hljs-code">    </span><br><span class="hljs-code">    &#125;</span><br><span class="hljs-code">    PlayerManager： val playLiveData = PlayLiveData ()</span><br><span class="hljs-code">    </span><br><span class="hljs-code">      PlayerManager.instance.playLiveData.progressLiveData.observe (this, Observer &#123;</span><br><span class="hljs-code">                playVM?.setProgress (it)</span><br><span class="hljs-code">            &#125;)</span><br></code></pre></td></tr></table></figure></li>
+</ul>
 <blockquote>
 <p>需要生命周期的工具类，更加内聚</p>
 </blockquote>

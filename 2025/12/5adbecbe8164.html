@@ -234,7 +234,7 @@
         
         
         
-          48 分钟
+          49 分钟
         
       </span>
     
@@ -354,7 +354,7 @@
 <li>Concurrent 作用是处理并发情况的 HashMap，多线程并发下 HashMap 是不安全的 (如死循环)，更普遍的是多线程并发下，由于堆内存对于各个线程是共享的，而 HashMap 的 put 方法不是原子操作，假设 Thread1先 put 值，然后 sleep 2秒 (也可以是系统时间片切换失去执行权)，在这2秒内值被 Thread2改了，Thread1“醒来”<em>再 get 的时候发现已经不是原来的值了</em>，这就容易出问题。</li>
 <li>如何避免这种多线程“奥迪变奥拓”的情况呢？常规思路就是给 HashMap 的 put 方法加锁 (synchronized)，保证同一个时刻只允许一个线程拥有对 hashmap 有写的操作权限即可。然而假如线程1中操作耗时，其他需要操作该 hashmap 的线程就需要在门口排队半天，严重影响用户体验 (HashTable 就是这么干的)。</li>
 <li>ConcurrentHashMap 所使用的<em>锁分段技术</em>，每一把锁只锁容器其中一部分数据，多线程访问容器里不同数据段的数据，就不会存在锁竞争，提高并发访问率。<em>首先将数据分成一段一段的存储，然后给每一段数据配一把锁，当一个线程占用锁访问其中一个段数据的时候，其他段的数据也能被其他线程访问</em>。</li>
-<li>对 ConcurrentHashMap 边遍历边删除或者增加操作不会产生异常 (可以不用迭代方式删除元素)，因为其内部已经做了维护，遍历的时候都能获得最新的值。即便是多个线程一起删除、添加元素也没问题。</li>
+<li>对 ConcurrentHashMap 边遍历边删除或者增加操作不会产生异常 (可以不用迭代方式删除元素)，因为其内部已经做了维护，遍历的时候都能获得最新的值。即便是多个线程一起删除、添加元素也没问题。<figure class="highlight smali"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs smali">segments = [Segment0, Segment1, ..., SegmentN]<br><br>function get(key):<br>    index = hash(key) % N<br>    segment = segments[index]<br><br>    lock(segment.lock)<br>    value = segment.map.get(key)<br>    unlock(segment.lock)<br><br>   <span class="hljs-built_in"> return </span>value<br>    <br>    <br>function put(key, value):<br>	index = hash(key) % N<br>	segment = segments[index]<br>	<br>	lock(segment.lock)<br>	segment.map.put(key, value)<br>	unlock(segment.lock)<br><br>class Segment:<br>    lock<br>    map   // HashMap<span class="hljs-built_in"> or </span>bucket<span class="hljs-built_in"> array</span><br><span class="hljs-built_in"></span><br>segments =<span class="hljs-built_in"> array </span>of Segment<br><br></code></pre></td></tr></table></figure></li>
 </ol>
 <h3 id="最近最少使用算法"><a href="#最近最少使用算法" class="headerlink" title="最近最少使用算法"></a>最近最少使用算法</h3><ul>
 <li>会将内存控制在一定的大小内, 这个最大值可以自己定（一般使用最大可用内存的1&#x2F;8作为缓存的大小），超出最大值时会自动回收。他内部是是一个 linkedhashmap 存储外界的缓存对象，提供了 get, put 方法来操作，当缓存满了，lru 会移除较早使用的缓存对象，把新的添加进来。</li>

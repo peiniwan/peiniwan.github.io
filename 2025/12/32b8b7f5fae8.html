@@ -288,7 +288,7 @@
 <li>其实更准确的说法是：<strong>一个 Element 会持有它当前对应的 Widget</strong>。</li>
 <li>当你调用 <code>setState</code> 或刷新 UI 时，Flutter 并不会每次都创建新的 Element。它会<strong>复用现有 Element</strong>，只更新 Element 持有的 Widget 配置。</li>
 <li><strong>所以一个 Element 在生命周期中可以绑定不同的 Widget（不同的配置），但同一时间只对应一个 Widget。</strong></li>
-<li>Widget 是不可变对象，每次 <code>build</code> 都会生成新 Widget。如果没有 Element，每次更新 UI 都要销毁旧的 RenderObject，再创建新的 RenderObject → 开销大（性能差）。</li>
+<li>Widget 是不可变对象，每次 <code>build</code> 都会生成新 Widget。如果没有 Element，每次更新 UI 都要销毁旧的 RenderObject，再创建新的 RenderObject → 开销大（性能差）。  <figure class="highlight haxe"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs haxe"><span class="hljs-comment">// Widget.复用 逻辑</span><br><span class="hljs-keyword">return</span> oldWidget.runtimeType == <span class="hljs-keyword">new</span><span class="hljs-type">Widget</span>.runtimeType <span class="hljs-comment">// 1. 类型必须一样</span><br>    &amp;&amp; oldWidget.key == <span class="hljs-keyword">new</span><span class="hljs-type">Widget</span>.key;                <span class="hljs-comment">// 2. Key 必须一样</span><br><br></code></pre></td></tr></table></figure></li>
 </ul>
 </li>
 </ul>
@@ -332,9 +332,7 @@
 <li>查找父级 Widget：通过 <code>BuildContext</code>，可以访问当前 Widget 在 Widget 树中的父级 Widget，并进一步访问父级 Widget 的属性和方法。查找子级 Widget    </li>
 <li>访问主题（Theme）：<code>BuildContext</code> 可以用于获取当前 Widget 所在的主题数据，例如颜色、字体样式等。</li>
 </ul>
-<h2 id="StatefulWidget"><a href="#StatefulWidget" class="headerlink" title="StatefulWidget"></a>StatefulWidget</h2><p>![[1-Flutter分享#Stateful widgets]]</p>
-<p>![[1-Flutter分享#生命周期]]</p>
-<h2 id="热重载"><a href="#热重载" class="headerlink" title="热重载"></a>热重载</h2><p>Flutter 的热重载是基于 JIT 编译模式的<em>代码增量同步</em>。由于 JIT 属于动态编译，能够将 Dart 代码编译成生成中间代码，让 Dart VM 在运行时解释执行，因此可以通过动态更新中间代码实现增量同步。</p>
+<h2 id="StatefulWidget"><a href="#StatefulWidget" class="headerlink" title="StatefulWidget"></a>StatefulWidget</h2><h2 id="热重载"><a href="#热重载" class="headerlink" title="热重载"></a>热重载</h2><p>Flutter 的热重载是基于 JIT 编译模式的<em>代码增量同步</em>。由于 JIT 属于动态编译，能够将 Dart 代码编译成生成中间代码，让 Dart VM 在运行时解释执行，因此可以通过动态更新中间代码实现增量同步。</p>
 <p>热重载的流程可以分为 5 步，包括：扫描工程改动、<em>增量编译、推送更新、代码合并</em>、Widget 重建。Flutter 在接收到代码变更后，并不会让 App 重新启动执行，而<em>只会触发 Widget 树的重新绘制</em>，因此可以保持改动前的状态，大大缩短了从代码修改到看到修改产生的变化之间所需要的时间。</p>
 <p>另一方面，由于涉及到状态的保存与恢复，<em>涉及状态兼容与状态初始化的场景，热重载是无法支持的</em>，如改动前后 Widget 状态无法兼容、全局变量与静态属性的更改、main 方法里的更改、initState 方法里的更改、枚举和泛型的更改等。</p>
 <p>可以发现，热重载提高了调试 UI 的效率，非常适合写界面样式这样需要反复查看修改效果的场景。但由于其状态保存的机制所限，热重载本身也有一些无法支持的边界。</p>

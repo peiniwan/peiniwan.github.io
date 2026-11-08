@@ -25,7 +25,9 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%87%AA%E5%AE%9A%E4%B9%89View%E6%80%BB%E7%BB%93.resources/2023/09/15/18-48-24-1d4b35cdd071a53970be316c73f1a667-5edce9c0581e4ecf7e5a0565e2d788c8-7404c3.png">
 <meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%87%AA%E5%AE%9A%E4%B9%89View%E6%80%BB%E7%BB%93.resources/2023/09/15/18-48-24-8babb7778fa73ecc910b893b7ea362b2-unknown_filename.1-5b2033.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/mis/202611062126602.png">
 <meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%87%AA%E5%AE%9A%E4%B9%89View%E6%80%BB%E7%BB%93.resources/2023/09/15/18-48-24-b73202fc1ce8e4c16fe67942b082bb7a-722549-43d324.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/mis/202611062126285.png">
 <meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%87%AA%E5%AE%9A%E4%B9%89View%E6%80%BB%E7%BB%93.resources/2023/09/15/18-48-24-0c49e249319654f268cc47bcd208e651-6ffa7e36-0587-450e-946f-3f0cd60c6b82-ce8293.jpg">
 <meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/09/15/2024-02-21-17-47-816b6ba1ef98f6a08e1fe1911ccc9175-18-48-24-816b6ba1ef98f6a08e1fe1911ccc9175-c82ecb89-00f7-476b-bbe9-fba0ac818be1-cc14ef-3b2099.png">
 <meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%87%AA%E5%AE%9A%E4%B9%89View%E6%80%BB%E7%BB%93.resources/2023/09/15/18-48-24-e2f21bc194187a5f7fce4ec4b7bea389-unknown_filename.2-63c4be.png">
@@ -355,7 +357,7 @@
 <li>getHeight ()：控件显示的大小, 必须<em>在 onLayout 方法执行完后</em>，才能获得宽高。</li>
 </ol>
 <figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs aspectj">view.getViewTreeObserver (). addOnGlobalLayoutListener (<span class="hljs-keyword">new</span> OnGlobalLayoutListener () &#123;<br>				<span class="hljs-meta">@Override</span><br>				<span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">onGlobalLayout</span> <span class="hljs-params">()</span> </span>&#123;<br>				headerView.getViewTreeObserver (). removeGlobalOnLayoutListener (<span class="hljs-keyword">this</span>);<br>				<span class="hljs-keyword">int</span> headerViewHeight = headerView.getHeight ();<br>				<span class="hljs-comment">//直接可以获取宽高</span><br>		&#125;<br>	&#125;);<br></code></pre></td></tr></table></figure>
-<p><code>getMeasuredHeight()</code> view 的实际高度，<code>getHeight()</code> 反映父容器允许的高度，它是 View 在父布局中<strong>实际分配到的显示区域高度</strong><br>getMeasuredHeight() &gt;&#x3D; getHeight()  &#x2F;&#x2F; 当父容器限制高度时成立<br>![[Pasted image 20250702195530.png]]</p>
+<p><code>getMeasuredHeight()</code> view 的实际高度，<code>getHeight()</code> 反映父容器允许的高度，它是 View 在父布局中<strong>实际分配到的显示区域高度</strong><br>getMeasuredHeight() &gt;&#x3D; getHeight()  &#x2F;&#x2F; 当父容器限制高度时成立<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/mis/202611062126602.png" srcset="/img/loading.gif" lazyload></p>
 <h2 id="onLayout"><a href="#onLayout" class="headerlink" title="onLayout"></a>onLayout</h2><ul>
 <li>onLayout 设置自己显示在屏幕上的位置 (只有在自定义 ViewGroup 中才用到)，这个坐标是相对于当前视图的父视图而言的。view 自身有一些建议权，决定权在父 view 手中。</li>
 <li>调用场景：在 view <em>需要给其孩子设置尺寸和位置时被调用</em>。子 view，包括孩子在内，必须重写 onLayout (boolean, int, int, int, int)方法，并且调用各自的 layout (int, int, int, int)方法。</li>
@@ -388,7 +390,7 @@
 </ul>
 <p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E8%87%AA%E5%AE%9A%E4%B9%89View%E6%80%BB%E7%BB%93.resources/2023/09/15/18-48-24-b73202fc1ce8e4c16fe67942b082bb7a-722549-43d324.png" srcset="/img/loading.gif" lazyload alt="722549|700"></p>
 <p>三⻆函数的计算横向的位移是 cos，纵向的位移是 sin</p>
-<h4 id="drawChild"><a href="#drawChild" class="headerlink" title="drawChild"></a>drawChild</h4><p>![[Pasted image 20250702163133.png]]</p>
+<h4 id="drawChild"><a href="#drawChild" class="headerlink" title="drawChild"></a>drawChild</h4><p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/mis/202611062126285.png" srcset="/img/loading.gif" lazyload></p>
 <ul>
 <li><strong>触发条件</strong>：<ul>
 <li>View 首次附加到窗口时</li>

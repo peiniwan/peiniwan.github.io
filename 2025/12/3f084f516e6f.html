@@ -209,7 +209,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          2.3k 字
+          2.4k 字
         
       </span>
     
@@ -354,6 +354,17 @@
 
 <p><strong>Get 由于全局单例带来的问题</strong><br>Get 通过全局单例，默认以 <code>runtimeType</code> 为 key 进行对象的存储，部分场景可能获取到的对象不符合预期，例如商品详情页之间跳转。由于不同的详情页实例对应的是同一 Class，即 <code>runtimeType</code> 相同。如果不添加 tag 参数，在某个页面调用 <code>Get.find</code> 会获取到其它页面已经存储过的对象。同时 Get 中一定要注意<em>考虑到对象的回收</em>，不然很有可能引起内存泄漏。要么手动在页面 <code>dispose</code> 的时候做 <code>delete</code> 操作，要么完全使用 Get 中提供的组件，例如 <code>GetBuilder</code>，它会在 <code>dispose</code> 中释放。</p>
 <h2 id="GetX使用"><a href="#GetX使用" class="headerlink" title="GetX使用"></a>GetX使用</h2><p><a target="_blank" rel="noopener" href="https://juejin.cn/post/6924104248275763208#heading-0">Flutter GetX使用—简洁的魅力！ - 掘金</a></p>
+<ul>
+<li><p><strong>GetX 不需要 <code>setState</code></strong></p>
+</li>
+<li><p><strong>局部刷新首选以下三种方式：</strong></p>
+<ol>
+<li><code>Obx</code>（最常用，响应式）</li>
+<li><code>GetBuilder</code>（ID 局部刷新）</li>
+<li><code>update([&#39;id&#39;])</code>（精准控制刷新范围）</li>
+</ol>
+</li>
+</ul>
 <h3 id="GetxController"><a href="#GetxController" class="headerlink" title="GetxController"></a>GetxController</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Counter</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">GetxController</span> &#123; <br>	<span class="hljs-type">int</span> <span class="hljs-variable">count</span> <span class="hljs-operator">=</span> <span class="hljs-number">0</span>;<br><br>	<span class="hljs-keyword">void</span> <span class="hljs-title function_">increase</span><span class="hljs-params">()</span> &#123; <br>		count++;<br>		update(); <br>	&#125;<br>&#125;<br><br><span class="hljs-comment">/// 提前进行存储</span><br><span class="hljs-type">final</span> <span class="hljs-variable">counter</span> <span class="hljs-operator">=</span> Get.put(Counter( )); <br><br><span class="hljs-comment">/// 直接通过泛型获取存储好的实例</span><br>GetBuilder&lt;Counter&gt;(<br>	builder: (Counter counter) =&gt; Text(<span class="hljs-string">&#x27;$&#123;counter.count&#125;&#x27;</span>) ); <br></code></pre></td></tr></table></figure>
 
 <h4 id="🔹-代码整体逻辑"><a href="#🔹-代码整体逻辑" class="headerlink" title="🔹 代码整体逻辑"></a>🔹 代码整体逻辑</h4><p>这是用 <strong>GetX</strong> 的 <strong><code>GetBuilder</code></strong> 做状态管理的典型写法。<br>核心思想</p>
@@ -411,13 +422,6 @@
         
   <a href="/categories/%E5%85%B6%E4%BB%96%E8%AF%AD%E8%A8%80/" class="category-chain-item">其他语言</a>
   
-  
-    <span>></span>
-    
-  <a href="/categories/%E5%85%B6%E4%BB%96%E8%AF%AD%E8%A8%80/flutter/" class="category-chain-item">flutter</a>
-  
-  
-
   
 
       </span>

@@ -23,7 +23,6 @@
 <meta property="og:site_name">
 <meta property="og:description" content="冷启动优化traceview 检查耗时的方法 App 进程的创建等环节我们是无法主动控制的。应用开发唯一能做的就是减少在 Application 和第一个 Activity 中的工作量，从而缩短冷启动的时间。 Application 会执行多次，要只在主 app 的 Application 执行，加速启动if (AppUtils. inMainProcess (getApplication ())">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android%E5%85%B6%E4%BB%96%E4%BC%98%E5%8C%96.resources/2023/09/15/18-49-35-872a5a864c80580899de8a7dfe2e0c14-unknown_filename.4-092937.png">
 <meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android%E5%85%B6%E4%BB%96%E4%BC%98%E5%8C%96.resources/2023/09/15/18-49-35-72eb67eadf999b646d9508200bcb5fc9-unknown_filename.5-90cf7e.png">
 <meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android%E5%85%B6%E4%BB%96%E4%BC%98%E5%8C%96.resources/2023/09/15/18-49-35-ebc96f2a1e2e0ecb1297ffb4fb16c7f5-unknown_filename.6-c5af45.png">
 <meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E6%96%B0%E7%9F%A5%E8%AF%86%E8%A1%A5%E5%85%85.resources/2023/09/15/17-43-38-81152591059fd65de1bae63e2a6822f1-unknown_filename.36-09a7c8.png">
@@ -31,7 +30,7 @@
 <meta property="article:modified_time" content="2024-03-26T02:14:00.000Z">
 <meta property="article:author" content="六月的雨">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android%E5%85%B6%E4%BB%96%E4%BC%98%E5%8C%96.resources/2023/09/15/18-49-35-872a5a864c80580899de8a7dfe2e0c14-unknown_filename.4-092937.png">
+<meta name="twitter:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android%E5%85%B6%E4%BB%96%E4%BC%98%E5%8C%96.resources/2023/09/15/18-49-35-72eb67eadf999b646d9508200bcb5fc9-unknown_filename.5-90cf7e.png">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -283,8 +282,9 @@
 <li><strong>分步加载</strong><br>  大的任务拆成小步骤，逐步完成</li>
 <li><strong>异步加载</strong><br>  把耗时操作放到子线程执行</li>
 <li><strong>延迟加载</strong><br>  👉 _非必要的数据延后加载_（首屏不需要的先别做）</li>
-<li><strong>优先级控制</strong><br>  体积大、优先级低的任务靠后执行<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android%E5%85%B6%E4%BB%96%E4%BC%98%E5%8C%96.resources/2023/09/15/18-49-35-872a5a864c80580899de8a7dfe2e0c14-unknown_filename.4-092937.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.4|600"><br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android%E5%85%B6%E4%BB%96%E4%BC%98%E5%8C%96.resources/2023/09/15/18-49-35-72eb67eadf999b646d9508200bcb5fc9-unknown_filename.5-90cf7e.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.5|600"><br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android%E5%85%B6%E4%BB%96%E4%BC%98%E5%8C%96.resources/2023/09/15/18-49-35-ebc96f2a1e2e0ecb1297ffb4fb16c7f5-unknown_filename.6-c5af45.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.6|600"></li>
+<li><strong>优先级控制</strong><br>  体积大、优先级低的任务靠后执行</li>
 </ul>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android%E5%85%B6%E4%BB%96%E4%BC%98%E5%8C%96.resources/2023/09/15/18-49-35-72eb67eadf999b646d9508200bcb5fc9-unknown_filename.5-90cf7e.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.5|600"><br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/Android%E5%85%B6%E4%BB%96%E4%BC%98%E5%8C%96.resources/2023/09/15/18-49-35-ebc96f2a1e2e0ecb1297ffb4fb16c7f5-unknown_filename.6-c5af45.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.6|600"></p>
 <p>非必要资源延迟初始化：用到的时候在加载</p>
 <figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">style</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;LaunchTheme&quot;</span> <span class="hljs-attr">parent</span>=<span class="hljs-string">&quot;AppTheme&quot;</span>&gt;</span><span class="language-xml"></span><br><span class="language-xml">  <span class="hljs-tag">&lt;<span class="hljs-name">item</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;android:windowBackground&quot;</span>&gt;</span>@drawable/splash_bg<span class="hljs-tag">&lt;/<span class="hljs-name">item</span>&gt;</span></span><br><span class="language-xml"></span><span class="hljs-tag">&lt;/<span class="hljs-name">style</span>&gt;</span><br></code></pre></td></tr></table></figure>
 
@@ -333,13 +333,6 @@
         
   <a href="/categories/Android/" class="category-chain-item">Android</a>
   
-  
-    <span>></span>
-    
-  <a href="/categories/Android/%E4%BC%98%E5%8C%96/" class="category-chain-item">优化</a>
-  
-  
-
   
 
       </span>

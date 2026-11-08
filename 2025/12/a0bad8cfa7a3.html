@@ -23,10 +23,13 @@
 <meta property="og:site_name">
 <meta property="og:description" content="RecycleView 嵌套卡顿https:&#x2F;&#x2F;blog.csdn.net&#x2F;qq_30983519&#x2F;article&#x2F;details&#x2F;81280274  共用 RecycledViewPool，holder. innerRecyclerView. setRecycledViewPool (viewPool)2. setInitialPrefetchItemCount (int) 来优化嵌套时预加载性">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/mis/202512231905719.png">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/mis/202512231905720.png">
 <meta property="article:published_time" content="2025-12-16T13:59:22.387Z">
 <meta property="article:modified_time" content="2024-03-23T11:55:00.000Z">
 <meta property="article:author" content="六月的雨">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/mis/202512231905719.png">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -284,7 +287,7 @@
 <p>位置：RecyclerView 本身<br>作用：设置 RecyclerView 缓存区 (cache) 能保留多少个离屏的 ViewHolder。<br>默认是 2，也就是说屏幕外的 2 个 item 不会立刻回收，而是放到缓存里，滑回来时可以直接复用，减少重新绑定数据和创建 ViewHolder 的开销。</p>
 <p>👉 优化点：<br>减少频繁的创建和绑定 ViewHolder，在来回滚动时更高效。<br>（主要是 CPU 开销和回收&#x2F;复用性能）</p>
 <p><strong>对比总结</strong></p>
-<p>![[Pasted image 20250909141809.png]]</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/mis/202512231905719.png" srcset="/img/loading.gif" lazyload alt="Pasted image 20250909141809"></p>
 <p><strong>使用建议</strong><br>嵌套场景（横向列表 inside 纵向列表）：调大 setInitialPrefetchItemCount，<em>一般设成横向列表一屏能展示的数量</em>。<br>单层长列表：可以根据内存情况调大 setItemViewCacheSize，比如设成 10，减少频繁回收。</p>
 <h2 id="NestedScrollView-嵌套-recyclerView"><a href="#NestedScrollView-嵌套-recyclerView" class="headerlink" title="NestedScrollView 嵌套 recyclerView"></a>NestedScrollView 嵌套 recyclerView</h2><p><strong>NestedScrollview 和 recycler View 嵌套的时候, recyclerview 的缓存机制失效了, 这种情况有没有什么好的解决办法呢?</strong><br><em>NestedScrollView 传递给子 View 的测量模式为 UNSPECIFIED</em>，RecyclerView 在 UNSPECIFIED 的测量模式下，会不限制自身的高度，即 RecyclerView 的窗口高度将会变成所有 item 高度累加后加上 paddding 的高度。因此，表现出来就是 item 一次性全部加载完成。<br>这样做在 RecyclerView 的 item 数量较少的时候可能没什么问题，但是如果 item 数量比较多，随之带来的性能问题就会很严重。</p>
 <p>推荐使用 RecyclerView 的多样式布局实现，毕竟 RecyclerView 自带滑动，没必要外层套一个 ScrollerView 或者 NestedScrollView</p>
@@ -302,7 +305,7 @@
 </ul>
 </li>
 </ul>
-<p>![[Pasted image 20250703145905.png]]</p>
+<p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/mis/202512231905720.png" srcset="/img/loading.gif" lazyload alt="Pasted image 20250703145905"></p>
 <p>[[NestedScrollingParent]]</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 开始滑动时，子视图会优先回调该方法。父容器可以处理自己的滚动操作，之后将剩余的滚动偏移量传回给子视图。</span><br><span class="hljs-comment">   （可由 NestedScrollingChild2的 dispatchNestedPreScroll 方法触发）</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">void</span> <span class="hljs-title function_">onNestedPreScroll</span> <span class="hljs-params">(<span class="hljs-meta">@NonNull</span> View target, <span class="hljs-type">int</span> dx, <span class="hljs-type">int</span> dy, <span class="hljs-meta">@NonNull</span> <span class="hljs-type">int</span>[] consumed, <span class="hljs-meta">@NestedScrollType</span> <span class="hljs-type">int</span> type)</span>;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 子视图处理完剩余的滚动偏移量后，若还有剩余，则将剩余的滚动偏移量再通过该回调传给父容器处理。</span><br><span class="hljs-comment">   （可由 NestedScrollingChild2的 dispatchNestedScroll 方法触发）</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">void</span> <span class="hljs-title function_">onNestedScroll</span><span class="hljs-params">(<span class="hljs-meta">@NonNull</span> View target, <span class="hljs-type">int</span> dxConsumed, <span class="hljs-type">int</span> dyConsumed, <span class="hljs-type">int</span> dxUnconsumed, <span class="hljs-type">int</span> dyUnconsumed, <span class="hljs-meta">@NestedScrollType</span> <span class="hljs-type">int</span> type)</span>;<br></code></pre></td></tr></table></figure>
 
@@ -363,13 +366,6 @@
         
   <a href="/categories/Android/" class="category-chain-item">Android</a>
   
-  
-    <span>></span>
-    
-  <a href="/categories/Android/view/" class="category-chain-item">view</a>
-  
-  
-
   
 
       </span>

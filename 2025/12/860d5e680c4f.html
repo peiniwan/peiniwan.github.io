@@ -282,6 +282,7 @@
 <li>Serializable全部改成 Parcelable（&#x2F;ˈpɑːrsl&#x2F;）[[Serializable 与 Parcelable]]</li>
 <li>arraymap，sarparray 代替 hashmap [[SparseArray 和 ArrayMap]]</li>
 </ol>
+<p>[[4.RecycleView 嵌套卡顿]]</p>
 <h2 id="内存对象的重复利用"><a href="#内存对象的重复利用" class="headerlink" title="内存对象的重复利用"></a>内存对象的重复利用</h2><ol>
 <li>使用线程池（对象池）</li>
 <li>避免创建不必要的对象，单例</li>
@@ -388,7 +389,7 @@
 <figure class="highlight coffeescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs coffeescript"><span class="hljs-keyword">while</span>（<span class="hljs-literal">true</span>）&#123;<span class="hljs-built_in">String</span> str=<span class="hljs-keyword">new</span> <span class="hljs-built_in">String</span>(<span class="hljs-string">&quot;ni hao ni hao &quot;</span>);&#125;<br></code></pre></td></tr></table></figure>
 <p>一直循环创建 String对象。。。你觉得堆不会溢出嘛。。。</p>
 <p><strong>内存泄露的根本原因就是保存了不可能再被访问的变量类型的引用和回收的不确定性</strong></p>
-<h4 id="GC-Roots"><a href="#GC-Roots" class="headerlink" title="GC Roots"></a>GC Roots</h4><p>GC Roots算法<em>判定一个对象需要被回收</em>，GC Roots一般在JVM的栈区域里产生。<br>![[6.JVM#GC Roots]]</p>
+<h4 id="GC-Roots"><a href="#GC-Roots" class="headerlink" title="GC Roots"></a>GC Roots</h4><p>GC Roots算法<em>判定一个对象需要被回收</em>，GC Roots一般在JVM的栈区域里产生。</p>
 <h2 id="具体例子"><a href="#具体例子" class="headerlink" title="具体例子"></a>具体例子</h2><p>不使用 application 作为 context。当 context 为 application 时，会把 imageView 是生命周期延长到整个运行过程中，imageView 不能被回收，从而造成 OOM 异常。</p>
 <p>((App) getApplication ()). leakviews.add (view);</p>
 <figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs scala">public <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">App</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Application</span> </span>&#123;<br>    public <span class="hljs-type">ArrayList</span>&lt;<span class="hljs-type">Object</span>&gt; leakviews = <span class="hljs-keyword">new</span> <span class="hljs-type">ArrayList</span>&lt;&gt;();<br>&#125;<br><br></code></pre></td></tr></table></figure>

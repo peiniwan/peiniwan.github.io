@@ -223,7 +223,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          4.5k 字
+          4.8k 字
         
       </span>
     
@@ -234,7 +234,7 @@
         
         
         
-          38 分钟
+          40 分钟
         
       </span>
     
@@ -290,6 +290,57 @@
 <figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs awk">android &#123;<br>	<span class="hljs-regexp">//</span> 所有xml资源命名以 <span class="hljs-string">&quot;login_&quot;</span> 开头、否则编译报红<br>	resourcePrefix <span class="hljs-string">&quot;login_&quot;</span><br>&#125;<br></code></pre></td></tr></table></figure>
 
 
+<h3 id="aar"><a href="#aar" class="headerlink" title="aar"></a>aar</h3><p>AAR 是 Android Library 的发布形式</p>
+<ul>
+<li>包含：<ul>
+<li><code>classes.jar</code></li>
+<li><code>res/</code></li>
+<li><code>AndroidManifest.xml</code></li>
+<li><code>R.txt</code></li>
+<li><code>proguard.txt</code></li>
+</ul>
+</li>
+<li>APK 是最终产物，AAR 是中间依赖</li>
+</ul>
+<p>为什么要把模块打成 AAR，而不是 module 直接依赖？</p>
+<ul>
+<li>降低模块耦合</li>
+<li>提升编译速度</li>
+<li>跨项目 &#x2F; 跨团队复用</li>
+<li>保护实现（源码不可见）</li>
+</ul>
+<p><strong>进阶回答：</strong></p>
+<ul>
+<li>大型项目中：<ul>
+<li>业务模块 → 源码依赖</li>
+<li>基础能力 &#x2F; SDK → AAR 依赖</li>
+</ul>
+</li>
+</ul>
+<p>多个 AAR 里有同名资源怎么办？</p>
+<ul>
+<li>通过 <strong>资源命名规范</strong> 避免</li>
+<li>使用 <code>resPrefix</code></li>
+</ul>
+<p>Android 里“静态库 &#x2F; 动态库”你怎么理解？</p>
+<ul>
+<li><strong>没有真正的动态库</strong></li>
+<li>AAR &#x2F; JAR 在 <strong>编译期合并</strong></li>
+<li>运行时不能卸载</li>
+</ul>
+<p>AAR 能不能热更新？能不能动态加载？</p>
+<p>合理回答：</p>
+<ul>
+<li>AAR 本身不能动态加载</li>
+<li>动态能力来自：<ul>
+<li>DexClassLoader</li>
+<li>插件化框架</li>
+</ul>
+</li>
+<li>AAR 是构建期产物，不是运行期单元</li>
+<li>AAR ≠ 插件</li>
+<li>插件通常是 APK &#x2F; Dex</li>
+</ul>
 <h3 id="组件化模块间交互"><a href="#组件化模块间交互" class="headerlink" title="组件化模块间交互"></a>组件化模块间交互</h3><ul>
 <li>使用 EventBus 的方式，缺点是：EventBean 维护成本太高，不好去管理：</li>
 <li>使用广播的方式，缺点是：不好管理，都统一发出去了</li>
@@ -297,6 +348,7 @@
 <li>使用类加载方式，缺点就是，容易写错包名类名，缺点较少</li>
 <li>使用全局 Map 的方式，缺点是，要注册很多的对象</li>
 </ul>
+<p>为什么必须是 <code>com.android.library</code> 才能产 AAR？<br>.&#x2F;gradlew :yourlib:assembleDebug<br>yourlib&#x2F;build&#x2F;outputs&#x2F;aar&#x2F;</p>
 <h3 id="网上开源的组件化"><a href="#网上开源的组件化" class="headerlink" title="网上开源的组件化"></a>网上开源的组件化</h3><p><a target="_blank" rel="noopener" href="https://github.com/luojilab/DDComponentForAndroid/wiki/1%E3%80%81%E7%BB%84%E4%BB%B6%E6%95%B0%E6%8D%AE%E4%BA%A4%E4%BA%92">1、组件数据交互 · luojilab&#x2F;DDComponentForAndroid Wiki</a></p>
 <figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs stylus">Router<span class="hljs-selector-class">.getInstance</span>()<span class="hljs-selector-class">.getService</span>(MedRecordDossierService::class<span class="hljs-selector-class">.java</span>.name).getPatientFragment<br></code></pre></td></tr></table></figure>
 <p><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E7%83%AD%E4%BF%AE%E5%A4%8D%E3%80%81%E6%8F%92%E4%BB%B6%E5%8C%96%E3%80%81%E7%BB%84%E4%BB%B6%E5%8C%96.resources/2023/09/15/18-49-57-558129a1644d0736cd25072fe9b87f86-unknown_filename.6-93023b.png" srcset="/img/loading.gif" lazyload alt="unknown_filename.6"></p>

@@ -23,12 +23,13 @@
 <meta property="og:site_name">
 <meta property="og:description" content="为什么使用 kotlin简洁1234567891011121314&#x2F;* 使用一行代码创建一个包含 getters、 setters、 &#96;equals()&#96;、 &#96;hashCode()&#96;、 &#96;toString()&#96; 以及 &#96;copy()&#96; *&#x2F;data class Customer(val name: String, val email: String, val company: String)&#x2F;&#x2F;">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/mis/062cd7162fc9cf428a0885d01ec2fb19.png">
 <meta property="og:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5koin_hilt.resources/2023/09/15/18-51-47-e8036b7da53085f062f74f6d922c00b9-unknown_filename.3-e89592.png">
 <meta property="article:published_time" content="2025-12-16T13:59:22.539Z">
 <meta property="article:modified_time" content="2024-03-31T14:08:00.000Z">
 <meta property="article:author" content="六月的雨">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/_resources/%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5koin_hilt.resources/2023/09/15/18-51-47-e8036b7da53085f062f74f6d922c00b9-unknown_filename.3-e89592.png">
+<meta name="twitter:image" content="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/mis/062cd7162fc9cf428a0885d01ec2fb19.png">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -211,7 +212,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          5.3k 字
+          5.6k 字
         
       </span>
     
@@ -222,7 +223,7 @@
         
         
         
-          45 分钟
+          47 分钟
         
       </span>
     
@@ -317,9 +318,68 @@
 
 <h3 id="常见操作符"><a href="#常见操作符" class="headerlink" title="常见操作符"></a>常见操作符</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">val</span> <span class="hljs-variable">list</span> <span class="hljs-operator">=</span> listOf&lt;Int&gt;(<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">5</span>, <span class="hljs-number">10</span>, <span class="hljs-number">8</span>, <span class="hljs-number">2</span>)<br><span class="hljs-type">val</span> <span class="hljs-variable">newList</span> <span class="hljs-operator">=</span> ArrayList&lt;Int&gt;();<br>list.forEach &#123;<br>	<span class="hljs-type">val</span> <span class="hljs-variable">newElement</span> <span class="hljs-operator">=</span> it * <span class="hljs-number">2</span> + <span class="hljs-number">3</span><br>	newList.add(newElement)<br>&#125;<br><span class="hljs-comment">//和上面一样，上面麻烦，map可以对集合进行操作，返回一个修改过得集合</span><br><span class="hljs-type">val</span> <span class="hljs-variable">newList2</span> <span class="hljs-operator">=</span> list.map &#123; it * <span class="hljs-number">2</span> + <span class="hljs-number">3</span> &#125;<br>newList2.forEach(::println)<br>newList2.map(::println)  <span class="hljs-comment">//和上面输出一样，但是又重新add了一个集合，不好,纯粹用于迭代的话会影响性能，实现里面还有一个数组</span><br><br><span class="hljs-comment">//提取开头指定数量或符合指定条件的子集  </span><br>list.takeWhile &#123; it &lt;= <span class="hljs-number">3</span> &#125;.forEach(::println)  <span class="hljs-comment">//小于的去掉</span><br>list.forEach &#123;<br>	<span class="hljs-keyword">if</span> (it % <span class="hljs-number">2</span> == <span class="hljs-number">0</span>) &#123;<br>		println(it)<br>	&#125;<br>&#125;<br>list.filter &#123; it.isEvent() &#125;.forEach(::println)<span class="hljs-comment">//过滤    </span><br>   <br></code></pre></td></tr></table></figure>
 
-<p>take 是从集合中取前几个元素<br>takeLast 是从集合中取后几个元素<br>sortedBy 排序<br>过滤 list，符合过滤条件的就是过滤结果<br>filterNot 把符合条件的过滤掉，剩下的是结果。这个操作和 filter 相反<br>slice, 取集合中的某一部分<br><strong>takeIf</strong>: 避免在某些情况下使用冗长的 if-else 语</p>
+<p>take 是从集合中取前几个元素<br>takeLast 是从集合中取后几个元素<br>sortedBy 排序<br>过滤 list，符合过滤条件的就是过滤结果<br>filterNot 把符合条件的过滤掉，剩下的是结果。这个操作和 filter 相反<br>slice, 取集合中的某一部分</p>
 <p>List 防止崩溃取值方式<br>getOrElse () 提供用于计算默认值的函数，如果集合中不存在索引，则返回默认值。<br>getOrNull () 返回 null 作为默认值。<br> joinToString 字符串拼接</p>
 <p>kotlin 自带 copy 方法<br><strong>需要更新 State 时，借助 data class 的 copy 方法可以快捷地拷贝构造一个新实例。</strong></p>
+<h4 id="any"><a href="#any" class="headerlink" title="any"></a>any</h4><p><strong>true</strong>：如果集合中 <strong>至少有一个</strong> 元素满足条件<br><strong>false</strong>：如果 <strong>没有任何</strong> 元素满足条件</p>
+<figure class="highlight abnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs abnf">val showDisburseFailedDialog <span class="hljs-operator">=</span> remember (ordersList) &#123;<br>mutableStateOf (ordersList. any &#123; it. checkStatus <span class="hljs-operator">=</span><span class="hljs-operator">=</span> <span class="hljs-number">6</span> &#125;)<br>&#125;<br>//tood 如果 ordersList 里有 OrderListItem 的 checkStatus 为 <span class="hljs-number">6</span>是显示 showDisburseFailedDialog<br></code></pre></td></tr></table></figure>
+
+<h4 id="takeIf"><a href="#takeIf" class="headerlink" title="takeIf"></a><em>takeIf</em></h4><p>  ocr. idPhotoId.<em>takeIf</em> <strong>{ it</strong> !&#x3D; null <strong>}</strong> ?: oldIdentity?. idPhotoId</p>
+<p>满足是前面，不满足是后面</p>
+<h4 id="val和const"><a href="#val和const" class="headerlink" title="val和const"></a>val和const</h4><table>
+<thead>
+<tr>
+<th>维度</th>
+<th><code>val</code></th>
+<th><code>const val</code></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>是否只读</td>
+<td>是</td>
+<td>是</td>
+</tr>
+<tr>
+<td>是否编译期常量</td>
+<td>否（运行期确定）</td>
+<td>是（编译期确定）</td>
+</tr>
+<tr>
+<td>允许的位置</td>
+<td>几乎任何地方</td>
+<td>只能在顶层或 <code>object</code> &#x2F; <code>companion object</code></td>
+</tr>
+<tr>
+<td>允许的类型</td>
+<td>任意类型</td>
+<td>仅限基本类型和 <code>String</code></td>
+</tr>
+<tr>
+<td>是否可被 Java 当作常量</td>
+<td>否</td>
+<td>是（<code>public static final</code>）</td>
+</tr>
+<tr>
+<td>能否使用函数返回值</td>
+<td>可以</td>
+<td>不可以</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p><strong><code>const</code> 只能和 <code>val</code> 一起使用，永远不能和 <code>var</code> 搭配。</strong></p>
+</blockquote>
+<p>为什么需要 <code>const val</code></p>
+<p>性能与字节码层面</p>
+<ul>
+<li><code>const val</code> 会被 <strong>直接内联</strong></li>
+<li>不会产生字段访问开销</li>
+</ul>
+<p><code>if (count &gt; MAX_COUNT) &#123; ... &#125;</code></p>
+<p>编译后相当于：<br><code>if (count &gt; 10) &#123; ... &#125;</code></p>
+<p><code>val</code> 是“字段 + getter”，访问的是内存而不是字面量。</p>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs gradle"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">int</span> MAX_COUNT = <span class="hljs-number">10</span>;<br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">int</span> getMAX_COUNT () &#123;<br>    <span class="hljs-keyword">return</span> MAX_COUNT;<br>&#125;<br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> test (<span class="hljs-keyword">int</span> <span class="hljs-keyword">count</span>) &#123;<br>    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">count</span> &gt; getMAX_COUNT ()) &#123;  <span class="hljs-comment">// ← 调用了方法</span><br>        System.out.<span class="hljs-keyword">println</span> (<span class="hljs-string">&quot;too big&quot;</span>);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
 <h2 id="难点"><a href="#难点" class="headerlink" title="难点"></a>难点</h2><h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>函数不能直接传递或者赋给某个变量，需要函数类型实例化，有三种方式：</p>
 <p><strong>使用已有声明的可调用引用</strong></p>
 <ol>
@@ -427,7 +487,7 @@
 <li>对于一个 public 的 inline 方法，他不可以引用类的私有变量。</li>
 <li>inline 关键字对于 lambda 的处理有的时候不是我们想要的， inline 函数的形参 lambda <em>不能有 return 语句，避免 lambda 中的 return 影响外部程序流程</em></li>
 </ol>
-<p>noinline 场景：当需要将函数参数作为对象返回值的时候，如果不关闭内联，就无法使用 return 返回。action2<br>![[Pasted image 20250901204508.png]]</p>
+<p>noinline 场景：当需要将函数参数作为对象返回值的时候，如果不关闭内联，就无法使用 return 返回。action2<br><img src="https://obsidian-yupic.oss-cn-beijing.aliyuncs.com/mis/062cd7162fc9cf428a0885d01ec2fb19.png" srcset="/img/loading.gif" lazyload></p>
 <p><strong>总结</strong></p>
 <ul>
 <li>使用 inline，内联函数到调用的地方，能减少函数调用造成的额外开销，在循环中尤其有效</li>

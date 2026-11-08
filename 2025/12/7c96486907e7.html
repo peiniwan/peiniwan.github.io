@@ -215,7 +215,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          2.6k 字
+          2.7k 字
         
       </span>
     
@@ -226,7 +226,7 @@
         
         
         
-          22 分钟
+          23 分钟
         
       </span>
     
@@ -305,9 +305,15 @@
 <li>**<code>await</code>**：多个任务并发执行，时间线里任务是平行的，等到结果再继续 → <strong>高效</strong>。</li>
 <li><strong><code>withContext</code><strong>：切换到指定线程池，但代码是</strong>串行</strong>执行，一个任务完成再跑下一个 → <strong>更适合需要顺序和上下文切换的场景</strong>。</li>
 </ul>
-<h2 id="二种启动"><a href="#二种启动" class="headerlink" title="二种启动"></a>二种启动</h2><ul>
-<li><a target="_blank" rel="noopener" href="https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/launch.html">launch</a> 可启动新协程而不将结果返回给调用方。任何被视为“一劳永逸”的工作都可以使用 launch 来启动。    </li>
-<li><a target="_blank" rel="noopener" href="https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/async.html">async</a> 会启动一个新的协程，并允许您使用一个名为 await 的暂停函数返回结果。</li>
+<h2 id="二种启动"><a href="#二种启动" class="headerlink" title="二种启动"></a>二种启动</h2><p>在 Kotlin 协程中，<code>launch</code> 和 <code>async</code> 的核心区别在于<strong>返回类型和是否用于返回计算结果</strong>。</p>
+<ul>
+<li><p><code>launch</code> 启动一个协程并返回一个 <strong><code>Job</code><strong>，主要用于管理协程的生命周期，比如取消或等待完成，但</strong>不返回业务结果</strong>，适合执行“一次性任务”。</p>
+<blockquote>
+<p>GlobalScope. launch、生命周期 &#x3D; 应用进程<br>viewModelScope、lifecycleScope、coroutineScope ，- 受父协程 &#x2F; 生命周期管，父取消 → 子全部取消</p>
+</blockquote>
+</li>
+<li><p><code>async</code> 启动一个协程并返回一个 <strong><code>Deferred&lt;T&gt;</code><strong>，它是 <code>Job</code> 的子类型，用于</strong>异步计算并返回结果</strong>，需要通过 <code>await()</code> 这个挂起函数来获取结果，同时异常也会在 <code>await()</code> 时抛出。</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs dart">val <span class="hljs-keyword">deferred</span>: Deferred&lt;Int&gt; = <span class="hljs-keyword">async</span> &#123;<br>    delay(<span class="hljs-number">1000</span>)<br>    <span class="hljs-number">42</span><br>&#125;<br><br>val result = <span class="hljs-keyword">deferred</span>.<span class="hljs-keyword">await</span>() <span class="hljs-comment">// result == 42</span><br><br></code></pre></td></tr></table></figure></li>
 </ul>
 <h2 id="启动模式"><a href="#启动模式" class="headerlink" title="启动模式"></a>启动模式</h2><p>在 Kotlin 协程里，<code>launch</code> &#x2F; <code>async</code> 等构建器有一个参数 <code>start</code>，它决定了 <strong>协程的启动模式</strong>。<br>共有 <strong>4 种启动模式</strong>（<code>CoroutineStart</code> 枚举）：</p>
 <p>🔹 1. <strong>DEFAULT</strong>（默认）</p>

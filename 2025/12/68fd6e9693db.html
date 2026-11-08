@@ -209,7 +209,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          1.2k 字
+          1.4k 字
         
       </span>
     
@@ -220,7 +220,7 @@
         
         
         
-          11 分钟
+          12 分钟
         
       </span>
     
@@ -273,7 +273,39 @@
                 <h1 id="通信"><a href="#通信" class="headerlink" title="通信"></a>通信</h1><p><strong>Flutter 是如何与原生 Android、iOS 进行通信的？</strong><br>Flutter 通过 PlatformChannel 与原生进行交互，其中 PlatformChannel 分为三种：<br>BasicMessageChannel ：用于传递字符串和半结构化的信息。<br>MethodChannel ：用于传递方法调用（method invocation）。<br>EventChannel : 用于数据流（event streams）的通信。</p>
 <p><a target="_blank" rel="noopener" href="https://flutter.cn/docs/development/add-to-app">将 Flutter 集成到现有应用</a><br><a target="_blank" rel="noopener" href="https://learnku.com/articles/32448">Flutter 与 Android 的相互通信</a></p>
 <p>可以从 Native 层调用 flutter 层的 dart 代码，也可以在 flutter 层调用 Native 的代码，而作为通讯桥梁就是 MethodChannel，这个类在初始化的时候需要注册一个渠道值。<br>这个值必须是唯一的，并且在使用到的 Native 层和 Flutter 层互相对应。</p>
-<h2 id="flutter-调用-Android"><a href="#flutter-调用-Android" class="headerlink" title="flutter 调用 Android"></a><strong>flutter 调用 Android</strong></h2><p>注册</p>
+<h2 id="MethodChannel"><a href="#MethodChannel" class="headerlink" title="MethodChannel"></a>MethodChannel</h2><figure class="highlight livescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs livescript"><span class="hljs-keyword">static</span> <span class="hljs-keyword">const</span> _channel = MethodChannel (<span class="hljs-string">&#x27;live/method&#x27;</span>);<br><br><span class="hljs-keyword">await</span> _channel.invokeMethod (<span class="hljs-string">&#x27;startLive&#x27;</span>, &#123;<br>  <span class="hljs-string">&#x27;roomId&#x27;</span>: <span class="hljs-string">&#x27;123&#x27;</span><br>&#125;);<br><br>Android<br>MethodChannel(flutterEngine.dartExecutor, <span class="hljs-string">&quot;live/method&quot;</span>).setMethodCallHandler &#123; call, result -&gt;<br>  <span class="hljs-keyword">when</span> (call.method) &#123;<br>    <span class="hljs-string">&quot;startLive&quot;</span> -&gt; &#123;<br>      startLive(call.argument(<span class="hljs-string">&quot;roomId&quot;</span>))<br>      result.success(<span class="hljs-literal">null</span>)<br>    &#125;<br>  &#125;<br>&#125;<br><br><br></code></pre></td></tr></table></figure>
+
+<h1 id="EventChannel"><a href="#EventChannel" class="headerlink" title="EventChannel"></a>EventChannel</h1><p>事件流（监听）</p>
+<p><strong>适用场景</strong></p>
+<ul>
+<li>Native → Flutter 持续推送</li>
+<li>状态变化 &#x2F; 回调</li>
+</ul>
+<p>Flutter</p>
+<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs scss"><span class="hljs-built_in">EventChannel</span>(&#x27;live/event&#x27;)<br><span class="hljs-selector-class">.receiveBroadcastStream</span>()<br><span class="hljs-selector-class">.listen</span>((event) &#123;<br>  <span class="hljs-built_in">print</span>(event);<br>&#125;);<br><br></code></pre></td></tr></table></figure>
+
+<p>Android</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs kotlin">EventChannel(flutterEngine.dartExecutor, <span class="hljs-string">&quot;live/event&quot;</span>)<br>.setStreamHandler(<span class="hljs-keyword">object</span> : EventChannel.StreamHandler &#123;<br>  <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">onListen</span><span class="hljs-params">(args: <span class="hljs-type">Any</span>?, sink: <span class="hljs-type">EventChannel</span>.<span class="hljs-type">EventSink</span>)</span></span> &#123;<br>    eventSink = sink<br>  &#125;<br>  <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">onCancel</span><span class="hljs-params">(args: <span class="hljs-type">Any</span>?)</span></span> &#123;&#125;<br>&#125;)<br><br></code></pre></td></tr></table></figure>
+
+<h2 id="BasicMessageChannel"><a href="#BasicMessageChannel" class="headerlink" title="BasicMessageChannel"></a>BasicMessageChannel</h2><p>定义协议（高级）</p>
+<p><strong>适用场景</strong></p>
+<ul>
+<li>高频、大数据量</li>
+<li>自定义编解码</li>
+</ul>
+<p> 一次完整通信的底层流程（面试加分）</p>
+<p>以 <strong>Flutter → Android MethodChannel</strong> 为例：</p>
+<ol>
+<li>Dart 调用 <code>invokeMethod</code></li>
+<li>Dart 将方法名 + 参数编码（StandardMessageCodec）</li>
+<li>通过 JNI 进入 Flutter Engine</li>
+<li>Engine 投递到 Android 主线程</li>
+<li>调用 <code>MethodCallHandler</code></li>
+<li>Native 处理逻辑</li>
+<li>结果编码返回 Dart</li>
+<li>Dart Future 完成<br>👉 <strong>这是异步消息机制，不是直接函数调用。</strong></li>
+</ol>
+<h1 id="flutter-调用-Android"><a href="#flutter-调用-Android" class="headerlink" title="flutter 调用 Android"></a><strong>flutter 调用 Android</strong></h1><p>注册</p>
 <figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs aspectj"><span class="hljs-keyword">static</span> <span class="hljs-keyword">const</span> nativeChannel =<span class="hljs-function"><span class="hljs-keyword">const</span> <span class="hljs-title">MethodChannel</span><span class="hljs-params">(<span class="hljs-string">&#x27;com.example.flutter/native&#x27;</span>)</span></span>;<br></code></pre></td></tr></table></figure>
 <p>flutter</p>
 <figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs dart"><span class="hljs-built_in">Map</span>&lt;<span class="hljs-built_in">String</span>, <span class="hljs-built_in">dynamic</span>&gt; result = &#123;<span class="hljs-string">&#x27;message&#x27;</span>: <span class="hljs-string">&#x27;我从Flutter页面回来了&#x27;</span>&#125;;<br>              nativeChannel.invokeMethod(<span class="hljs-string">&#x27;goBackWithResult&#x27;</span>, result);<br></code></pre></td></tr></table></figure>
@@ -325,13 +357,6 @@
         
   <a href="/categories/%E5%85%B6%E4%BB%96%E8%AF%AD%E8%A8%80/" class="category-chain-item">其他语言</a>
   
-  
-    <span>></span>
-    
-  <a href="/categories/%E5%85%B6%E4%BB%96%E8%AF%AD%E8%A8%80/flutter/" class="category-chain-item">flutter</a>
-  
-  
-
   
 
       </span>
